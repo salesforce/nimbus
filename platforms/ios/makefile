@@ -67,6 +67,6 @@ ios.export-archive: ios.archive
 		-quiet
 
 ios.clean:
-	rm -rf build*
+	rm -rf ${derivedDataPath}
 
 .PHONY: ios.build ios.test ios.archive ios.export-archive ios.clean
