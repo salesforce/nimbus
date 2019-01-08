@@ -23,6 +23,10 @@ function initiateNativeCallingJs() {
     DemoAppBridge.initiateNativeCallingJs();
 }
 
+function initiateNativeBroadcastMessage() {
+    DemoAppBridge.initiateNativeBroadcastMessage();
+}
+
 function demoMethodForNativeToJs(boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam) {
     const boolParamFormatted = boolParam.toString();
     const intParamFormatted = intParam.toString();
@@ -34,3 +38,16 @@ function demoMethodForNativeToJs(boolParam, intParam, optionalIntParam, stringPa
     console.log(boolParamFormatted, intParamFormatted, optionalIntParamFormatted, stringParam, userDefinedTypeParamFormatted);
     return boolParamFormatted + ', ' + intParamFormatted + ', ' + optionalIntParamFormatted + ', ' + stringParam + ', ' + userDefinedTypeParamFormatted;
 }
+
+function systemAlertHandler(color) {
+    if (color === "red") {
+        console.log("high alert");
+    }
+}
+
+function removeSystemAlertHandler() {
+    SalesforceVeil.unsubscribeMessage("systemAlert", systemAlertHandler);
+}
+
+SalesforceVeil.subscribeMessage("systemAlert", systemAlertHandler);
+SalesforceVeil.subscribeMessage("removeSystemAlertHandler", removeSystemAlertHandler);

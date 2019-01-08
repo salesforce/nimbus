@@ -18,6 +18,8 @@
 		29D5BC0D214037E800BFCF4E /* CallableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BC0C214037E800BFCF4E /* CallableTests.swift */; };
 		29D5BC0F21403DC500BFCF4E /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BC0E21403DC500BFCF4E /* Connection.swift */; };
 		29D5BC112140411800BFCF4E /* ConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BC102140411800BFCF4E /* ConnectionTests.swift */; };
+		68AE5AAF21CB219D007CF9E0 /* BroadcastMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5AAE21CB219D007CF9E0 /* BroadcastMessageTests.swift */; };
+		68AE5AB121CD7244007CF9E0 /* broadcastJs.js in Resources */ = {isa = PBXBuildFile; fileRef = 68AE5AB021CD7244007CF9E0 /* broadcastJs.js */; };
 		68C9DE6F21C7192B00A1377A /* evalJs.js in Resources */ = {isa = PBXBuildFile; fileRef = 68C9DE6E21C7192B00A1377A /* evalJs.js */; };
 		68C9DE7121C7196600A1377A /* EvalJsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C9DE7021C7196600A1377A /* EvalJsTests.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,8 @@
 		29D5BC0C214037E800BFCF4E /* CallableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableTests.swift; sourceTree = "<group>"; };
 		29D5BC0E21403DC500BFCF4E /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		29D5BC102140411800BFCF4E /* ConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionTests.swift; sourceTree = "<group>"; };
+		68AE5AAE21CB219D007CF9E0 /* BroadcastMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastMessageTests.swift; sourceTree = "<group>"; };
+		68AE5AB021CD7244007CF9E0 /* broadcastJs.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = broadcastJs.js; sourceTree = "<group>"; };
 		68C9DE6E21C7192B00A1377A /* evalJs.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = evalJs.js; sourceTree = "<group>"; };
 		68C9DE7021C7196600A1377A /* EvalJsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvalJsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -109,6 +113,7 @@
 				29D5BC102140411800BFCF4E /* ConnectionTests.swift */,
 				2903C9702142FD3700057625 /* WebViewTests.swift */,
 				68C9DE7021C7196600A1377A /* EvalJsTests.swift */,
+				68AE5AAE21CB219D007CF9E0 /* BroadcastMessageTests.swift */,
 			);
 			path = VeilTests;
 			sourceTree = "<group>";
@@ -128,6 +133,7 @@
 			children = (
 				29D5BBBB214032A000BFCF4E /* Info.plist */,
 				68C9DE6E21C7192B00A1377A /* evalJs.js */,
+				68AE5AB021CD7244007CF9E0 /* broadcastJs.js */,
 			);
 			path = _Resources;
 			sourceTree = "<group>";
@@ -234,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68C9DE6F21C7192B00A1377A /* evalJs.js in Resources */,
+				68AE5AB121CD7244007CF9E0 /* broadcastJs.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68AE5AAF21CB219D007CF9E0 /* BroadcastMessageTests.swift in Sources */,
 				68C9DE7121C7196600A1377A /* EvalJsTests.swift in Sources */,
 				29D5BC0D214037E800BFCF4E /* CallableTests.swift in Sources */,
 				2903C9712142FD3700057625 /* WebViewTests.swift in Sources */,

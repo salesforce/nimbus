@@ -36,6 +36,7 @@ class ViewController: UIViewController {
         c.bind(DemoAppBridge.currentTime, as: "currentTime")
         c.bind(DemoAppBridge.withCallback, as: "withCallback")
         c.bind(DemoAppBridge.initiateNativeCallingJs, as: "initiateNativeCallingJs")
+        c.bind(DemoAppBridge.initiateNativeBroadcastMessage, as:"initiateNativeBroadcastMessage")
 
         self.view.addSubview(webView)
         webView.loadHTMLString(htmlString, baseURL: nil)
@@ -54,6 +55,7 @@ let htmlString = """
   <button onclick='logCurrentTime();'>Log Time</button><br>
   <button onclick='doCallback();'>Do Callback</button><br>
   <button onclick='initiateNativeCallingJs();'>Tell native code to call js</button></br>
+  <button onclick='initiateNativeBroadcastMessage();'>Tell native code to broadcast message to js</button></br>
 </body>
 </html>
 """

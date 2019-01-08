@@ -1,3 +1,76 @@
+// Namespace for Veil
+var SalesforceVeil = SalesforceVeil || {}
+
+// Dictionary to manage message&subscriber relationship.
+SalesforceVeil.listenerMap = {}
+
+/**
+ * Broadcast a message to subscribed listeners.  Listeners can
+ * receive data associated with the message for more processing.
+ *
+ * @param message String message that is uniquely registered as a key in the
+ *                listener map.  Multiple listeners can get triggered from a
+ *                message.
+ * @param arg Swift encodable type.
+ * @return Number of listeners that were called by the message.
+ */
+SalesforceVeil.broadcastMessage = function(message, arg) {
+    let messageListeners = this.listenerMap[message];
+    var handlerCallCount = 0;
+    if (messageListeners) {
+        messageListeners.forEach((listener)=> {
+             if (arg) {
+                 listener(arg);
+             } else {
+                 listener();
+             }
+             handlerCallCount++;
+        });
+    }
+    return handlerCallCount;
+}
+/**
+ * Subscribe a listener to message.
+ *
+ * @param message String message that is uniquely registered as a key in the
+ *                listener map.  Multiple listeners can get triggered from a
+ *                message.
+ * @param listener A method that should be triggered when a message is broadcasted.
+ */
+SalesforceVeil.subscribeMessage = function(message, listener) {
+    let messageListeners = this.listenerMap[message];
+    if (!messageListeners) {
+        messageListeners = [];
+    }
+    messageListeners.push(listener);
+    this.listenerMap[message] = messageListeners;
+}
+
+/**
+ * Unsubscribe a listener from a message. Unsubscribed listener will not be triggered.
+ *
+ * @param message String message that is uniquely registered as a key in the
+ *                listener map.  Multiple listeners can get triggered from a
+ *                message.
+ * @param listener A method that should be triggered when a message is broadcasted.
+ */
+SalesforceVeil.unsubscribeMessage = function(message, listener) {
+    let messageListeners = this.listenerMap[message];
+    if (messageListeners) {
+        let counter = 0;
+        let found = false;
+        for(counter; counter < messageListeners.length; counter++) {
+            if (messageListeners[counter] === listener) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            messageListeners.splice(counter, 1);
+            this.listenerMap[message] = messageListeners;
+        }
+    }
+}
 
 // There can be many promises so creating a storage for later look-up.
 var promises = {}

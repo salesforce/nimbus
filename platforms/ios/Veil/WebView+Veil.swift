@@ -27,7 +27,6 @@ extension WKWebView {
                        Javascript function that does not take any parameters pass empty array instead of nil.
      - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
                                     have to pass a closure if you are not interested in getting the callback.
-     
      */
     public func callJavascript(name: String, args: [Encodable], completionHandler: ((Any?, Error?) -> Void)? = nil) {
         let jsonEncoder = JSONEncoder()
@@ -55,6 +54,56 @@ extension WKWebView {
                     handler(result, nil)
                 } else {
                     handler(nil, error!)
+                }
+            }
+        }
+    }
+
+    /**
+     Broadcast a message to subscribers listening on Javascript side.  Message can be
+     delivered with an argument so that subscriber can use that pass useful data.
+
+     - Parameter name: Message name.  Listeners are keying on unique message names on Javascript side.
+                       There can be multiple listeners listening on same message.
+     - Parameter arg: Any encodable ojbect to pass to Javascript as useful data.  If there is nothing to be
+                      passed don't specify the parameter since it has nil as default parameter.
+     - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
+                                    have to pass a closure if you are not interested in getting the callback.
+     */
+    public func broadcastMessage(name: String, arg: Encodable? = nil, completionHandler: ((Int, Error?) -> Void)? = nil) {
+        var script = ""
+        if let validArg = arg {
+            let wrappedValue = EncodableValue.value(validArg)
+            let jsonEncoder = JSONEncoder()
+            let jsonData = try! jsonEncoder.encode(wrappedValue)
+            let jsonString = String(data: jsonData, encoding: .utf8)!
+            let scriptTemplate = """
+                try {
+                    var jsonData = JSON.parse('%@');
+                    var unwrappedArg = jsonData.v;
+                    if (unwrappedArg) {
+                        SalesforceVeil.broadcastMessage('%@',unwrappedArg);
+                    } else {
+                        SalesforceVeil.broadcastMessage('%@');
+                    }
+                } catch(e) {
+                    console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
+                }
+            """
+            script = String.init(format: scriptTemplate, jsonString, name, name);
+        } else {
+            let scriptTemplate = """
+                SalesforceVeil.broadcastMessage('%@');
+            """
+            script = String.init(format: scriptTemplate, name);
+        }
+        self.evaluateJavaScript(script) { (result: Any?, error: Error?) in
+            if let handler = completionHandler {
+                if error == nil {
+                    let completedCount = result as! Int
+                    handler(completedCount, nil)
+                } else {
+                    handler(0, error!)
                 }
             }
         }

@@ -51,10 +51,17 @@ class DemoAppBridge {
         };
     }
     
+    func initiateNativeBroadcastMessage() {
+        self.webView?.broadcastMessage(name: "systemAlert", arg:"red");
+    }
+
     weak var host: UIViewController?
     weak var webView: WKWebView?
 }
 
+/**
+ Test class used to pass from native to Javascript.
+ */
 class UserDefinedType:Encodable {
     var intParam = 5
     var stringParam = "hello user defined type"
