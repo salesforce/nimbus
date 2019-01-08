@@ -6,11 +6,11 @@
 mkfile_path := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 
 android.build:
-	pushd ${mkfile_path} && \
+	cd ${mkfile_path} && \
 	./gradlew assembleDebug
 
 android.test:
-	pushd ${mkfile_path} && \
+	cd ${mkfile_path} && \
 	./gradlew testDebugUnitTest
 
 android.clean:
