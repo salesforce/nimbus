@@ -1,9 +1,31 @@
-version: 2.1
+version: 2
+jobs:
+  build-and-test:
+    macos:
+      xcode: "9.0"
 
-orbs:
-  hello: circleci/hello-build@0.0.7 # uses the circleci/buildpack-deps Docker image
+    steps:
+      - checkout
+
+      - run:
+          name: Build iOS
+          command: make ios.build
+
+      - run:
+          name: Test iOS
+          command: make ios.test
+
+      - store_test_results:
+          path: test_output/report.xml
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: scan-test-results
+      - store_artifacts:
+          path: ~/Library/Logs/scan
+          destination: scan-logs
 
 workflows:
-  "Hello Workflow":
+  version: 2
+  build-and-test:
     jobs:
-      - hello/hello-build
+      - build-and-test
