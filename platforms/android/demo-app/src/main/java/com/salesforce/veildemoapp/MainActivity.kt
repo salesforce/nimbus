@@ -13,11 +13,16 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.salesforce.veil.Callback
 import com.salesforce.veil.addConnection
+import com.salesforce.veil.callJavascript
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
-    class Bridge {
+    class Bridge(private var webView: WebView? = null) {
         @JavascriptInterface
         fun showAlert(message: String) {
             Log.d("js", message)
@@ -32,15 +37,38 @@ class MainActivity : AppCompatActivity() {
         fun withCallback(callback: Callback) {
             callback.call(1, "two", "three", 4.0)
         }
+
+        @JavascriptInterface
+        fun initiateNativeCallingJS() {
+            GlobalScope.launch(Dispatchers.Main) {
+                webView?.let {
+                    val parameters = mutableListOf<Any>()
+                    parameters.add(true)
+                    parameters.add(999)
+                    parameters.add("hello kotlin")
+                    parameters.add(UserDefinedType())
+                    it.callJavascript("demoMethodForNativeToJs", parameters, { result, error ->
+                        Log.d("js", "${result}")
+                    })
+                }
+            }
+        }
+    }
+
+    class UserDefinedType() {
+        val intParam = 5
+        val stringParam = "hello user defined type"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        WebView.setWebContentsDebuggingEnabled(true);
+
         val webView: WebView = findViewById(R.id.webView)
         webView.getSettings().setJavaScriptEnabled(true);
 
-        webView.addConnection(Bridge(), "Bridge")
+        webView.addConnection(Bridge(webView), "Bridge")
 
         webView.loadDataWithBaseURL(null, html, "text/html", null, null)
 
@@ -60,6 +88,16 @@ class MainActivity : AppCompatActivity() {
                 function withCallback() {
                     Bridge.withCallback((...args) => { console.log(`got back ${'$'}{args}`) });
                 }
+                function initiateNativeCallingJs() {
+                    Bridge.initiateNativeCallingJS();
+                }
+                function demoMethodForNativeToJs(boolParam, intParam, stringParam, userDefinedTypeParam) {
+                    const boolParamFormatted = boolParam.toString();
+                    const intParamFormatted = intParam.toString();
+                    const userDefinedTypeParamFormatted = userDefinedTypeParam.toString();
+                    console.log(boolParamFormatted, intParamFormatted, stringParam, userDefinedTypeParamFormatted);
+                    return boolParamFormatted + ', ' + intParamFormatted + ', ' + stringParam + ', ' + userDefinedTypeParamFormatted;
+                }
                 </script>
             </head>
 
@@ -67,6 +105,8 @@ class MainActivity : AppCompatActivity() {
                 <button onclick='showAlert();'>Show Alert</button><br>
                 <button onclick='logCurrentTime();'>Log Time</button><br>
                 <button onclick='withCallback();'>Callback</button><br>
+                <button onclick='initiateNativeCallingJs();'>Tell native code to call js</button></br>
+                <button onclick='initiateNativeBroadcastMessage();'>Tell native code to broadcast message to js</button></br>
             </body>
         </html>
     """.trimIndent()
