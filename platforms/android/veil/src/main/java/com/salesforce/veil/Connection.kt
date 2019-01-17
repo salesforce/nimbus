@@ -65,7 +65,7 @@ fun WebView.addConnection(target: Any, name: String) {
 }
 
 /**
- * Call a Javascript function.
+ * Asynchronously call a Javascript function. This method must be called on UI thread.
  *
  * @param name Name of a function or a method on an object to call.  Fully qualify this name
  *             by separating with a dot and do not need to add parenthesis. The function
@@ -77,7 +77,7 @@ fun WebView.addConnection(target: Any, name: String) {
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
-fun WebView.callJavascript(name: String, args: List<Any>?, completionHandler: ((result: Any?, error: Exception?) -> Unit)? = null) {
+fun WebView.callJavascript(name: String, args: List<Any?> = emptyList(), completionHandler: ((result: Any?) -> Unit)? = null) {
     val gson = Gson()
     val jsonString = gson.toJson(args)
     val scriptTemplate = """
@@ -93,15 +93,9 @@ fun WebView.callJavascript(name: String, args: List<Any>?, completionHandler: ((
         }
     """.trimIndent()
 
-    try {
-        this.evaluateJavascript(scriptTemplate, { value ->
-            completionHandler?.let {
-                completionHandler(value, null)
-            }
-        })
-    } catch (e: Exception) {
+    this.evaluateJavascript(scriptTemplate) { value ->
         completionHandler?.let {
-            completionHandler(null, e)
+            completionHandler(value)
         }
     }
 }

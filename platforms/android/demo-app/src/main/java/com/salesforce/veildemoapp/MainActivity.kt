@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                     parameters.add(999)
                     parameters.add("hello kotlin")
                     parameters.add(UserDefinedType())
-                    it.callJavascript("demoMethodForNativeToJs", parameters, { result, error ->
+                    it.callJavascript("demoMethodForNativeToJs", parameters, { result ->
                         Log.d("js", "${result}")
                     })
                 }
