@@ -124,7 +124,7 @@ class EvalJsTests: XCTestCase, WKNavigationDelegate {
         self.webView.callJavascript(name: "methodWithNoParam", args: ["hello \n"]) { (result, error) -> () in
             let resultString = result as? String
             if let retVal = resultString {
-                if retVal == "received newline character: hello \n" {
+                if retVal == "methodWithNoParam called." {
                     retValMatches = true
                 }
             }

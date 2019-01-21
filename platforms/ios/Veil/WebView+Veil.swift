@@ -38,18 +38,17 @@ extension WKWebView {
         }
         let jsonData = try! jsonEncoder.encode(encodableValues)
         let jsonString = String(data: jsonData, encoding: .utf8)!
-        let scriptTemplate = """
-            var jsonData = JSON.parse('%@');
+        let script = """
+            var jsonData = \(jsonString);
             var jsonArr = jsonData.map(function(encodable){
-                return encodable['v'];
+                return encodable.v;
             });
             if (jsonArr && jsonArr.length > 0) {
-                %@(...jsonArr);
+                \(name)(...jsonArr);
             } else {
-                %@();
+                \(name)();
             }
         """
-        let script = String.init(format: scriptTemplate, jsonString, name, name)
         self.evaluateJavaScript(script) { (result: Any?, error: Error?) in
             if let handler = completionHandler {
                 if error == nil {
