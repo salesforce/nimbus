@@ -18,13 +18,13 @@ class VeilBridge(webView: WebView) {
 
     private val webView: WeakReference<WebView> = WeakReference(webView)
 
-    val connections: MutableCollection<Connection> = ArrayList()
+    internal val connections: MutableCollection<Connection> = ArrayList()
 
     init {
         webView.addJavascriptInterface(this, "_Veil")
     }
 
-    fun addConnection(connection: Connection) {
+    internal fun addConnection(connection: Connection) {
         connections.add(connection)
     }
 

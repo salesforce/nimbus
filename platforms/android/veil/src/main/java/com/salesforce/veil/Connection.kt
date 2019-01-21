@@ -18,7 +18,7 @@ import java.util.*
  * to JavaScript annotated with the [android.webkit.JavascriptInterface] annotation
  */
 @SuppressLint("JavascriptInterface")
-class Connection(val webView: WebView, val target: Any, val name: String) {
+internal class Connection(val webView: WebView, val target: Any, val name: String) {
 
     init {
         webView.addJavascriptInterface(target, "_" + name)

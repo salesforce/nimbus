@@ -10,7 +10,7 @@ import android.support.test.internal.runner.junit4.statement.UiThreadStatement.r
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.webkit.JavascriptInterface
-import com.salesforce.veil.Connection
+import com.salesforce.veil.addConnection
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +30,8 @@ public class ConnectionTests {
         }
     }
 
-    @Rule @JvmField
+    @Rule
+    @JvmField
     val activityRule: ActivityTestRule<WebViewActivity> = ActivityTestRule<WebViewActivity>(WebViewActivity::class.java, false, true)
 
     @Test
@@ -41,7 +42,11 @@ public class ConnectionTests {
         val bridge = TestBridge()
 
         runOnUiThread {
-            val c = Connection(webView, bridge, "TestBridge")
+            webView.addConnection(bridge, "TestBridge")
+        }
+        latch.await(5, TimeUnit.SECONDS)
+
+        runOnUiThread {
             webView.evaluateJavascript("TestBridge.test();") { r: String ->
                 latch.countDown()
             }
