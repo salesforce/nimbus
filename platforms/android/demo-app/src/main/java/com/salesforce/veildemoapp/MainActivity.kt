@@ -11,9 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import com.salesforce.veil.Callback
-import com.salesforce.veil.addConnection
-import com.salesforce.veil.callJavascript
+import com.salesforce.veil.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -47,9 +45,18 @@ class MainActivity : AppCompatActivity() {
                     parameters.add(999)
                     parameters.add("hello kotlin")
                     parameters.add(UserDefinedType())
-                    it.callJavascript("demoMethodForNativeToJs", parameters, { result ->
+                    it.callJavascript("demoMethodForNativeToJs", parameters) { result ->
                         Log.d("js", "${result}")
-                    })
+                    }
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun initiateNativeBroadcastMessage() {
+            GlobalScope.launch(Dispatchers.Main) {
+                webView?.let {
+                    it.broadcastMessage("systemAlert", "red")
                 }
             }
         }
@@ -68,10 +75,9 @@ class MainActivity : AppCompatActivity() {
         val webView: WebView = findViewById(R.id.webView)
         webView.getSettings().setJavaScriptEnabled(true);
 
-        webView.addConnection(Bridge(webView), "Bridge")
-
+        val veilPreScript = ResourceUtils(this.applicationContext).stringFromRawResource(R.raw.prescript)
+        webView.addConnection(Bridge(webView), "Bridge", veilPreScript)
         webView.loadDataWithBaseURL(null, html, "text/html", null, null)
-
     }
 
     val html = """
@@ -90,6 +96,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 function initiateNativeCallingJs() {
                     Bridge.initiateNativeCallingJS();
+                }
+                function initiateNativeBroadcastMessage() {
+                    Bridge.initiateNativeBroadcastMessage();
                 }
                 function demoMethodForNativeToJs(boolParam, intParam, stringParam, userDefinedTypeParam) {
                     const boolParamFormatted = boolParam.toString();

@@ -4,6 +4,49 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 
 class Veil {
+  static broadcastMessage(message, arg) {
+    let messageListeners = Veil.listenerMap[message];
+    var handlerCallCount = 0;
+    if (messageListeners) {
+       messageListeners.forEach((listener)=> {
+          if (arg) {
+             listener(arg);
+          } else {
+             listener();
+          }
+          handlerCallCount++;
+       });
+    }
+    return handlerCallCount;
+  }
+
+  static subscribeMessage(message, listener) {
+     let messageListeners = Veil.listenerMap[message];
+     if (!messageListeners) {
+        messageListeners = [];
+     }
+     messageListeners.push(listener);
+     Veil.listenerMap[message] = messageListeners;
+  }
+
+  static unsubscribeMessage(message, listener) {
+    let messageListeners = Veil.listenerMap[message];
+    if (messageListeners) {
+       let counter = 0;
+       let found = false;
+       for(counter; counter < messageListeners.length; counter++) {
+          if (messageListeners[counter] === listener) {
+             found = true;
+             break;
+          }
+       }
+       if (found) {
+          messageListeners.splice(counter, 1);
+          Veil.listenerMap[message] = messageListeners;
+       }
+    }
+  }
+
   static promisify(src) {
     let dest = {};
     Object.keys(src).forEach(k => {
@@ -47,3 +90,4 @@ class Veil {
 }
 
 Veil.callbacks = {};
+Veil.listenerMap = {};
