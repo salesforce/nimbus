@@ -11,6 +11,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.salesforce.veil.ResourceUtils
 import com.salesforce.veil.callJavascript
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -33,45 +34,6 @@ class CallJavascriptTests {
 
     var webView: WebView? = null
 
-    val html = """
-        <html>
-            <head>
-                <meta name='viewport' content='initial-scale=1.0, user-scalable=no' />
-                <script>
-                    var veilTestNamespace = veilTestNamespace || {};
-                    veilTestNamespace.TestObject = function(name) {
-                        this.testObjectName = name;
-                    }
-                    veilTestNamespace.TestObject.prototype.getName = function() {
-                        return this.testObjectName;
-                    }
-                    var testObject = new veilTestNamespace.TestObject('veil');
-
-                    function methodWithNoParam() {
-                        return "methodWithNoParam called.";
-                    }
-
-                    function methodWithMultipleParams(boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam) {
-                        const boolParamFormatted = boolParam.toString();
-                        const intParamFormatted = intParam.toString();
-                        var optionalIntParamFormatted = "null";
-                        if (optionalIntParam != null) {
-                            optionalIntParamFormatted = optionalIntParam.toString();
-                        }
-                        const userDefinedTypeParamFormatted = userDefinedTypeParam.toString();
-                        return boolParamFormatted + ', ' + intParamFormatted + ', ' + optionalIntParamFormatted + ', ' + stringParam + ', ' + userDefinedTypeParamFormatted;
-                    }
-
-                    function methodExpectingNewline(newline) {
-                        return "received newline character: " + newline;
-                    }
-                </script>
-            </head>
-            <body>
-            </body>
-        </html>
-    """.trimIndent()
-
     @Before
     fun setup() {
         webView = activityRule.activity.webView
@@ -79,13 +41,13 @@ class CallJavascriptTests {
         val latch = CountDownLatch(1)
         runOnUiThread {
             webView?.let {
-                it.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+                val veilPreScript = ResourceUtils(it.context).stringFromRawResource(R.raw.evaljstests)
                 it.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView, url: String) {
                         latch.countDown()
                     }
                 }
-
+                it.loadDataWithBaseURL(null, veilPreScript, "text/html", "UTF-8", null)
             }
         }
         latch.await(5, TimeUnit.SECONDS)
