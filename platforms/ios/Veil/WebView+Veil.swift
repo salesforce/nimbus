@@ -77,25 +77,23 @@ extension WKWebView {
             let jsonEncoder = JSONEncoder()
             let jsonData = try! jsonEncoder.encode(wrappedValue)
             let jsonString = String(data: jsonData, encoding: .utf8)!
-            let scriptTemplate = """
+            script = """
                 try {
-                    var jsonData = JSON.parse('%@');
+                    var jsonData = \(jsonString);
                     var unwrappedArg = jsonData.v;
                     if (unwrappedArg) {
-                        SalesforceVeil.broadcastMessage('%@',unwrappedArg);
+                        SalesforceVeil.broadcastMessage('\(name)', unwrappedArg);
                     } else {
-                        SalesforceVeil.broadcastMessage('%@');
+                        SalesforceVeil.broadcastMessage('\(name)');
                     }
                 } catch(e) {
                     console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
                 }
             """
-            script = String.init(format: scriptTemplate, jsonString, name, name);
         } else {
-            let scriptTemplate = """
-                SalesforceVeil.broadcastMessage('%@');
+            script = """
+                SalesforceVeil.broadcastMessage('\(name)');
             """
-            script = String.init(format: scriptTemplate, name);
         }
         self.evaluateJavaScript(script) { (result: Any?, error: Error?) in
             if let handler = completionHandler {
