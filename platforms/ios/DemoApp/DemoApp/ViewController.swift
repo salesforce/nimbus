@@ -17,16 +17,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let userContentController = WKUserContentController()
-        let appScript = Bundle.main.url(forResource: "app", withExtension: "js")
-            .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue ) }
-            .flatMap { WKUserScript(source: $0 as String, injectionTime: .atDocumentEnd, forMainFrameOnly: true) }
-        if let appScript = appScript {
-            userContentController.addUserScript(appScript)
-        }
-        let config = WKWebViewConfiguration()
-        config.userContentController = userContentController
-        let webView = WKWebView(frame: view.bounds, configuration: config)
+        let webView = WKWebView(frame: view.bounds)
 
         bridge = DemoAppBridge(host: self, webView: webView)
         
@@ -39,23 +30,10 @@ class ViewController: UIViewController {
         c.bind(DemoAppBridge.initiateNativeBroadcastMessage, as:"initiateNativeBroadcastMessage")
 
         self.view.addSubview(webView)
-        webView.loadHTMLString(htmlString, baseURL: nil)
+        let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "demoApp")!
+        webView.loadFileURL(url, allowingReadAccessTo: url)
+        webView.load(URLRequest(url: url))
         self.webView = webView
     }
 
 }
-
-let htmlString = """
-<html>
-<head>
-  <meta name='viewport' content='initial-scale=1.0, user-scalable=no' />
-</head>
-<body>
-  <button onclick='showAlert();'>Show Alert</button><br>
-  <button onclick='logCurrentTime();'>Log Time</button><br>
-  <button onclick='doCallback();'>Do Callback</button><br>
-  <button onclick='initiateNativeCallingJs();'>Tell native code to call js</button></br>
-  <button onclick='initiateNativeBroadcastMessage();'>Tell native code to broadcast message to js</button></br>
-</body>
-</html>
-"""

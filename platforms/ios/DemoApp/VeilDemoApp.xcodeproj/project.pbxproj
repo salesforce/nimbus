@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C51D01421F92C45008081D6 /* demoApp in Resources */ = {isa = PBXBuildFile; fileRef = 0C51D01321F92C45008081D6 /* demoApp */; };
+		0C51D01521F92C45008081D6 /* demoApp in Resources */ = {isa = PBXBuildFile; fileRef = 0C51D01321F92C45008081D6 /* demoApp */; };
+		0C51D01621F92C45008081D6 /* demoApp in Resources */ = {isa = PBXBuildFile; fileRef = 0C51D01321F92C45008081D6 /* demoApp */; };
 		2903C97521430D3800057625 /* DemoAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2903C97421430D3800057625 /* DemoAppBridge.swift */; };
 		29D5BBD22140330900BFCF4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BBD12140330900BFCF4E /* AppDelegate.swift */; };
 		29D5BBD42140330900BFCF4E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BBD32140330900BFCF4E /* ViewController.swift */; };
@@ -17,7 +20,6 @@
 		29D5BBF22140330B00BFCF4E /* VeilDemoAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D5BBF12140330B00BFCF4E /* VeilDemoAppUITests.swift */; };
 		29D5BC04214033C300BFCF4E /* Veil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D5BC03214033C300BFCF4E /* Veil.framework */; };
 		29D5BC05214033C300BFCF4E /* Veil.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 29D5BC03214033C300BFCF4E /* Veil.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		29D5BC092140358500BFCF4E /* app.js in Resources */ = {isa = PBXBuildFile; fileRef = 29D5BC082140358500BFCF4E /* app.js */; };
 		6846F30921484A8A001EB595 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846F30821484A8A001EB595 /* MainTabBarController.swift */; };
 		6846F30B21485D4C001EB595 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846F30A21485D4C001EB595 /* TestViewController.swift */; };
 		6846F30D21488E17001EB595 /* FUIWait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846F30C21488E17001EB595 /* FUIWait.swift */; };
@@ -57,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C51D01321F92C45008081D6 /* demoApp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = demoApp; path = ../../../../shared/demoApp; sourceTree = "<group>"; };
 		2903C97421430D3800057625 /* DemoAppBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppBridge.swift; sourceTree = "<group>"; };
 		29D5BBCE2140330900BFCF4E /* VeilDemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeilDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D5BBD12140330900BFCF4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,7 +75,6 @@
 		29D5BBF12140330B00BFCF4E /* VeilDemoAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VeilDemoAppUITests.swift; sourceTree = "<group>"; };
 		29D5BBF32140330B00BFCF4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29D5BC03214033C300BFCF4E /* Veil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Veil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		29D5BC082140358500BFCF4E /* app.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = app.js; sourceTree = "<group>"; };
 		6846F30821484A8A001EB595 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		6846F30A21485D4C001EB595 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		6846F30C21488E17001EB595 /* FUIWait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FUIWait.swift; sourceTree = "<group>"; };
@@ -160,8 +162,8 @@
 		29D5BBFF2140336400BFCF4E /* _Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0C51D01321F92C45008081D6 /* demoApp */,
 				6846F2D721473537001EB595 /* Tests */,
-				29D5BC082140358500BFCF4E /* app.js */,
 				29D5BBD82140330B00BFCF4E /* Assets.xcassets */,
 				29D5BBDD2140330B00BFCF4E /* Info.plist */,
 				29D5BBDA2140330B00BFCF4E /* LaunchScreen.storyboard */,
@@ -302,11 +304,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C51D01421F92C45008081D6 /* demoApp in Resources */,
 				6846F311214B1930001EB595 /* test.js in Resources */,
 				29D5BBDC2140330B00BFCF4E /* LaunchScreen.storyboard in Resources */,
 				6846F312214B1930001EB595 /* test.html in Resources */,
 				29D5BBD92140330B00BFCF4E /* Assets.xcassets in Resources */,
-				29D5BC092140358500BFCF4E /* app.js in Resources */,
 				29D5BBD72140330900BFCF4E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +317,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C51D01521F92C45008081D6 /* demoApp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,6 +325,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C51D01621F92C45008081D6 /* demoApp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
