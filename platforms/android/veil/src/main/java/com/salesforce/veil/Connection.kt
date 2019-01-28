@@ -9,7 +9,7 @@ package com.salesforce.veil
 import android.annotation.SuppressLint
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.google.gson.Gson
+import org.json.JSONObject
 import java.util.*
 
 /**
@@ -85,12 +85,23 @@ fun WebView.addConnection(target: Any, name: String, preScript: String? = null) 
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
-fun WebView.callJavascript(name: String, args: List<Any?> = emptyList(), completionHandler: ((result: Any?) -> Unit)? = null) {
-    val gson = Gson()
-    val jsonString = gson.toJson(args)
+fun WebView.callJavascript(name: String, args: Array<JSONSerializable> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
+    val jsonObject = JSONObject()
+    args.forEachIndexed { index, jsonSerializable ->
+        val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable;
+        if(asPrimitive != null)
+        {
+            jsonObject.put(index.toString(), asPrimitive.value)
+        } else {
+            jsonObject.put(index.toString(), JSONObject(jsonSerializable.stringify()))
+        }
+    }
+
+    val jsonString = jsonObject.toString()
     val scriptTemplate = """
         try {
-            var jsonArr = JSON.parse('${jsonString}');
+            var jsonData = ${jsonString};
+            var jsonArr = Object.values(jsonData);
             if (jsonArr && jsonArr.length > 0) {
                 ${name}(...jsonArr);
             } else {
@@ -119,14 +130,12 @@ fun WebView.callJavascript(name: String, args: List<Any?> = emptyList(), complet
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
-fun WebView.broadcastMessage(name: String, arg: Any? = null, completionHandler: ((result: Int) -> Unit)? = null) {
+fun WebView.broadcastMessage(name: String, arg: JSONSerializable? = null, completionHandler: ((result: Int) -> Unit)? = null) {
     var scriptTemplate: String
     if (arg != null) {
-        val gson = Gson()
-        val jsonString = gson.toJson(arg)
         scriptTemplate = """
             try {
-                var jsonData = JSON.parse('${jsonString}');
+                var jsonData = JSON.parse('${arg.stringify()}');
                 if (jsonData) {
                     Veil.broadcastMessage('${name}',jsonData);
                 } else {

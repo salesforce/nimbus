@@ -15,6 +15,7 @@ import com.salesforce.veil.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
 
 
@@ -40,12 +41,12 @@ class MainActivity : AppCompatActivity() {
         fun initiateNativeCallingJS() {
             GlobalScope.launch(Dispatchers.Main) {
                 webView?.let {
-                    val parameters = mutableListOf<Any>()
-                    parameters.add(true)
-                    parameters.add(999)
-                    parameters.add("hello kotlin")
+                    val parameters = arrayListOf<JSONSerializable>()
+                    parameters.add(true.toJSONSerializable())
+                    parameters.add(999.toJSONSerializable())
+                    parameters.add("hello kotlin".toJSONSerializable())
                     parameters.add(UserDefinedType())
-                    it.callJavascript("demoMethodForNativeToJs", parameters) { result ->
+                    it.callJavascript("demoMethodForNativeToJs", parameters.toTypedArray()) { result ->
                         Log.d("js", "${result}")
                     }
                 }
@@ -55,16 +56,21 @@ class MainActivity : AppCompatActivity() {
         @JavascriptInterface
         fun initiateNativeBroadcastMessage() {
             GlobalScope.launch(Dispatchers.Main) {
-                webView?.let {
-                    it.broadcastMessage("systemAlert", "red")
-                }
+                webView?.broadcastMessage("systemAlert", "red".toJSONSerializable())
             }
         }
     }
 
-    class UserDefinedType() {
+    class UserDefinedType: JSONSerializable {
         val intParam = 5
         val stringParam = "hello user defined type"
+
+        override fun stringify(): String {
+            val jsonObject = JSONObject()
+            jsonObject.put("intParam", intParam)
+            jsonObject.put("stringParam", stringParam)
+            return jsonObject.toString()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
