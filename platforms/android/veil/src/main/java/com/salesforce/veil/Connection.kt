@@ -89,8 +89,7 @@ fun WebView.callJavascript(name: String, args: Array<JSONSerializable> = emptyAr
     val jsonObject = JSONObject()
     args.forEachIndexed { index, jsonSerializable ->
         val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable;
-        if(asPrimitive != null)
-        {
+        if (asPrimitive != null) {
             jsonObject.put(index.toString(), asPrimitive.value)
         } else {
             jsonObject.put(index.toString(), JSONObject(jsonSerializable.stringify()))
@@ -135,9 +134,9 @@ fun WebView.broadcastMessage(name: String, arg: JSONSerializable? = null, comple
     if (arg != null) {
         scriptTemplate = """
             try {
-                var jsonData = JSON.parse('${arg.stringify()}');
-                if (jsonData) {
-                    Veil.broadcastMessage('${name}',jsonData);
+                var jsonArr = Object.values(${arg.stringify()});
+                if (jsonArr && jsonArr.length > 0) {
+                    Veil.broadcastMessage('${name}',jsonArr[0]);
                 } else {
                     Veil.broadcastMessage('${name}');
                 }
