@@ -85,14 +85,16 @@ fun WebView.addConnection(target: Any, name: String, preScript: String? = null) 
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
-fun WebView.callJavascript(name: String, args: Array<JSONSerializable> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
+fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
     val jsonObject = JSONObject()
     args.forEachIndexed { index, jsonSerializable ->
         val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable;
         if (asPrimitive != null) {
             jsonObject.put(index.toString(), asPrimitive.value)
         } else {
-            jsonObject.put(index.toString(), JSONObject(jsonSerializable.stringify()))
+            jsonObject.put(index.toString(),
+                    if (jsonSerializable == null) JSONObject.NULL
+                    else JSONObject(jsonSerializable.stringify()))
         }
     }
 

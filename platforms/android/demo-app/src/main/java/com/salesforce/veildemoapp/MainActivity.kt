@@ -21,7 +21,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    class Bridge(private var webView: WebView? = null) {
+    class DemoAppBridge(private var webView: WebView? = null) {
         @JavascriptInterface
         fun showAlert(message: String) {
             Log.d("js", message)
@@ -38,12 +38,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         @JavascriptInterface
-        fun initiateNativeCallingJS() {
+        fun initiateNativeCallingJs() {
             GlobalScope.launch(Dispatchers.Main) {
                 webView?.let {
-                    val parameters = arrayListOf<JSONSerializable>()
+                    val parameters = arrayListOf<JSONSerializable?>()
                     parameters.add(true.toJSONSerializable())
                     parameters.add(999.toJSONSerializable())
+                    parameters.add(null)
                     parameters.add("hello kotlin".toJSONSerializable())
                     parameters.add(UserDefinedType())
                     it.callJavascript("demoMethodForNativeToJs", parameters.toTypedArray()) { result ->
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class UserDefinedType: JSONSerializable {
+    class UserDefinedType : JSONSerializable {
         val intParam = 5
         val stringParam = "hello user defined type"
 
@@ -82,47 +83,7 @@ class MainActivity : AppCompatActivity() {
         webView.getSettings().setJavaScriptEnabled(true);
 
         val veilPreScript = ResourceUtils(this.applicationContext).stringFromRawResource(R.raw.prescript)
-        webView.addConnection(Bridge(webView), "Bridge", veilPreScript)
-        webView.loadDataWithBaseURL(null, html, "text/html", null, null)
+        webView.addConnection(DemoAppBridge(webView), "DemoAppBridge", veilPreScript)
+        webView.loadUrl("file:///android_asset/demoApp/index.html");
     }
-
-    val html = """
-        <html>
-            <head>
-                <meta name='viewport' content='initial-scale=1.0, user-scalable=no' />
-                <script>
-                function showAlert() {
-                    Bridge.showAlert('hello from javascript!');
-                }
-                function logCurrentTime() {
-                    Bridge.currentTime().then( time => { console.log(time) });
-                }
-                function withCallback() {
-                    Bridge.withCallback((...args) => { console.log(`got back ${'$'}{args}`) });
-                }
-                function initiateNativeCallingJs() {
-                    Bridge.initiateNativeCallingJS();
-                }
-                function initiateNativeBroadcastMessage() {
-                    Bridge.initiateNativeBroadcastMessage();
-                }
-                function demoMethodForNativeToJs(boolParam, intParam, stringParam, userDefinedTypeParam) {
-                    const boolParamFormatted = boolParam.toString();
-                    const intParamFormatted = intParam.toString();
-                    const userDefinedTypeParamFormatted = userDefinedTypeParam.toString();
-                    console.log(boolParamFormatted, intParamFormatted, stringParam, userDefinedTypeParamFormatted);
-                    return boolParamFormatted + ', ' + intParamFormatted + ', ' + stringParam + ', ' + userDefinedTypeParamFormatted;
-                }
-                </script>
-            </head>
-
-            <body>
-                <button onclick='showAlert();'>Show Alert</button><br>
-                <button onclick='logCurrentTime();'>Log Time</button><br>
-                <button onclick='withCallback();'>Callback</button><br>
-                <button onclick='initiateNativeCallingJs();'>Tell native code to call js</button></br>
-                <button onclick='initiateNativeBroadcastMessage();'>Tell native code to broadcast message to js</button></br>
-            </body>
-        </html>
-    """.trimIndent()
 }
