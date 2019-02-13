@@ -10,14 +10,20 @@ jobs:
       - checkout
 
       - run:
+          name: Build Nimbus core
+          command: |
+            npm install
+            npm run build
+
+      - run:
           name: Build iOS
           working_directory: platforms/apple
-          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=latest,platform=iOS Simulator,name=iPhone 8'
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=latest,platform=iOS Simulator,name=iPhone 7'
 
       - run:
           name: Test iOS
           working_directory: platforms/apple
-          command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=latest,platform=iOS Simulator,name=iPhone 8'
+          command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=latest,platform=iOS Simulator,name=iPhone 7'
 
   build-and-test-android:
     docker:
