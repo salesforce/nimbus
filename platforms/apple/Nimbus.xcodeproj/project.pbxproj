@@ -35,6 +35,8 @@
 		29610FC621E53881007058EA /* DemoBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29610FC521E53881007058EA /* DemoBridge.swift */; };
 		2961103821E7F5EB007058EA /* CookieExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2961103721E7F5EB007058EA /* CookieExtension.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
+		ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */; };
+		C18096AE98575EE997A54233 /* libPods-Nimbus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +78,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.debug.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.debug.xcconfig"; sourceTree = "<group>"; };
+		15995D607FDAF59975988E42 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		291A85E521E52D3E00510832 /* NimbusApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NimbusApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		291A85E821E52D3E00510832 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		291A85EA21E52D3E00510832 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +114,10 @@
 		29610FC521E53881007058EA /* DemoBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoBridge.swift; sourceTree = "<group>"; };
 		2961103021E54872007058EA /* NimbusApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NimbusApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		2961103721E7F5EB007058EA /* CookieExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieExtension.swift; sourceTree = "<group>"; };
+		C4F99DF9D06AB80326FC9637 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
+		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.release.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */,
+				ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C18096AE98575EE997A54233 /* libPods-Nimbus.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +165,7 @@
 				294433702202012F00E6D084 /* NimbusAppUITests */,
 				291A85E621E52D3E00510832 /* Products */,
 				2961102821E54662007058EA /* Frameworks */,
+				CFB418AC54B2560C2CE6A834 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -234,8 +245,21 @@
 		2961102821E54662007058EA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */,
+				F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CFB418AC54B2560C2CE6A834 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */,
+				F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */,
+				C4F99DF9D06AB80326FC9637 /* Pods-Nimbus.debug.xcconfig */,
+				15995D607FDAF59975988E42 /* Pods-Nimbus.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,6 +280,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A85F721E52D4000510832 /* Build configuration list for PBXNativeTarget "NimbusApp" */;
 			buildPhases = (
+				9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */,
 				291A85E121E52D3E00510832 /* Sources */,
 				291A85E221E52D3E00510832 /* Frameworks */,
 				29610FB821E532C9007058EA /* Embed IP address */,
@@ -276,8 +301,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
+				381D7D57C9104EA63FD44BE6 /* [CP] Check Pods Manifest.lock */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
+				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A860021E530BC00510832 /* Frameworks */,
 				291A860121E530BC00510832 /* Resources */,
 			);
@@ -431,6 +458,25 @@
 			shellScript = "if [[ ${CONFIGURATION} != \"Debug\" ]]; then\necho \"Only logging ip in Debug configuration\";\nexit 0;\nfi\n\nfor i in `echo en0 en1 en2 en3 en4 en5 en6 en7 en8`; \ndo \nip=`ipconfig getifaddr $i`; \n[[ -n \"$ip\" ]] && break;\ndone\n\necho $ip > ${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ip.txt\n";
 			showEnvVarsInLog = 0;
 		};
+		29CD07F62214BC9D007D3AF3 /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+			showEnvVarsInLog = 0;
+		};
 		29DA183C220CF4B100D02CDA /* Build test web app */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -448,6 +494,50 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "pushd ${SRCROOT}/../../test-www\nnpm install\nnpm run build\n";
+			showEnvVarsInLog = 0;
+		};
+		381D7D57C9104EA63FD44BE6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Nimbus-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NimbusApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -657,8 +747,8 @@
 		};
 		291A85F821E52D4000510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -679,8 +769,8 @@
 		};
 		291A85F921E52D4000510832 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -700,6 +790,7 @@
 		};
 		291A860D21E530BC00510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C4F99DF9D06AB80326FC9637 /* Pods-Nimbus.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -728,6 +819,7 @@
 		};
 		291A860E21E530BC00510832 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 15995D607FDAF59975988E42 /* Pods-Nimbus.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;

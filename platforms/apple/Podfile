@@ -1,0 +1,11 @@
+
+platform :ios, '11.0'
+inhibit_all_warnings!
+
+pod 'SwiftLint',  '~> 0.30'
+
+target 'Nimbus' do
+end
+
+target 'NimbusApp' do
+end
