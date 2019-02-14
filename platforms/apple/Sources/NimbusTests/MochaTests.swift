@@ -65,10 +65,10 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
     func testExecuteMochaTests() {
         let testBridge = MochaTestBridge(webView: webView)
-        let c = webView.addConnection(to: testBridge, as: "mochaTestBridge")
-        c.bind(MochaTestBridge.testsCompleted, as: "testsCompleted")
-        c.bind(MochaTestBridge.ready, as: "ready")
-        c.bind(MochaTestBridge.sendMessage, as: "sendMessage")
+        let connection = webView.addConnection(to: testBridge, as: "mochaTestBridge")
+        connection.bind(MochaTestBridge.testsCompleted, as: "testsCompleted")
+        connection.bind(MochaTestBridge.ready, as: "ready")
+        connection.bind(MochaTestBridge.sendMessage, as: "sendMessage")
 
         loadWebViewAndWait()
 

@@ -36,8 +36,10 @@ extension WKWebView {
             let wrappedValue = EncodableValue.value(encodable)
             encodableValues.append(wrappedValue)
         }
-        let jsonData = try! jsonEncoder.encode(encodableValues)
-        let jsonString = String(data: jsonData, encoding: .utf8)!
+        var jsonString = "[]"
+        if let jsonData = try? jsonEncoder.encode(encodableValues) {
+            jsonString = String(data: jsonData, encoding: .utf8)!
+        }
         let script = """
             var jsonData = \(jsonString);
             var jsonArr = jsonData.map(function(encodable){
@@ -76,8 +78,10 @@ extension WKWebView {
         if let validArg = arg {
             let wrappedValue = EncodableValue.value(validArg)
             let jsonEncoder = JSONEncoder()
-            let jsonData = try! jsonEncoder.encode(wrappedValue)
-            let jsonString = String(data: jsonData, encoding: .utf8)!
+            var jsonString = "{v:undefined}"
+            if let jsonData = try? jsonEncoder.encode(wrappedValue) {
+                jsonString = String(data: jsonData, encoding: .utf8)!
+            }
             script = """
                 try {
                     var jsonData = \(jsonString);

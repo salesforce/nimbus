@@ -47,10 +47,10 @@ class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigation
         bridge = TestBridge(host: self, webView: webView)
 
         // Connect the webview to our demo bridge
-        let c = webView.addConnection(to: bridge!, as: "DemoAppBridge")
-        c.bind(TestBridge.showAlert, as: "showAlert")
-        c.bind(TestBridge.currentTime, as: "currentTime")
-        c.bind(TestBridge.withCallback, as: "withCallback")
+        let connection = webView.addConnection(to: bridge!, as: "DemoAppBridge")
+        connection.bind(TestBridge.showAlert, as: "showAlert")
+        connection.bind(TestBridge.currentTime, as: "currentTime")
+        connection.bind(TestBridge.withCallback, as: "withCallback")
 
         let testHtml = Bundle.main.url(forResource: "test", withExtension: "html")
             .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue ) }

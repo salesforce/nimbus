@@ -40,7 +40,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         loadingExpectation?.fulfill()
     }
 
-    func testCallMethodWithNoParam() {
+    func testCallMethodWithNoParam() throws {
         loadWebViewAndWait()
 
         let setup = expectation(description: "setup")
@@ -50,28 +50,28 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         }
         wait(for: [setup], timeout: 10)
 
-        let x = expectation(description: "js result")
+        let expect = expectation(description: "js result")
         var returnValue = false
         self.webView.callJavascript(name: "testFunction", args: []) { result, error -> () in
             if let result = result as? Bool {
                 returnValue = result
             }
-            x.fulfill()
+            expect.fulfill()
         }
-        wait(for: [x], timeout: 5)
+        wait(for: [expect], timeout: 5)
         XCTAssertTrue(returnValue)
     }
 
     func testCallNonExistingMethodReturnsAnError() {
         loadWebViewAndWait()
 
-        let x = expectation(description: "js result")
+        let expect = expectation(description: "js result")
         var error: Error?
         self.webView.callJavascript(name: "methodThatDoesntExist", args: []) { result, callError in
             error = callError
-            x.fulfill()
+            expect.fulfill()
         }
-        wait(for: [x], timeout: 5)
+        wait(for: [expect], timeout: 5)
 
         XCTAssertEqual(error?.localizedDescription, .some("A JavaScript exception occurred"))
     }
@@ -90,7 +90,7 @@ function testFunctionWithArgs(...args) {
         }
         wait(for: [setup], timeout: 10)
 
-        let x = expectation(description: "js result")
+        let expect = expectation(description: "js result")
         let optional: Int? = nil
         let args: [Encodable] = [true, 42, optional, "hello\nworld", UserDefinedType()]
         var result: String?
@@ -98,9 +98,9 @@ function testFunctionWithArgs(...args) {
             if let callResult = callResult as? String {
                 result = callResult
             }
-            x.fulfill()
+            expect.fulfill()
         }
-        wait(for: [x], timeout: 5)
+        wait(for: [expect], timeout: 5)
 
         XCTAssertEqual(result, .some("[true,42,null,\"hello\\nworld\",{\"stringParam\":\"hello user defined type\",\"intParam\":5}]"))
     }
@@ -120,15 +120,15 @@ testObject = new MyObject();
         }
         wait(for: [setup], timeout: 10)
 
-        let x = expectation(description: "js result")
+        let expect = expectation(description: "js result")
         var resultValue: String?
         self.webView.callJavascript(name: "testObject.getName", args: []) { result, error in
             if let result = result as? String {
                 resultValue = result
             }
-            x.fulfill()
+            expect.fulfill()
         }
-        wait(for: [x], timeout: 5)
+        wait(for: [expect], timeout: 5)
         XCTAssertEqual(resultValue, .some("nimbus"))
     }
 

@@ -16,13 +16,13 @@ class DemoBridge {
 }
 
 extension DemoBridge: NimbusExtension {
-    func preload(config: [String : String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
+    func preload(config: [String: String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
         callback(true)
     }
 
-    func load(config: [String : String], webView: WKWebView, callback: @escaping (Bool) -> Void) {
-        let c = webView.addConnection(to: self, as: "DemoBridge")
-        c.bind(DemoBridge.currentTime, as: "currentTime")
+    func load(config: [String: String], webView: WKWebView, callback: @escaping (Bool) -> Void) {
+        let connection = webView.addConnection(to: self, as: "DemoBridge")
+        connection.bind(DemoBridge.currentTime, as: "currentTime")
 
         callback(true)
     }

@@ -19,7 +19,7 @@ public enum EncodableValue: Encodable {
     case value(Encodable)
 
     enum Keys: String, CodingKey {
-        case v
+        case v      // swiftlint:disable:this identifier_name
     }
 
     public func encode(to encoder: Encoder) throws {
