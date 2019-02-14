@@ -11,8 +11,7 @@ import WebKit
  `Callback` is a native proxy to a javascript function that
  is used for passing callbacks across the bridge.
  */
-class Callback : Callable {
-
+class Callback: Callable {
     init(webView: WKWebView, callbackId: String) {
         self.webView = webView
         self.callbackId = callbackId
@@ -34,13 +33,12 @@ class Callback : Callable {
         let jsonString = String(data: jsonData, encoding: .utf8)
         DispatchQueue.main.async {
             self.webView?.evaluateJavaScript("""
-                nimbus.callCallback('\(self.callbackId)', \(jsonString!));
-                """)
+            nimbus.callCallback('\(self.callbackId)', \(jsonString!));
+            """)
         }
         return ()
     }
 
     weak var webView: WKWebView?
     let callbackId: String
-
 }

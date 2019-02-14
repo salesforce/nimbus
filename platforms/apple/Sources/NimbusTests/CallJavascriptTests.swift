@@ -5,8 +5,8 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import XCTest
 import WebKit
+import XCTest
 
 @testable import Nimbus
 
@@ -16,27 +16,26 @@ class UserDefinedType: Encodable {
 }
 
 class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
-
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
 
     override func setUp() {
-        self.webView = WKWebView()
-        self.webView.navigationDelegate = self
+        webView = WKWebView()
+        webView.navigationDelegate = self
     }
 
     override func tearDown() {
-        self.webView.navigationDelegate = nil
-        self.webView = nil
+        webView.navigationDelegate = nil
+        webView = nil
     }
 
     func loadWebViewAndWait(html: String = "<html><body></body></html>") {
         loadingExpectation = expectation(description: "web view loaded")
-        self.webView.loadHTMLString(html, baseURL: nil)
+        webView.loadHTMLString(html, baseURL: nil)
         wait(for: [loadingExpectation!], timeout: 10)
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(_: WKWebView, didFinish _: WKNavigation!) {
         loadingExpectation?.fulfill()
     }
 
@@ -44,7 +43,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         loadWebViewAndWait()
 
         let setup = expectation(description: "setup")
-        webView.evaluateJavaScript("function testFunction() { return true; }") { result, error in
+        webView.evaluateJavaScript("function testFunction() { return true; }") { _, _ in
 
             setup.fulfill()
         }
@@ -52,7 +51,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var returnValue = false
-        self.webView.callJavascript(name: "testFunction", args: []) { result, error -> () in
+        webView.callJavascript(name: "testFunction", args: []) { result, _ -> Void in
             if let result = result as? Bool {
                 returnValue = result
             }
@@ -67,7 +66,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var error: Error?
-        self.webView.callJavascript(name: "methodThatDoesntExist", args: []) { result, callError in
+        webView.callJavascript(name: "methodThatDoesntExist", args: []) { _, callError in
             error = callError
             expect.fulfill()
         }
@@ -81,11 +80,11 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let setup = expectation(description: "setup")
         let script = """
-function testFunctionWithArgs(...args) {
-  return JSON.stringify(args);
-}
-"""
-        webView.evaluateJavaScript(script) { result, error in
+        function testFunctionWithArgs(...args) {
+          return JSON.stringify(args);
+        }
+        """
+        webView.evaluateJavaScript(script) { _, _ in
             setup.fulfill()
         }
         wait(for: [setup], timeout: 10)
@@ -94,7 +93,7 @@ function testFunctionWithArgs(...args) {
         let optional: Int? = nil
         let args: [Encodable] = [true, 42, optional, "hello\nworld", UserDefinedType()]
         var result: String?
-        self.webView.callJavascript(name: "testFunctionWithArgs", args: args) { callResult, error in
+        webView.callJavascript(name: "testFunctionWithArgs", args: args) { callResult, _ in
             if let callResult = callResult as? String {
                 result = callResult
             }
@@ -110,19 +109,19 @@ function testFunctionWithArgs(...args) {
 
         let setup = expectation(description: "setup")
         let script = """
-class MyObject {
-  getName() { return "nimbus"; }
-};
-testObject = new MyObject();
-"""
-        webView.evaluateJavaScript(script) { result, error in
+        class MyObject {
+          getName() { return "nimbus"; }
+        };
+        testObject = new MyObject();
+        """
+        webView.evaluateJavaScript(script) { _, _ in
             setup.fulfill()
         }
         wait(for: [setup], timeout: 10)
 
         let expect = expectation(description: "js result")
         var resultValue: String?
-        self.webView.callJavascript(name: "testObject.getName", args: []) { result, error in
+        webView.callJavascript(name: "testObject.getName", args: []) { result, _ in
             if let result = result as? String {
                 resultValue = result
             }
@@ -131,5 +130,4 @@ testObject = new MyObject();
         wait(for: [expect], timeout: 5)
         XCTAssertEqual(resultValue, .some("nimbus"))
     }
-
 }

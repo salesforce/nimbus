@@ -5,12 +5,11 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import UIKit
 import Nimbus
+import UIKit
 import WebKit
 
 class TestBridge {
-
     init(host: UIViewController, webView: WKWebView) {
         self.host = host
         self.webView = webView
@@ -18,10 +17,9 @@ class TestBridge {
 
     func showAlert(message: String) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(
-            UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
-                          style: .default,
-                          handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"),
+                                      style: .default,
+                                      handler: nil))
         host?.present(alert, animated: true, completion: nil)
     }
 
@@ -37,23 +35,24 @@ class TestBridge {
         return formattedDate
     }
 
-    func withCallback(callback: (String) -> ()) {
+    func withCallback(callback: (String) -> Void) {
         callback("hello from swift")
     }
 
     func initiateNativeCallingJs() {
         let boolParam = true
         let intParam = 999
-        let optionalIntParam:Int? = nil
+        let optionalIntParam: Int? = nil
         let stringParam = "hello swift"
         let userDefinedTypeParam = UserDefinedType()
-        self.webView?.callJavascript(name: "demoMethodForNativeToJs", args: [boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam]){ (result, error) -> () in
+        let args = [boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam]
+        webView?.callJavascript(name: "demoMethodForNativeToJs", args: args) { (result, _) -> Void in
             print(result!)
-        };
+        }
     }
 
     func initiateNativeBroadcastMessage() {
-        self.webView?.broadcastMessage(name: "systemAlert", arg:"red");
+        webView?.broadcastMessage(name: "systemAlert", arg: "red")
     }
 
     weak var host: UIViewController?
@@ -63,7 +62,7 @@ class TestBridge {
 /**
  Test class used to pass from native to Javascript.
  */
-class UserDefinedType:Encodable {
+class UserDefinedType: Encodable {
     var intParam = 5
     var stringParam = "hello user defined type"
 }

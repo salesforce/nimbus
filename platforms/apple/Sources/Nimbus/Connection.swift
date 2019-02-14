@@ -14,7 +14,6 @@ import WebKit
  a single namespace in JavaScript.
  */
 public class Connection<C> {
-
     /**
      Create a connection from the web view to an object.
      */
@@ -32,11 +31,12 @@ public class Connection<C> {
      The `WKUserContentController` will retain the message handler, and the message
      handler will in turn retain the `Connection`.
      */
-    private class ConnectionMessageHandler : NSObject, WKScriptMessageHandler {
+    private class ConnectionMessageHandler: NSObject, WKScriptMessageHandler {
         init(connection: Connection) {
             self.connection = connection
         }
-        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+
+        func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
             guard
                 let params = message.body as? NSDictionary,
                 let method = params["method"] as? String,
@@ -47,6 +47,7 @@ public class Connection<C> {
 
             connection.call(method, args: args, promise: promiseId)
         }
+
         let connection: Connection
     }
 
@@ -73,7 +74,7 @@ public class Connection<C> {
         true;
         """
 
-        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly:false)
+        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly: false)
         webView?.configuration.userContentController.addUserScript(script)
     }
 
@@ -95,17 +96,17 @@ public class Connection<C> {
                     return arg
                 }
                 let result = try callable.call(args: args)
-                resolvePromise(id: promise, result: result)
+                resolvePromise(promiseId: promise, result: result)
             } catch {
-                rejectPromise(id: promise, error: error)
+                rejectPromise(promiseId: promise, error: error)
             }
         }
     }
 
-    private func resolvePromise(id: String, result: Any) {
+    private func resolvePromise(promiseId: String, result: Any) {
         var resultString = ""
-        switch(result) {
-        case is Void:
+        switch result {
+        case is ():
             resultString = "undefined"
 
         case let value as EncodableValue:
@@ -113,25 +114,23 @@ public class Connection<C> {
             resultString = try! String(data: JSONEncoder().encode(value), encoding: .utf8)!
 
         default:
-            fatalError("Unsupported return type \(type(of:result))")
+            fatalError("Unsupported return type \(type(of: result))")
         }
-        webView?.evaluateJavaScript("nimbus.resolvePromise('\(id)', \(resultString).v);")
+        webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
     }
 
-    private func rejectPromise(id: String, error: Error) {
-        webView?.evaluateJavaScript("nimbus.resolvePromise('\(id)', undefined, '\(error)');")
+    private func rejectPromise(promiseId: String, error: Error) {
+        webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
     }
 
     private let target: C
     private let namespace: String
     private weak var webView: WKWebView?
-    private var bindings: [String:Callable] = [:]
-
+    private var bindings: [String: Callable] = [:]
 }
 
 // Bindings for supported method arity
 extension Connection {
-
     /**
      Bind the specified function to this connection.
      */
@@ -148,7 +147,7 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind(_ function: @escaping (C) -> () -> (), as name: String) {
+    public func bind(_ function: @escaping (C) -> () -> Void, as name: String) {
         let boundFunction = function(target)
         let wrappedFunction = { () -> EncodableValue in
             boundFunction()
@@ -163,8 +162,8 @@ extension Connection {
      */
     public func bind<R: Encodable, A0>(_ function: @escaping (C) -> (A0) -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0) -> EncodableValue in
-            let result = boundFunction(a0)
+        let wrappedFunction = { (arg0: A0) -> EncodableValue in
+            let result = boundFunction(arg0)
             return .value(result)
         }
         let callable = make_callable(wrappedFunction)
@@ -174,10 +173,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0>(_ function: @escaping (C) -> (A0) -> (), as name: String) {
+    public func bind<A0>(_ function: @escaping (C) -> (A0) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0) -> EncodableValue in
-            boundFunction(a0)
+        let wrappedFunction = { (arg0: A0) -> EncodableValue in
+            boundFunction(arg0)
             return .void
         }
         let callable = make_callable(wrappedFunction)
@@ -187,10 +186,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<CB0: Encodable>(_ function: @escaping (C) -> ((CB0) -> ()) -> (), as name: String) {
+    public func bind<CB0: Encodable>(_ function: @escaping (C) -> ((CB0) -> Void) -> Void, as name: String) {
         let boundFunction = function(target)
         let wrappedFunction = { (callable: Callable) -> EncodableValue in
-            boundFunction() { cb0 in
+            boundFunction { cb0 in
                 _ = try! callable.call(args: [cb0]) // swiftlint:disable:this force_try
             }
             return .void
@@ -204,8 +203,8 @@ extension Connection {
      */
     public func bind<R: Encodable, A0, A1>(_ function: @escaping (C) -> (A0, A1) -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1) -> EncodableValue in
-            let result = boundFunction(a0, a1)
+        let wrappedFunction = { (arg0: A0, arg1: A1) -> EncodableValue in
+            let result = boundFunction(arg0, arg1)
             return .value(result)
         }
         let callable = make_callable(wrappedFunction)
@@ -215,10 +214,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1>(_ function: @escaping (C) -> (A0, A1) -> (), as name: String) {
+    public func bind<A0, A1>(_ function: @escaping (C) -> (A0, A1) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1) -> EncodableValue in
-            boundFunction(a0, a1)
+        let wrappedFunction = { (arg0: A0, arg1: A1) -> EncodableValue in
+            boundFunction(arg0, arg1)
             return .void
         }
         let callable = make_callable(wrappedFunction)
@@ -228,7 +227,7 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, CB0: Encodable>(_ function: @escaping (C) -> (A0, @escaping (CB0) -> ()) -> (), as name: String) {
+    public func bind<A0, CB0: Encodable>(_ function: @escaping (C) -> (A0, @escaping (CB0) -> Void) -> Void, as name: String) {
         let boundFunction = function(target)
         let wrappedFunction = { (arg0: A0, callable: Callable) -> EncodableValue in
             boundFunction(arg0) { cb0 in
@@ -245,8 +244,8 @@ extension Connection {
      */
     public func bind<R: Encodable, A0, A1, A2>(_ function: @escaping (C) -> (A0, A1, A2) -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2) -> EncodableValue in
-            let result = boundFunction(a0, a1, a2)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2) -> EncodableValue in
+            let result = boundFunction(arg0, arg1, arg2)
             return .value(result)
         }
         let callable = make_callable(wrappedFunction)
@@ -256,10 +255,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, A2>(_ function: @escaping (C) -> (A0, A1, A2) -> (), as name: String) {
+    public func bind<A0, A1, A2>(_ function: @escaping (C) -> (A0, A1, A2) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2) -> EncodableValue in
-            boundFunction(a0, a1, a2)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2) -> EncodableValue in
+            boundFunction(arg0, arg1, arg2)
             return .void
         }
         let callable = make_callable(wrappedFunction)
@@ -269,10 +268,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, @escaping (CB0) -> ()) -> (), as name: String) {
+    public func bind<A0, A1, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, @escaping (CB0) -> Void) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, callable: Callable) -> EncodableValue in
-            boundFunction(a0, a1) { cb0 in
+        let wrappedFunction = { (arg0: A0, arg1: A1, callable: Callable) -> EncodableValue in
+            boundFunction(arg0, arg1) { cb0 in
                 _ = try! callable.call(args: [cb0]) // swiftlint:disable:this force_try
             }
             return .void
@@ -286,8 +285,8 @@ extension Connection {
      */
     public func bind<R: Encodable, A0, A1, A2, A3>(_ function: @escaping (C) -> (A0, A1, A2, A3) -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, a3: A3) -> EncodableValue in
-            let result = boundFunction(a0, a1, a2, a3)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, arg3: A3) -> EncodableValue in
+            let result = boundFunction(arg0, arg1, arg2, arg3)
             return .value(result)
         }
         let callable = make_callable(wrappedFunction)
@@ -297,10 +296,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, A2, A3>(_ function: @escaping (C) -> (A0, A1, A2, A3) -> (), as name: String) {
+    public func bind<A0, A1, A2, A3>(_ function: @escaping (C) -> (A0, A1, A2, A3) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, a3: A3) -> EncodableValue in
-            boundFunction(a0, a1, a2, a3)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, arg3: A3) -> EncodableValue in
+            boundFunction(arg0, arg1, arg2, arg3)
             return .void
         }
         let callable = make_callable(wrappedFunction)
@@ -310,10 +309,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, A2, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, A2, @escaping (CB0) -> ()) -> (), as name: String) {
+    public func bind<A0, A1, A2, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, A2, @escaping (CB0) -> Void) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, callable: Callable) -> EncodableValue in
-            boundFunction(a0, a1, a2) { cb0 in
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, callable: Callable) -> EncodableValue in
+            boundFunction(arg0, arg1, arg2) { cb0 in
                 _ = try! callable.call(args: [cb0]) // swiftlint:disable:this force_try
             }
             return .void
@@ -327,8 +326,8 @@ extension Connection {
      */
     public func bind<R: Encodable, A0, A1, A2, A3, A4>(_ function: @escaping (C) -> (A0, A1, A2, A3, A4) -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, a3: A3, a4: A4) -> EncodableValue in
-            let result = boundFunction(a0, a1, a2, a3, a4)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, arg3: A3, arg4: A4) -> EncodableValue in
+            let result = boundFunction(arg0, arg1, arg2, arg3, arg4)
             return .value(result)
         }
         let callable = make_callable(wrappedFunction)
@@ -338,10 +337,10 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, A2, A3, A4>(_ function: @escaping (C) -> (A0, A1, A2, A3, A4) -> (), as name: String) {
+    public func bind<A0, A1, A2, A3, A4>(_ function: @escaping (C) -> (A0, A1, A2, A3, A4) -> Void, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, a3: A3, a4: A4) -> EncodableValue in
-            boundFunction(a0, a1, a2, a3, a4)
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, arg3: A3, arg4: A4) -> EncodableValue in
+            boundFunction(arg0, arg1, arg2, arg3, arg4)
             return .void
         }
         let callable = make_callable(wrappedFunction)
@@ -351,10 +350,11 @@ extension Connection {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<A0, A1, A2, A3, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, A2, A3, @escaping (CB0) -> ()) -> (), as name: String) {
+    public func bind<A0, A1, A2, A3, CB0: Encodable>(_ function: @escaping (C) -> (A0, A1, A2, A3, @escaping (CB0) -> Void) -> Void,
+                                                     as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { (a0: A0, a1: A1, a2: A2, a3: A3, callable: Callable) -> EncodableValue in
-            boundFunction(a0, a1, a2, a3) { cb0 in
+        let wrappedFunction = { (arg0: A0, arg1: A1, arg2: A2, arg3: A3, callable: Callable) -> EncodableValue in
+            boundFunction(arg0, arg1, arg2, arg3) { cb0 in
                 _ = try! callable.call(args: [cb0]) // swiftlint:disable:this force_try
             }
             return .void
@@ -362,5 +362,4 @@ extension Connection {
         let callable = make_callable(wrappedFunction)
         bind(callable, as: name)
     }
-
 }

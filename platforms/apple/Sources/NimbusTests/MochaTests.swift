@@ -5,12 +5,11 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import XCTest
 import Nimbus
 import WebKit
+import XCTest
 
 class MochaTests: XCTestCase, WKNavigationDelegate {
-
     struct MochaMessage: Encodable {
         var stringField = "This is a string"
         var intField = 42
@@ -20,6 +19,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         init(webView: WKWebView) {
             self.webView = webView
         }
+
         let webView: WKWebView
         let expectation = XCTestExpectation(description: "testsCompleted")
         var failures: Int = -1
@@ -27,6 +27,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             self.failures = failures
             expectation.fulfill()
         }
+
         func ready() {}
         func sendMessage(name: String, includeParam: Bool) {
             if includeParam {
@@ -59,7 +60,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         wait(for: [loadingExpectation!], timeout: 5)
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(_: WKWebView, didFinish _: WKNavigation!) {
         loadingExpectation?.fulfill()
     }
 
@@ -72,11 +73,10 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
         loadWebViewAndWait()
 
-        webView.evaluateJavaScript("mocha.run((failures) => { mochaTestBridge.testsCompleted(failures); }); true;") { result, error in
+        webView.evaluateJavaScript("mocha.run((failures) => { mochaTestBridge.testsCompleted(failures); }); true;") { _, _ in
         }
 
         wait(for: [testBridge.expectation], timeout: 5)
         XCTAssertEqual(testBridge.failures, 0)
     }
-
 }

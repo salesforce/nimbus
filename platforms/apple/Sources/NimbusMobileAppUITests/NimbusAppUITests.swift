@@ -20,7 +20,6 @@ class NimbusMobileAppUITests: XCTestCase {
         // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
         app = XCUIApplication()
 
-
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
@@ -36,17 +35,15 @@ class NimbusMobileAppUITests: XCTestCase {
     func testVeil() {
         app!.launch()
         let query: XCUIElementQuery = tabBar.children(matching: .button)
-        var moreButton: XCUIElement? = nil
-        for button: XCUIElement in query.allElementsBoundByIndex {
-            if (button.label == "Test") {
-                moreButton = button
-                break
-            }
+        var moreButton: XCUIElement?
+        for button: XCUIElement in query.allElementsBoundByIndex where button.label == "Test" {
+            moreButton = button
+            break
         }
         moreButton?.tap()
         let statusLabel = app!.staticTexts.element(matching: .staticText, identifier: "nimbus.test.statusLabel")
 
-        let wait = self.expectation(for: NSPredicate(format: "label != 'Running'"), evaluatedWith: statusLabel, handler: nil)
+        let wait = expectation(for: NSPredicate(format: "label != 'Running'"), evaluatedWith: statusLabel, handler: nil)
         self.wait(for: [wait], timeout: 10, enforceOrder: false)
 
         XCTAssertTrue(statusLabel.label == "Pass")

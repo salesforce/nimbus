@@ -8,7 +8,6 @@
 import WebKit
 
 public class NimbusBridge {
-
     public enum State {
         case notReady
         case preinitializing
@@ -33,7 +32,7 @@ public class NimbusBridge {
             webViewConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
         self.appURL = appURL
-        self.contentView = UIView(frame: .zero)
+        contentView = UIView(frame: .zero)
     }
 
     public func addExtension<T: NimbusExtension>(_ ext: T) {
@@ -48,36 +47,36 @@ public class NimbusBridge {
 
     func preinitializeExtensions(_ extensions: [NimbusExtension]) {
         var extensionsToInitialize = extensions
-        if extensionsToInitialize.count == 0 {
+        if extensionsToInitialize.isEmpty {
             preinitializingExtensionsSucceeded()
             return
         }
         let ext = extensionsToInitialize.removeFirst()
         let initializationCallback: (Bool) -> Void = { succeeded in
-            if (succeeded) {
+            if succeeded {
                 self.preinitializeExtensions(extensionsToInitialize)
             } else {
                 self.preinitializingExtensionsFailed()
             }
         }
-        ext.preload(config: [:], webViewConfiguration: self.webViewConfiguration, callback: initializationCallback)
+        ext.preload(config: [:], webViewConfiguration: webViewConfiguration, callback: initializationCallback)
     }
 
     func initializeExtensions(_ extensions: [NimbusExtension]) {
         var extensionsToInitialize = extensions
-        if extensionsToInitialize.count == 0 {
+        if extensionsToInitialize.isEmpty {
             initializingExtensionsSucceeded()
             return
         }
         let ext = extensionsToInitialize.removeFirst()
         let initializationCallback: (Bool) -> Void = { succeeded in
-            if (succeeded) {
+            if succeeded {
                 self.initializeExtensions(extensionsToInitialize)
             } else {
                 self.initializingExtensionsFailed()
             }
         }
-        ext.load(config: [:], webView: self.webView!, callback: initializationCallback)
+        ext.load(config: [:], webView: webView!, callback: initializationCallback)
     }
 
     func preinitializingExtensionsSucceeded() {
@@ -99,7 +98,6 @@ public class NimbusBridge {
     func initializingExtensionsSucceeded() {
         state = .ready
         webView?.load(URLRequest(url: appURL))
-
     }
 
     func initializingExtensionsFailed() {
@@ -113,5 +111,4 @@ public class NimbusBridge {
     var extensions: [NimbusExtension] = []
     let webViewConfiguration = WKWebViewConfiguration()
     let appURL: URL
-
 }

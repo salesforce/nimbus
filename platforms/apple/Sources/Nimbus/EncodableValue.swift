@@ -19,7 +19,7 @@ public enum EncodableValue: Encodable {
     case value(Encodable)
 
     enum Keys: String, CodingKey {
-        case v      // swiftlint:disable:this identifier_name
+        case v // swiftlint:disable:this identifier_name
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -31,6 +31,5 @@ public enum EncodableValue: Encodable {
             let superContainer = container.superEncoder(forKey: .v)
             try value.encode(to: superContainer)
         }
-
     }
 }

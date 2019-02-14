@@ -9,14 +9,12 @@ import Foundation
 import Nimbus
 import WebKit
 
-class CookieExtension {
-
-}
+class CookieExtension {}
 
 extension CookieExtension: NimbusExtension {
-    func preload(config: [String : String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
+    func preload(config _: [String: String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
         DispatchQueue.global().async {
-            let ip = Bundle.main.url(forResource: "ip", withExtension: "txt")
+            let localIP = Bundle.main.url(forResource: "ip", withExtension: "txt")
                 .flatMap { try? String(contentsOf: $0) }
                 .flatMap { $0.trimmingCharacters(in: CharacterSet.newlines) }?.description ?? "127.0.0.1"
 
@@ -25,10 +23,10 @@ extension CookieExtension: NimbusExtension {
                 let cookieStore = webViewConfiguration.websiteDataStore.httpCookieStore
                 if let cookie = HTTPCookie(properties: [
                     .name: "NimbusCookie",
-                    .domain: ip,
+                    .domain: localIP,
                     .path: "/",
                     .value: cookieValue,
-                    ]) {
+                ]) {
                     cookieStore.setCookie(cookie, completionHandler: {
                         callback(true)
                     })
@@ -39,7 +37,7 @@ extension CookieExtension: NimbusExtension {
         }
     }
 
-    func load(config: [String : String], webView: WKWebView, callback: @escaping (Bool) -> Void) {
+    func load(config _: [String: String], webView _: WKWebView, callback: @escaping (Bool) -> Void) {
         callback(true)
     }
 }

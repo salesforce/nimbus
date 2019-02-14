@@ -10,7 +10,6 @@ import XCTest
 @testable import Nimbus
 
 class CallableTests: XCTestCase {
-
     let testable = Testable()
 
     func testNullaryCallback() {
@@ -76,27 +75,27 @@ class Testable {
         return 0
     }
 
-    func unary(arg0: Int) -> Int {
+    func unary(arg0 _: Int) -> Int {
         called = true
         return 1
     }
 
-    func binary(arg0: Int, arg1: Int) -> Int {
+    func binary(arg0 _: Int, arg1 _: Int) -> Int {
         called = true
         return 2
     }
 
-    func ternary(arg0: Int, arg01: Int, arg2: Int) -> Int {
+    func ternary(arg0 _: Int, arg01 _: Int, arg2 _: Int) -> Int {
         called = true
         return 3
     }
 
-    func quaternary(arg0: Int, arg1: Int, arg2: Int, arg3: Int) -> Int {
+    func quaternary(arg0 _: Int, arg1 _: Int, arg2 _: Int, arg3 _: Int) -> Int {
         called = true
         return 4
     }
 
-    func quinary(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int) -> Int {
+    func quinary(arg0 _: Int, arg1 _: Int, arg2 _: Int, arg3 _: Int, arg4 _: Int) -> Int {
         called = true
         return 5
     }

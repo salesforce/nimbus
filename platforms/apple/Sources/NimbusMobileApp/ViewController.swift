@@ -11,7 +11,6 @@ import WebKit
 import Nimbus
 
 class ViewController: UIViewController {
-
     required init?(coder aDecoder: NSCoder) {
         let url = Bundle.main.url(forResource: "ip", withExtension: "txt")
             .flatMap { try? String(contentsOf: $0) }
@@ -33,6 +32,4 @@ class ViewController: UIViewController {
     }
 
     let bridge: NimbusBridge
-
 }
-

@@ -9,7 +9,6 @@ import UIKit
 import WebKit
 
 class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate {
-
     var webView: WKWebView?
     var statusLabel: UILabel?
     var bridge: TestBridge!
@@ -18,16 +17,16 @@ class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigation
         super.viewDidLoad()
 
         let statusLabel = UILabel()
-        self.view.addSubview(statusLabel)
+        view.addSubview(statusLabel)
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        statusLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        statusLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        statusLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         if #available(iOS 11.0, *) {
             statusLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         } else {
-            statusLabel.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+            statusLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         }
-        statusLabel.backgroundColor =  UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)
+        statusLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)
         statusLabel.textAlignment = .center
         statusLabel.text = "Running"
         statusLabel.accessibilityIdentifier = "nimbus.test.statusLabel"
@@ -35,7 +34,7 @@ class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigation
 
         let userContentController = WKUserContentController()
         let testScript = Bundle.main.url(forResource: "test", withExtension: "js")
-            .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue ) }
+            .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue) }
             .flatMap { WKUserScript(source: $0 as String, injectionTime: .atDocumentEnd, forMainFrameOnly: true) }
         userContentController.addUserScript(testScript!)
         userContentController.add(self, name: "testFinished")
@@ -53,46 +52,46 @@ class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigation
         connection.bind(TestBridge.withCallback, as: "withCallback")
 
         let testHtml = Bundle.main.url(forResource: "test", withExtension: "html")
-            .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue ) }
-        self.view.addSubview(webView)
+            .flatMap { try? NSString(contentsOf: $0, encoding: String.Encoding.utf8.rawValue) }
+        view.addSubview(webView)
         self.webView = webView
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
-        webView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        webView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        webView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        webView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         webView.topAnchor.constraint(equalTo: statusLabel.bottomAnchor).isActive = true
-        webView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        webView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         webView.loadHTMLString(testHtml! as String, baseURL: nil)
     }
 
-    func webView(_ webView: WKWebView,
-                 didFinish navigation: WKNavigation!) {
+    func webView(_: WKWebView,
+                 didFinish _: WKNavigation!) {
         runMochaTest()
     }
 
     func runMochaTest() {
         webView!.evaluateJavaScript("""
-                mocha.checkLeaks();
-                mocha.run();
-            """)
+            mocha.checkLeaks();
+            mocha.run();
+        """)
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "testFinished", let messageBody = message.body as? String {
             if let numOfFailures = scrapeHtmlForFailureString(html: messageBody) {
                 if numOfFailures > 0 {
-                    self.statusLabel?.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
-                    self.statusLabel?.text = "Fail"
+                    statusLabel?.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                    statusLabel?.text = "Fail"
                 } else {
-                    self.statusLabel?.backgroundColor = UIColor(red: 135/255, green: 206/255, blue: 250/255, alpha: 1.0)
-                    self.statusLabel?.text = "Pass"
+                    statusLabel?.backgroundColor = UIColor(red: 135 / 255, green: 206 / 255, blue: 250 / 255, alpha: 1.0)
+                    statusLabel?.text = "Pass"
                 }
             }
         }
     }
 
     func scrapeHtmlForFailureString(html: String) -> Int? {
-        if let range = html.range(of:"failures:</a> <em>") {
+        if let range = html.range(of: "failures:</a> <em>") {
             let bound = range.upperBound
             let firstPassSubstring = html[bound...]
             let indexOfClosingEmTag = firstPassSubstring.index(of: "<")
@@ -103,5 +102,4 @@ class TestViewController: UIViewController, WKScriptMessageHandler, WKNavigation
         }
         return nil
     }
-
 }

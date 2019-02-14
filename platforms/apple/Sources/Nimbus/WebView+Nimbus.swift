@@ -8,7 +8,6 @@
 import WebKit
 
 extension WKWebView {
-
     /**
      Create a connection from this web view to the specified object.
      */
@@ -20,14 +19,14 @@ extension WKWebView {
      Call a Javascript function.
 
      - Parameter name: Name of a function or a method on an object to call.  Fully qualify this name
-                       by separating with a dot and do not need to add parenthesis. The function
-                       to be performed in Javascript must already be defined and exist there.  Do not
-                       pass a snippet of code to evaluate.
+     by separating with a dot and do not need to add parenthesis. The function
+     to be performed in Javascript must already be defined and exist there.  Do not
+     pass a snippet of code to evaluate.
      - Parameter args: Array of encodable objects.  They will be Javascript stringified in this
-                       method and be passed the function as specified in 'name'. If you are calling a
-                       Javascript function that does not take any parameters pass empty array instead of nil.
+     method and be passed the function as specified in 'name'. If you are calling a
+     Javascript function that does not take any parameters pass empty array instead of nil.
      - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
-                                    have to pass a closure if you are not interested in getting the callback.
+     have to pass a closure if you are not interested in getting the callback.
      */
     public func callJavascript(name: String, args: [Encodable], completionHandler: ((Any?, Error?) -> Void)? = nil) {
         let jsonEncoder = JSONEncoder()
@@ -51,7 +50,7 @@ extension WKWebView {
                 \(name)();
             }
         """
-        self.evaluateJavaScript(script) { (result: Any?, error: Error?) in
+        evaluateJavaScript(script) { (result: Any?, error: Error?) in
             if let handler = completionHandler {
                 if error == nil {
                     handler(result, nil)
@@ -67,11 +66,11 @@ extension WKWebView {
      delivered with an argument so that subscriber can use that pass useful data.
 
      - Parameter name: Message name.  Listeners are keying on unique message names on Javascript side.
-                       There can be multiple listeners listening on same message.
+     There can be multiple listeners listening on same message.
      - Parameter arg: Any encodable ojbect to pass to Javascript as useful data.  If there is nothing to be
-                      passed don't specify the parameter since it has nil as default parameter.
+     passed don't specify the parameter since it has nil as default parameter.
      - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
-                                    have to pass a closure if you are not interested in getting the callback.
+     have to pass a closure if you are not interested in getting the callback.
      */
     public func broadcastMessage(name: String, arg: Encodable? = nil, completionHandler: ((Int, Error?) -> Void)? = nil) {
         var script = ""
@@ -100,7 +99,7 @@ extension WKWebView {
                 nimbus.broadcastMessage('\(name)');
             """
         }
-        self.evaluateJavaScript(script) { (result: Any?, error: Error?) in
+        evaluateJavaScript(script) { (result: Any?, error: Error?) in
             if let handler = completionHandler {
                 if error == nil {
                     let completedCount = result as? Int ?? 0

@@ -302,9 +302,10 @@
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
 				381D7D57C9104EA63FD44BE6 /* [CP] Check Pods Manifest.lock */,
+				29CD07F72215DD29007D3AF3 /* Run SwiftFormat */,
+				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
-				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A860021E530BC00510832 /* Frameworks */,
 				291A860121E530BC00510832 /* Resources */,
 			);
@@ -475,6 +476,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+			showEnvVarsInLog = 0;
+		};
+		29CD07F72215DD29007D3AF3 /* Run SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftFormat";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" .\n";
 			showEnvVarsInLog = 0;
 		};
 		29DA183C220CF4B100D02CDA /* Build test web app */ = {

@@ -10,7 +10,6 @@
  a homogenous interface to functions.
  */
 protocol Callable {
-
     /**
      Call the wrapped function with the specified arguments.
      - Throws when the argument types or arity to not match
@@ -24,7 +23,7 @@ struct ParameterError: Error {}
 /**
  A `Callable` wrapper for nullary functions
  */
-struct Callable0<R> : Callable {
+struct Callable0<R>: Callable {
     typealias FunctionType = () -> R
     let function: FunctionType
 
@@ -32,7 +31,7 @@ struct Callable0<R> : Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args _: [Any]) throws -> Any {
         return function()
     }
 }
@@ -40,7 +39,7 @@ struct Callable0<R> : Callable {
 /**
  A `Callable` wrapper for unary functions
  */
-struct Callable1<R, A0> : Callable {
+struct Callable1<R, A0>: Callable {
     typealias FunctionType = (A0) -> R
     let function: FunctionType
 
@@ -49,8 +48,8 @@ struct Callable1<R, A0> : Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if let a0 = args[0] as? A0 {
-            return function(a0)
+        if let arg0 = args[0] as? A0 {
+            return function(arg0)
         }
         throw ParameterError()
     }
@@ -59,7 +58,7 @@ struct Callable1<R, A0> : Callable {
 /**
  A `Callable` wrapper for binary functions
  */
-struct Callable2<R, A0, A1> : Callable {
+struct Callable2<R, A0, A1>: Callable {
     typealias FunctionType = (A0, A1) -> R
     let function: FunctionType
 
@@ -68,9 +67,9 @@ struct Callable2<R, A0, A1> : Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if  let a0 = args[0] as? A0,
-            let a1 = args[1] as? A1 {
-            return function(a0, a1)
+        if let arg0 = args[0] as? A0,
+            let arg1 = args[1] as? A1 {
+            return function(arg0, arg1)
         }
         throw ParameterError()
     }
@@ -79,7 +78,7 @@ struct Callable2<R, A0, A1> : Callable {
 /**
  A `Callable` wrapper for ternary functions
  */
-struct Callable3<R, A0, A1, A2> : Callable {
+struct Callable3<R, A0, A1, A2>: Callable {
     typealias FunctionType = (A0, A1, A2) -> R
     let function: FunctionType
 
@@ -88,10 +87,10 @@ struct Callable3<R, A0, A1, A2> : Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if  let a0 = args[0] as? A0,
-            let a1 = args[1] as? A1,
-            let a2 = args[2] as? A2 {
-            return function(a0, a1, a2)
+        if let arg0 = args[0] as? A0,
+            let arg1 = args[1] as? A1,
+            let arg2 = args[2] as? A2 {
+            return function(arg0, arg1, arg2)
         }
         throw ParameterError()
     }
@@ -100,7 +99,7 @@ struct Callable3<R, A0, A1, A2> : Callable {
 /**
  A `Callable` wrapper for 4-ary functions
  */
-struct Callable4<R, A0, A1, A2, A3> : Callable {
+struct Callable4<R, A0, A1, A2, A3>: Callable {
     typealias FunctionType = (A0, A1, A2, A3) -> R
     let function: FunctionType
 
@@ -109,11 +108,11 @@ struct Callable4<R, A0, A1, A2, A3> : Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if  let a0 = args[0] as? A0,
-            let a1 = args[1] as? A1,
-            let a2 = args[2] as? A2,
-            let a3 = args[3] as? A3 {
-            return function(a0, a1, a2, a3)
+        if let arg0 = args[0] as? A0,
+            let arg1 = args[1] as? A1,
+            let arg2 = args[2] as? A2,
+            let arg3 = args[3] as? A3 {
+            return function(arg0, arg1, arg2, arg3)
         }
         throw ParameterError()
     }
@@ -122,7 +121,7 @@ struct Callable4<R, A0, A1, A2, A3> : Callable {
 /**
  A `Callable` wrapper for 5-ary functions
  */
-struct Callable5<R, A0, A1, A2, A3, A4> : Callable {
+struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
     typealias FunctionType = (A0, A1, A2, A3, A4) -> R
     let function: FunctionType
 
@@ -131,12 +130,12 @@ struct Callable5<R, A0, A1, A2, A3, A4> : Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if  let a0 = args[0] as? A0,
-            let a1 = args[1] as? A1,
-            let a2 = args[2] as? A2,
-            let a3 = args[3] as? A3,
-            let a4 = args[4] as? A4 {
-            return function(a0, a1, a2, a3, a4)
+        if let arg0 = args[0] as? A0,
+            let arg1 = args[1] as? A1,
+            let arg2 = args[2] as? A2,
+            let arg3 = args[3] as? A3,
+            let arg4 = args[4] as? A4 {
+            return function(arg0, arg1, arg2, arg3, arg4)
         }
         throw ParameterError()
     }
@@ -152,6 +151,7 @@ func make_callable<R>(_ function: @escaping () -> R) -> Callable {
 /**
  Create a `Callable` from the unary function.
  */
+// swiftformat:disable:next redundantParens
 func make_callable<R, A0>(_ function: @escaping ((A0)) -> R) -> Callable {
     return Callable1(function)
 }
