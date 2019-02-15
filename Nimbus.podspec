@@ -5,8 +5,8 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://git.soma.salesforce.com/MobilePlatform/Nimbus'
   s.source           = { :git => 'https://git.soma.salesforce.com/MobilePlatform/Nimbus.git', :tag => s.version.to_s }
   s.author           = { 'Hybrid Platform Team' => 'hybridplatform@salesforce.com' }
-  s.license          = { :type => 'BSD-3-Clause', :file => '../../LICENSE' }
-  s.source_files     = 'Sources/Nimbus/**/*.swift'
+  s.license          = 'BSD-3-Clause'
+  s.source_files     = 'platforms/apple/Sources/Nimbus/**/*.swift'
   s.swift_version    = '4.2'
 
   s.ios.deployment_target = '11.0'

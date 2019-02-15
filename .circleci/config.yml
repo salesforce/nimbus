@@ -51,7 +51,7 @@ jobs:
       - run:
           name: Lint CocoaPod Spec
           working_directory: platforms/apple
-          command: bundle exec pod lib lint --private
+          command: bundle exec pod lib lint --private ../../Nimbus.podspec
 
   build-and-test-android:
     docker:
