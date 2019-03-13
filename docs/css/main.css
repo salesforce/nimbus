@@ -1,0 +1,34 @@
+@import 'nord.css';
+header {
+    display: flex;
+    padding: 10px;
+    flex-direction: row;
+    background-color: var(--nord1);
+}
+header a {
+    color: var(--nord5);
+}
+a {
+    text-decoration: none;
+    color: var(--nord10);
+}
+a:hover {
+    color: var(--nord9);
+}
+header nav ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+}
+header nav ul li {
+    padding-inline-end: 10px;
+}
+.docs {
+    display: flex;
+    flex-direction: row;
+}
+.docs nav {
+    padding-left: 20px;
+    padding-right: 40px;
+}
