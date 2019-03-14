@@ -31,6 +31,6 @@ export default {
     resolve({ main: true }),
     lwcCompiler({ resolveFromPackages: true }),
     replace({ "process.env.NODE_ENV": JSON.stringify("development") }),
-    isWatching && serve({ contentBase: dist, open: true, port: 3000 })
+    isWatching && serve({ contentBase: dist, open: false, host: '0.0.0.0', port: 3000 })
   ].filter(Boolean)
 };

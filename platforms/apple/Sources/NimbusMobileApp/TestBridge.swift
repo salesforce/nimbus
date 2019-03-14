@@ -45,7 +45,7 @@ class TestBridge {
         let optionalIntParam: Int? = nil
         let stringParam = "hello swift"
         let userDefinedTypeParam = UserDefinedType()
-        let args = [boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam]
+        let args = [boolParam, intParam, optionalIntParam, stringParam, userDefinedTypeParam] as [Encodable]
         webView?.callJavascript(name: "demoMethodForNativeToJs", args: args) { (result, _) -> Void in
             print(result!)
         }
