@@ -24,6 +24,7 @@ class ViewController: UIViewController {
 
         bridge.addExtension(DemoBridge())
         bridge.addExtension(CookieExtension())
+        bridge.addExtension(DeviceExtension())
         bridge.initialize()
     }
 
