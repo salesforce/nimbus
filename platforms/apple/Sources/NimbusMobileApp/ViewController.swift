@@ -23,6 +23,7 @@ class ViewController: UIViewController {
         title = "Nimbus"
 
         bridge.addExtension(DemoBridge())
+        bridge.addExtension(DeviceExtension())
         bridge.initialize()
     }
 
