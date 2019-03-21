@@ -33,7 +33,6 @@
 		2944337E2202059700E6D084 /* test.js in Resources */ = {isa = PBXBuildFile; fileRef = 2944337C2202059700E6D084 /* test.js */; };
 		29443380220206B700E6D084 /* TestBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944337F220206B700E6D084 /* TestBridge.swift */; };
 		29610FC621E53881007058EA /* DemoBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29610FC521E53881007058EA /* DemoBridge.swift */; };
-		2961103821E7F5EB007058EA /* CookieExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2961103721E7F5EB007058EA /* CookieExtension.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */; };
 		C18096AE98575EE997A54233 /* libPods-Nimbus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */; };
@@ -113,7 +112,6 @@
 		2944337F220206B700E6D084 /* TestBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBridge.swift; sourceTree = "<group>"; };
 		29610FC521E53881007058EA /* DemoBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoBridge.swift; sourceTree = "<group>"; };
 		2961103021E54872007058EA /* NimbusApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NimbusApp-Bridging-Header.h"; sourceTree = "<group>"; };
-		2961103721E7F5EB007058EA /* CookieExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieExtension.swift; sourceTree = "<group>"; };
 		C4F99DF9D06AB80326FC9637 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,7 +183,6 @@
 			children = (
 				291A85E821E52D3E00510832 /* AppDelegate.swift */,
 				291A85EF21E52D4000510832 /* Assets.xcassets */,
-				2961103721E7F5EB007058EA /* CookieExtension.swift */,
 				29610FC521E53881007058EA /* DemoBridge.swift */,
 				291A85F421E52D4000510832 /* Info.plist */,
 				291A85F121E52D4000510832 /* LaunchScreen.storyboard */,
@@ -568,7 +565,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2944337A2202059000E6D084 /* TestViewController.swift in Sources */,
-				2961103821E7F5EB007058EA /* CookieExtension.swift in Sources */,
 				29610FC621E53881007058EA /* DemoBridge.swift in Sources */,
 				291A85EB21E52D3E00510832 /* ViewController.swift in Sources */,
 				29443380220206B700E6D084 /* TestBridge.swift in Sources */,

@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         bridge.addExtension(SimpleBridgeExtension())
-        bridge.addExtension(CookieExtension())
         bridge.initialize()
     }
 }
