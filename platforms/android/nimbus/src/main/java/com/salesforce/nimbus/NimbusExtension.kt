@@ -10,9 +10,5 @@ package com.salesforce.nimbus
 import android.webkit.WebView
 
 interface NimbusExtension {
-    fun preload(config: Map<String, String>, callback: (Boolean) -> Unit)
-
-    fun load(config: Map<String, String>, webView: WebView, callback: (Boolean) -> Unit)
-
-    // TODO: add bridge lifecycle hooks...
+    fun bindToWebView(webView: WebView)
 }

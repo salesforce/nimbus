@@ -16,14 +16,8 @@ class DemoBridge {
 }
 
 extension DemoBridge: NimbusExtension {
-    func preload(config _: [String: String], webViewConfiguration _: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
-        callback(true)
-    }
-
-    func load(config _: [String: String], webView: WKWebView, callback: @escaping (Bool) -> Void) {
+    func bindToWebView(webView: WKWebView) {
         let connection = webView.addConnection(to: self, as: "DemoBridge")
         connection.bind(DemoBridge.currentTime, as: "currentTime")
-
-        callback(true)
     }
 }

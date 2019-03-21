@@ -21,12 +21,7 @@ class SimpleBridgeExtension : NimbusExtension {
         }
     }
 
-    override fun preload(config: Map<String, String>, callback: (Boolean) -> Unit) {
-        callback(true)
-    }
-
-    override fun load(config: Map<String, String>, webView: WebView, callback: (Boolean) -> Unit) {
+    override fun bindToWebView(webView: WebView) {
         webView.addConnection(Bridge(), "DemoBridge")
-        callback(true);
     }
 }

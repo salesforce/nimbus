@@ -10,7 +10,6 @@ import WebKit
 public class NimbusBridge {
     public enum State {
         case notReady
-        case preinitializing
         case initializing
         case loading
         case ready
@@ -41,46 +40,8 @@ public class NimbusBridge {
 
     // TODO: this name stinks, but what is a better one? ¯\_(ツ)_/¯
     public func initialize() {
-        state = .preinitializing
-        preinitializeExtensions(extensions)
-    }
-
-    func preinitializeExtensions(_ extensions: [NimbusExtension]) {
-        var extensionsToInitialize = extensions
-        if extensionsToInitialize.isEmpty {
-            preinitializingExtensionsSucceeded()
-            return
-        }
-        let ext = extensionsToInitialize.removeFirst()
-        let initializationCallback: (Bool) -> Void = { succeeded in
-            if succeeded {
-                self.preinitializeExtensions(extensionsToInitialize)
-            } else {
-                self.preinitializingExtensionsFailed()
-            }
-        }
-        ext.preload(config: [:], webViewConfiguration: webViewConfiguration, callback: initializationCallback)
-    }
-
-    func initializeExtensions(_ extensions: [NimbusExtension]) {
-        var extensionsToInitialize = extensions
-        if extensionsToInitialize.isEmpty {
-            initializingExtensionsSucceeded()
-            return
-        }
-        let ext = extensionsToInitialize.removeFirst()
-        let initializationCallback: (Bool) -> Void = { succeeded in
-            if succeeded {
-                self.initializeExtensions(extensionsToInitialize)
-            } else {
-                self.initializingExtensionsFailed()
-            }
-        }
-        ext.load(config: [:], webView: webView!, callback: initializationCallback)
-    }
-
-    func preinitializingExtensionsSucceeded() {
         state = .initializing
+
         webView = WKWebView(frame: .zero, configuration: webViewConfiguration)
         webView?.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(webView!)
@@ -88,20 +49,17 @@ public class NimbusBridge {
         webView?.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         webView?.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         webView?.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+
         initializeExtensions(extensions)
-    }
 
-    func preinitializingExtensionsFailed() {
-        state = .error
-    }
-
-    func initializingExtensionsSucceeded() {
         state = .ready
         webView?.load(URLRequest(url: appURL))
     }
 
-    func initializingExtensionsFailed() {
-        state = .error
+    func initializeExtensions(_ extensions: [NimbusExtension]) {
+        for ext in extensions {
+            ext.bindToWebView(webView: webView!)
+        }
     }
 
     public let contentView: UIView

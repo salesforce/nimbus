@@ -8,9 +8,5 @@
 import WebKit
 
 public protocol NimbusExtension {
-    func preload(config: [String: String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void)
-
-    func load(config: [String: String], webView: WKWebView, callback: @escaping (Bool) -> Void)
-
-    // TODO: add bridge lifecycle hooks...
+    func bindToWebView(webView: WKWebView)
 }

@@ -20,7 +20,6 @@ import android.widget.RelativeLayout
 class NimbusBridge(val context: Context, val appUrl: String) {
     enum class State {
         NOTREADY,
-        PREINITIALIZING,
         INITIALIZING,
         LOADING,
         READY,
@@ -65,65 +64,33 @@ class NimbusBridge(val context: Context, val appUrl: String) {
 
     // TODO: this name stinks, but what is a better one? ¯\_(ツ)_/¯
     fun initialize() {
-        this.state = State.PREINITIALIZING
-        preinitializeExtensions(extensions)
-    }
+        this.state = State.INITIALIZING
 
-    private fun preinitializeExtensions(extensions: Collection<NimbusExtension>) {
-        val ext = extensions.firstOrNull()
-        if (ext == null) {
-            preinitializingExtensionsSucceeded()
-            return
-        }
+        var webView = WebView(this.context)
+        webView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        webView.settings.javaScriptEnabled = true
+        this.webView = webView
+        this.nimbusFragment.addWebView(this.webView)
 
-        ext.preload(config = mapOf(), callback = { succeeded ->
-            if (succeeded) {
-                this.preinitializeExtensions(extensions.drop(1))
-            } else {
-                this.preinitializingExtensionsFailed()
-            }
-        })
+        initializeExtensions(extensions)
+
+        state = State.READY
+        webView.loadUrl(this.appUrl)
     }
 
     private fun initializeExtensions(extensions: Collection<NimbusExtension>) {
-        val ext = extensions.firstOrNull()
-        if (ext == null) {
-            initializingExtensionsSucceeded()
-            return
+        extensions.forEach {
+            it.bindToWebView(this.webView!!)
         }
-
-        ext.load(config = mapOf(), webView = this.webView!!, callback = { succeeded ->
-            if (succeeded) {
-                this.initializeExtensions(extensions.drop(1))
-            } else {
-                this.initializingExtensionsFailed()
-            }
-        })
     }
 
     private fun preinitializingExtensionsSucceeded() {
         state = State.INITIALIZING
 
-        this.webView = WebView(this.context)
-        this.webView!!.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-        this.webView!!.settings.javaScriptEnabled = true
-        this.nimbusFragment.addWebView(this.webView)
 
         this.initializeExtensions(this.extensions)
     }
 
-    private fun preinitializingExtensionsFailed() {
-        state = State.ERROR
-    }
-
     private fun initializingExtensionsSucceeded() {
-        state = State.READY
-        webView?.loadUrl(this.appUrl)
-
     }
-
-    private fun initializingExtensionsFailed() {
-        state = State.ERROR
-    }
-
 }
