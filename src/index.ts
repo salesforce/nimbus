@@ -2,17 +2,35 @@
 // Copyright (c) 2019, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or
+// https://opensource.org/licenses/BSD-3-Clause
 //
 
 declare global {
   interface _Nimbus {
     makeCallback(callbackId: string): any;
+    nativeExtensionNames(): string;
   }
   var _nimbus: _Nimbus;
+
+  interface Window {
+    [s: string]: any
+  }
 }
 
 class Nimbus {
+  constructor() {
+    if (typeof _nimbus !== 'undefined' &&
+        _nimbus.nativeExtensionNames !== undefined) {
+      // we're on Android, need to wrap native extension methods
+      let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
+      extensionNames.forEach((extension: string) => {
+        Object.assign(
+            window, {[extension]: this.promisify(window[`_${extension}`])});
+      });
+    }
+  }
+
   // There can be many promises so creating a storage for later look-up.
   public promises: {[s: string]: {resolve: Function; reject: Function};} = {};
   private callbacks: {[s: string]: Function} = {};
@@ -32,17 +50,18 @@ class Nimbus {
     });
   };
 
-  public promisify = (src: any) => {
-    let dest: any = {};
-    Object.keys(src).forEach(k => {
-      let f = src[k];
-      dest[k] = (...args: any[]) => {
-        args = this.cloneArguments(args);
-        return Promise.resolve(f.call(src, ...args));
-      };
-    });
-    return dest;
-  }
+  public promisify =
+      (src: any) => {
+        let dest: any = {};
+        Object.keys(src).forEach(k => {
+          let f = src[k];
+          dest[k] = (...args: any[]) => {
+            args = this.cloneArguments(args);
+            return Promise.resolve(f.call(src, ...args));
+          };
+        });
+        return dest;
+      }
 
   public cloneArguments = (args: any[]): any[] => {
     let clonedArgs = [];
@@ -50,8 +69,10 @@ class Nimbus {
       if (typeof args[i] === 'function') {
         const callbackId = this.uuidv4();
         this.callbacks[callbackId] = args[i];
-        // TODO: this should generalize better, perhaps with an explicit platform check?
-        if (typeof _nimbus !== 'undefined' && _nimbus.makeCallback !== undefined) {
+        // TODO: this should generalize better, perhaps with an explicit
+        // platform check?
+        if (typeof _nimbus !== 'undefined' &&
+            _nimbus.makeCallback !== undefined) {
           clonedArgs.push(_nimbus.makeCallback(callbackId));
         } else {
           clonedArgs.push({callbackId});
