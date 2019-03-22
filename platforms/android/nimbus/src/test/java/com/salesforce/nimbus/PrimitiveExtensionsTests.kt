@@ -7,14 +7,16 @@
 
 package com.salesforce.nimbus
 
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
-import io.kotlintest.specs.AnnotationSpec
-import io.kotlintest.specs.Test
-import org.json.JSONObject
+// import io.kotlintest.properties.Gen
+// import io.kotlintest.properties.forAll
+// import io.kotlintest.specs.AnnotationSpec
+// import io.kotlintest.specs.Test
+// import org.json.JSONObject
 
-class PrimitiveExtensionsTests : AnnotationSpec() {
+class PrimitiveExtensionsTests {
+    //: AnnotationSpec() {
 
+    /*
     @Test
     fun testDoubleToJSON() {
         forAll(Gen.double()) { a ->
@@ -85,4 +87,5 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
             a == value
         }
     }
+    */
 }
