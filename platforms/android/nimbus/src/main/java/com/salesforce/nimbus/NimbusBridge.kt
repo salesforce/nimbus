@@ -21,9 +21,7 @@ class NimbusBridge(val context: Context, val appUrl: String) {
     enum class State {
         NOTREADY,
         INITIALIZING,
-        LOADING,
         READY,
-        ERROR
     }
 
     class NimbusFragment() : Fragment() {
@@ -84,13 +82,4 @@ class NimbusBridge(val context: Context, val appUrl: String) {
         }
     }
 
-    private fun preinitializingExtensionsSucceeded() {
-        state = State.INITIALIZING
-
-
-        this.initializeExtensions(this.extensions)
-    }
-
-    private fun initializingExtensionsSucceeded() {
-    }
 }
