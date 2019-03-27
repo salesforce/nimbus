@@ -9,12 +9,17 @@ package com.salesforce.nimbusdemoapp
 
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.salesforce.nimbus.Extension
+import com.salesforce.nimbus.ExtensionMethod
 import com.salesforce.nimbus.NimbusExtension
 import com.salesforce.nimbus.addConnection
 import java.util.*
 
+@Extension
 class SimpleBridgeExtension : NimbusExtension {
     class Bridge {
+
+        @ExtensionMethod
         @JavascriptInterface
         fun currentTime(): String {
             return Date().toString()
