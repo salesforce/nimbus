@@ -1,2 +1,2 @@
 rootProject.name = 'Nimbus'
-include ':demo-app', ':nimbus', ':nimbus-annotations'
+include ':demo-app', ':nimbus', ':nimbus-annotations', ':nimbus-compiler'
