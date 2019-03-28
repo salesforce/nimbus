@@ -23,7 +23,17 @@ import java.util.*
 internal class Connection(val webView: WebView, val target: Any, val name: String) {
 
     init {
-        webView.addJavascriptInterface(target, "_" + name)
+        val clazz = target::class
+        val className = clazz.java.name
+        val binderName = className + "Binder"
+        val binderClass = clazz.java.classLoader.loadClass(binderName)
+        val constructor = binderClass.getConstructor(clazz.java)
+
+        val binder = constructor.newInstance(target);
+
+        // TODO: ?
+        webView.addJavascriptInterface(binder, "_" + name)
+
         connectionMap[webView]?.addConnection(this)
     }
 

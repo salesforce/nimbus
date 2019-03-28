@@ -17,16 +17,32 @@ import java.util.*
 
 @Extension
 class SimpleBridgeExtension : NimbusExtension {
-    class Bridge {
+//    class Bridge {
+//
+//    }
 
-        @ExtensionMethod
-        @JavascriptInterface
-        fun currentTime(): String {
-            return Date().toString()
-        }
+    @ExtensionMethod
+    @JavascriptInterface
+    fun currentTime(): String {
+        return Date().toString()
+    }
+
+    @ExtensionMethod
+    fun anotherMethod(arg: String, arg2: Int): String {
+        return ""
+    }
+
+    @ExtensionMethod
+    fun voidReturn(arg: Int) {
+
+    }
+
+    @ExtensionMethod
+    fun funArg(arg: (String) -> Void) {
+
     }
 
     override fun bindToWebView(webView: WebView) {
-        webView.addConnection(Bridge(), "DemoBridge")
+        webView.addConnection(this, "DemoBridge")
     }
 }
