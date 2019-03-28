@@ -5,6 +5,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation project(':nimbus-annotations')
+    implementation 'com.squareup:javapoet:1.11.1'
 }
 
 sourceCompatibility = "7"
