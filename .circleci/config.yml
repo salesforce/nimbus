@@ -70,9 +70,23 @@ jobs:
           working_directory: platforms/android
           command: ./gradlew testDebugUnitTest
 
+  build-and-test-ts:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+      - run:
+          name: Build and Lint Typescript
+          command: |
+            npm install
+            npm run build
+            npm run lint
+      
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build-and-test-ios
       - build-and-test-android
+      - build-and-test-ts
