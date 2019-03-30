@@ -81,7 +81,11 @@ jobs:
           command: |
             npm install
             npm run build
-            npm run lint
+            npm run lint -- -f junit -o ~/reports/eslint.xml
+      - store_test_results:
+          path: ~/reports
+      - store_artifacts:
+          path: ~/reports          
       
 workflows:
   version: 2
