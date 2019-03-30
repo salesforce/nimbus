@@ -1,3 +1,8 @@
 {
-  "recommendations": ["psioniq.psi-header"]
+  "recommendations": [
+    "psioniq.psi-header",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
+  ],
+  "unwantedRecommendations": ["eg2.tslint"]
 }

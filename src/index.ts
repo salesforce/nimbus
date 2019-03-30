@@ -7,75 +7,81 @@
 //
 
 declare global {
-  interface _Nimbus {
+  interface NimbusNative {
     makeCallback(callbackId: string): any;
     nativeExtensionNames(): string;
   }
-  var _nimbus: _Nimbus;
+  var _nimbus: NimbusNative;
 
   interface Window {
-    [s: string]: any
+    [s: string]: any;
   }
 }
 
 class Nimbus {
-  constructor() {
-    if (typeof _nimbus !== 'undefined' &&
-        _nimbus.nativeExtensionNames !== undefined) {
+  public constructor() {
+    if (
+      typeof _nimbus !== "undefined" &&
+      _nimbus.nativeExtensionNames !== undefined
+    ) {
       // we're on Android, need to wrap native extension methods
       let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
       extensionNames.forEach((extension: string) => {
-        Object.assign(
-            window, {[extension]: this.promisify(window[`_${extension}`])});
+        Object.assign(window, {
+          [extension]: this.promisify(window[`_${extension}`])
+        });
       });
     }
   }
 
   // There can be many promises so creating a storage for later look-up.
-  public promises: {[s: string]: {resolve: Function; reject: Function};} = {};
-  private callbacks: {[s: string]: Function} = {};
+  public promises: {
+    [s: string]: { resolve: Function; reject: Function };
+  } = {};
+  private callbacks: { [s: string]: Function } = {};
 
   // Dictionary to manage message&subscriber relationship.
-  public listenerMap: {[s: string]: Function[]} = {};
+  public listenerMap: { [s: string]: Function[] } = {};
 
   // influenced from
   // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
   public uuidv4 = (): string => {
-    return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c => {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => {
       const asNumber = Number(c);
-      return (asNumber ^
-              (crypto.getRandomValues(new Uint8Array(1))[0] &
-               (15 >> (asNumber / 4))))
-          .toString(16);
+      return (
+        asNumber ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (asNumber / 4)))
+      ).toString(16);
     });
   };
 
-  public promisify =
-      (src: any) => {
-        let dest: any = {};
-        Object.keys(src).forEach(k => {
-          let f = src[k];
-          dest[k] = (...args: any[]) => {
-            args = this.cloneArguments(args);
-            return Promise.resolve(f.call(src, ...args));
-          };
-        });
-        return dest;
-      }
+  public promisify = (src: any) => {
+    let dest: any = {};
+    Object.keys(src).forEach(k => {
+      let f = src[k];
+      dest[k] = (...args: any[]) => {
+        args = this.cloneArguments(args);
+        return Promise.resolve(f.call(src, ...args));
+      };
+    });
+    return dest;
+  };
 
   public cloneArguments = (args: any[]): any[] => {
     let clonedArgs = [];
     for (var i = 0; i < args.length; ++i) {
-      if (typeof args[i] === 'function') {
+      if (typeof args[i] === "function") {
         const callbackId = this.uuidv4();
         this.callbacks[callbackId] = args[i];
         // TODO: this should generalize better, perhaps with an explicit
         // platform check?
-        if (typeof _nimbus !== 'undefined' &&
-            _nimbus.makeCallback !== undefined) {
+        if (
+          typeof _nimbus !== "undefined" &&
+          _nimbus.makeCallback !== undefined
+        ) {
           clonedArgs.push(_nimbus.makeCallback(callbackId));
         } else {
-          clonedArgs.push({callbackId});
+          clonedArgs.push({ callbackId });
         }
       } else {
         clonedArgs.push(args[i]);
