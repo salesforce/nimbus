@@ -7,6 +7,15 @@
 
 import WebKit
 
+#if os(iOS)
+    import UIKit
+    public typealias BaseView = UIView
+#elseif os(macOS)
+    import Cocoa
+    public typealias BaseView = NSView
+#else
+#endif
+
 public class NimbusBridge {
     public enum State {
         case notReady
@@ -31,7 +40,7 @@ public class NimbusBridge {
             webViewConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
         self.appURL = appURL
-        contentView = UIView(frame: .zero)
+        contentView = BaseView(frame: .zero)
     }
 
     public func addExtension<T: NimbusExtension>(_ ext: T) {
@@ -62,7 +71,7 @@ public class NimbusBridge {
         }
     }
 
-    public let contentView: UIView
+    public let contentView: BaseView
     public var webView: WKWebView?
     public private(set) var state: State = .notReady
 

@@ -1,5 +1,6 @@
 disabled_rules:
   - trailing_comma
+  - large_tuple
 
 line_length:
   warning: 150

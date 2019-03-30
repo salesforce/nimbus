@@ -136,7 +136,7 @@ extension Connection {
      */
     public func bind<R: Encodable>(_ function: @escaping (C) -> () -> R, as name: String) {
         let boundFunction = function(target)
-        let wrappedFunction = { () -> EncodableValue in
+        let wrappedFunction: () -> EncodableValue = { () -> EncodableValue in
             let result = boundFunction()
             return .value(result)
         }

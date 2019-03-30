@@ -5,10 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-#import <Foundation/Foundation.h>
+import Cocoa
 
-//! Project version number for Nimbus.
-FOUNDATION_EXPORT double NimbusVersionNumber;
-
-//! Project version string for Nimbus.
-FOUNDATION_EXPORT const unsigned char NimbusVersionString[];
+@NSApplicationMain
+class AppDelegate: NSObject, NSApplicationDelegate {}

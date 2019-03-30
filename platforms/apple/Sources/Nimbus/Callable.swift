@@ -144,7 +144,7 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
 /**
  Create a `Callable` from a nullary function.
  */
-func make_callable<R>(_ function: @escaping () -> R) -> Callable {
+func make_callable<R>(_ function: @escaping (()) -> R) -> Callable {
     return Callable0(function)
 }
 
@@ -159,27 +159,27 @@ func make_callable<R, A0>(_ function: @escaping ((A0)) -> R) -> Callable {
 /**
  Create a `Callable` from the binary function.
  */
-func make_callable<R, A0, A1>(_ function: @escaping (A0, A1) -> R) -> Callable {
+func make_callable<R, A0, A1>(_ function: @escaping ((A0, A1)) -> R) -> Callable {
     return Callable2(function)
 }
 
 /**
  Create a `Callable` from the ternary function.
  */
-func make_callable<R, A0, A1, A2>(_ function: @escaping (A0, A1, A2) -> R) -> Callable {
+func make_callable<R, A0, A1, A2>(_ function: @escaping ((A0, A1, A2)) -> R) -> Callable {
     return Callable3(function)
 }
 
 /**
  Create a `Callable` from the quaternary function.
  */
-func make_callable<R, A0, A1, A2, A3>(_ function: @escaping (A0, A1, A2, A3) -> R) -> Callable {
+func make_callable<R, A0, A1, A2, A3>(_ function: @escaping ((A0, A1, A2, A3)) -> R) -> Callable {
     return Callable4(function)
 }
 
 /**
  Create a `Callable` from the quinary function.
  */
-func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping (A0, A1, A2, A3, A4) -> R) -> Callable {
+func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping ((A0, A1, A2, A3, A4)) -> R) -> Callable {
     return Callable5(function)
 }

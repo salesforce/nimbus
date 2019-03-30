@@ -5,8 +5,5 @@ inhibit_all_warnings!
 pod 'SwiftLint',  '~> 0.30'
 pod 'SwiftFormat/CLI', '~> 0.39.0'
 
-target 'Nimbus' do
-end
-
 target 'NimbusApp' do
 end

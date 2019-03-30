@@ -2,6 +2,44 @@
 
 version: 2
 jobs:
+  build-and-test-macos:
+    macos:
+      xcode: "10.1.0"
+
+    shell: /bin/bash --login -eo pipefail
+
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build Nimbus core
+          command: |
+            npm install
+            npm run build
+
+      - run:
+          name: Set Ruby Version
+          command:  echo "ruby-2.5.3" > ~/.ruby-version
+
+      - run:
+          name: Fetch CocoaPods Specs
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            gem update bundler
+            bundle install
+            bundle exec pod install
+
+      - run:
+          name: Build macOS
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusDesktop -configuration Debug -sdk macosx
+
   build-and-test-ios:
     macos:
       xcode: "10.1.0"
@@ -75,4 +113,5 @@ workflows:
   build-and-test:
     jobs:
       - build-and-test-ios
+      - build-and-test-macos
       - build-and-test-android
