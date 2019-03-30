@@ -9,10 +9,7 @@ package com.salesforce.nimbusdemoapp
 
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import com.salesforce.nimbus.Extension
-import com.salesforce.nimbus.ExtensionMethod
-import com.salesforce.nimbus.NimbusExtension
-import com.salesforce.nimbus.addConnection
+import com.salesforce.nimbus.*
 import java.util.*
 
 @Extension
@@ -21,6 +18,8 @@ class SimpleBridgeExtension : NimbusExtension {
 //
 //    }
 
+    data class Foo(val name: String, val title: String)
+
     @ExtensionMethod
     @JavascriptInterface
     fun currentTime(): String {
@@ -28,7 +27,7 @@ class SimpleBridgeExtension : NimbusExtension {
     }
 
     @ExtensionMethod
-    fun anotherMethod(arg: String, arg2: Int): String {
+    fun anotherMethod(arg: String, arg2: Int, arg3: Foo): String {
         return ""
     }
 
@@ -39,6 +38,12 @@ class SimpleBridgeExtension : NimbusExtension {
 
     @ExtensionMethod
     fun funArg(arg: (String) -> Void) {
+        arg("result")
+    }
+
+    @JavascriptInterface
+    fun funArg1(arg: Callback) {
+        arg.call(arrayOf("result"))
 
     }
 
