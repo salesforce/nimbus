@@ -8,5 +8,7 @@ module.exports = {
   parserOptions: {
     project: "./tsconfig.json"
   },
-  rules: {}
+  rules: {
+    "prettier/prettier": "warn"
+  }
 };
