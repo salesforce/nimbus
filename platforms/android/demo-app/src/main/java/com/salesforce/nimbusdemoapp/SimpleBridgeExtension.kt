@@ -37,8 +37,8 @@ class SimpleBridgeExtension : NimbusExtension {
     }
 
     @ExtensionMethod
-    fun funArg(arg: (String) -> Void) {
-        arg("result")
+    fun funArg(arg: (String, Int) -> Void) {
+        arg("result", 37)
     }
 
     @JavascriptInterface

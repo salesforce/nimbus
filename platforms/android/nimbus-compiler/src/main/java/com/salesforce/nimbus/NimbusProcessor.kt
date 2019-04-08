@@ -7,7 +7,9 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
+import javax.lang.model.type.WildcardType
 import javax.tools.Diagnostic
 
 class NimbusProcessor: AbstractProcessor() {
@@ -41,12 +43,15 @@ class NimbusProcessor: AbstractProcessor() {
                                         .build())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(TypeName.get(methodElement.returnType))
-                        .addException(ClassName.get("org.json", "JSONException"))
 
-                methodSpec.addParameter(String::class.java, "argString")
+                if (methodElement.parameters.count() > 0) {
+                    methodSpec
+                            .addParameter(String::class.java, "argString")
+                            .addException(ClassName.get("org.json", "JSONException"))
 
-                val jsonObject = ClassName.get("org.json", "JSONArray")
-                methodSpec.addStatement("\$T args = new \$T(argString)", jsonObject, jsonObject)
+                    val jsonObject = ClassName.get("org.json", "JSONArray")
+                    methodSpec.addStatement("\$T args = new \$T(argString)", jsonObject, jsonObject)
+                }
 
                 val arguments = mutableListOf<String>()
                 var argIndex = 0
@@ -62,15 +67,41 @@ class NimbusProcessor: AbstractProcessor() {
                         TypeKind.LONG -> methodSpec.addStatement("\$T \$N = args.getLong($argIndex)", it.asType(), it.simpleName)
                         TypeKind.DECLARED -> {
                             // TODO:
+                            val declaredType = it.asType() as DeclaredType
+
                             if (it.asType().toString().equals("java.lang.String")) {
                                 methodSpec.addStatement("\$T \$N = args.getString($argIndex)", it.asType(), it.simpleName)
+                            } else if (it.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
+                                methodSpec.addComment("Next line is a function!")
+//                                methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
+
+                                // ----
+
+                                val invoke = MethodSpec.methodBuilder("invoke")
+                                        .addAnnotation(Override::class.java)
+                                        .addModifiers(Modifier.PUBLIC)
+                                declaredType.typeArguments.dropLast(1).forEach {
+                                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "type arg? ${it.kind}")
+                                    if (it.kind == TypeKind.WILDCARD) {
+                                        val wild = it as WildcardType
+                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "wildcard? ${it.superBound}")
+                                        invoke.addParameter(TypeName.get(it.superBound), "argx")
+                                    }
+                                }
+                                val func = TypeSpec.anonymousClassBuilder("")
+                                        .addSuperinterface(TypeName.get(it.asType()))
+                                        .addMethod(invoke.build())
+                                        .build()
+                                methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
+
                             } else {
+                                // What should this do? Probs emit a compile error or something...
                                 methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
 
                             }
                         }
                         else -> {
-//                            methodSpec.addParameter(TypeName.get(it.asType()), it.simpleName.toString())
+                            // What should this do? Probs emit a compile error or something...
                             methodSpec.addStatement("\$T \$N = args.get($argIndex)", it.asType(), it.simpleName)
 
                         }
