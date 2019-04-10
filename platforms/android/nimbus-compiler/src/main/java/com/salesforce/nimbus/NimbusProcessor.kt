@@ -18,7 +18,6 @@ class NimbusProcessor: AbstractProcessor() {
 
         val bindings = env.getElementsAnnotatedWith(ExtensionMethod::class.java)
                 .groupBy { it.enclosingElement }
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "method? ${bindings}")
 
         bindings.forEach { element, methods ->
             val packageName = processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
@@ -70,18 +69,12 @@ class NimbusProcessor: AbstractProcessor() {
                         TypeKind.FLOAT -> methodSpec.addStatement("\$T \$N = args.getDouble($argIndex)", it.asType(), it.simpleName)
                         TypeKind.LONG -> methodSpec.addStatement("\$T \$N = args.getLong($argIndex)", it.asType(), it.simpleName)
                         TypeKind.DECLARED -> {
-                            // TODO:
                             val declaredType = it.asType() as DeclaredType
 
                             if (it.asType().toString().equals("java.lang.String")) {
                                 methodSpec.addStatement("\$T \$N = args.getString($argIndex)", it.asType(), it.simpleName)
                             } else if (it.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
-                                methodSpec.addComment("Next line is a function!")
                                 methodSpec.addStatement("final String callbackId$argIndex = args.getString($argIndex)")
-//                                methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
-
-                                // ----
-
 
                                 val invoke = MethodSpec.methodBuilder("invoke")
                                         .addAnnotation(Override::class.java)
@@ -89,28 +82,16 @@ class NimbusProcessor: AbstractProcessor() {
                                         // TODO: only Void is supported, emit an error if not void
                                         .returns(TypeName.get(declaredType.typeArguments.last()))
 
-
                                 val argBlock = CodeBlock.builder()
                                         .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
                                         .indent()
                                         .add("new \$T(callbackId$argIndex),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
 
                                 declaredType.typeArguments.dropLast(1).forEachIndexed { index, typeMirror ->
-//                                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "type arg? ${typeMirror.kind}")
                                     if (typeMirror.kind == TypeKind.WILDCARD) {
                                         val wild = typeMirror as WildcardType
-//                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "wildcard? ${typeMirror.superBound}")
-                                        invoke.addParameter(TypeName.get(typeMirror.superBound), "arg$index")
-
-//                                        val parType = ParameterizedTypeName.get(wild.superBound)
-
-//                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "parType? ${parType}")
-
-//                                        WildcardTypeName.get(wild)
-
+                                        invoke.addParameter(TypeName.get(wild.superBound), "arg$index")
                                     }
-
-                                    invoke.addComment("Format arg $index here")
                                     argBlock.add("new \$T(arg$index),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                 }
 
@@ -118,9 +99,7 @@ class NimbusProcessor: AbstractProcessor() {
 
                                 invoke.addCode(argBlock.build())
                                 invoke.addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "nimbus.callCallback2", "args")
-                                        // TODO: actually send the callback across to webview
                                         .addStatement("return null")
-
 
                                 val typeArgs = declaredType.typeArguments.map {
                                     if (it.kind == TypeKind.WILDCARD) {
@@ -136,7 +115,6 @@ class NimbusProcessor: AbstractProcessor() {
 
                                 val func = TypeSpec.anonymousClassBuilder("")
                                         .addSuperinterface(superInterface)
-//                                        .addSuperinterface(TypeName.get(it.asType()))
                                         .addMethod(invoke.build())
                                         .build()
                                 methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
@@ -144,21 +122,17 @@ class NimbusProcessor: AbstractProcessor() {
                             } else {
                                 // What should this do? Probs emit a compile error or something...
                                 methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
-
                             }
                         }
                         else -> {
                             // What should this do? Probs emit a compile error or something...
                             methodSpec.addStatement("\$T \$N = args.get($argIndex)", it.asType(), it.simpleName)
-
                         }
                     }
-
 
                     arguments.add(it.simpleName.toString())
                     argIndex++
                 }
-
 
                 val hasReturn = it.returnType.kind != TypeKind.VOID
                 methodSpec.addCode("${if (hasReturn) "return " else "" }target.\$N(${arguments.joinToString(", ")});\n", it.simpleName.toString())
