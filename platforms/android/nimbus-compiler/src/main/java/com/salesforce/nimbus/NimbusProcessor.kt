@@ -24,15 +24,19 @@ class NimbusProcessor: AbstractProcessor() {
             val packageName = processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
             val typeName = element.simpleName.toString() + "Binder"
 
+            val webViewClassName = ClassName.get("android.webkit", "WebView")
             // the binder needs to capture the bound target to pass through calls to it
             val type = TypeSpec.classBuilder(typeName)
                     .addModifiers(Modifier.PUBLIC)
                     .addMethod(MethodSpec.constructorBuilder()
                             .addParameter(TypeName.get(element.asType()), "target")
+                            .addParameter(webViewClassName, "webView")
                             .addModifiers(Modifier.PUBLIC)
                             .addStatement("this.\$N = \$N", "target", "target")
+                            .addStatement("this.\$N = \$N", "webView", "webView")
                             .build())
                     .addField(TypeName.get(element.asType()), "target", Modifier.FINAL, Modifier.PRIVATE)
+                    .addField(webViewClassName, "webView", Modifier.FINAL, Modifier.PRIVATE)
 
             methods.forEach {
                 val methodElement = it as ExecutableElement
@@ -73,23 +77,66 @@ class NimbusProcessor: AbstractProcessor() {
                                 methodSpec.addStatement("\$T \$N = args.getString($argIndex)", it.asType(), it.simpleName)
                             } else if (it.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
                                 methodSpec.addComment("Next line is a function!")
+                                methodSpec.addStatement("final String callbackId$argIndex = args.getString($argIndex)")
 //                                methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
 
                                 // ----
 
+
                                 val invoke = MethodSpec.methodBuilder("invoke")
                                         .addAnnotation(Override::class.java)
                                         .addModifiers(Modifier.PUBLIC)
-                                declaredType.typeArguments.dropLast(1).forEach {
-                                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "type arg? ${it.kind}")
+                                        // TODO: only Void is supported, emit an error if not void
+                                        .returns(TypeName.get(declaredType.typeArguments.last()))
+
+
+                                val argBlock = CodeBlock.builder()
+                                        .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
+                                        .indent()
+                                        .add("new \$T(callbackId$argIndex),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
+
+                                declaredType.typeArguments.dropLast(1).forEachIndexed { index, typeMirror ->
+//                                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "type arg? ${typeMirror.kind}")
+                                    if (typeMirror.kind == TypeKind.WILDCARD) {
+                                        val wild = typeMirror as WildcardType
+//                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "wildcard? ${typeMirror.superBound}")
+                                        invoke.addParameter(TypeName.get(typeMirror.superBound), "arg$index")
+
+//                                        val parType = ParameterizedTypeName.get(wild.superBound)
+
+//                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "parType? ${parType}")
+
+//                                        WildcardTypeName.get(wild)
+
+                                    }
+
+                                    invoke.addComment("Format arg $index here")
+                                    argBlock.add("new \$T(arg$index),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
+                                }
+
+                                argBlock.unindent().add("};\n")
+
+                                invoke.addCode(argBlock.build())
+                                invoke.addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "nimbus.callCallback2", "args")
+                                        // TODO: actually send the callback across to webview
+                                        .addStatement("return null")
+
+
+                                val typeArgs = declaredType.typeArguments.map {
                                     if (it.kind == TypeKind.WILDCARD) {
                                         val wild = it as WildcardType
-                                        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "wildcard? ${it.superBound}")
-                                        invoke.addParameter(TypeName.get(it.superBound), "argx")
+                                        TypeName.get(wild.superBound)
+                                    } else {
+                                        TypeName.get(it)
                                     }
                                 }
+
+                                val className = ClassName.get(declaredType.asElement() as TypeElement)
+                                val superInterface = ParameterizedTypeName.get(className, *typeArgs.toTypedArray())
+
                                 val func = TypeSpec.anonymousClassBuilder("")
-                                        .addSuperinterface(TypeName.get(it.asType()))
+                                        .addSuperinterface(superInterface)
+//                                        .addSuperinterface(TypeName.get(it.asType()))
                                         .addMethod(invoke.build())
                                         .build()
                                 methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
@@ -120,6 +167,8 @@ class NimbusProcessor: AbstractProcessor() {
             }
 
             JavaFile.builder(packageName, type.build())
+                    .indent("    ")
+                    .addStaticImport(ClassName.get("com.salesforce.nimbus", "ConnectionKt"), "callJavascript")
                     .build()
                     .writeTo(processingEnv.filer)
 

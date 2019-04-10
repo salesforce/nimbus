@@ -55,17 +55,21 @@ class Nimbus {
     });
   };
 
-  public promisify = (src: any) => {
-    let dest: any = {};
-    Object.keys(src).forEach(k => {
-      let f = src[k];
-      dest[k] = (...args: any[]) => {
-        args = this.cloneArguments(args);
-        return Promise.resolve(f.call(src, ...args));
-      };
-    });
-    return dest;
-  };
+  public promisify =
+      (src: any) => {
+        let dest: any = {};
+        Object.keys(src).forEach(k => {
+          let f = src[k];
+          dest[k] = (...args: any[]) => {
+            args = this.cloneArguments(args);
+            if (args.length > 0) {
+              return Promise.resolve(f.call(src, JSON.stringify(args)));
+            }
+            return Promise.resolve(f.call(src));
+          };
+        });
+        return dest;
+      }
 
   public cloneArguments = (args: any[]): any[] => {
     let clonedArgs = [];
@@ -75,11 +79,10 @@ class Nimbus {
         this.callbacks[callbackId] = args[i];
         // TODO: this should generalize better, perhaps with an explicit
         // platform check?
-        if (
-          typeof _nimbus !== "undefined" &&
-          _nimbus.makeCallback !== undefined
-        ) {
-          clonedArgs.push(_nimbus.makeCallback(callbackId));
+        if (typeof _nimbus !== 'undefined' &&
+            _nimbus.makeCallback !== undefined) {
+          // clonedArgs.push(_nimbus.makeCallback(callbackId));
+          clonedArgs.push(callbackId); // TODO:
         } else {
           clonedArgs.push({ callbackId });
         }
@@ -90,11 +93,15 @@ class Nimbus {
     return clonedArgs;
   };
 
-  public callCallback = (callbackId: string, args: [any]) => {
+  public callCallback = (callbackId: string, args: any[]) => {
     if (this.callbacks[callbackId]) {
       this.callbacks[callbackId](...args);
     }
   };
+
+  public callCallback2 = (callbackId: string, ...args: any[]) => {
+    this.callCallback(callbackId, args);
+  }
 
   public releaseCallback = (callbackId: string) => {
     delete this.callbacks[callbackId];
