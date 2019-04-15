@@ -55,21 +55,26 @@ class Nimbus {
     });
   };
 
-  public promisify =
-      (src: any) => {
-        let dest: any = {};
-        Object.keys(src).forEach(k => {
-          let f = src[k];
-          dest[k] = (...args: any[]) => {
-            args = this.cloneArguments(args);
-            if (args.length > 0) {
-              return Promise.resolve(f.call(src, JSON.stringify(args)));
-            }
-            return Promise.resolve(f.call(src));
-          };
+  public promisify = (src: any) => {
+    let dest: any = {};
+    Object.keys(src).forEach(k => {
+      let f = src[k];
+      dest[k] = (...args: any[]) => {
+        args = this.cloneArguments(args);
+        args = args.map(arg => {
+          if (typeof arg === "object") {
+            return JSON.stringify(arg);
+          }
+          return arg;
         });
-        return dest;
-      }
+        if (args.length > 0) {
+          return Promise.resolve(f.call(src, ...args));
+        }
+        return Promise.resolve(f.call(src));
+      };
+    });
+    return dest;
+  };
 
   public cloneArguments = (args: any[]): any[] => {
     let clonedArgs = [];
@@ -79,8 +84,10 @@ class Nimbus {
         this.callbacks[callbackId] = args[i];
         // TODO: this should generalize better, perhaps with an explicit
         // platform check?
-        if (typeof _nimbus !== 'undefined' &&
-            _nimbus.makeCallback !== undefined) {
+        if (
+          typeof _nimbus !== "undefined" &&
+          _nimbus.makeCallback !== undefined
+        ) {
           // clonedArgs.push(_nimbus.makeCallback(callbackId));
           clonedArgs.push(callbackId); // TODO:
         } else {
@@ -101,7 +108,7 @@ class Nimbus {
 
   public callCallback2 = (callbackId: string, ...args: any[]) => {
     this.callCallback(callbackId, args);
-  }
+  };
 
   public releaseCallback = (callbackId: string) => {
     delete this.callbacks[callbackId];

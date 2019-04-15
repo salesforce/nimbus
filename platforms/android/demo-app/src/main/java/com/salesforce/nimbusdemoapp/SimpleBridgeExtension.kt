@@ -10,15 +10,23 @@ package com.salesforce.nimbusdemoapp
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.salesforce.nimbus.*
+import org.json.JSONObject
 import java.util.*
 
 @Extension
 class SimpleBridgeExtension : NimbusExtension {
-//    class Bridge {
-//
-//    }
 
-    data class Foo(val name: String, val title: String)
+    data class Foo(val name: String, val title: String) {
+        companion object {
+            @JvmStatic
+            fun fromJSON(jsonString: String): Foo {
+                val json = JSONObject(jsonString)
+                val name = json.optString("name", "name")
+                val title = json.optString("title", "title")
+                return Foo(name, title)
+            }
+        }
+    }
 
     @ExtensionMethod
     @JavascriptInterface

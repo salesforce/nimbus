@@ -55,19 +55,19 @@ class NimbusProcessor: AbstractProcessor() {
                     // check if param needs conversion
                     when(it.asType().kind) {
                         TypeKind.BOOLEAN -> {
-                            methodSpec.addParameter(Boolean::class.java, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.BOOLEAN, it.simpleName.toString())
                         }
                         TypeKind.INT -> {
-                            methodSpec.addParameter(Integer::class.java, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.INT, it.simpleName.toString())
                         }
                         TypeKind.DOUBLE -> {
-                            methodSpec.addParameter(Double::class.java, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.DOUBLE, it.simpleName.toString())
                         }
                         TypeKind.FLOAT -> {
-                            methodSpec.addParameter(Float::class.java, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.FLOAT, it.simpleName.toString())
                         }
                         TypeKind.LONG -> {
-                            methodSpec.addParameter(Long::class.java, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.LONG, it.simpleName.toString())
                         }
                         TypeKind.DECLARED -> {
                             val declaredType = it.asType() as DeclaredType
@@ -121,9 +121,12 @@ class NimbusProcessor: AbstractProcessor() {
                                 methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
 
                             } else {
-                                // TODO: here we need to handle Objects that should be encoded/decoded
-                                // What should this do? Probs emit a compile error or something...
-                                methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
+                                // TODO: we also want to support kotlinx.serializable eventually
+
+                                // The Binder will fail to compile if a static `fromJSON` method is not found.
+                                // Probably want to emit an error from the annotation processor to fail faster.
+                                methodSpec.addParameter(String::class.java, it.simpleName.toString() + "String")
+                                methodSpec.addStatement("\$T \$N = \$T.fromJSON(\$NString)", it.asType(), it.simpleName, it.asType(), it.simpleName)
                             }
                         }
                         else -> {
