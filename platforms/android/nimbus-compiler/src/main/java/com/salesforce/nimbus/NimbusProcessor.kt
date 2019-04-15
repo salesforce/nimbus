@@ -47,15 +47,6 @@ class NimbusProcessor: AbstractProcessor() {
                         .addModifiers(Modifier.PUBLIC)
                         .returns(TypeName.get(methodElement.returnType))
 
-                if (methodElement.parameters.count() > 0) {
-                    methodSpec
-                            .addParameter(String::class.java, "argString")
-                            .addException(ClassName.get("org.json", "JSONException"))
-
-                    val jsonObject = ClassName.get("org.json", "JSONArray")
-                    methodSpec.addStatement("\$T args = new \$T(argString)", jsonObject, jsonObject)
-                }
-
                 val arguments = mutableListOf<String>()
                 var argIndex = 0
 
@@ -63,18 +54,28 @@ class NimbusProcessor: AbstractProcessor() {
 
                     // check if param needs conversion
                     when(it.asType().kind) {
-                        TypeKind.BOOLEAN -> methodSpec.addStatement("\$T \$N = args.getBoolean($argIndex)", it.asType(), it.simpleName)
-                        TypeKind.INT -> methodSpec.addStatement("\$T \$N = args.getInt($argIndex)", it.asType(), it.simpleName)
-                        TypeKind.DOUBLE -> methodSpec.addStatement("\$T \$N = args.getDouble($argIndex)", it.asType(), it.simpleName)
-                        TypeKind.FLOAT -> methodSpec.addStatement("\$T \$N = args.getDouble($argIndex)", it.asType(), it.simpleName)
-                        TypeKind.LONG -> methodSpec.addStatement("\$T \$N = args.getLong($argIndex)", it.asType(), it.simpleName)
+                        TypeKind.BOOLEAN -> {
+                            methodSpec.addParameter(Boolean::class.java, it.simpleName.toString())
+                        }
+                        TypeKind.INT -> {
+                            methodSpec.addParameter(Integer::class.java, it.simpleName.toString())
+                        }
+                        TypeKind.DOUBLE -> {
+                            methodSpec.addParameter(Double::class.java, it.simpleName.toString())
+                        }
+                        TypeKind.FLOAT -> {
+                            methodSpec.addParameter(Float::class.java, it.simpleName.toString())
+                        }
+                        TypeKind.LONG -> {
+                            methodSpec.addParameter(Long::class.java, it.simpleName.toString())
+                        }
                         TypeKind.DECLARED -> {
                             val declaredType = it.asType() as DeclaredType
 
                             if (it.asType().toString().equals("java.lang.String")) {
-                                methodSpec.addStatement("\$T \$N = args.getString($argIndex)", it.asType(), it.simpleName)
+                                methodSpec.addParameter(String::class.java, it.simpleName.toString())
                             } else if (it.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
-                                methodSpec.addStatement("final String callbackId$argIndex = args.getString($argIndex)")
+                                methodSpec.addParameter(String::class.java, it.simpleName.toString() + "Id", Modifier.FINAL)
 
                                 val invoke = MethodSpec.methodBuilder("invoke")
                                         .addAnnotation(Override::class.java)
@@ -85,7 +86,7 @@ class NimbusProcessor: AbstractProcessor() {
                                 val argBlock = CodeBlock.builder()
                                         .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
                                         .indent()
-                                        .add("new \$T(callbackId$argIndex),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
+                                        .add("new \$T(\$NId),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), it.simpleName)
 
                                 declaredType.typeArguments.dropLast(1).forEachIndexed { index, typeMirror ->
                                     if (typeMirror.kind == TypeKind.WILDCARD) {
@@ -120,6 +121,7 @@ class NimbusProcessor: AbstractProcessor() {
                                 methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
 
                             } else {
+                                // TODO: here we need to handle Objects that should be encoded/decoded
                                 // What should this do? Probs emit a compile error or something...
                                 methodSpec.addStatement("\$T \$N = null", it.asType(), it.simpleName)
                             }
