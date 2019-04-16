@@ -67,10 +67,11 @@ class Nimbus {
           }
           return arg;
         });
-        if (args.length > 0) {
-          return Promise.resolve(f.call(src, ...args));
+        let result = f.call(src, ...args);
+        if (result !== undefined) {
+          result = JSON.parse(result);
         }
-        return Promise.resolve(f.call(src));
+        return Promise.resolve(result);
       };
     });
     return dest;

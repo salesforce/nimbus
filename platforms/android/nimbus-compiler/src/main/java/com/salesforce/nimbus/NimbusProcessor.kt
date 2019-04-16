@@ -10,7 +10,6 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.WildcardType
-import javax.tools.Diagnostic
 
 class NimbusProcessor: AbstractProcessor() {
 
@@ -54,20 +53,12 @@ class NimbusProcessor: AbstractProcessor() {
 
                     // check if param needs conversion
                     when(it.asType().kind) {
-                        TypeKind.BOOLEAN -> {
-                            methodSpec.addParameter(TypeName.BOOLEAN, it.simpleName.toString())
-                        }
-                        TypeKind.INT -> {
-                            methodSpec.addParameter(TypeName.INT, it.simpleName.toString())
-                        }
-                        TypeKind.DOUBLE -> {
-                            methodSpec.addParameter(TypeName.DOUBLE, it.simpleName.toString())
-                        }
-                        TypeKind.FLOAT -> {
-                            methodSpec.addParameter(TypeName.FLOAT, it.simpleName.toString())
-                        }
+                        TypeKind.BOOLEAN,
+                        TypeKind.INT,
+                        TypeKind.DOUBLE,
+                        TypeKind.FLOAT,
                         TypeKind.LONG -> {
-                            methodSpec.addParameter(TypeName.LONG, it.simpleName.toString())
+                            methodSpec.addParameter(TypeName.get(it.asType()), it.simpleName.toString())
                         }
                         TypeKind.DECLARED -> {
                             val declaredType = it.asType() as DeclaredType
@@ -80,7 +71,7 @@ class NimbusProcessor: AbstractProcessor() {
                                 val invoke = MethodSpec.methodBuilder("invoke")
                                         .addAnnotation(Override::class.java)
                                         .addModifiers(Modifier.PUBLIC)
-                                        // TODO: only Void is supported, emit an error if not void
+                                        // TODO: only Void return is supported in callbacks, emit an error if not void
                                         .returns(TypeName.get(declaredType.typeArguments.last()))
 
                                 val argBlock = CodeBlock.builder()
@@ -139,8 +130,42 @@ class NimbusProcessor: AbstractProcessor() {
                     argIndex++
                 }
 
-                val hasReturn = it.returnType.kind != TypeKind.VOID
-                methodSpec.addCode("${if (hasReturn) "return " else "" }target.\$N(${arguments.joinToString(", ")});\n", it.simpleName.toString())
+                // JSON Encode the return value if necessary
+                val argsString = arguments.joinToString(", ")
+                when (it.returnType.kind) {
+                    TypeKind.VOID -> {
+                        methodSpec.addStatement("target.\$N(${argsString})", it.simpleName.toString())
+                    }
+                    TypeKind.DECLARED -> {
+
+                        if (it.returnType.toString().equals("java.lang.String")) {
+                            methodSpec.addStatement("return \$T.quote(target.\$N(${argsString}))",
+                                    ClassName.get("org.json", "JSONObject"),
+                                    it.simpleName.toString())
+                        } else {
+
+                            val supertypes = processingEnv.typeUtils.directSupertypes(it.returnType)
+                            var found = false
+                            for (supertype in supertypes) {
+                                if (supertype.toString().equals("com.salesforce.nimbus.JSONSerializable")) {
+                                    found = true
+                                }
+                            }
+
+                            if (found) {
+                                methodSpec.returns(String::class.java)
+                                methodSpec.addStatement("return target.\$N(${argsString}).stringify()", it.simpleName.toString())
+                            } else {
+                                // TODO: should we even allow this? what should the behavior be?
+                                methodSpec.addStatement("return target.\$N(${argsString})", it.simpleName.toString())
+                            }
+                        }
+                    }
+                    else -> {
+                        // TODO: we should whitelist types we know work rather than just hoping for the best
+                        methodSpec.addStatement("return target.\$N(${argsString})", it.simpleName.toString())
+                    }
+                }
 
                 type.addMethod(methodSpec.build())
             }
@@ -150,7 +175,6 @@ class NimbusProcessor: AbstractProcessor() {
                     .addStaticImport(ClassName.get("com.salesforce.nimbus", "ConnectionKt"), "callJavascript")
                     .build()
                     .writeTo(processingEnv.filer)
-
         }
 
         return true

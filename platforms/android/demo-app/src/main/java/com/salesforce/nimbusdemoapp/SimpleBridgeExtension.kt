@@ -16,7 +16,14 @@ import java.util.*
 @Extension
 class SimpleBridgeExtension : NimbusExtension {
 
-    data class Foo(val name: String, val title: String) {
+    data class Foo(val name: String, val title: String): JSONSerializable {
+        override fun stringify(): String {
+            val jsonObject = JSONObject()
+            jsonObject.put("name", name)
+            jsonObject.put("title", title)
+            return jsonObject.toString()
+        }
+
         companion object {
             @JvmStatic
             fun fromJSON(jsonString: String): Foo {
@@ -47,6 +54,11 @@ class SimpleBridgeExtension : NimbusExtension {
     @ExtensionMethod
     fun funArg(arg: (String, Int) -> Void) {
         arg("result", 37)
+    }
+
+    @ExtensionMethod
+    fun serializable(): Foo {
+        return Foo("Astro", "mascot")
     }
 
     @JavascriptInterface
