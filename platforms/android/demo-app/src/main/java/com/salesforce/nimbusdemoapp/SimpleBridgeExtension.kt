@@ -36,7 +36,6 @@ class SimpleBridgeExtension : NimbusExtension {
     }
 
     @ExtensionMethod
-    @JavascriptInterface
     fun currentTime(): String {
         return Date().toString()
     }
@@ -59,12 +58,6 @@ class SimpleBridgeExtension : NimbusExtension {
     @ExtensionMethod
     fun serializable(): Foo {
         return Foo("Astro", "mascot")
-    }
-
-    @JavascriptInterface
-    fun funArg1(arg: Callback) {
-        arg.call(arrayOf("result"))
-
     }
 
     override fun bindToWebView(webView: WebView) {
