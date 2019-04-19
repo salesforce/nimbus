@@ -408,7 +408,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
-				29CD07F72215DD29007D3AF3 /* Run SwiftFormat */,
 				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
@@ -678,26 +677,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"PODS/SwiftLint/swiftlint\"\n";
-			showEnvVarsInLog = 0;
-		};
-		29CD07F72215DD29007D3AF3 /* Run SwiftFormat */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run SwiftFormat";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"Pods/SwiftFormat/CommandLineTool/swiftformat\" .\n";
+			shellScript = "[[ -z \"${CARTHAGE}\" ]] && \"./Pods/SwiftLint/swiftlint\" || echo \"Skipping SwiftLint in Carthage build\"\n";
 			showEnvVarsInLog = 0;
 		};
 		29DA183C220CF4B100D02CDA /* Build test web app */ = {
