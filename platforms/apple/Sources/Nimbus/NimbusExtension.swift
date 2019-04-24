@@ -7,6 +7,6 @@
 
 import WebKit
 
-public protocol NimbusExtension {
+@objc public protocol NimbusExtension {
     func bindToWebView(webView: WKWebView)
 }
