@@ -34,7 +34,8 @@ public class NimbusBridge : NSObject {
 //        }
     }
 
-    @objc public init(appURL: URL) {
+    @objc public init(appURL: URL,  config: WKWebViewConfiguration ) {
+        webViewConfiguration = config
         webViewConfiguration.preferences.javaScriptEnabled = true
         #if DEBUG
             webViewConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
@@ -81,9 +82,10 @@ public class NimbusBridge : NSObject {
 
     @objc public let contentView: BaseView
     @objc public var webView: WKWebView?
+    @objc public let webViewConfiguration: WKWebViewConfiguration
+    
     public private(set) var state: State = .notReady
 
     var extensions: [NimbusExtension] = []
-    let webViewConfiguration = WKWebViewConfiguration()
     let appURL: URL
 }
