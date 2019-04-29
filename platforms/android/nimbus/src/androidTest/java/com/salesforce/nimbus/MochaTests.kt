@@ -7,9 +7,9 @@
 
 package com.salesforce.nimbus
 
-import android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import junit.framework.Assert.assertEquals

@@ -7,7 +7,7 @@
 
 package com.salesforce.nimbus
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,7 +24,7 @@ class NimbusBridge(val context: Context, val appUrl: String) {
         READY,
     }
 
-    class NimbusFragment() : Fragment() {
+    class NimbusFragment() : androidx.fragment.app.Fragment() {
         private var webView: WebView? = null
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,7 +45,7 @@ class NimbusBridge(val context: Context, val appUrl: String) {
 
     val fragment: Fragment = NimbusFragment()
     private val nimbusFragment: NimbusFragment
-        get() = this.fragment as NimbusFragment;
+        get() = this.fragment as NimbusFragment
 
     // TODO: do we need to start with a null webview? See if we can get rid
     // of the preinitializing state and just start with an instantiated webview
