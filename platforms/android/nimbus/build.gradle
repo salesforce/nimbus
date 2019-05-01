@@ -26,6 +26,9 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -34,12 +37,15 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.slf4j:slf4j-nop:1.7.25'
     testImplementation 'org.json:json:20180130'
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.1.11'
+    testImplementation "io.mockk:mockk:1.9.3.kotlin12"
+    kaptTest project(":nimbus-compiler")
 
     androidTestImplementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     androidTestImplementation 'androidx.test:runner:1.1.1'
@@ -50,7 +56,6 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.3.1")
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    //
 }
 
 /*

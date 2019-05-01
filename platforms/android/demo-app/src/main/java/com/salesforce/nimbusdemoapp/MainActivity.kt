@@ -8,25 +8,24 @@
 package com.salesforce.nimbusdemoapp
 
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import com.salesforce.nimbus.NimbusBridge
 
 class MainActivity : AppCompatActivity() {
 
-    val bridge: NimbusBridge = NimbusBridge(this, "http://10.0.2.2:3000")
+    private val bridge: NimbusBridge = NimbusBridge("http://10.0.2.2:3000")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val fm = supportFragmentManager
-        if (fm.findFragmentByTag(bridge.fragment.tag) == null) {
-            val ft = fm.beginTransaction()
-            ft.add(R.id.container, bridge.fragment)
-            ft.commit()
-        }
-
+        val webView = findViewById<WebView>(R.id.webview)
         bridge.addExtension(SimpleBridgeExtension())
-        bridge.initialize()
+        bridge.attach(webView)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bridge.detach()
     }
 }

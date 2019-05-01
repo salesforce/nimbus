@@ -7,55 +7,8 @@
 
 package com.salesforce.nimbus
 
-import android.annotation.SuppressLint
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import org.json.JSONObject
-import java.util.*
-
-/**
- * Connects the specified [target] object to the [webView].
- *
- * The [target] object should have methods that are to be exposed
- * to JavaScript annotated with the [android.webkit.JavascriptInterface] annotation
- */
-@SuppressLint("JavascriptInterface")
-internal class Connection(val webView: WebView, val target: Any, val name: String) {
-
-    init {
-        val clazz = target::class
-        val className = clazz.java.name
-        val binderName = className + "Binder"
-        val binderClass = clazz.java.classLoader.loadClass(binderName)
-        val constructor = binderClass.getConstructor(clazz.java, WebView::class.java)
-
-        val binder = constructor.newInstance(target, webView);
-
-        // TODO: ?
-        webView.addJavascriptInterface(binder, "_" + name)
-
-        connectionMap[webView]?.addConnection(this)
-    }
-
-    companion object {
-        val connectionMap: WeakHashMap<WebView, NimbusConnectionBridge> = WeakHashMap()
-    }
-}
-
-/**
- * Connect the specified [target] object to this WebView.
- *
- * The [target] object should have methods that are to be exposed
- * to JavaScript annotated with the [android.webkit.JavascriptInterface] annotation
- */
-fun WebView.addConnection(target: Any, name: String) {
-
-    if (Connection.connectionMap[this] == null) {
-        Connection.connectionMap[this] = NimbusConnectionBridge(this)
-    }
-
-    Connection(this, target, name)
-}
 
 /**
  * Asynchronously call a Javascript function. This method must be called on UI thread.
@@ -73,7 +26,7 @@ fun WebView.addConnection(target: Any, name: String) {
 fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
     val jsonObject = JSONObject()
     args.forEachIndexed { index, jsonSerializable ->
-        val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable;
+        val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable
         if (asPrimitive != null) {
             jsonObject.put(index.toString(), asPrimitive.value)
         } else {
@@ -86,20 +39,20 @@ fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyA
     val jsonString = jsonObject.toString()
     val scriptTemplate = """
         try {
-            var jsonData = ${jsonString};
+            var jsonData = $jsonString;
             var jsonArr = Object.values(jsonData);
             if (jsonArr && jsonArr.length > 0) {
-                ${name}(...jsonArr);
+                $name(...jsonArr);
             } else {
-                ${name}();
+                $name();
             }
         } catch(e) {
             console.log('Error parsing JSON during a call to callJavascript:' + e.toString());
         }
     """.trimIndent()
 
-    this.handler.post {
-        this.evaluateJavascript(scriptTemplate) { value ->
+    handler.post {
+        evaluateJavascript(scriptTemplate) { value ->
             completionHandler?.let {
                 completionHandler(value)
             }
@@ -118,21 +71,20 @@ fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyA
  *                          have to pass a closure if you are not interested in getting the callback.
  */
 fun WebView.broadcastMessage(name: String, arg: JSONSerializable? = null, completionHandler: ((result: Int) -> Unit)? = null) {
-    var scriptTemplate: String
-    if (arg != null) {
-        scriptTemplate = """
+    val scriptTemplate: String = if (arg != null) {
+        """
             try {
                 var value = ${arg.stringify()};
-                nimbus.broadcastMessage('${name}', value);
+                nimbus.broadcastMessage('$name', value);
             } catch(e) {
                 console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
             }
         """.trimIndent()
 
     } else {
-        scriptTemplate = "nimbus.broadcastMessage('${name}');"
+        "nimbus.broadcastMessage('$name');"
     }
-    this.evaluateJavascript(scriptTemplate) { value ->
+    evaluateJavascript(scriptTemplate) { value ->
         completionHandler?.let {
             completionHandler(value.toInt())
         }

@@ -1,6 +1,5 @@
 package com.salesforce.nimbus
 
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
-annotation class Extension {
-}
+annotation class Extension(val name: String)

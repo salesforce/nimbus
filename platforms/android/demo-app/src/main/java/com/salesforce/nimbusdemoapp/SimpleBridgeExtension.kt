@@ -7,13 +7,14 @@
 
 package com.salesforce.nimbusdemoapp
 
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import com.salesforce.nimbus.*
+import com.salesforce.nimbus.Extension
+import com.salesforce.nimbus.ExtensionMethod
+import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.NimbusExtension
 import org.json.JSONObject
-import java.util.*
+import java.util.Date
 
-@Extension
+@Extension(name = "DemoBridge")
 class SimpleBridgeExtension : NimbusExtension {
 
     data class Foo(val name: String, val title: String): JSONSerializable {
@@ -58,9 +59,5 @@ class SimpleBridgeExtension : NimbusExtension {
     @ExtensionMethod
     fun serializable(): Foo {
         return Foo("Astro", "mascot")
-    }
-
-    override fun bindToWebView(webView: WebView) {
-        webView.addConnection(this, "DemoBridge")
     }
 }
