@@ -16,7 +16,7 @@ import WebKit
 #else
 #endif
 
-public class NimbusBridge : NSObject {
+public class NimbusBridge: NSObject {
     public enum State {
         case notReady
         case initializing
@@ -34,7 +34,7 @@ public class NimbusBridge : NSObject {
 //        }
     }
 
-    @objc public init(appURL: URL,  config: WKWebViewConfiguration ) {
+    @objc public init(appURL: URL, config: WKWebViewConfiguration = WKWebViewConfiguration()) {
         webViewConfiguration = config
         webViewConfiguration.preferences.javaScriptEnabled = true
         #if DEBUG
@@ -43,7 +43,7 @@ public class NimbusBridge : NSObject {
         self.appURL = appURL
         contentView = BaseView(frame: .zero)
     }
-    
+
     @objc public func addExtension(ext: NimbusExtension) {
         extensions.append(ext)
     }
@@ -53,8 +53,6 @@ public class NimbusBridge : NSObject {
     }
 
     // TODO: this name stinks, but what is a better one? ¯\_(ツ)_/¯
-    
-    
     @objc public func initialize() {
         state = .initializing
 
@@ -69,9 +67,9 @@ public class NimbusBridge : NSObject {
         initializeExtensions(extensions)
 
         state = .ready
-	//TODO FSL need to control loading of the webview to allow loading from file 
-	// also need to configure webview and preferences first so maybe a delegate pattern is needed.
-//        webView?.load(URLRequest(url: appURL))
+        //TODO FSL need to control loading of the webview to allow loading from file
+        // also need to configure webview and preferences first so maybe a delegate pattern is needed.
+        // webView?.load(URLRequest(url: appURL))
     }
 
     func initializeExtensions(_ extensions: [NimbusExtension]) {
@@ -83,7 +81,7 @@ public class NimbusBridge : NSObject {
     @objc public let contentView: BaseView
     @objc public var webView: WKWebView?
     @objc public let webViewConfiguration: WKWebViewConfiguration
-    
+
     public private(set) var state: State = .notReady
 
     var extensions: [NimbusExtension] = []
