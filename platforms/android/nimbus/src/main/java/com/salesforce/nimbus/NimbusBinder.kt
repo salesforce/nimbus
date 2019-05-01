@@ -10,7 +10,7 @@ package com.salesforce.nimbus
 /**
  * Binder interface for the generated [NimbusExtension] binder class.
  */
-internal interface NimbusBinder {
+interface NimbusBinder {
 
   /**
    * Returns the [NimbusExtension] that this binder is bound to.
