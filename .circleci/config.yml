@@ -108,6 +108,13 @@ jobs:
           working_directory: platforms/android
           command: ./gradlew testDebugUnitTest
 
+      - store_artifacts:
+          path: platforms/android/nimbus/build/reports
+          destination: reports
+
+      - store_test_results:
+          path: platforms/android/nimbus/build/test-results
+
   build-and-test-ts:
     docker:
       - image: circleci/node:10
