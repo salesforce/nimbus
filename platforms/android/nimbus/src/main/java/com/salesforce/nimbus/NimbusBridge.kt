@@ -23,8 +23,7 @@ class NimbusBridge(private val appUrl: String) {
     private val binders = mutableListOf<NimbusBinder>()
 
     /**
-     * Adds a [NimbusExtension] to the bridge. NOTE: The [NimbusExtension] must be annotated with
-     * [Extension].
+     * Adds a [NimbusBinder] to the bridge.
      */
     fun add(vararg binder: NimbusBinder) {
         binders.addAll(binder)
