@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import com.salesforce.nimbus.NimbusBridge
-import com.salesforce.nimbus.SimpleBridgeExtensionBinder
 
 class MainActivity : AppCompatActivity() {
 

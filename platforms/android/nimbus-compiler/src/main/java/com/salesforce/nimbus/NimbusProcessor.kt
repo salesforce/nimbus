@@ -74,7 +74,7 @@ class NimbusProcessor: AbstractProcessor() {
             }
 
             extensionMethodsElements.groupBy { it.enclosingElement }.forEach { (element, methods) ->
-                val packageName = "com.salesforce.nimbus"
+                val packageName = processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
                 val typeName = element.simpleName.toString() + "Binder"
                 val stringClassName = ClassName.get(String::class.java)
 
