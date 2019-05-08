@@ -67,7 +67,7 @@ public class NimbusBridge: NSObject {
         initializeExtensions(extensions)
 
         state = .ready
-        //TODO FSL need to control loading of the webview to allow loading from file
+        //TODO: FSL need to control loading of the webview to allow loading from file
         // also need to configure webview and preferences first so maybe a delegate pattern is needed.
         // webView?.load(URLRequest(url: appURL))
     }
