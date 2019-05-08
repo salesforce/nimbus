@@ -7,6 +7,8 @@
 
 package com.salesforce.nimbus
 
+import android.webkit.WebView
+
 /**
  * Binder interface for the generated [NimbusExtension] binder class.
  */
@@ -21,4 +23,9 @@ interface NimbusBinder {
    * Returns the name of the extension which will be used as the javascript interface.
    */
   fun getExtensionName(): String
+
+  /**
+   * Sets the [WebView] on the binder so it can make internal calls to it.
+   */
+  fun setWebView(webView: WebView?)
 }

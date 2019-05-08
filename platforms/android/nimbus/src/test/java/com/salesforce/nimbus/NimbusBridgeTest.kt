@@ -23,16 +23,21 @@ class NimbusBridgeTest {
   private val mockWebView = mockk<WebView>(relaxed = true) {
     every { settings } returns mockWebSettings
   }
-  private val mockValidExtension = mockk<ValidExtension>(relaxed = true)
-  private val mockValidExtension2 = mockk<ValidExtension2>(relaxed = true)
-  private val mockInvalidExtension = mockk<InvalidExtension>(relaxed = true)
+  private val mockExtension1 = mockk<Extension1>(relaxed = true)
+  private val mockExtension1Binder = mockk<Extension1Binder>(relaxed = true) {
+    every { getExtension() } returns mockExtension1
+    every { getExtensionName() } returns "Test"
+  }
+  private val mockExtension2 = mockk<Extension2>(relaxed = true)
+  private val mockExtension2Binder = mockk<Extension2Binder>(relaxed = true) {
+    every { getExtension() } returns mockExtension2
+    every { getExtensionName() } returns "Test2"
+  }
 
   @Before
   fun setUp() {
     bridge = NimbusBridge("http://localhost")
-    bridge.addExtension(mockValidExtension)
-    bridge.addExtension(mockValidExtension2)
-    bridge.addExtension(mockInvalidExtension)
+    bridge.add(mockExtension1Binder, mockExtension2Binder)
   }
 
   @Test
@@ -48,18 +53,24 @@ class NimbusBridgeTest {
   }
 
   @Test
-  fun attachAllowsValidExtensionsToCustomize() {
+  fun attachAllowsExtensionsToCustomize() {
     bridge.attach(mockWebView)
-    verify { mockValidExtension.customize(mockWebView) }
-    verify { mockValidExtension2.customize(mockWebView) }
-    verify(exactly = 0) { mockInvalidExtension.customize(mockWebView) }
+    verify { mockExtension1.customize(mockWebView) }
+    verify { mockExtension2.customize(mockWebView) }
+  }
+
+  @Test
+  fun attachSetsWebViewOnBinders() {
+    bridge.attach(mockWebView)
+    verify { mockExtension1Binder.setWebView(mockWebView) }
+    verify { mockExtension2Binder.setWebView(mockWebView) }
   }
 
   @Test
   fun attachAddsBinderJavascriptInterfaces() {
     bridge.attach(mockWebView)
-    verify { mockWebView.addJavascriptInterface(ofType(ValidExtensionBinder::class), eq("_Test")) }
-    verify { mockWebView.addJavascriptInterface(ofType(ValidExtension2Binder::class), eq("_Test2")) }
+    verify { mockWebView.addJavascriptInterface(ofType(Extension1Binder::class), eq("_Test")) }
+    verify { mockWebView.addJavascriptInterface(ofType(Extension2Binder::class), eq("_Test2")) }
   }
 
   @Test
@@ -79,8 +90,16 @@ class NimbusBridgeTest {
   fun detachCleansUpExtensions() {
     bridge.attach(mockWebView)
     bridge.detach()
-    verify { mockValidExtension.cleanup(mockWebView) }
-    verify { mockValidExtension2.cleanup(mockWebView) }
+    verify { mockExtension1.cleanup(mockWebView) }
+    verify { mockExtension2.cleanup(mockWebView) }
+  }
+
+  @Test
+  fun detachSetsWebViewToNullOnBinders() {
+    bridge.attach(mockWebView)
+    bridge.detach()
+    verify { mockExtension1Binder.setWebView(null) }
+    verify { mockExtension2Binder.setWebView(null) }
   }
 
   @Test
@@ -114,10 +133,8 @@ class NimbusBridgeTest {
   }
 }
 
-class InvalidExtension : NimbusExtension
-
 @Extension(name = "Test")
-class ValidExtension : NimbusExtension {
+class Extension1 : NimbusExtension {
 
   @ExtensionMethod
   fun foo(): String {
@@ -126,7 +143,7 @@ class ValidExtension : NimbusExtension {
 }
 
 @Extension(name = "Test2")
-class ValidExtension2 : NimbusExtension {
+class Extension2 : NimbusExtension {
 
   @ExtensionMethod
   fun foo(): String {
