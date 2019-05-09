@@ -1,0 +1,66 @@
+apply plugin: 'com.jfrog.bintray'
+
+// Android projects need enhanced maven plugin
+if (project.getPlugins().hasPlugin('com.android.application') ||
+        project.getPlugins().hasPlugin('com.android.library')) {
+    apply plugin: 'com.github.dcendents.android-maven'
+} else {
+    apply plugin: 'maven'
+}
+
+
+version = VERSION
+group = GROUP
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                name project.name
+                url POM_URL
+
+                packaging POM_PACKAGING
+                version version
+
+                licenses {
+                    license {
+                        name POM_LICENSE_NAME
+                        url POM_LICENSE_URL
+                    }
+                }
+
+                developers {
+                    developer {
+                        name POM_DEVELOPER
+                    }
+                }
+
+                scm {
+                    url POM_SCM_URL
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                }
+            }
+        }
+    }
+}
+
+
+bintray {
+    user = project.findProperty('bintrayUser') ?: System.getenv('BINTRAY_USER')
+    key = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
+    configurations = ['archives']
+    override = true
+    pkg {
+        name = project.name
+        repo = BINTRAY_REPO
+        userOrg = BINTRAY_ORG
+        licenses = [POM_LICENSE_NAME]
+        vcsUrl = POM_SCM_URL
+        labels = ['android', 'salesforce', 'hybrid']
+        version {
+            name = project.version
+            released = new Date()
+        }
+    }
+}
