@@ -160,7 +160,7 @@ class NimbusProcessor: AbstractProcessor() {
                                             val wild = typeMirror as WildcardType
                                             invoke.addParameter(TypeName.get(wild.superBound), "arg$index")
                                         }
-                                        argBlock.add("new \$T(arg$index),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
+                                        argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                     }
 
                                     argBlock.unindent().add("};\n")

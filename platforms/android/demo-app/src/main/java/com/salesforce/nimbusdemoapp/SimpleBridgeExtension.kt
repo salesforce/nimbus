@@ -57,6 +57,11 @@ class SimpleBridgeExtension : NimbusExtension {
     }
 
     @ExtensionMethod
+    fun nullableFunArg(arg: (String?, String?) -> Unit) {
+        arg("result", null)
+    }
+
+    @ExtensionMethod
     fun serializable(): Foo {
         return Foo("Astro", "mascot")
     }

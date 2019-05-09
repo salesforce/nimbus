@@ -8,5 +8,5 @@
 package com.salesforce.nimbus
 
 interface JSONSerializable {
-    fun stringify(): String;
+    fun stringify(): String
 }
