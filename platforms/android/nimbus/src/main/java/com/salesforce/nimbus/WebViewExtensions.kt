@@ -80,7 +80,6 @@ fun WebView.broadcastMessage(name: String, arg: JSONSerializable? = null, comple
                 console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
             }
         """.trimIndent()
-
     } else {
         "nimbus.broadcastMessage('$name');"
     }

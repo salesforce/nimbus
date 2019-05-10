@@ -25,8 +25,7 @@ import javax.lang.model.type.WildcardType
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
-
-class NimbusProcessor: AbstractProcessor() {
+class NimbusProcessor : AbstractProcessor() {
 
     private lateinit var messager: Messager
     private lateinit var types: Types
@@ -128,7 +127,7 @@ class NimbusProcessor: AbstractProcessor() {
                     methodElement.parameters.forEach {
 
                         // check if param needs conversion
-                        when(it.asType().kind) {
+                        when (it.asType().kind) {
                             TypeKind.BOOLEAN,
                             TypeKind.INT,
                             TypeKind.DOUBLE,
@@ -195,7 +194,6 @@ class NimbusProcessor: AbstractProcessor() {
                                         .addMethod(invoke.build())
                                         .build()
                                     methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
-
                                 } else {
                                     // TODO: we also want to support kotlinx.serializable eventually
 
@@ -219,12 +217,12 @@ class NimbusProcessor: AbstractProcessor() {
                     val argsString = arguments.joinToString(", ")
                     when (it.returnType.kind) {
                         TypeKind.VOID -> {
-                            methodSpec.addStatement("target.\$N(${argsString})", it.simpleName.toString())
+                            methodSpec.addStatement("target.\$N($argsString)", it.simpleName.toString())
                         }
                         TypeKind.DECLARED -> {
 
                             if (it.returnType.toString().equals("java.lang.String")) {
-                                methodSpec.addStatement("return \$T.quote(target.\$N(${argsString}))",
+                                methodSpec.addStatement("return \$T.quote(target.\$N($argsString))",
                                     ClassName.get("org.json", "JSONObject"),
                                     it.simpleName.toString())
                             } else {
@@ -239,16 +237,16 @@ class NimbusProcessor: AbstractProcessor() {
 
                                 if (found) {
                                     methodSpec.returns(String::class.java)
-                                    methodSpec.addStatement("return target.\$N(${argsString}).stringify()", it.simpleName.toString())
+                                    methodSpec.addStatement("return target.\$N($argsString).stringify()", it.simpleName.toString())
                                 } else {
                                     // TODO: should we even allow this? what should the behavior be?
-                                    methodSpec.addStatement("return target.\$N(${argsString})", it.simpleName.toString())
+                                    methodSpec.addStatement("return target.\$N($argsString)", it.simpleName.toString())
                                 }
                             }
                         }
                         else -> {
                             // TODO: we should whitelist types we know work rather than just hoping for the best
-                            methodSpec.addStatement("return target.\$N(${argsString})", it.simpleName.toString())
+                            methodSpec.addStatement("return target.\$N($argsString)", it.simpleName.toString())
                         }
                     }
 

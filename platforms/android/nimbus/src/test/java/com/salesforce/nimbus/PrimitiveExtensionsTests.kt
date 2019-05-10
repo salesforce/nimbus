@@ -26,7 +26,6 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
                     a.toJSONSerializable()
                 } catch (e: Exception) {
                     sameExceptionMessage = e.message.equals("Double value should be finite.")
-
                 }
                 sameExceptionMessage
             } else {

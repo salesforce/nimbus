@@ -17,7 +17,7 @@ internal class PrimitiveJSONSerializable(val value: Any) : JSONSerializable {
         val jsonObject = JSONObject()
         jsonObject.put("", value)
         if (jsonObject.get("") == null) {
-            throw IllegalArgumentException("Failed to put into JSONObject, make sure value is a primitive");
+            throw IllegalArgumentException("Failed to put into JSONObject, make sure value is a primitive")
         }
         stringifiedValue = jsonObject.toString()
     }
@@ -52,7 +52,7 @@ fun Double.toJSONSerializable(): JSONSerializable {
     // Comparing NaN requires a different way
     // https://stackoverflow.com/questions/37884133/comparing-nan-in-kotlin
     if (this == Double.NEGATIVE_INFINITY || this == Double.POSITIVE_INFINITY || this.equals(Double.NaN as Number)) {
-        throw IllegalArgumentException("Double value should be finite.");
+        throw IllegalArgumentException("Double value should be finite.")
     } else {
         return PrimitiveJSONSerializable(this)
     }
