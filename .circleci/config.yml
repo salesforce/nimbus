@@ -108,6 +108,11 @@ jobs:
           working_directory: platforms/android
           command: ./gradlew testDebugUnitTest
 
+      - run:
+          name: Lint Android
+          working_directory: platforms/android
+          command: ./gradlew ktlint
+
       - store_artifacts:
           path: platforms/android/nimbus/build/reports
           destination: reports

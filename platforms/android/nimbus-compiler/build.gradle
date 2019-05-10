@@ -1,5 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
+apply from: rootProject.file('gradle/lint.gradle')
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

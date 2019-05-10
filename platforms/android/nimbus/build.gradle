@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply from: rootProject.file('gradle/lint.gradle')
 
 android {
     compileSdkVersion 28
@@ -41,7 +42,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.slf4j:slf4j-nop:1.7.25'
-    testImplementation 'org.json:json:20180130'
+    testImplementation 'org.json:json:20180813'
     testImplementation 'io.kotlintest:kotlintest-runner-junit4:3.1.5'
     testImplementation "io.mockk:mockk:1.9.3.kotlin12"
     kaptTest project(":nimbus-compiler")
