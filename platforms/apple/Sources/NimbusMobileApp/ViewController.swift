@@ -25,6 +25,7 @@ class ViewController: UIViewController {
         bridge.addExtension(DemoBridge())
         bridge.addExtension(DeviceExtension())
         bridge.initialize()
+        bridge.webView?.load(URLRequest(url: url))
     }
 
     override func loadView() {

@@ -33,13 +33,9 @@ public class DeviceExtension {
 }
 
 extension DeviceExtension: NimbusExtension {
-    public func preload(config: [String: String], webViewConfiguration: WKWebViewConfiguration, callback: @escaping (Bool) -> Void) {
-        callback(true)
-    }
-
-    public func load(config: [String: String], webView: WKWebView, callback: @escaping (Bool) -> Void) {
+    public func bindToWebView(webView: WKWebView) {
         let connection = webView.addConnection(to: self, as: "DeviceExtension")
         connection.bind(DeviceExtension.getDeviceInfo, as: "getDeviceInfo")
-        callback(true)
     }
+
 }
