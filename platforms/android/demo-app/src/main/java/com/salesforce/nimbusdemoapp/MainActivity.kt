@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import com.salesforce.nimbus.NimbusBridge
+import com.salesforce.nimbus.extensions.DeviceExtension
+import com.salesforce.nimbus.extensions.DeviceExtensionBinder
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +23,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val webView = findViewById<WebView>(R.id.webview)
         bridge.add(SimpleBridgeExtensionBinder(SimpleBridgeExtension()))
+        bridge.add(DeviceExtensionBinder(DeviceExtension(this)))
         bridge.attach(webView)
+        WebView.setWebContentsDebuggingEnabled(true)
     }
 
     override fun onDestroy() {
