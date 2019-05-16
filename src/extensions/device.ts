@@ -1,10 +1,16 @@
-import {Extension} from '../extension';
+//
+// Copyright (c) 2019, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or
+// https://opensource.org/licenses/BSD-3-Clause
+//
 
 /**
  * The Device extensions provides access to information about the device in
  * which the application is executing.
  */
-export interface DeviceExtension extends Extension {
+export interface DeviceExtension {
   /// Return information about the current device
   getDeviceInfo(): Promise<DeviceInfo>;
 }
@@ -23,7 +29,5 @@ export interface DeviceInfo {
 }
 
 declare global {
-  interface Extensions {
-    device?: DeviceExtension;
-  }
+  let DeviceExtension: DeviceExtension;
 }

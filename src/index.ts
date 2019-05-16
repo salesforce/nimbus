@@ -34,9 +34,6 @@ class Nimbus {
     }
   }
 
-  /// The collection of loaded extensions available to the app
-  public extensions: Extensions = {};
-
   // There can be many promises so creating a storage for later look-up.
   public promises: {
     [s: string]: { resolve: Function; reject: Function };
