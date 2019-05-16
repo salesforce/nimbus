@@ -17,7 +17,6 @@
 		291A860B21E530BC00510832 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		291A861021E531B200510832 /* NimbusBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* NimbusBridge.swift */; };
 		291A861121E531B200510832 /* NimbusExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FD21E5302C00510832 /* NimbusExtension.swift */; };
-		291A861221E531B200510832 /* NimbusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FB21E5302C00510832 /* NimbusView.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
 		29245EE6220CE18100F9EEAF /* test-www in Resources */ = {isa = PBXBuildFile; fileRef = 29245EE5220CE18100F9EEAF /* test-www */; };
 		2937362E2211E288007EB62D /* CallableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433602200FE3400E6D084 /* CallableTests.swift */; };
@@ -126,7 +125,6 @@
 		291A85EF21E52D4000510832 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		291A85F221E52D4000510832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		291A85F421E52D4000510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		291A85FB21E5302C00510832 /* NimbusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusView.swift; sourceTree = "<group>"; };
 		291A85FC21E5302C00510832 /* NimbusBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusBridge.swift; sourceTree = "<group>"; };
 		291A85FD21E5302C00510832 /* NimbusExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusExtension.swift; sourceTree = "<group>"; };
 		291A860321E530BC00510832 /* Nimbus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nimbus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -292,7 +290,6 @@
 				291A860521E530BC00510832 /* Nimbus.h */,
 				291A85FC21E5302C00510832 /* NimbusBridge.swift */,
 				291A85FD21E5302C00510832 /* NimbusExtension.swift */,
-				291A85FB21E5302C00510832 /* NimbusView.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
 			);
 			name = Nimbus;
@@ -752,7 +749,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */,
-				291A861221E531B200510832 /* NimbusView.swift in Sources */,
 				291A861021E531B200510832 /* NimbusBridge.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,

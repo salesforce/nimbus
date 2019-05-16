@@ -24,25 +24,24 @@ extension DemoBridge: NimbusExtension {
 
 class ViewController: NSViewController {
     init() {
-        bridge = NimbusBridge(appURL: URL(string: "http://localhost:3000/")!)
         super.init(nibName: nil, bundle: nil)
         title = "Nimbus"
         bridge.addExtension(DemoBridge())
-        bridge.initialize()
     }
 
     required init?(coder: NSCoder) {
-        bridge = NimbusBridge(appURL: URL(string: "http://localhost:3000/")!)
         super.init(coder: coder)
         title = "Nimbus"
         bridge.addExtension(DemoBridge())
-        bridge.initialize()
     }
 
     override func loadView() {
-        view = bridge.contentView
+        view = self.webView
         view.frame = NSRect(x: 0, y: 0, width: 800, height: 600)
+        bridge.attach(to: webView)
+        webView.load(URLRequest(url: URL(string: "http://localhost:3000/")!))
     }
 
-    let bridge: NimbusBridge
+    lazy var webView = WKWebView(frame: .zero)
+    let bridge = NimbusBridge()
 }
