@@ -8,21 +8,8 @@ import com.salesforce.nimbus.JSONSerializable
 import com.salesforce.nimbus.NimbusExtension
 import org.json.JSONObject
 
-@Extension(name="DeviceExtension")
-class DeviceExtension(var context: Context) : NimbusExtension {
-
-    var appVersion: String
-
-    init {
-        try {
-            val appContext = context.applicationContext
-            val packageManager = appContext.packageManager
-            val packageName = appContext.packageName
-            appVersion = packageManager.getPackageInfo(packageName, 0).versionName
-        } catch (e: PackageManager.NameNotFoundException) {
-            appVersion = "unknown"
-        }
-    }
+@Extension(name = "DeviceExtension")
+class DeviceExtension(context: Context) : NimbusExtension {
 
     class DeviceInfo(val appVersion: String) : JSONSerializable {
         val platform: String = "Android"
@@ -41,9 +28,22 @@ class DeviceExtension(var context: Context) : NimbusExtension {
         }
     }
 
-    @ExtensionMethod
-    fun getDeviceInfo(): DeviceInfo {
-        return DeviceInfo(appVersion)
+    val cachedDeviceInfo: DeviceInfo
+
+    init {
+        var appVersion = "unknown"
+        try {
+            val appContext = context.applicationContext
+            val packageManager = appContext.packageManager
+            val packageName = appContext.packageName
+            appVersion = packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+        }
+        cachedDeviceInfo = DeviceInfo(appVersion)
     }
 
+    @ExtensionMethod
+    fun getDeviceInfo(): DeviceInfo {
+        return cachedDeviceInfo
+    }
 }

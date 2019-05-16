@@ -28,8 +28,10 @@ public class DeviceExtension {
     public init() {}
 
     func getDeviceInfo() -> DeviceInfo {
-        return DeviceInfo()
+        return deviceInfo
     }
+
+    let deviceInfo = DeviceInfo()
 }
 
 extension DeviceExtension: NimbusExtension {
@@ -37,5 +39,4 @@ extension DeviceExtension: NimbusExtension {
         let connection = webView.addConnection(to: self, as: "DeviceExtension")
         connection.bind(DeviceExtension.getDeviceInfo, as: "getDeviceInfo")
     }
-
 }
