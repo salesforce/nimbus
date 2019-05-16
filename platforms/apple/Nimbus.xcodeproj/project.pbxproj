@@ -41,6 +41,8 @@
 		2970E45B224F0A0F008DC004 /* Nimbus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; };
 		2970E45C224F0A0F008DC004 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2970E499224F0D46008DC004 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2970E498224F0D46008DC004 /* WebKit.framework */; };
+		298503D9228DEAAC00C1071E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503D8228DEAAC00C1071E /* Binder.swift */; };
+		298503DB228DED3500C1071E /* BinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503DA228DED3500C1071E /* BinderTests.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */; };
 		ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */; };
@@ -165,6 +167,8 @@
 		2970E451224F0A06008DC004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
+		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
+		298503DA228DED3500C1071E /* BinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinderTests.swift; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.release.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -282,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				29F8D60D223AF83B005C5AC1 /* Extensions */,
+				298503D8228DEAAC00C1071E /* Binder.swift */,
 				294433452200FA3700E6D084 /* Callable.swift */,
 				294433422200FA3700E6D084 /* Callback.swift */,
 				294433462200FA3700E6D084 /* Connection.swift */,
@@ -300,6 +305,7 @@
 			isa = PBXGroup;
 			children = (
 				29245EE5220CE18100F9EEAF /* test-www */,
+				298503DA228DED3500C1071E /* BinderTests.swift */,
 				294433602200FE3400E6D084 /* CallableTests.swift */,
 				2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */,
 				294433562200FD8D00E6D084 /* Info.plist */,
@@ -749,6 +755,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */,
+				298503D9228DEAAC00C1071E /* Binder.swift in Sources */,
 				291A861021E531B200510832 /* NimbusBridge.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
@@ -766,6 +773,7 @@
 				29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */,
 				29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */,
 				2937362E2211E288007EB62D /* CallableTests.swift in Sources */,
+				298503DB228DED3500C1071E /* BinderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

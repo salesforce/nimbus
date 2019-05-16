@@ -9,7 +9,7 @@
  `Callable` is a type-erasing function-like wrapper to provide
  a homogenous interface to functions.
  */
-protocol Callable {
+public protocol Callable {
     /**
      Call the wrapped function with the specified arguments.
      - Throws when the argument types or arity to not match
