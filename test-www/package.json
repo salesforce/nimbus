@@ -20,7 +20,7 @@
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
     "fs-extra": "^7.0.1",
-    "mocha": "^6.0.0-1",
+    "mocha": "^6.1.4",
     "rollup": "^1.1.2",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-serve": "^0.6.0",
