@@ -8,7 +8,6 @@
 import WebKit
 
 public class NimbusBridge: NSObject {
-
     @objc public func addExtension(ext: NimbusExtension) {
         extensions.append(ext)
     }
@@ -21,7 +20,7 @@ public class NimbusBridge: NSObject {
         let webViewConfiguration = webView.configuration
         webViewConfiguration.preferences.javaScriptEnabled = true
         #if DEBUG
-        webViewConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
+            webViewConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
 
         for ext in extensions {

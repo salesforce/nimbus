@@ -36,7 +36,7 @@ class ViewController: NSViewController {
     }
 
     override func loadView() {
-        view = self.webView
+        view = webView
         view.frame = NSRect(x: 0, y: 0, width: 800, height: 600)
         bridge.attach(to: webView)
         webView.load(URLRequest(url: URL(string: "http://localhost:3000/")!))

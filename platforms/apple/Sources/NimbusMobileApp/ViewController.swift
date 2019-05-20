@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     }
 
     override func loadView() {
-        view = self.webView
+        view = webView
 
         let url = Bundle.main.url(forResource: "ip", withExtension: "txt")
             .flatMap { try? String(contentsOf: $0) }
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
             ?? URL(string: "http://localhost:3000")!
 
         bridge.attach(to: webView)
-        self.webView.load(URLRequest(url: url))
+        webView.load(URLRequest(url: url))
     }
 
     lazy var webView = WKWebView(frame: .zero)
