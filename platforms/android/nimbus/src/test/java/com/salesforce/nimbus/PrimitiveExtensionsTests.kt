@@ -13,134 +13,157 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
 import org.json.JSONObject
-import org.junit.Assert.assertEquals
 import java.lang.IllegalArgumentException
 
 class PrimitiveExtensionsTests : AnnotationSpec() {
 
     @Test
     fun testArrayFromJSON_String() {
-        val json = """
+        forAll(Gen.string(), Gen.string(), Gen.string()) { value1, value2, value3 ->
+            val json = """
             [
-                "value1",
-                "value2",
-                "value3"
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                ${JSONObject.quote(value3)}
             ]
-        """.trimIndent()
+            """.trimIndent()
 
-        val array = arrayFromJSON(json, String::class.java)
-        assertEquals("value1", array[0])
-        assertEquals("value2", array[1])
-        assertEquals("value3", array[2])
+            val array = arrayFromJSON(json, String::class.java)
+            value1 == array[0] &&
+            value2 == array[1] &&
+            value3 == array[2]
+        }
     }
 
     @Test
     fun testArrayFromJSON_Int() {
-        val json = """
+        forAll(Gen.int(), Gen.int(), Gen.int()) { value1, value2, value3 ->
+            val json = """
             [
-                42,
-                37,
-                13
+                $value1,
+                $value2,
+                $value3
             ]
-        """.trimIndent()
+            """.trimIndent()
 
-        val array = arrayFromJSON(json, Integer::class.java)
-        assertEquals(42, array[0])
-        assertEquals(37, array[1])
-        assertEquals(13, array[2])
+            val array = arrayFromJSON(json, Integer::class.java)
+            value1 == array[0] as Int &&
+            value2 == array[1] as Int &&
+            value3 == array[2] as Int
+        }
     }
 
     @Test
     fun testArrayFromJSON_Any() {
-        val json = """
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+            val json = """
             [
-                "value1",
-                "value2",
-                42
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                $value3
             ]
-        """.trimIndent()
+            """.trimIndent()
 
-        val array = arrayFromJSON(json, Object::class.java)
-        assertEquals("value1", array[0])
-        assertEquals("value2", array[1])
-        assertEquals(42, array[2])
+            val array = arrayFromJSON(json, Object::class.java)
+            value1 == array[0] as String &&
+            value2 == array[1] as String &&
+            value3 == array[2] as Int
+        }
     }
 
     @Test
     fun testArrayFromJSON_String_throws() {
-        val json = """
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+            val json = """
             [
-                "value1",
-                "value2",
-                42
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                $value3
             ]
-        """.trimIndent()
+            """.trimIndent()
 
-        shouldThrow<IllegalArgumentException> {
-            arrayFromJSON(json, String::class.java)
+            shouldThrow<IllegalArgumentException> {
+                arrayFromJSON(json, String::class.java)
+            }
+
+            true
         }
     }
 
     @Test
     fun testHashMapFromJSON_String_String() {
-        val json = """
-            {
-                "key1": "value1",
-                "key2": "value2",
-                "key3": "value3"
-            }
-        """.trimIndent()
+        forAll(Gen.string(), Gen.string(), Gen.string()) { value1, value2, value3 ->
 
-        val map = hashMapFromJSON(json, String::class.java, String::class.java)
-        assertEquals("value1", map["key1"])
-        assertEquals("value2", map["key2"])
-        assertEquals("value3", map["key3"])
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": ${JSONObject.quote(value3)}
+            }
+            """.trimIndent()
+
+            val map = hashMapFromJSON(json, String::class.java, String::class.java)
+            value1 == map["key1"] &&
+            value2 == map["key2"] &&
+            value3 == map["key3"]
+        }
     }
 
     @Test
     fun testHashMapFromJSON_String_Int() {
-        val json = """
-            {
-                "key1": 42,
-                "key2": 37,
-                "key3": 13
-            }
-        """.trimIndent()
+        forAll(Gen.int(), Gen.int(), Gen.int()) { value1, value2, value3 ->
 
-        val map = hashMapFromJSON(json, String::class.java, Integer::class.java)
-        assertEquals(42, map["key1"])
-        assertEquals(37, map["key2"])
-        assertEquals(13, map["key3"])
+            val json = """
+            {
+                "key1": $value1,
+                "key2": $value2,
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            val map = hashMapFromJSON(json, String::class.java, Integer::class.java)
+            value1 == map["key1"] as Int &&
+            value2 == map["key2"] as Int &&
+            value3 == map["key3"] as Int
+        }
     }
 
     @Test
     fun testHashMapFromJSON_String_Any() {
-        val json = """
-            {
-                "key1": "value1",
-                "key2": "value2",
-                "key3": 42
-            }
-        """.trimIndent()
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
 
-        val map = hashMapFromJSON(json, String::class.java, Object::class.java)
-        assertEquals("value1", map["key1"])
-        assertEquals("value2", map["key2"])
-        assertEquals(42, map["key3"])
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            val map = hashMapFromJSON(json, String::class.java, Object::class.java)
+            value1 == map["key1"] as String &&
+            value2 == map["key2"] as String &&
+            value3 == map["key3"] as Int
+        }
     }
 
     @Test
     fun testHashMapFromJSON_String_String_throws() {
-        val json = """
-            {
-                "key1": "value1",
-                "key2": "value2",
-                "key3": 42
-            }
-        """.trimIndent()
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
 
-        shouldThrow<IllegalArgumentException> {
-            hashMapFromJSON(json, String::class.java, String::class.java)
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            shouldThrow<IllegalArgumentException> {
+                hashMapFromJSON(json, String::class.java, String::class.java)
+            }
+
+            true
         }
     }
 
