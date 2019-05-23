@@ -9,11 +9,140 @@ package com.salesforce.nimbus
 
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
 import org.json.JSONObject
+import org.junit.Assert.assertEquals
+import java.lang.IllegalArgumentException
 
 class PrimitiveExtensionsTests : AnnotationSpec() {
+
+    @Test
+    fun testArrayFromJSON_String() {
+        val json = """
+            [
+                "value1",
+                "value2",
+                "value3"
+            ]
+        """.trimIndent()
+
+        val array = arrayFromJSON(json, String::class.java)
+        assertEquals("value1", array[0])
+        assertEquals("value2", array[1])
+        assertEquals("value3", array[2])
+    }
+
+    @Test
+    fun testArrayFromJSON_Int() {
+        val json = """
+            [
+                42,
+                37,
+                13
+            ]
+        """.trimIndent()
+
+        val array = arrayFromJSON(json, Integer::class.java)
+        assertEquals(42, array[0])
+        assertEquals(37, array[1])
+        assertEquals(13, array[2])
+    }
+
+    @Test
+    fun testArrayFromJSON_Any() {
+        val json = """
+            [
+                "value1",
+                "value2",
+                42
+            ]
+        """.trimIndent()
+
+        val array = arrayFromJSON(json, Object::class.java)
+        assertEquals("value1", array[0])
+        assertEquals("value2", array[1])
+        assertEquals(42, array[2])
+    }
+
+    @Test
+    fun testArrayFromJSON_String_throws() {
+        val json = """
+            [
+                "value1",
+                "value2",
+                42
+            ]
+        """.trimIndent()
+
+        shouldThrow<IllegalArgumentException> {
+            arrayFromJSON(json, String::class.java)
+        }
+    }
+
+    @Test
+    fun testHashMapFromJSON_String_String() {
+        val json = """
+            {
+                "key1": "value1",
+                "key2": "value2",
+                "key3": "value3"
+            }
+        """.trimIndent()
+
+        val map = hashMapFromJSON(json, String::class.java, String::class.java)
+        assertEquals("value1", map["key1"])
+        assertEquals("value2", map["key2"])
+        assertEquals("value3", map["key3"])
+    }
+
+    @Test
+    fun testHashMapFromJSON_String_Int() {
+        val json = """
+            {
+                "key1": 42,
+                "key2": 37,
+                "key3": 13
+            }
+        """.trimIndent()
+
+        val map = hashMapFromJSON(json, String::class.java, Integer::class.java)
+        assertEquals(42, map["key1"])
+        assertEquals(37, map["key2"])
+        assertEquals(13, map["key3"])
+    }
+
+    @Test
+    fun testHashMapFromJSON_String_Any() {
+        val json = """
+            {
+                "key1": "value1",
+                "key2": "value2",
+                "key3": 42
+            }
+        """.trimIndent()
+
+        val map = hashMapFromJSON(json, String::class.java, Object::class.java)
+        assertEquals("value1", map["key1"])
+        assertEquals("value2", map["key2"])
+        assertEquals(42, map["key3"])
+    }
+
+    @Test
+    fun testHashMapFromJSON_String_String_throws() {
+        val json = """
+            {
+                "key1": "value1",
+                "key2": "value2",
+                "key3": 42
+            }
+        """.trimIndent()
+
+        shouldThrow<IllegalArgumentException> {
+            hashMapFromJSON(json, String::class.java, String::class.java)
+        }
+    }
 
     @Test
     fun testDoubleToJSON() {

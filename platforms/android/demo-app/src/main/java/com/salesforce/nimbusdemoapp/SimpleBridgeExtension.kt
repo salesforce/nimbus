@@ -42,10 +42,22 @@ class SimpleBridgeExtension : NimbusExtension {
     }
 
     @ExtensionMethod
+    fun mapArg(args: HashMap<String, Any>): String {
+        return args.keys.joinToString(", ")
+    }
+
+    @ExtensionMethod
+    fun arrayArg(args: ArrayList<String>): String {
+        return args.joinToString(", ")
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    @ExtensionMethod
     fun anotherMethod(arg: String, arg2: Int, arg3: Foo): String {
         return ""
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @ExtensionMethod
     fun voidReturn(arg: Int) {
 

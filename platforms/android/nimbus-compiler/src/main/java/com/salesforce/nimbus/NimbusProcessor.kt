@@ -144,15 +144,15 @@ class NimbusProcessor : AbstractProcessor() {
                                     methodSpec.addParameter(String::class.java, it.simpleName.toString() + "Id", Modifier.FINAL)
 
                                     val invoke = MethodSpec.methodBuilder("invoke")
-                                        .addAnnotation(Override::class.java)
-                                        .addModifiers(Modifier.PUBLIC)
-                                        // TODO: only Void return is supported in callbacks, emit an error if not void
-                                        .returns(TypeName.get(declaredType.typeArguments.last()))
+                                            .addAnnotation(Override::class.java)
+                                            .addModifiers(Modifier.PUBLIC)
+                                            // TODO: only Void return is supported in callbacks, emit an error if not void
+                                            .returns(TypeName.get(declaredType.typeArguments.last()))
 
                                     val argBlock = CodeBlock.builder()
-                                        .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
-                                        .indent()
-                                        .add("new \$T(\$NId),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), it.simpleName)
+                                            .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
+                                            .indent()
+                                            .add("new \$T(\$NId),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), it.simpleName)
 
                                     declaredType.typeArguments.dropLast(1).forEachIndexed { index, typeMirror ->
                                         if (typeMirror.kind == TypeKind.WILDCARD) {
@@ -166,16 +166,16 @@ class NimbusProcessor : AbstractProcessor() {
 
                                     invoke.addCode(argBlock.build())
                                     invoke
-                                        .addCode(
-                                            CodeBlock.builder()
-                                                .add("if (webView != null) {\n")
-                                                .indent()
-                                                .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "nimbus.callCallback2", "args")
-                                                .unindent()
-                                                .add("}\n")
-                                                .addStatement("return null")
-                                                .build()
-                                        )
+                                            .addCode(
+                                                    CodeBlock.builder()
+                                                            .add("if (webView != null) {\n")
+                                                            .indent()
+                                                            .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "nimbus.callCallback2", "args")
+                                                            .unindent()
+                                                            .add("}\n")
+                                                            .addStatement("return null")
+                                                            .build()
+                                            )
 
                                     val typeArgs = declaredType.typeArguments.map {
                                         if (it.kind == TypeKind.WILDCARD) {
@@ -190,10 +190,31 @@ class NimbusProcessor : AbstractProcessor() {
                                     val superInterface = ParameterizedTypeName.get(className, *typeArgs.toTypedArray())
 
                                     val func = TypeSpec.anonymousClassBuilder("")
-                                        .addSuperinterface(superInterface)
-                                        .addMethod(invoke.build())
-                                        .build()
+                                            .addSuperinterface(superInterface)
+                                            .addMethod(invoke.build())
+                                            .build()
                                     methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
+                                } else if (it.asType().toString().startsWith("java.util.ArrayList")) {
+                                    methodSpec.addParameter(String::class.java, it.simpleName.toString() + "String")
+                                    val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
+                                    methodSpec.addStatement("\$T \$N = \$T.\$N(\$NString, \$T.class)",
+                                            it.asType(),
+                                            it.simpleName,
+                                            extClass,
+                                            "arrayFromJSON",
+                                            it.simpleName,
+                                            TypeName.get(declaredType.typeArguments[0]))
+                                } else if (it.asType().toString().startsWith("java.util.HashMap")) {
+                                    methodSpec.addParameter(String::class.java, it.simpleName.toString() + "String")
+                                    val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
+                                    methodSpec.addStatement("\$T \$N = \$T.\$N(\$NString, \$T.class, \$T.class)",
+                                            it.asType(),
+                                            it.simpleName,
+                                            extClass,
+                                            "hashMapFromJSON",
+                                            it.simpleName,
+                                            TypeName.get(declaredType.typeArguments[0]),
+                                            TypeName.get(declaredType.typeArguments[1]))
                                 } else {
                                     // TODO: we also want to support kotlinx.serializable eventually
 
