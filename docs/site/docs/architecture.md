@@ -1,3 +1,6 @@
+---
+layout: docs
+---
 
 # Nimbus Bridge Design
 

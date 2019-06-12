@@ -1,34 +1,79 @@
-@import 'nord.css';
+@import "nord.css";
+
+html {
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    background-color: rgb(242, 244, 248);
+}
+
+body {
+    color: var(--nord2);
+}
+
 header {
     display: flex;
-    padding: 10px;
     flex-direction: row;
-    background-color: var(--nord1);
+    align-items: center;
+    justify-content: space-between;
+    margin: 0px auto;
+    margin-bottom: 2rem;
+    max-width: 70rem;
+    height: 5rem;
 }
+
 header a {
-    color: var(--nord5);
+    color: var(--nord2);
 }
+
+main {
+    max-width: 70rem;
+    margin: 0px auto;
+}
+
 a {
     text-decoration: none;
     color: var(--nord10);
 }
+
 a:hover {
     color: var(--nord9);
 }
+
 header nav ul {
     display: flex;
     flex-direction: row;
     list-style: none;
     margin: 0;
+    font-size: 1.3rem;
 }
+
 header nav ul li {
-    padding-inline-end: 10px;
+    padding-inline-end: 1rem;
 }
+
 .docs {
     display: flex;
     flex-direction: row;
 }
+
 .docs nav {
-    padding-left: 20px;
-    padding-right: 40px;
+    padding-right: 2rem;
+    width: 14rem;
+}
+
+.docs nav ul {
+    list-style: none;
+    margin: 0;
+    margin-bottom: 2.5rem;
+    padding: 0;
+}
+
+.docs nav ul li {
+    margin-bottom: 0.667rem;
+}
+
+.docs article {
+    flex: 1;
+    overflow: hidden;
 }
