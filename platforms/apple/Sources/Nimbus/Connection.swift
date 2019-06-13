@@ -13,7 +13,7 @@ import WebKit
  Each connection can bind multiple functions and expose them under
  a single namespace in JavaScript.
  */
-public class Connection<C> : Binder {
+public class Connection<C>: Binder {
     public typealias Target = C
 
     /**

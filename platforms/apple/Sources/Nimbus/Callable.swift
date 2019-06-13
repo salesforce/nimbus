@@ -24,7 +24,7 @@ struct ParameterError: Error {}
  A `Callable` wrapper for nullary functions
  */
 struct Callable0<R>: Callable {
-    typealias FunctionType = () -> R
+    typealias FunctionType = () throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -32,7 +32,7 @@ struct Callable0<R>: Callable {
     }
 
     func call(args _: [Any]) throws -> Any {
-        return function()
+        return try function()
     }
 }
 
@@ -40,7 +40,7 @@ struct Callable0<R>: Callable {
  A `Callable` wrapper for unary functions
  */
 struct Callable1<R, A0>: Callable {
-    typealias FunctionType = (A0) -> R
+    typealias FunctionType = (A0) throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -49,7 +49,7 @@ struct Callable1<R, A0>: Callable {
 
     func call(args: [Any]) throws -> Any {
         if let arg0 = args[0] as? A0 {
-            return function(arg0)
+            return try function(arg0)
         }
         throw ParameterError()
     }
@@ -59,7 +59,7 @@ struct Callable1<R, A0>: Callable {
  A `Callable` wrapper for binary functions
  */
 struct Callable2<R, A0, A1>: Callable {
-    typealias FunctionType = (A0, A1) -> R
+    typealias FunctionType = (A0, A1) throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -69,7 +69,7 @@ struct Callable2<R, A0, A1>: Callable {
     func call(args: [Any]) throws -> Any {
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1 {
-            return function(arg0, arg1)
+            return try function(arg0, arg1)
         }
         throw ParameterError()
     }
@@ -79,7 +79,7 @@ struct Callable2<R, A0, A1>: Callable {
  A `Callable` wrapper for ternary functions
  */
 struct Callable3<R, A0, A1, A2>: Callable {
-    typealias FunctionType = (A0, A1, A2) -> R
+    typealias FunctionType = (A0, A1, A2) throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -90,7 +90,7 @@ struct Callable3<R, A0, A1, A2>: Callable {
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1,
             let arg2 = args[2] as? A2 {
-            return function(arg0, arg1, arg2)
+            return try function(arg0, arg1, arg2)
         }
         throw ParameterError()
     }
@@ -100,7 +100,7 @@ struct Callable3<R, A0, A1, A2>: Callable {
  A `Callable` wrapper for 4-ary functions
  */
 struct Callable4<R, A0, A1, A2, A3>: Callable {
-    typealias FunctionType = (A0, A1, A2, A3) -> R
+    typealias FunctionType = (A0, A1, A2, A3) throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -112,7 +112,7 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
             let arg1 = args[1] as? A1,
             let arg2 = args[2] as? A2,
             let arg3 = args[3] as? A3 {
-            return function(arg0, arg1, arg2, arg3)
+            return try function(arg0, arg1, arg2, arg3)
         }
         throw ParameterError()
     }
@@ -122,7 +122,7 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
  A `Callable` wrapper for 5-ary functions
  */
 struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
-    typealias FunctionType = (A0, A1, A2, A3, A4) -> R
+    typealias FunctionType = (A0, A1, A2, A3, A4) throws -> R
     let function: FunctionType
 
     init(_ function: @escaping FunctionType) {
@@ -135,7 +135,7 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
             let arg2 = args[2] as? A2,
             let arg3 = args[3] as? A3,
             let arg4 = args[4] as? A4 {
-            return function(arg0, arg1, arg2, arg3, arg4)
+            return try function(arg0, arg1, arg2, arg3, arg4)
         }
         throw ParameterError()
     }
@@ -144,7 +144,7 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
 /**
  Create a `Callable` from a nullary function.
  */
-func make_callable<R>(_ function: @escaping (()) -> R) -> Callable {
+func make_callable<R>(_ function: @escaping (()) throws -> R) -> Callable {
     return Callable0(function)
 }
 
@@ -152,34 +152,34 @@ func make_callable<R>(_ function: @escaping (()) -> R) -> Callable {
  Create a `Callable` from the unary function.
  */
 // swiftformat:disable:next redundantParens
-func make_callable<R, A0>(_ function: @escaping ((A0)) -> R) -> Callable {
+func make_callable<R, A0>(_ function: @escaping ((A0)) throws -> R) -> Callable {
     return Callable1(function)
 }
 
 /**
  Create a `Callable` from the binary function.
  */
-func make_callable<R, A0, A1>(_ function: @escaping ((A0, A1)) -> R) -> Callable {
+func make_callable<R, A0, A1>(_ function: @escaping ((A0, A1)) throws -> R) -> Callable {
     return Callable2(function)
 }
 
 /**
  Create a `Callable` from the ternary function.
  */
-func make_callable<R, A0, A1, A2>(_ function: @escaping ((A0, A1, A2)) -> R) -> Callable {
+func make_callable<R, A0, A1, A2>(_ function: @escaping ((A0, A1, A2)) throws -> R) -> Callable {
     return Callable3(function)
 }
 
 /**
  Create a `Callable` from the quaternary function.
  */
-func make_callable<R, A0, A1, A2, A3>(_ function: @escaping ((A0, A1, A2, A3)) -> R) -> Callable {
+func make_callable<R, A0, A1, A2, A3>(_ function: @escaping ((A0, A1, A2, A3)) throws -> R) -> Callable {
     return Callable4(function)
 }
 
 /**
  Create a `Callable` from the quinary function.
  */
-func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping ((A0, A1, A2, A3, A4)) -> R) -> Callable {
+func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping ((A0, A1, A2, A3, A4)) throws -> R) -> Callable {
     return Callable5(function)
 }

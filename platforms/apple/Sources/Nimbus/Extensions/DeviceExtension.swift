@@ -8,12 +8,12 @@
 import WebKit
 
 #if os(iOS)
-import UIKit
+    import UIKit
 #elseif os(macOS)
-import Foundation
-import Cocoa
+    import Cocoa
+    import Foundation
 #else
-#error("Unsupported Platform")
+    #error("Unsupported Platform")
 #endif
 
 struct DeviceInfo: Codable {
@@ -24,32 +24,32 @@ struct DeviceInfo: Codable {
     let appVersion: String
 
     #if os(iOS)
-    init() {
-        let device = UIDevice.current
-        platform = device.systemName
-        platformVersion = device.systemVersion
-        manufacturer = "Apple"
-        model = device.model
-        appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
-    }
+        init() {
+            let device = UIDevice.current
+            platform = device.systemName
+            platformVersion = device.systemVersion
+            manufacturer = "Apple"
+            model = device.model
+            appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        }
     #endif
 
     #if os(macOS)
-    init() {
-        platform = "macOS"
-        let osVersion = ProcessInfo.processInfo.operatingSystemVersion
-        platformVersion = "\(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)"
-        manufacturer = "Apple" // what about hackintoshes? ¯\_(ツ)_/¯
-        var len: Int = 0
-        if sysctlbyname("hw.model", nil, &len, nil, 0) == 0 {
-            var result = [CChar](repeating: 0, count: len)
-            sysctlbyname("hw.model", &result, &len, nil, 0)
-            model = String(cString: result)
-        } else {
-            model = "unknown"
+        init() {
+            platform = "macOS"
+            let osVersion = ProcessInfo.processInfo.operatingSystemVersion
+            platformVersion = "\(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)"
+            manufacturer = "Apple" // what about hackintoshes? ¯\_(ツ)_/¯
+            var len: Int = 0
+            if sysctlbyname("hw.model", nil, &len, nil, 0) == 0 {
+                var result = [CChar](repeating: 0, count: len)
+                sysctlbyname("hw.model", &result, &len, nil, 0)
+                model = String(cString: result)
+            } else {
+                model = "unknown"
+            }
+            appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         }
-        appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
-    }
     #endif
 }
 
