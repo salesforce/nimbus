@@ -31,7 +31,7 @@ jobs:
           name: CocoaPods
           working_directory: platforms/apple
           command: |
-            gem update bundler
+            gem install bundler -v 2.0.1
             bundle install
             bundle exec pod install
 
@@ -72,7 +72,7 @@ jobs:
           name: CocoaPods
           working_directory: platforms/apple
           command: |
-            gem update bundler
+            gem install bundler -v 2.0.1
             bundle install
             bundle exec pod install
 
