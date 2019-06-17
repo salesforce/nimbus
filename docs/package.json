@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "eleventy",
+    "deploy": "gh-pages -d dist",
     "dev": "eleventy --serve"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   },
   "license": "CC0-1.0",
   "devDependencies": {
-    "@11ty/eleventy": "^0.7.1"
+    "@11ty/eleventy": "^0.8.3",
+    "gh-pages": "^2.0.1"
   }
 }

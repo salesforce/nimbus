@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.dokka'
 apply from: rootProject.file('gradle/lint.gradle')
 
 android {
@@ -76,6 +77,11 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives sourcesJar
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = '../../docs/dist/docs/api/android'
 }
 
 apply from: rootProject.file('gradle/publishing.gradle')
