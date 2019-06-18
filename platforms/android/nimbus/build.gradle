@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.dokka'
-apply from: rootProject.file('gradle/lint.gradle')
 
 android {
     compileSdkVersion 28
@@ -83,5 +82,3 @@ dokka {
     outputFormat = 'html'
     outputDirectory = '../../docs/dist/docs/api/android'
 }
-
-apply from: rootProject.file('gradle/publishing.gradle')
