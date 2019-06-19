@@ -1,4 +1,4 @@
-# makefile for ios
+# makefile for android
 #
 # this file is not meant to be used directly but as an include in the top-level makefile
 
