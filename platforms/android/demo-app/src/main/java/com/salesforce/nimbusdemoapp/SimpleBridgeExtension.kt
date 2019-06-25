@@ -36,6 +36,25 @@ class SimpleBridgeExtension : NimbusExtension {
         }
     }
 
+    data class MyUserDefinedDataType(val intParam: Int = 5, val stringParam: String = "hello my user defined type"): JSONSerializable {
+        override fun stringify(): String {
+            val jsonObject = JSONObject()
+            jsonObject.put("intParam", intParam)
+            jsonObject.put("stringParam", stringParam)
+            return jsonObject.toString()
+        }
+
+        companion object {
+            @JvmStatic
+            fun fromJSON(jsonString: String): MyUserDefinedDataType {
+                val json = JSONObject(jsonString)
+                val intParam = json.optInt("intParam")
+                val stringParam = json.optString("stringParam", "stringParam")
+                return MyUserDefinedDataType(intParam, stringParam)
+            }
+        }
+    }
+
     @ExtensionMethod
     fun currentTime(): String {
         return Date().toString()
@@ -76,5 +95,10 @@ class SimpleBridgeExtension : NimbusExtension {
     @ExtensionMethod
     fun serializable(): Foo {
         return Foo("Astro", "mascot")
+    }
+
+    @ExtensionMethod
+    fun getDataViaCallback(arg:(MyUserDefinedDataType) -> Unit) {
+        arg(MyUserDefinedDataType())
     }
 }

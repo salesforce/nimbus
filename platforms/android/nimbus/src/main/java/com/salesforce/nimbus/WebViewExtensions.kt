@@ -8,6 +8,7 @@
 package com.salesforce.nimbus
 
 import android.webkit.WebView
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -24,23 +25,21 @@ import org.json.JSONObject
  *                          have to pass a closure if you are not interested in getting the callback.
  */
 fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
-    val jsonObject = JSONObject()
+    val jsonArray = JSONArray()
     args.forEachIndexed { index, jsonSerializable ->
         val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable
         if (asPrimitive != null) {
-            jsonObject.put(index.toString(), asPrimitive.value)
+            jsonArray.put(asPrimitive.value)
         } else {
-            jsonObject.put(index.toString(),
-                    if (jsonSerializable == null) JSONObject.NULL
+            jsonArray.put(if (jsonSerializable == null) JSONObject.NULL
                     else JSONObject(jsonSerializable.stringify()))
         }
     }
 
-    val jsonString = jsonObject.toString()
+    val jsonString = jsonArray.toString()
     val scriptTemplate = """
         try {
-            var jsonData = $jsonString;
-            var jsonArr = Object.values(jsonData);
+            var jsonArr = $jsonString;
             if (jsonArr && jsonArr.length > 0) {
                 $name(...jsonArr);
             } else {

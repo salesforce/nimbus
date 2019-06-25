@@ -166,9 +166,9 @@
 		2970E44F224F0A06008DC004 /* NimbusDesktopUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusDesktopUITests.swift; sourceTree = "<group>"; };
 		2970E451224F0A06008DC004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		298503DA228DED3500C1071E /* BinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinderTests.swift; sourceTree = "<group>"; };
+		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.release.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.release.xcconfig"; sourceTree = "<group>"; };

@@ -7,6 +7,7 @@
 
 import './nimbus-core-tests';
 import './broadcast-tests';
+import './callback-encodable-tests';
 import nimbus from 'nimbus';
 
 window.onload = () => {

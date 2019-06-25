@@ -158,8 +158,22 @@ class NimbusProcessor : AbstractProcessor() {
                                         if (typeMirror.kind == TypeKind.WILDCARD) {
                                             val wild = typeMirror as WildcardType
                                             invoke.addParameter(TypeName.get(wild.superBound), "arg$index")
+
+                                            val supertypes = processingEnv.typeUtils.directSupertypes(wild.superBound)
+                                            var found = false
+                                            for (supertype in supertypes) {
+                                                if (supertype.toString().equals("com.salesforce.nimbus.JSONSerializable")) {
+                                                    found = true
+                                                }
+                                            }
+                                            if (found) {
+                                                argBlock.add("arg$index, \n")
+                                            } else {
+                                                argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
+                                            }
+                                        } else {
+                                            argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                         }
-                                        argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                     }
 
                                     argBlock.unindent().add("};\n")

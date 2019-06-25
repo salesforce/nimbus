@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 class MochaTests {
 
-    data class MochaMessage(val stringField: String = "This is a string", val intField: Int = 42) : JSONSerializable {
+    data class MochaMessage(var stringField: String = "This is a string", var intField: Int = 42) : JSONSerializable {
         override fun stringify(): String {
             val jsonObject = JSONObject()
             jsonObject.put("stringField", stringField)
@@ -73,9 +73,12 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
+        val bridge = NimbusBridge("file:///android_asset/test-www/index.html")
+
         runOnUiThread {
             webView.addJavascriptInterface(testBridge, "mochaTestBridge")
-            webView.loadUrl("file:///android_asset/test-www/index.html")
+            bridge.add(CallbackTestExtensionBinder(CallbackTestExtension()))
+            bridge.attach(webView)
         }
 
         testBridge.readyLatch.await(5, TimeUnit.SECONDS)

@@ -30,9 +30,9 @@ class Callback: Callable {
 
     func call(args: [Any]) throws -> Any {
         var jsonString: String = "[]"
-        if let bbb = args as? [EncodableValue] {
+        if let encodables = args as? [EncodableValue] {
             let jsonEncoder = JSONEncoder()
-            let jsonData = try? jsonEncoder.encode(bbb)
+            let jsonData = try? jsonEncoder.encode(encodables)
             jsonString = String(data: jsonData!, encoding: .utf8)!
         }
 
