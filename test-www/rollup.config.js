@@ -9,7 +9,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import resolve from 'rollup-plugin-node-resolve';
-import alias from 'rollup-plugin-alias';
 
 const dist = path.resolve(__dirname, 'dist', 'test-www');
 const publicFolder = path.resolve(__dirname, './public');
@@ -43,10 +42,5 @@ export default {
             chai: 'chai'
         }
     },
-    plugins: [
-        alias({
-            nimbus: '../src/index'
-        }),
-        resolve()
-    ]
+    plugins: [resolve()]
 };
