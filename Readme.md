@@ -27,3 +27,5 @@ our [code of coduct](CODE_OF_CONDUCT.md).
 ## License
 
 Nimbus is distributed under the [BSD 3-Clause](LICENSE) license.
+
+## Poke CircleCI
