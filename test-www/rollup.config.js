@@ -9,6 +9,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import resolve from 'rollup-plugin-node-resolve';
+import alias from 'rollup-plugin-alias';
 
 const dist = path.resolve(__dirname, 'dist', 'test-www');
 const publicFolder = path.resolve(__dirname, './public');
@@ -22,24 +23,30 @@ fs.copySync(publicFolder, dist);
 
 const mochaPath = path.resolve(__dirname, 'node_modules', 'mocha');
 fs.copySync(
-    path.resolve(mochaPath, 'mocha.css'), path.resolve(dist, 'mocha.css'));
+    path.resolve(mochaPath, 'mocha.css'),
+    path.resolve(dist, 'mocha.css')
+);
 fs.copySync(
-    path.resolve(mochaPath, 'mocha.js'), path.resolve(dist, 'mocha.js'));
-const chaiPath = path.resolve(__dirname, 'node_modules', 'chai')
-fs.copySync(
-    path.resolve(chaiPath, 'chai.js'), path.resolve(dist, 'chai.js'));
+    path.resolve(mochaPath, 'mocha.js'),
+    path.resolve(dist, 'mocha.js')
+);
+const chaiPath = path.resolve(__dirname, 'node_modules', 'chai');
+fs.copySync(path.resolve(chaiPath, 'chai.js'), path.resolve(dist, 'chai.js'));
 
 export default {
-  input: '_build/index.js',
-  external: ['mocha', 'chai'],
-  output: {
-    file: output,
-    format: 'iife',
-    globals: {
-      chai: 'chai',
-    }
-  },
-  plugins: [
-    resolve(),
-  ]
+    input: '_build/index.js',
+    external: ['mocha', 'chai'],
+    output: {
+        file: output,
+        format: 'iife',
+        globals: {
+            chai: 'chai'
+        }
+    },
+    plugins: [
+        alias({
+            nimbus: '../src/index'
+        }),
+        resolve()
+    ]
 };
