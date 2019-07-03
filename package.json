@@ -5,6 +5,10 @@
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
+    "files": [
+        "/src",
+        "/dist"
+    ],
     "scripts": {
         "build": "npm run compile && npm run bundle",
         "bundle": "rollup dist/index.js --file dist/nimbus.js --name nimbus --format iife",
