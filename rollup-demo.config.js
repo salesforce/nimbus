@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import serve from "rollup-plugin-serve";
 import typescript from "rollup-plugin-typescript2";
+import alias from "rollup-plugin-alias";
 
 const isWatching = process.env.ROLLUP_WATCH;
 const dist = path.resolve(__dirname, "./demo-www/dist");
@@ -17,6 +18,9 @@ const iife = {
     format: "iife"
   },
   plugins: [
+    alias({
+      nimbus:"./src/index"
+    }),
     typescript({
       tsconfig: "./demo-www/tsconfig.json"
     }),

@@ -25,6 +25,7 @@
     "fs-extra": "^8.0.1",
     "prettier": "^1.18.2",
     "rollup": "^1.15.6",
+    "rollup-plugin-alias": "^1.5.2",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-typescript2": "^0.21.2",
     "typescript": "^3.5.2"
