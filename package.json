@@ -1,30 +1,31 @@
 {
-  "name": "nimbus",
-  "version": "0.1.0",
-  "description": "Nimbus is a bridge for hybrid app development.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "npm run compile && npm run bundle",
-    "bundle": "rollup dist/index.js --file dist/nimbus.js --name nimbus --format iife",
-    "compile": "tsc -p ./",
-    "lint": "eslint 'src/**/*.{ts,js}'",
-    "prepare": "npm run build",
-    "prettier": "prettier --write 'src/**/*.{js,ts}'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@git.soma.salesforce.com:MobilePlatform/Nimbus.git"
-  },
-  "license": "BSD-3-Clause",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.5.0",
-    "@typescript-eslint/parser": "^1.5.0",
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4",
-    "rollup": "^1.1.2",
-    "typescript": "^3.3.3"
-  }
+    "name": "nimbus",
+    "version": "0.1.0",
+    "description": "Nimbus is a bridge for hybrid app development.",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "npm run compile && npm run bundle",
+        "bundle": "rollup dist/index.js --file dist/nimbus.js --name nimbus --format iife",
+        "compile": "tsc -p ./",
+        "lint": "eslint 'src/**/*.{ts,js}'",
+        "prepare": "npm run build",
+        "prettier": "prettier --write 'src/**/*.{js,ts}'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:salesforce/nimbus.git"
+    },
+    "license": "BSD-3-Clause",
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^1.5.0",
+        "@typescript-eslint/parser": "^1.5.0",
+        "eslint": "^5.16.0",
+        "eslint-config-prettier": "^4.1.0",
+        "eslint-plugin-prettier": "^3.0.1",
+        "prettier": "^1.16.4",
+        "rollup": "^1.1.2",
+        "typescript": "^3.3.3"
+    }
 }
