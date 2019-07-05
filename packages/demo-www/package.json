@@ -24,8 +24,8 @@
         "eslint": "^5.10.0",
         "fs-extra": "^7.0.1",
         "rimraf": "^2.6.2",
-        "rollup": "^0.68.1",
-        "rollup-plugin-node-resolve": "^4.0.0",
+        "rollup": "^1.16.6",
+        "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-serve": "^0.6.0",
         "rollup-plugin-typescript2": "^0.21.2",
         "typescript": "^3.5.2"

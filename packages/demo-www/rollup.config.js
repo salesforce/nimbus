@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import serve from 'rollup-plugin-serve';
 import typescript from 'rollup-plugin-typescript2';
+import resolve from 'rollup-plugin-node-resolve';
 
 const isWatching = process.env.ROLLUP_WATCH;
 
@@ -19,6 +20,10 @@ export default {
         format: 'es'
     },
     plugins: [
+        resolve({
+            mainFields: ['module'],
+            preserveSymlinks: false
+        }),
         typescript(),
         isWatching &&
             serve({
