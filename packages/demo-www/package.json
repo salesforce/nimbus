@@ -1,5 +1,5 @@
 {
-    "name": "nimbus-demo-app",
+    "name": "demo-www",
     "version": "0.2.0",
     "description": "A demo hybrid app for nimbus",
     "license": "BSD-3-Clause",
@@ -12,14 +12,7 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "devDependencies": {
-        "@babel/core": "^7.2.2",
-        "@lwc/compiler": "^0.40.0",
-        "@lwc/engine": "^0.34.4",
-        "@lwc/eslint-plugin-lwc": "^0.6.0",
-        "@lwc/rollup-plugin": "^0.34.4",
-        "@lwc/wire-service": "^0.34.4",
         "babel-eslint": "^10.0.1",
-        "concurrently": "^4.1.0",
         "cross-env": "^5.2.0",
         "eslint": "^5.10.0",
         "fs-extra": "^7.0.1",

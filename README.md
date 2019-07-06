@@ -11,7 +11,7 @@ running prior to launching one of the platform apps.
 
 ```sh
 npm install
-npm run start:demo
+npm run serve:demo
 ```
 
 Then launch one of the platforms apps located under `platforms/`.
