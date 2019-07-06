@@ -707,7 +707,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "pushd ${SRCROOT}/../../test-www\nnpm install\nnpm run build\n";
+			shellScript = "pushd ${SRCROOT}/../../\nnpm install\n";
 			showEnvVarsInLog = 0;
 		};
 		9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */ = {
