@@ -707,7 +707,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "pushd ${SRCROOT}/../../\nnpm install\n";
+			shellScript = "pushd ${SRCROOT}/../..\nnpm install\n";
 			showEnvVarsInLog = 0;
 		};
 		9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */ = {
@@ -1091,8 +1091,8 @@
 		2944335B2200FD8D00E6D084 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 62J96EUJ9N;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4C8Q6SU642;
 				INFOPLIST_FILE = Sources/NimbusTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1101,6 +1101,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1109,8 +1110,8 @@
 		2944335C2200FD8D00E6D084 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 62J96EUJ9N;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4C8Q6SU642;
 				INFOPLIST_FILE = Sources/NimbusTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1119,6 +1120,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
