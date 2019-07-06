@@ -132,7 +132,7 @@
 		291A860521E530BC00510832 /* Nimbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Nimbus.h; sourceTree = "<group>"; };
 		291A860621E530BC00510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29245EE1220CE13000F9EEAF /* MochaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MochaTests.swift; sourceTree = "<group>"; };
-		29245EE5220CE18100F9EEAF /* test-www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "test-www"; path = "../../../../test-www/dist/test-www"; sourceTree = "<group>"; };
+		29245EE5220CE18100F9EEAF /* test-www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "test-www"; path = "../../../../packages/test-www/dist"; sourceTree = "<group>"; };
 		294433422200FA3700E6D084 /* Callback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Callback.swift; sourceTree = "<group>"; };
 		294433432200FA3700E6D084 /* WebView+Nimbus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WebView+Nimbus.swift"; sourceTree = "<group>"; };
 		294433442200FA3700E6D084 /* EncodableValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncodableValue.swift; sourceTree = "<group>"; };
