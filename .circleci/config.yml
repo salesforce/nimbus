@@ -8,19 +8,17 @@ jobs:
 
     shell: /bin/bash --login -eo pipefail
 
-
     steps:
       - checkout
 
       - run:
-          name: Build Nimbus core
+          name: Build nimbus-bridge
           command: |
             npm install
-            npm run build
 
       - run:
           name: Set Ruby Version
-          command:  echo "ruby-2.5.3" > ~/.ruby-version
+          command: echo "ruby-2.5.3" > ~/.ruby-version
 
       - run:
           name: Fetch CocoaPods Specs
@@ -54,14 +52,13 @@ jobs:
           command: xcrun instruments -w "iPhone 7 (12.1) [" || true
 
       - run:
-          name: Build Nimbus core
+          name: Build nimbus-bridge
           command: |
             npm install
-            npm run build
 
       - run:
           name: Set Ruby Version
-          command:  echo "ruby-2.5.3" > ~/.ruby-version
+          command: echo "ruby-2.5.3" > ~/.ruby-version
 
       - run:
           name: Fetch CocoaPods Specs
@@ -130,7 +127,6 @@ jobs:
           name: Build and Lint Typescript
           command: |
             npm install
-            npm run build
             npm run lint -- -f junit -o ~/reports/eslint.xml
       - store_test_results:
           path: ~/reports

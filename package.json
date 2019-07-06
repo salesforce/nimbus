@@ -6,6 +6,7 @@
   },
   "scripts": {
     "prepare": "lerna bootstrap",
+    "lint": "lerna run lint",
     "start:demo": "lerna bootstrap && pushd packages/demo-wwww && npm run serve"
   }
 }
