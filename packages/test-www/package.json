@@ -3,7 +3,7 @@
     "version": "0.2.0",
     "description": "",
     "license": "BSD-3-Clause",
-    "browser": "dist/bundle.js",
+    "browser": "dist/test-www/bundle.js",
     "scripts": {
         "prepare": "npm run build",
         "build": "cross-env rollup -c ./rollup.config.js",
