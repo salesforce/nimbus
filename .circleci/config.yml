@@ -88,6 +88,11 @@ jobs:
                   working_directory: platforms/apple
                   command: bundle exec pod lib lint --private ../../Nimbus.podspec
 
+            - run:
+                  name: Get code coverage
+                  working_directory: platforms/apple
+                  command: bash <(curl -s https://codecov.io/bash)
+
     build-and-test-android:
         docker:
             - image: circleci/android:api-28-node8-alpha
