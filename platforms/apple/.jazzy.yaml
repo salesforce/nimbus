@@ -1,0 +1,19 @@
+---
+clean:
+min_acl: public
+github_url: https://github.com/salesforce/nimbus
+author: Salesforce
+author_url: https://salesforce.com
+output: ../../docs/dist/docs/api/swift
+module: Nimbus
+xcodebuild_arguments:
+  [
+    "-workspace",
+    "Nimbus.xcworkspace",
+    "-scheme",
+    "Nimbus",
+    "-sdk",
+    "iphonesimulator",
+  ]
+---
+
