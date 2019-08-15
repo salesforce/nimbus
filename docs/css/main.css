@@ -1,4 +1,5 @@
 @import "nord.css";
+@import "prism.css";
 
 html {
     font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
@@ -9,6 +10,7 @@ html {
 
 body {
     color: var(--nord2);
+    line-height: 1.5em;
 }
 
 header {

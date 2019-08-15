@@ -9,8 +9,8 @@ in a hybrid app container as well as support for web-platform plugins.
 
 There are two ways to integrate Nimbus into your web app:
 
-* Including the Nimbus runtime in your web app bundle (preferred)
-* Injecting the Nimbus runtime when your web app is loaded in the hybrid container
+-   Including the Nimbus runtime in your web app bundle (preferred)
+-   Injecting the Nimbus runtime when your web app is loaded in the hybrid container
 
 ## Including Nimbus in the Web App bundle
 
@@ -20,14 +20,14 @@ Nimbus app container or the browser.
 
 Start by adding Nimbus as a dependency:
 
-```sh
+```bash
 npm install --save @salesforce/nimbus
 ```
 
 Once Nimbus has been added to the project it can be imported as a module:
 
 ```typescript
-import { Nimbus } from '@salesforce/nimbus';
+import { Nimbus } from "@salesforce/nimbus";
 ```
 
 ## Injecting Nimbus from a hybrid app container

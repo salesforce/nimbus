@@ -6,4 +6,4 @@ layout: base
 
 Nimbus is a solution for building Progressive Hybrid Apps.
 
-[Get Started Now!](docs/getting-started)
+[Get Started Now!](docs/overview/)
