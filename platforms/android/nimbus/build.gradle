@@ -81,5 +81,5 @@ artifacts {
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = '../../docs/dist/docs/api/android'
+    outputDirectory = '../../../docs/dist/docs/api/android'
 }

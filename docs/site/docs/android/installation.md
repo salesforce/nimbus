@@ -6,16 +6,14 @@ layout: docs
 
 1. Add the maven repository to your project's `build.gradle`:
 
-```diff
- allprojects {
-     repositories {
-         google()
-         jcenter()
-+        maven {
-+            url  "https://dl.bintray.com/salesforce-mobile/android"
-+        }
-     }
- }
+```groovy
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url  "https://dl.bintray.com/salesforce-mobile/android" }
+    }
+}
 ```
 
 2. Add the `kotlin-kapt` plugin to your app's `build.gradle`:
