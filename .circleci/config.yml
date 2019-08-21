@@ -2,149 +2,156 @@
 
 version: 2
 jobs:
-    build-and-test-macos:
-        macos:
-            xcode: '10.1.0'
+  build-and-test-macos:
+    macos:
+      xcode: "10.1.0"
 
-        shell: /bin/bash --login -eo pipefail
+    shell: /bin/bash --login -eo pipefail
 
-        steps:
-            - checkout
+    steps:
+      - checkout
 
-            - run:
-                  name: Build nimbus-bridge
-                  command: |
-                      npm install
+      - run:
+          name: Build nimbus-bridge
+          command: |
+            npm install
 
-            - run:
-                  name: Set Ruby Version
-                  command: echo "ruby-2.5.3" > ~/.ruby-version
+      - run:
+          name: Set Ruby Version
+          command: echo "ruby-2.5.3" > ~/.ruby-version
 
-            - run:
-                  name: Fetch CocoaPods Specs
-                  command: |
-                      curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - run:
+          name: Fetch CocoaPods Specs
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
 
-            - run:
-                  name: CocoaPods
-                  working_directory: platforms/apple
-                  command: |
-                      gem install bundler -v 2.0.1
-                      bundle install
-                      bundle exec pod install
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            gem install bundler -v 2.0.1
+            bundle install
+            bundle exec pod install
 
-            - run:
-                  name: Build macOS
-                  working_directory: platforms/apple
-                  command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusDesktop -configuration Debug -sdk macosx
+      - run:
+          name: Build macOS
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusDesktop -configuration Debug -sdk macosx
 
-    build-and-test-ios:
-        macos:
-            xcode: '10.1.0'
+  build-and-test-ios:
+    macos:
+      xcode: "10.1.0"
 
-        shell: /bin/bash --login -eo pipefail
+    shell: /bin/bash --login -eo pipefail
 
-        steps:
-            - checkout
+    steps:
+      - checkout
 
-            - run:
-                  name: Prime Simulator
-                  command: xcrun instruments -w "iPhone 7 (12.1) [" || true
+      - run:
+          name: Prime Simulator
+          command: xcrun instruments -w "iPhone 7 (12.1) [" || true
 
-            - run:
-                  name: Build nimbus-bridge
-                  command: |
-                      npm install
+      - run:
+          name: Build nimbus-bridge
+          command: |
+            npm install
 
-            - run:
-                  name: Set Ruby Version
-                  command: echo "ruby-2.5.3" > ~/.ruby-version
+      - run:
+          name: Set Ruby Version
+          command: echo "ruby-2.5.3" > ~/.ruby-version
 
-            - run:
-                  name: Fetch CocoaPods Specs
-                  command: |
-                      curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - run:
+          name: Fetch CocoaPods Specs
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
 
-            - run:
-                  name: CocoaPods
-                  working_directory: platforms/apple
-                  command: |
-                      gem install bundler -v 2.0.1
-                      bundle install
-                      bundle exec pod install
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            gem install bundler -v 2.0.1
+            bundle install
+            bundle exec pod install
 
-            - run:
-                  name: Build iOS
-                  working_directory: platforms/apple
-                  command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.1,platform=iOS Simulator,name=iPhone 7'
+      - run:
+          name: Build iOS
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.1,platform=iOS Simulator,name=iPhone 7'
 
-            - run:
-                  name: Test iOS
-                  working_directory: platforms/apple
-                  command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.1,platform=iOS Simulator,name=iPhone 7' -enableCodeCoverage YES
+      - run:
+          name: Test iOS
+          working_directory: platforms/apple
+          command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.1,platform=iOS Simulator,name=iPhone 7' -enableCodeCoverage YES
 
-            - run:
-                  name: Lint CocoaPod Spec
-                  working_directory: platforms/apple
-                  command: bundle exec pod lib lint --private ../../Nimbus.podspec
+      - run:
+          name: Lint CocoaPod Spec
+          working_directory: platforms/apple
+          command: bundle exec pod lib lint --private ../../Nimbus.podspec
 
-            - run:
-                  name: Get code coverage
-                  working_directory: platforms/apple
-                  command: |
-                    slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
-                    bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
+      - run:
+          name: Get code coverage
+          working_directory: platforms/apple
+          command: |
+            slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
+            bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
 
-    build-and-test-android:
-        docker:
-            - image: circleci/android:api-28-node8-alpha
+  build-and-test-android:
+    docker:
+      - image: circleci/android:api-28-node8-alpha
 
-        steps:
-            - checkout
+    steps:
+      - checkout
 
-            - run:
-                  name: Build Android
-                  working_directory: platforms/android
-                  command: ./gradlew assembleDebug
+      - run:
+          name: Build Android
+          working_directory: platforms/android
+          command: ./gradlew assembleDebug
 
-            - run:
-                  name: Test Android
-                  working_directory: platforms/android
-                  command: ./gradlew testDebugUnitTest
+      - run:
+          name: Test Android
+          working_directory: platforms/android
+          command: ./gradlew testDebugUnitTest
 
-            - run:
-                  name: Lint Android
-                  working_directory: platforms/android
-                  command: ./gradlew ktlint
+      - run:
+          name: Lint Android
+          working_directory: platforms/android
+          command: ./gradlew ktlint
 
-            - store_artifacts:
-                  path: platforms/android/nimbus/build/reports
-                  destination: reports
+      - store_artifacts:
+          path: platforms/android/nimbus/build/reports
+          destination: reports
 
-            - store_test_results:
-                  path: platforms/android/nimbus/build/test-results
+      - store_test_results:
+          path: platforms/android/nimbus/build/test-results
 
-    build-and-test-ts:
-        docker:
-            - image: circleci/node:10
+      - run:
+          name: Codecov Android
+          working_directory: platforms/android
+          command: |
+            ./gradlew jacocoTestReport
+            bash <(curl -s https://codecov.io/bash)
 
-        steps:
-            - checkout
-            - run:
-                  name: Build and Lint Typescript
-                  command: |
-                      npm install
-                      npm run lint -- -- -f junit -o ~/reports/eslint.xml
-            - store_test_results:
-                  path: ~/reports
-            - store_artifacts:
-                  path: ~/reports
+  build-and-test-ts:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+      - run:
+          name: Build and Lint Typescript
+          command: |
+            npm install
+            npm run lint -- -- -f junit -o ~/reports/eslint.xml
+      - store_test_results:
+          path: ~/reports
+      - store_artifacts:
+          path: ~/reports
 
 workflows:
-    version: 2
-    build-and-test:
-        jobs:
-            - build-and-test-ios
-            - build-and-test-macos
-            - build-and-test-android
-            - build-and-test-ts
+  version: 2
+  build-and-test:
+    jobs:
+      - build-and-test-ios
+      - build-and-test-macos
+      - build-and-test-android
+      - build-and-test-ts
