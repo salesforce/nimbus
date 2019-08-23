@@ -26,7 +26,24 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      codeCoverageEnabled = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "291A860221E530BC00510832"
+            BuildableName = "Nimbus.framework"
+            BlueprintName = "Nimbus"
+            ReferencedContainer = "container:Nimbus.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "294433512200FD8D00E6D084"
+            BuildableName = "NimbusTests.xctest"
+            BlueprintName = "NimbusTests"
+            ReferencedContainer = "container:Nimbus.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
