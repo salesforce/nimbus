@@ -1,5 +1,7 @@
 # Nimbus
 
+[![codecov](https://codecov.io/gh/salesforce/nimbus/branch/codecoverage/graph/badge.svg)](https://codecov.io/gh/salesforce/nimbus)
+
 > :warning: This is pre-production software and not recommended for production use.
 
 Nimbus is a bridge for hybrid app development.

@@ -1,0 +1,9 @@
+coverage:
+  status:
+    project:
+      default: false
+      nimbus:
+        target: 80%
+        paths:
+          - "platforms/apple/Sources"
+          - "platforms/android/nimbus/src/main"
