@@ -92,7 +92,7 @@ jobs:
                   name: Get code coverage
                   working_directory: platforms/apple
                   command: |
-                      slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
+                      bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
                       bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
 
     build-and-test-android:
