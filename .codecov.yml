@@ -5,5 +5,5 @@ coverage:
       nimbus:
         target: 80%
         paths:
-          - "platforms/apple/Sources"
+          - "platforms/apple/Sources/Nimbus"
           - "platforms/android/nimbus/src/main"
