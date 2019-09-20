@@ -1,5 +1,6 @@
 .build
 .rpt2_cache
+.idea/
 dist
 
 # Created by https://www.gitignore.io/api/node,macos,windows,typings,visualstudiocode
