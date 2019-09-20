@@ -97,7 +97,7 @@ jobs:
 
     build-and-test-android:
         docker:
-            - image: circleci/android:api-28-node8-alpha
+            - image: circleci/android:api-29-node
 
         steps:
             - checkout
