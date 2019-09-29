@@ -1,3 +1,6 @@
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
 //
 // Copyright (c) 2019, Salesforce.com, inc.
 // All rights reserved.
@@ -52,14 +55,14 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
     }
 
-    func testBindUnaryWithReturn() {
+    func testBindUnaryWithReturn() throws {
         binder.bind(BindTarget.unaryWithReturn, as: "")
-        let value = try? binder.callable?.call(args: [42]) as? Int
+        let value = try binder.callable?.call(args: [42]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(42))
     }
 
-    func testBindUnaryWithReturnThrows() {
+    func testBindUnaryWithReturnThrows() throws {
         binder.bind(BindTarget.unaryWithReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: [42]))
         XCTAssert(binder.target.called)
@@ -307,15 +310,12 @@ class BinderTests: XCTestCase {
     func testBindQuaternaryWithUnaryCallbackThrows() {
         binder.bind(BindTarget.quaternaryWithUnaryCallbackThrows, as: "")
         let expecter = expectation(description: "callback")
-        var result: Int?
         let callback: BindTarget.UnaryCallback = { value in
-            result = value
             expecter.fulfill()
         }
         XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
-        XCTAssertEqual(result, .some(92))
     }
 
     func testBindQuaternaryWithBinaryCallback() {
@@ -335,15 +335,12 @@ class BinderTests: XCTestCase {
     func testBindQuaternaryWithBinaryCallbackThrows() {
         binder.bind(BindTarget.quaternaryWithBinaryCallbackThrows, as: "")
         let expecter = expectation(description: "callback")
-        var result: Int?
         let callback: BindTarget.BinaryCallback = { value1, value2 in
-            result = value1 + value2
             expecter.fulfill()
         }
         XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
-        XCTAssertEqual(result, .some(92))
     }
 
     func testBindQuinaryNoReturn() {
@@ -513,12 +510,12 @@ class BindTarget {
 
     func binaryWithUnaryCallback(arg0: Int, callback: @escaping UnaryCallback) {
         called = true
-        callback(arg0)
+        callback(42)
     }
 
     func binaryWithUnaryCallbackThrows(arg0: Int, callback: @escaping UnaryCallback) throws {
         called = true
-        callback(arg0)
+        callback(42)
         throw BindError.boundMethodThrew
     }
 

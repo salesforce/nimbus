@@ -1,3 +1,6 @@
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
 //
 // Copyright (c) 2019, Salesforce.com, inc.
 // All rights reserved.
@@ -12,7 +15,7 @@ import XCTest
 class CallableTests: XCTestCase {
     let testable = Testable()
 
-    func testNullaryCallback() {
+    func testNullaryCallable() {
         let callable = make_callable(Testable.nullary(testable))
         let result = try? callable.call(args: []) as? Int
         XCTAssertTrue(testable.called)
@@ -75,27 +78,27 @@ class Testable {
         return 0
     }
 
-    func unary(arg0 _: Int) -> Int {
+    func unary(arg0: Int) -> Int {
         called = true
         return 1
     }
 
-    func binary(arg0 _: Int, arg1 _: Int) -> Int {
+    func binary(arg0: Int, arg1: Int) -> Int {
         called = true
         return 2
     }
 
-    func ternary(arg0 _: Int, arg01 _: Int, arg2 _: Int) -> Int {
+    func ternary(arg0: Int, arg1: Int, arg2: Int) -> Int {
         called = true
         return 3
     }
 
-    func quaternary(arg0 _: Int, arg1 _: Int, arg2 _: Int, arg3 _: Int) -> Int {
+    func quaternary(arg0: Int, arg1: Int, arg2: Int, arg3: Int) -> Int {
         called = true
         return 4
     }
 
-    func quinary(arg0 _: Int, arg1 _: Int, arg2 _: Int, arg3 _: Int, arg4 _: Int) -> Int {
+    func quinary(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int) -> Int {
         called = true
         return 5
     }

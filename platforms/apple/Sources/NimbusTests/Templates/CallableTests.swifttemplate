@@ -1,0 +1,52 @@
+<%- includeFile("../../Nimbus/Templates/Config.swift") -%>
+<%- includeFile("../../Nimbus/Templates/Utils.swift") -%>
+//
+// Copyright (c) 2019, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
+import XCTest
+
+@testable import Nimbus
+
+class CallableTests: XCTestCase {
+    let testable = Testable()
+
+<%_  for (index, arity) in arities.enumerated() { -%>
+    func test<%= arity.name.capitalizingFirstLetter() %>Callable() {
+        let callable = make_callable(Testable.<%= arity.name %>(testable))
+        let result = try? callable.call(args: [<%_ if index > 0 { -%><%= Array(1...index).map({(element: Int) in String(format: "%d", element)}).joined(separator: ", ") -%><% } _%>]) as? Int
+        XCTAssertTrue(testable.called)
+        XCTAssertEqual(result, <%= index %>)
+    }
+
+<%_  } -%>
+    func testCallbackable() {
+        let callable = make_callable(Testable.callbackable(testable))
+        let expect = expectation(description: "called callback")
+
+        let callback: (Int) -> Void = { (value: Int) in
+            print("the int is \(value)")
+            expect.fulfill()
+        }
+        _ = try? callable.call(args: [1, callback])
+        wait(for: [expect], timeout: 5)
+    }
+}
+
+class Testable {
+    private(set) var called = false
+
+<%_  for (index, arity) in arities.enumerated() { -%>
+    func <%= arity.name %>(<% if index > 0 { %><%= getCommaSeparatedString(count: index, formattingPurpose: .forMethodArgsAsIntDecl)%><% } %>) -> Int {
+        called = true
+        return <%= index %>
+    }
+
+<%_  } -%>
+    func callbackable(arg0: Int, arg1: (Int) -> Void) {
+        arg1(arg0)
+    }
+}

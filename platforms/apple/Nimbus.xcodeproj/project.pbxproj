@@ -19,7 +19,6 @@
 		291A861121E531B200510832 /* NimbusExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FD21E5302C00510832 /* NimbusExtension.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
 		29245EE6220CE18100F9EEAF /* test-www in Resources */ = {isa = PBXBuildFile; fileRef = 29245EE5220CE18100F9EEAF /* test-www */; };
-		2937362E2211E288007EB62D /* CallableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433602200FE3400E6D084 /* CallableTests.swift */; };
 		294433472200FA3700E6D084 /* Callback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433422200FA3700E6D084 /* Callback.swift */; };
 		294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433432200FA3700E6D084 /* WebView+Nimbus.swift */; };
 		294433492200FA3700E6D084 /* EncodableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433442200FA3700E6D084 /* EncodableValue.swift */; };
@@ -41,9 +40,19 @@
 		2970E45C224F0A0F008DC004 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2970E499224F0D46008DC004 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2970E498224F0D46008DC004 /* WebKit.framework */; };
 		298503D9228DEAAC00C1071E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503D8228DEAAC00C1071E /* Binder.swift */; };
-		298503DB228DED3500C1071E /* BinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503DA228DED3500C1071E /* BinderTests.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */; };
+		5D9FB1E5D3EC59D913F3266B /* libPods-NimbusTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */; };
+		682D46B3234158860049B636 /* CallableTests.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 682D46B2234158860049B636 /* CallableTests.swifttemplate */; };
+		682D46B5234160650049B636 /* CallableTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682D46B4234160650049B636 /* CallableTests.generated.swift */; };
+		68B855F2233EE7FD00D1F243 /* BinderTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B855F1233EE7FD00D1F243 /* BinderTests.generated.swift */; };
+		68C06580233EE8A200739292 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B85233DE57500682431 /* Utils.swift */; };
+		68FA8B89233DE57500682431 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B85233DE57500682431 /* Utils.swift */; };
+		68FA8B8A233DE57500682431 /* Callables.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 68FA8B86233DE57500682431 /* Callables.swifttemplate */; };
+		68FA8B8B233DE57500682431 /* Binders.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 68FA8B87233DE57500682431 /* Binders.swifttemplate */; };
+		68FA8B94233DEAF500682431 /* Binders.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B91233DEAE900682431 /* Binders.generated.swift */; };
+		68FA8B95233DEAF900682431 /* Callables.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B90233DEAE900682431 /* Callables.generated.swift */; };
+		A3293154C796248DD6E6EC07 /* libPods-Nimbus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */; };
 		ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */; };
 /* End PBXBuildFile section */
 
@@ -141,7 +150,6 @@
 		294433522200FD8D00E6D084 /* NimbusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NimbusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		294433562200FD8D00E6D084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallJavascriptTests.swift; sourceTree = "<group>"; };
-		294433602200FE3400E6D084 /* CallableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableTests.swift; sourceTree = "<group>"; };
 		2944336F2202012F00E6D084 /* NimbusAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NimbusAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		294433712202012F00E6D084 /* NimbusAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusAppUITests.swift; sourceTree = "<group>"; };
 		294433732202012F00E6D084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -165,8 +173,22 @@
 		2970E451224F0A06008DC004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
-		298503DA228DED3500C1071E /* BinderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinderTests.swift; sourceTree = "<group>"; };
 		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
+		522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusTests.debug.xcconfig"; path = "Target Support Files/Pods-NimbusTests/Pods-NimbusTests.debug.xcconfig"; sourceTree = "<group>"; };
+		63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
+		682D46B2234158860049B636 /* CallableTests.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = text; path = CallableTests.swifttemplate; sourceTree = "<group>"; };
+		682D46B4234160650049B636 /* CallableTests.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableTests.generated.swift; sourceTree = "<group>"; };
+		68B855EF233EE7AE00D1F243 /* BinderTests.swifttemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BinderTests.swifttemplate; sourceTree = "<group>"; };
+		68B855F1233EE7FD00D1F243 /* BinderTests.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinderTests.generated.swift; sourceTree = "<group>"; };
+		68FA8B85233DE57500682431 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		68FA8B86233DE57500682431 /* Callables.swifttemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Callables.swifttemplate; sourceTree = "<group>"; };
+		68FA8B87233DE57500682431 /* Binders.swifttemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Binders.swifttemplate; sourceTree = "<group>"; };
+		68FA8B88233DE57500682431 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		68FA8B90233DEAE900682431 /* Callables.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Callables.generated.swift; sourceTree = "<group>"; };
+		68FA8B91233DEAE900682431 /* Binders.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binders.generated.swift; sourceTree = "<group>"; };
+		79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusTests.release.xcconfig"; path = "Target Support Files/Pods-NimbusTests/Pods-NimbusTests.release.xcconfig"; sourceTree = "<group>"; };
+		AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.release.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -186,6 +208,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3293154C796248DD6E6EC07 /* libPods-Nimbus.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				294433572200FD8D00E6D084 /* Nimbus.framework in Frameworks */,
+				5D9FB1E5D3EC59D913F3266B /* libPods-NimbusTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +306,8 @@
 		291A85FA21E52F3200510832 /* Nimbus */ = {
 			isa = PBXGroup;
 			children = (
+				68FA8B8D233DE5DD00682431 /* Generated */,
+				68FA8B84233DE53300682431 /* Templates */,
 				29F8D60D223AF83B005C5AC1 /* Extensions */,
 				298503D8228DEAAC00C1071E /* Binder.swift */,
 				294433452200FA3700E6D084 /* Callable.swift */,
@@ -301,9 +327,9 @@
 		294433532200FD8D00E6D084 /* NimbusTests */ = {
 			isa = PBXGroup;
 			children = (
+				68B855ED233E751400D1F243 /* Templates */,
+				68B855EC233E750800D1F243 /* Generated */,
 				29245EE5220CE18100F9EEAF /* test-www */,
-				298503DA228DED3500C1071E /* BinderTests.swift */,
-				294433602200FE3400E6D084 /* CallableTests.swift */,
 				2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */,
 				294433562200FD8D00E6D084 /* Info.plist */,
 				29245EE1220CE13000F9EEAF /* MochaTests.swift */,
@@ -328,6 +354,7 @@
 				2970E498224F0D46008DC004 /* WebKit.framework */,
 				F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */,
 				F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */,
+				AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -371,11 +398,53 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		68B855EC233E750800D1F243 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				682D46B4234160650049B636 /* CallableTests.generated.swift */,
+				68B855F1233EE7FD00D1F243 /* BinderTests.generated.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
+		68B855ED233E751400D1F243 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				68B855EF233EE7AE00D1F243 /* BinderTests.swifttemplate */,
+				682D46B2234158860049B636 /* CallableTests.swifttemplate */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		68FA8B84233DE53300682431 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				68FA8B87233DE57500682431 /* Binders.swifttemplate */,
+				68FA8B86233DE57500682431 /* Callables.swifttemplate */,
+				68FA8B88233DE57500682431 /* Config.swift */,
+				68FA8B85233DE57500682431 /* Utils.swift */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		68FA8B8D233DE5DD00682431 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				68FA8B91233DEAE900682431 /* Binders.generated.swift */,
+				68FA8B90233DEAE900682431 /* Callables.generated.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
 		CFB418AC54B2560C2CE6A834 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */,
 				F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */,
+				63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */,
+				D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */,
+				522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */,
+				79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -419,6 +488,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
+				ADDCA848A505444DAEEA2F2F /* [CP] Check Pods Manifest.lock */,
+				68FA8B8F233DE92600682431 /* Generate Binding Code */,
 				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
@@ -438,6 +509,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2944335A2200FD8D00E6D084 /* Build configuration list for PBXNativeTarget "NimbusTests" */;
 			buildPhases = (
+				17C3C069440937E7CD171100 /* [CP] Check Pods Manifest.lock */,
+				68B855EE233EE75400D1F243 /* Generate Tests */,
 				2944334E2200FD8D00E6D084 /* Sources */,
 				2944334F2200FD8D00E6D084 /* Frameworks */,
 				29DA183C220CF4B100D02CDA /* Build test web app */,
@@ -598,10 +671,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				2944337E2202059700E6D084 /* test.js in Resources */,
+				68FA8B8A233DE57500682431 /* Callables.swifttemplate in Resources */,
 				2944337D2202059700E6D084 /* test.html in Resources */,
 				291A85F321E52D4000510832 /* LaunchScreen.storyboard in Resources */,
 				291A85F021E52D4000510832 /* Assets.xcassets in Resources */,
 				291A85EE21E52D3E00510832 /* Main.storyboard in Resources */,
+				68FA8B8B233DE57500682431 /* Binders.swifttemplate in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,6 +692,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29245EE6220CE18100F9EEAF /* test-www in Resources */,
+				682D46B3234158860049B636 /* CallableTests.swifttemplate in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,6 +729,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		17C3C069440937E7CD171100 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NimbusTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		29610FB821E532C9007058EA /* Embed IP address */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -710,6 +808,42 @@
 			shellScript = "pushd ${SRCROOT}/../..\nnpm install\n";
 			showEnvVarsInLog = 0;
 		};
+		68B855EE233EE75400D1F243 /* Generate Tests */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Tests";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$PODS_ROOT/Sourcery/bin/sourcery --sources ./Sources/NimbusTests --output ./Sources/NimbusTests/Generated --templates ./Sources/NimbusTests/Templates\n";
+		};
+		68FA8B8F233DE92600682431 /* Generate Binding Code */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Binding Code";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$PODS_ROOT/Sourcery/bin/sourcery --sources ./Sources/Nimbus --output ./Sources/Nimbus/Generated --templates ./Sources/Nimbus/Templates\n";
+		};
 		9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -732,6 +866,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		ADDCA848A505444DAEEA2F2F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Nimbus-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -739,6 +895,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68FA8B89233DE57500682431 /* Utils.swift in Sources */,
 				2944337A2202059000E6D084 /* TestViewController.swift in Sources */,
 				291A85EB21E52D3E00510832 /* ViewController.swift in Sources */,
 				29443380220206B700E6D084 /* TestBridge.swift in Sources */,
@@ -752,12 +909,14 @@
 			files = (
 				29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */,
 				298503D9228DEAAC00C1071E /* Binder.swift in Sources */,
+				68FA8B94233DEAF500682431 /* Binders.generated.swift in Sources */,
 				291A861021E531B200510832 /* NimbusBridge.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
 				294433492200FA3700E6D084 /* EncodableValue.swift in Sources */,
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
 				2944334A2200FA3700E6D084 /* Callable.swift in Sources */,
+				68FA8B95233DEAF900682431 /* Callables.generated.swift in Sources */,
 				291A861121E531B200510832 /* NimbusExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -768,8 +927,9 @@
 			files = (
 				29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */,
 				29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */,
-				2937362E2211E288007EB62D /* CallableTests.swift in Sources */,
-				298503DB228DED3500C1071E /* BinderTests.swift in Sources */,
+				682D46B5234160650049B636 /* CallableTests.generated.swift in Sources */,
+				68C06580233EE8A200739292 /* Utils.swift in Sources */,
+				68B855F2233EE7FD00D1F243 /* BinderTests.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1034,6 +1194,7 @@
 		};
 		291A860D21E530BC00510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1063,6 +1224,7 @@
 		};
 		291A860E21E530BC00510832 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1092,6 +1254,7 @@
 		};
 		2944335B2200FD8D00E6D084 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;
@@ -1111,6 +1274,7 @@
 		};
 		2944335C2200FD8D00E6D084 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;

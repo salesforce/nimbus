@@ -5,5 +5,17 @@ inhibit_all_warnings!
 pod 'SwiftLint',  '~> 0.30'
 pod 'SwiftFormat/CLI', '~> 0.39.0'
 
+def sourcery
+  pod 'Sourcery', '~> 0.17.0'
+end
+
 target 'NimbusApp' do
+end
+
+target 'Nimbus' do
+  sourcery
+end
+
+target 'NimbusTests' do
+  sourcery
 end

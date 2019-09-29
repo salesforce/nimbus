@@ -1,0 +1,43 @@
+<%- includeFile("Config.swift") -%>
+<%- includeFile("Utils.swift") -%>
+//
+// Copyright (c) 2019, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+<%_  for (index, arity) in arities.enumerated() { -%>
+/**
+ A `Callable` wrapper for <%= arities[index].name %> functions
+ */
+struct Callable<%= index %><R<% if index > 0 { -%>, <%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %><% } %>>: Callable {
+    typealias FunctionType = (<% if index > 0 { -%><%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %><% } %>) throws -> R
+    let function: FunctionType
+
+    init(_ function: @escaping FunctionType) {
+        self.function = function
+    }
+
+    func call(args: [Any]) throws -> Any {
+<%_     if index > 0 { -%>
+        if let arg0 = args[0] as? A0<%if index > 1 { -%>,<% } else { %> {<% } %>
+<%          for CURR_POSITION in 1..<index { -%>
+            let arg<%= CURR_POSITION %> = args[<%= CURR_POSITION %>] as? A<%= CURR_POSITION %><% if CURR_POSITION == index - 1 { %> {<% } else { %>,<% } %>
+<%          } -%>
+            return try function(<%= getCommaSeparatedString(count: index, formattingPurpose: .forBoundFunctionArgs) %>)
+        }
+        throw ParameterError()
+<%_     } else if index == 0 { -%>
+        return try function()
+<%      } -%>
+    }
+}
+<% } -%>
+<%_ for index in 0..<arities.count { %>
+/**
+ Create a `Callable` from the <%= arities[index].name %> function.
+ */
+func make_callable<R<% if index > 0 { -%>, <%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %><% } %>>(_ function: @escaping ((<% if index > 0 { -%><%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %><% } %>)) throws -> R) -> Callable {
+    return Callable<%=index%>(function)
+}
+<% } -%>
