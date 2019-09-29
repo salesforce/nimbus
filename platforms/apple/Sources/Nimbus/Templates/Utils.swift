@@ -7,7 +7,6 @@
 
 // This data structure drives code generation
 struct Arity {
-    let value: Int
     let testValue: Int
     let name: String
 }
@@ -93,13 +92,16 @@ extension Array {
     }
 
     func getCallbackArgsForUnaryCallback(count: Int) -> String {
-        guard self.count > 1 else {
+        guard let arityArray = self as? [Arity],
+            self.count > 1 else {
                 fatalError()
         }
         if 1 == count {
+            return "\(arityArray[1...][count].testValue)"
+        } else if 2 == count {
             return "arg0"
         } else {
-            return getCommaSeparatedString(count: count, formattingPurpose: .forArgsSum)
+            return getCommaSeparatedString(count: count - 1, formattingPurpose: .forArgsSum)
         }
     }
 

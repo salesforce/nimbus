@@ -173,12 +173,12 @@ class BindTarget {
 
     func <%= arity.name %>WithUnaryCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) {
         called = true
-        callback(<% if index > 1 { %><%= arities.getCallbackArgsForUnaryCallback(count: index - 1) %><% } else { %><%= arities.getCallbackArgsForUnaryCallback(count: index) %><% } %>)
+        callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
     }
 
     func <%= arity.name %>WithUnaryCallbackThrows(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) throws {
         called = true
-        callback(<% if index > 1 { %><%= arities.getCallbackArgsForUnaryCallback(count: index - 1) %><% } else { %><%= arities.getCallbackArgsForUnaryCallback(count: index) %><% } %>)
+        callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
         throw BindError.boundMethodThrew
     }
 

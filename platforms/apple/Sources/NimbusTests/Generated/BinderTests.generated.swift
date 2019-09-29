@@ -510,12 +510,12 @@ class BindTarget {
 
     func binaryWithUnaryCallback(arg0: Int, callback: @escaping UnaryCallback) {
         called = true
-        callback(42)
+        callback(arg0)
     }
 
     func binaryWithUnaryCallbackThrows(arg0: Int, callback: @escaping UnaryCallback) throws {
         called = true
-        callback(42)
+        callback(arg0)
         throw BindError.boundMethodThrew
     }
 
