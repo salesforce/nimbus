@@ -10,3 +10,4 @@ coverage:
 
 ignore:
   - "platforms/apple/Sources/NimbusTests"
+  - "platforms/apple/Sources/Nimbus/Templates"
