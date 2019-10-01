@@ -98,16 +98,19 @@ public class Connection<C>: Binder {
                     return arg
                 }
                 let rawResult = try callable.call(args: args)
-                var result: EncodableValue
-                if type(of: rawResult) == Void.self {
-                    result = .void
-                } else if let encodable = rawResult as? Encodable {
-                    result = .value(encodable)
+                if rawResult is NSArray || rawResult is NSDictionary {
+                    resolvePromise(promiseId: promise, result: rawResult)
                 } else {
-                    throw ParameterError()
+                    var result: EncodableValue
+                    if type(of: rawResult) == Void.self {
+                        result = .void
+                    } else if let encodable = rawResult as? Encodable {
+                        result = .value(encodable)
+                    } else {
+                        throw ParameterError()
+                    }
+                    resolvePromise(promiseId: promise, result: result)
                 }
-
-                resolvePromise(promiseId: promise, result: result)
             } catch {
                 rejectPromise(promiseId: promise, error: error)
             }
@@ -116,18 +119,23 @@ public class Connection<C>: Binder {
 
     private func resolvePromise(promiseId: String, result: Any) {
         var resultString = ""
-        switch result {
-        case is ():
-            resultString = "undefined"
-
-        case let value as EncodableValue:
+        if result is NSArray || result is NSDictionary {
             // swiftlint:disable:next force_try
-            resultString = try! String(data: JSONEncoder().encode(value), encoding: .utf8)!
-
-        default:
-            fatalError("Unsupported return type \(type(of: result))")
+            let data = try! JSONSerialization.data(withJSONObject: result, options: [])
+            resultString = String(data: data, encoding: String.Encoding.utf8)!
+            webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString));")
+        } else {
+            switch result {
+            case is ():
+                resultString = "undefined"
+            case let value as EncodableValue:
+                // swiftlint:disable:next force_try
+                resultString = try! String(data: JSONEncoder().encode(value), encoding: .utf8)!
+            default:
+                fatalError("Unsupported return type \(type(of: result))")
+            }
+            webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
         }
-        webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
     }
 
     private func rejectPromise(promiseId: String, error: Error) {

@@ -17,7 +17,6 @@ import Foundation
 public enum EncodableValue: Encodable {
     case void
     case value(Encodable)
-    case array([Encodable])
 
     enum Keys: String, CodingKey {
         case v // swiftlint:disable:this identifier_name
@@ -31,11 +30,6 @@ public enum EncodableValue: Encodable {
         case .value(let value):
             let superContainer = container.superEncoder(forKey: .v)
             try value.encode(to: superContainer)
-        case .array(let array):
-            var superContainer = container.nestedUnkeyedContainer(forKey: .v)
-            try array.forEach { encodable in
-                try encodable.encode(to: superContainer.superEncoder())
-            }
         }
     }
 }

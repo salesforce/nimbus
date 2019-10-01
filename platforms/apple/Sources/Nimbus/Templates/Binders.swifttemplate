@@ -7,7 +7,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-// swiftlint:disable line_length
+// swiftlint:disable line_length file_length
 
 extension Binder {
 <%_  for (index, arity) in arities.enumerated() { -%>
@@ -25,6 +25,24 @@ extension Binder {
      Bind the specified function to this connection.
      */
     public func bind<R: Encodable>(_ function: @escaping (Target) -> () throws -> R, as name: String) {
+        let boundFunction = function(target)
+        let callable = make_callable(boundFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind(_ function: @escaping (Target) -> () throws -> NSArray, as name: String) {
+        let boundFunction = function(target)
+        let callable = make_callable(boundFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind(_ function: @escaping (Target) -> () throws -> NSDictionary, as name: String) {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)
         bind(callable, as: name)
@@ -51,6 +69,24 @@ extension Binder {
     /**
      Bind the specified function to this connection.
      */
+    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSArray, as name: String) {
+        let boundFunction = function(target)
+        let callable = make_callable(boundFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSDictionary, as name: String) {
+        let boundFunction = function(target)
+        let callable = make_callable(boundFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
     public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0) -> Void) throws -> Void, as name: String) {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
@@ -65,11 +101,151 @@ extension Binder {
     /**
      Bind the specified function to this connection.
      */
+    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSArray) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0 in
+                _ = try! callable.call(args: [cba0]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSDictionary) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0 in
+                _ = try! callable.call(args: [cbd0]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
     public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CB1) -> Void) throws -> Void, as name: String) {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cb1 in
                 _ = try! callable.call(args: [cb0, cb1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBA1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cba1 in
+                _ = try! callable.call(args: [cb0, cba1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBD1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cbd1 in
+                _ = try! callable.call(args: [cb0, cbd1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBA1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cba1 in
+                _ = try! callable.call(args: [cba0, cba1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CB1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cb1 in
+                _ = try! callable.call(args: [cba0, cb1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBD1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cbd1 in
+                _ = try! callable.call(args: [cba0, cbd1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CB1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cb1 in
+                _ = try! callable.call(args: [cbd0, cb1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBA1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cba1 in
+                _ = try! callable.call(args: [cbd0, cba1]) // swiftlint:disable:this force_try
+            }
+        }
+        let callable = make_callable(wrappedFunction)
+        bind(callable, as: name)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBD1) -> Void) throws -> Void, as name: String) {
+        let boundFunction = function(target)
+        let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
+            try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cbd1 in
+                _ = try! callable.call(args: [cbd0, cbd1]) // swiftlint:disable:this force_try
             }
         }
         let callable = make_callable(wrappedFunction)
