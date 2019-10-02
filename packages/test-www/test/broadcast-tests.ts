@@ -7,7 +7,7 @@
 
 import "mocha";
 import { expect } from "chai";
-import { nimbus } from "nimbus-bridge";
+import nimbus from "nimbus-bridge";
 
 describe("Message Broadcasting", () => {
   it("calls listener when message is broadcast", done => {

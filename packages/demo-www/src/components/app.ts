@@ -1,4 +1,4 @@
-import { nimbus } from 'nimbus-bridge';
+import nimbus from 'nimbus-bridge';
 
 const template = document.createElement('template');
 template.innerHTML = `
