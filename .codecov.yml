@@ -2,13 +2,19 @@ coverage:
   status:
     project:
       default: false
-      nimbus:
+      ios:
         target: 75%
-        paths:
-          - "platforms/apple/Sources/Nimbus"
-          - "platforms/android/nimbus/src/main"
-  notify:
-    after_n_builds: 4
+        flags: ios
+      android:
+        target: 90%
+        android: android
+flags:
+  ios:
+    path:
+      - "platforms/apple/Sources/Nimbus"
+  android:
+    path:
+      - "platforms/android/nimbus/src/main"
 ignore:
   - "platforms/apple/Sources/NimbusTests"
   - "platforms/apple/Sources/Nimbus/Templates"
