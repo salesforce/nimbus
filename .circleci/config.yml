@@ -93,7 +93,7 @@ jobs:
                   working_directory: platforms/apple
                   command: |
                       bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
-                      bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
+                      bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode -c -F ios
 
     build-and-test-android:
         docker:
@@ -129,7 +129,7 @@ jobs:
                   working_directory: platforms/android
                   command: |
                       ./gradlew jacocoTestReport
-                      bash <(curl -s https://codecov.io/bash)
+                      bash <(curl -s https://codecov.io/bash) -c -F android
 
     build-and-test-ts:
         docker:
