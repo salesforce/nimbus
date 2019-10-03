@@ -7,7 +7,8 @@ coverage:
         paths:
           - "platforms/apple/Sources/Nimbus"
           - "platforms/android/nimbus/src/main"
-
+  notify:
+    after_n_builds: 4
 ignore:
   - "platforms/apple/Sources/NimbusTests"
   - "platforms/apple/Sources/Nimbus/Templates"
