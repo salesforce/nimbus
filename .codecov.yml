@@ -16,4 +16,5 @@ flags:
     path:
       - "platforms/android/nimbus/src/main"
     ignore:
-      - "platforms/apple"
+      - "platforms/apple/Sources/NimbusTests"
+      - "platforms/apple/Sources/Nimbus/Templates"
