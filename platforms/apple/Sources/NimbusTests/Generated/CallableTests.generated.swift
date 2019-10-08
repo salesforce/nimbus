@@ -22,11 +22,21 @@ class CallableTests: XCTestCase {
         XCTAssertEqual(result, 0)
     }
 
+    func testNullaryArgCountFails() {
+        let callable = make_callable(Testable.nullary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1]))
+    }
+
     func testUnaryCallable() {
         let callable = make_callable(Testable.unary(testable))
         let result = try? callable.call(args: [1]) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 1)
+    }
+
+    func testUnaryArgCountFails() {
+        let callable = make_callable(Testable.unary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1, 2]))
     }
 
     func testBinaryCallable() {
@@ -36,11 +46,21 @@ class CallableTests: XCTestCase {
         XCTAssertEqual(result, 2)
     }
 
+    func testBinaryArgCountFails() {
+        let callable = make_callable(Testable.binary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3]))
+    }
+
     func testTernaryCallable() {
         let callable = make_callable(Testable.ternary(testable))
         let result = try? callable.call(args: [1, 2, 3]) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 3)
+    }
+
+    func testTernaryArgCountFails() {
+        let callable = make_callable(Testable.ternary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4]))
     }
 
     func testQuaternaryCallable() {
@@ -50,12 +70,23 @@ class CallableTests: XCTestCase {
         XCTAssertEqual(result, 4)
     }
 
+    func testQuaternaryArgCountFails() {
+        let callable = make_callable(Testable.quaternary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5]))
+    }
+
     func testQuinaryCallable() {
         let callable = make_callable(Testable.quinary(testable))
         let result = try? callable.call(args: [1, 2, 3, 4, 5]) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 5)
     }
+
+    func testQuinaryArgCountFails() {
+        let callable = make_callable(Testable.quinary(testable))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5, 6]))
+    }
+
 
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
