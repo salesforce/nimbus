@@ -19,6 +19,9 @@ struct Callable0<R>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 0 {
+            throw ParameterError.argumentCount(expected: 0, actual: args.count)
+        }
         return try function()
     }
 }
@@ -34,10 +37,13 @@ struct Callable1<R, A0>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 1 {
+            throw ParameterError.argumentCount(expected: 1, actual: args.count)
+        }
         if let arg0 = args[0] as? A0 {
             return try function(arg0)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
     }
 }
 /**
@@ -52,11 +58,14 @@ struct Callable2<R, A0, A1>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 2 {
+            throw ParameterError.argumentCount(expected: 2, actual: args.count)
+        }
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1 {
             return try function(arg0, arg1)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
     }
 }
 /**
@@ -71,12 +80,15 @@ struct Callable3<R, A0, A1, A2>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 3 {
+            throw ParameterError.argumentCount(expected: 3, actual: args.count)
+        }
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1,
             let arg2 = args[2] as? A2 {
             return try function(arg0, arg1, arg2)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
     }
 }
 /**
@@ -91,13 +103,16 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 4 {
+            throw ParameterError.argumentCount(expected: 4, actual: args.count)
+        }
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1,
             let arg2 = args[2] as? A2,
             let arg3 = args[3] as? A3 {
             return try function(arg0, arg1, arg2, arg3)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
     }
 }
 /**
@@ -112,6 +127,9 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != 5 {
+            throw ParameterError.argumentCount(expected: 5, actual: args.count)
+        }
         if let arg0 = args[0] as? A0,
             let arg1 = args[1] as? A1,
             let arg2 = args[2] as? A2,
@@ -119,7 +137,7 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
             let arg4 = args[4] as? A4 {
             return try function(arg0, arg1, arg2, arg3, arg4)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
     }
 }
 

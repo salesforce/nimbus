@@ -43,7 +43,7 @@ class Callback: Callable {
                 // Parameters passed to callback are implied that they
                 // conform to Encodable protocol or be either NSArray or NSDictionary.
                 // If for some reason any elements don't throw parameter error.
-                throw ParameterError()
+                throw ParameterError.conversion
             }
         }
         let formattedJsonArgs = String(format: "[%@]", jsonArgs.joined(separator: ","))

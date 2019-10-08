@@ -18,4 +18,7 @@ public protocol Callable {
 }
 
 /// Represents an error when the type or number of arguments is incorrect
-struct ParameterError: Error {}
+enum ParameterError: Error, Equatable {
+    case conversion
+    case argumentCount(expected: Int, actual: Int)
+}

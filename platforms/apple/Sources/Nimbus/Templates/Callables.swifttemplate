@@ -19,6 +19,9 @@ struct Callable<%= index %><R<% if index > 0 { -%>, <%= getCommaSeparatedString(
     }
 
     func call(args: [Any]) throws -> Any {
+        if args.count != <%= index %> {
+            throw ParameterError.argumentCount(expected: <%= index %>, actual: args.count)
+        }
 <%_     if index > 0 { -%>
         if let arg0 = args[0] as? A0<%if index > 1 { -%>,<% } else { %> {<% } %>
 <%          for CURR_POSITION in 1..<index { -%>
@@ -26,7 +29,7 @@ struct Callable<%= index %><R<% if index > 0 { -%>, <%= getCommaSeparatedString(
 <%          } -%>
             return try function(<%= getCommaSeparatedString(count: index, formattingPurpose: .forBoundFunctionArgs) %>)
         }
-        throw ParameterError()
+        throw ParameterError.conversion
 <%_     } else if index == 0 { -%>
         return try function()
 <%      } -%>

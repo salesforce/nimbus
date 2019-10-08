@@ -107,7 +107,7 @@ public class Connection<C>: Binder {
                     } else if let encodable = rawResult as? Encodable {
                         result = .value(encodable)
                     } else {
-                        throw ParameterError()
+                        throw ParameterError.conversion
                     }
                     resolvePromise(promiseId: promise, result: result)
                 }

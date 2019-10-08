@@ -41,6 +41,7 @@
 		2970E499224F0D46008DC004 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2970E498224F0D46008DC004 /* WebKit.framework */; };
 		298503D9228DEAAC00C1071E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503D8228DEAAC00C1071E /* Binder.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
+		29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F3839B234BC61000BF854B /* ParameterErrorTests.swift */; };
 		29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */; };
 		5D9FB1E5D3EC59D913F3266B /* libPods-NimbusTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */; };
 		682D46B3234158860049B636 /* CallableTests.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 682D46B2234158860049B636 /* CallableTests.swifttemplate */; };
@@ -173,6 +174,7 @@
 		2970E451224F0A06008DC004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
+		29F3839B234BC61000BF854B /* ParameterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterErrorTests.swift; sourceTree = "<group>"; };
 		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
 		522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusTests.debug.xcconfig"; path = "Target Support Files/Pods-NimbusTests/Pods-NimbusTests.debug.xcconfig"; sourceTree = "<group>"; };
 		63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
@@ -333,6 +335,7 @@
 				2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */,
 				294433562200FD8D00E6D084 /* Info.plist */,
 				29245EE1220CE13000F9EEAF /* MochaTests.swift */,
+				29F3839B234BC61000BF854B /* ParameterErrorTests.swift */,
 			);
 			name = NimbusTests;
 			path = Sources/NimbusTests;
@@ -791,7 +794,7 @@
 		};
 		29DA183C220CF4B100D02CDA /* Build test web app */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -804,7 +807,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
+			shellPath = "/bin/bash -l";
 			shellScript = "pushd ${SRCROOT}/../..\nnpm install\n";
 			showEnvVarsInLog = 0;
 		};
@@ -925,6 +928,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */,
 				29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */,
 				29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */,
 				682D46B5234160650049B636 /* CallableTests.generated.swift in Sources */,
