@@ -26,7 +26,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.nullary(testable))
         XCTAssertThrowsError(try callable.call(args: [1]))
     }
-
     func testUnaryCallable() {
         let callable = make_callable(Testable.unary(testable))
         let result = try? callable.call(args: [1]) as? Int
@@ -38,7 +37,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.unary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2]))
     }
-
     func testBinaryCallable() {
         let callable = make_callable(Testable.binary(testable))
         let result = try? callable.call(args: [1, 2]) as? Int
@@ -50,7 +48,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.binary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3]))
     }
-
     func testTernaryCallable() {
         let callable = make_callable(Testable.ternary(testable))
         let result = try? callable.call(args: [1, 2, 3]) as? Int
@@ -62,7 +59,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.ternary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4]))
     }
-
     func testQuaternaryCallable() {
         let callable = make_callable(Testable.quaternary(testable))
         let result = try? callable.call(args: [1, 2, 3, 4]) as? Int
@@ -74,7 +70,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.quaternary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5]))
     }
-
     func testQuinaryCallable() {
         let callable = make_callable(Testable.quinary(testable))
         let result = try? callable.call(args: [1, 2, 3, 4, 5]) as? Int
@@ -86,8 +81,6 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.quinary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5, 6]))
     }
-
-
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
         let expect = expectation(description: "called callback")

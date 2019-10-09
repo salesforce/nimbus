@@ -24,8 +24,20 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
     }
 
+    func testBindNullaryFuncNoReturn() {
+        binder.bind(binder.target.nullaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [])
+        XCTAssert(binder.target.called)
+    }
+
     func testBindNullaryNoReturnThrows() {
         binder.bind(BindTarget.nullaryNoReturnThrows, as: "")
+        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindNullaryFuncNoReturnThrows() {
+        binder.bind(binder.target.nullaryNoReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: []))
         XCTAssert(binder.target.called)
     }
@@ -37,8 +49,23 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(value, .some("value"))
     }
 
+    func testBindNullaryFuncWithReturn() {
+        binder.bind(binder.target.nullaryWithReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? String
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(value, .some("value"))
+    }
+
     func testBindNullaryWithNSArrayReturn() {
         binder.bind(BindTarget.nullaryWithNSArrayReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? NSArray
+        XCTAssert(binder.target.called)
+        let isExpectedType = value is NSArray
+        XCTAssertEqual(isExpectedType, true)
+    }
+
+    func testBindNullaryFuncWithNSArrayReturn() {
+        binder.bind(binder.target.nullaryWithNSArrayReturn, as: "")
         let value = try? binder.callable?.call(args: []) as? NSArray
         XCTAssert(binder.target.called)
         let isExpectedType = value is NSArray
@@ -53,14 +80,34 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(isExpectedType, true)
     }
 
+    func testBindNullaryFuncWithNSDictionaryReturn() {
+        binder.bind(binder.target.nullaryWithNSDictionaryReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? NSDictionary
+        XCTAssert(binder.target.called)
+        let isExpectedType = value is NSDictionary
+        XCTAssertEqual(isExpectedType, true)
+    }
+
     func testBindNullaryWithReturnThrows() {
         binder.bind(BindTarget.nullaryWithReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: []))
         XCTAssert(binder.target.called)
     }
 
+    func testBindNullaryFuncWithReturnThrows() {
+        binder.bind(binder.target.nullaryWithReturnThrows, as: "")
+        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssert(binder.target.called)
+    }
+
     func testBindUnaryNoReturn() {
         binder.bind(BindTarget.unaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [42])
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindFuncUnaryNoReturn() {
+        binder.bind(binder.target.unaryNoReturn, as: "")
         _ = try? binder.callable?.call(args: [42])
         XCTAssert(binder.target.called)
     }
@@ -300,6 +347,12 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
     }
 
+    func testBindFuncBinaryNoReturn() {
+        binder.bind(binder.target.binaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [42, 37])
+        XCTAssert(binder.target.called)
+    }
+
     func testBindBinaryNoReturnThrows() {
         binder.bind(BindTarget.binaryNoReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: [42, 37]))
@@ -531,6 +584,12 @@ class BinderTests: XCTestCase {
 
     func testBindTernaryNoReturn() {
         binder.bind(BindTarget.ternaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [42, 37, 13])
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindFuncTernaryNoReturn() {
+        binder.bind(binder.target.ternaryNoReturn, as: "")
         _ = try? binder.callable?.call(args: [42, 37, 13])
         XCTAssert(binder.target.called)
     }
@@ -770,6 +829,12 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
     }
 
+    func testBindFuncQuaternaryNoReturn() {
+        binder.bind(binder.target.quaternaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [42, 37, 13, 7])
+        XCTAssert(binder.target.called)
+    }
+
     func testBindQuaternaryNoReturnThrows() {
         binder.bind(BindTarget.quaternaryNoReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7]))
@@ -1001,6 +1066,12 @@ class BinderTests: XCTestCase {
 
     func testBindQuinaryNoReturn() {
         binder.bind(BindTarget.quinaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [42, 37, 13, 7, 1])
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindFuncQuinaryNoReturn() {
+        binder.bind(binder.target.quinaryNoReturn, as: "")
         _ = try? binder.callable?.call(args: [42, 37, 13, 7, 1])
         XCTAssert(binder.target.called)
     }

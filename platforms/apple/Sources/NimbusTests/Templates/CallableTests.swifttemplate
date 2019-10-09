@@ -26,9 +26,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.<%= arity.name %>(testable))
         XCTAssertThrowsError(try callable.call(args: [<%= Array(1...index+1).map({ "\($0)" }).joined(separator: ", ") -%>]))
     }
-
 <%_  } -%>
-
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
         let expect = expectation(description: "called callback")

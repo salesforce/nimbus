@@ -29,8 +29,20 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
     }
 
+    func testBindNullaryFuncNoReturn() {
+        binder.bind(binder.target.nullaryNoReturn, as: "")
+        _ = try? binder.callable?.call(args: [])
+        XCTAssert(binder.target.called)
+    }
+
     func testBindNullaryNoReturnThrows() {
         binder.bind(BindTarget.nullaryNoReturnThrows, as: "")
+        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindNullaryFuncNoReturnThrows() {
+        binder.bind(binder.target.nullaryNoReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: []))
         XCTAssert(binder.target.called)
     }
@@ -42,8 +54,23 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(value, .some("value"))
     }
 
+    func testBindNullaryFuncWithReturn() {
+        binder.bind(binder.target.nullaryWithReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? String
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(value, .some("value"))
+    }
+
     func testBindNullaryWithNSArrayReturn() {
         binder.bind(BindTarget.nullaryWithNSArrayReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? NSArray
+        XCTAssert(binder.target.called)
+        let isExpectedType = value is NSArray
+        XCTAssertEqual(isExpectedType, true)
+    }
+
+    func testBindNullaryFuncWithNSArrayReturn() {
+        binder.bind(binder.target.nullaryWithNSArrayReturn, as: "")
         let value = try? binder.callable?.call(args: []) as? NSArray
         XCTAssert(binder.target.called)
         let isExpectedType = value is NSArray
@@ -58,14 +85,34 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(isExpectedType, true)
     }
 
+    func testBindNullaryFuncWithNSDictionaryReturn() {
+        binder.bind(binder.target.nullaryWithNSDictionaryReturn, as: "")
+        let value = try? binder.callable?.call(args: []) as? NSDictionary
+        XCTAssert(binder.target.called)
+        let isExpectedType = value is NSDictionary
+        XCTAssertEqual(isExpectedType, true)
+    }
+
     func testBindNullaryWithReturnThrows() {
         binder.bind(BindTarget.nullaryWithReturnThrows, as: "")
+        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindNullaryFuncWithReturnThrows() {
+        binder.bind(binder.target.nullaryWithReturnThrows, as: "")
         XCTAssertThrowsError(try binder.callable?.call(args: []))
         XCTAssert(binder.target.called)
     }
 <%_      } else { _%>
     func testBind<%= arity.name.capitalizingFirstLetter() %>NoReturn() {
         binder.bind(BindTarget.<%= arity.name %>NoReturn, as: "")
+        _ = try? binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>])
+        XCTAssert(binder.target.called)
+    }
+
+    func testBindFunc<%= arity.name.capitalizingFirstLetter() %>NoReturn() {
+        binder.bind(binder.target.<%= arity.name %>NoReturn, as: "")
         _ = try? binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>])
         XCTAssert(binder.target.called)
     }
