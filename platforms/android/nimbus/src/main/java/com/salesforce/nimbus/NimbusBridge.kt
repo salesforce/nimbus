@@ -42,7 +42,7 @@ class NimbusBridge {
         initialize(webView, binders)
     }
 
-    fun loadUrl(appUrl: String){
+    fun loadUrl(appUrl: String) {
         bridgeWebView?.loadUrl(appUrl)
     }
 
