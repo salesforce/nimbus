@@ -36,7 +36,7 @@ dependencies {
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
-    private val bridge: NimbusBridge = NimbusBridge("http://10.0.2.2:3000")
+    private val bridge: NimbusBridge = NimbusBridge()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.webview)
         bridge.add(DeviceExtensionBinder(DeviceExtension(this)))
         bridge.attach(webView)
+        bridge.loadUrl("http://10.0.2.2:3000")
         WebView.setWebContentsDebuggingEnabled(true)
     }
 
