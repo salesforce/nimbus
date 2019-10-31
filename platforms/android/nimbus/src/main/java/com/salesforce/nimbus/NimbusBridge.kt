@@ -13,7 +13,7 @@ import android.webkit.WebView
 import org.json.JSONArray
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
-class NimbusBridge(private val appUrl: String) {
+class NimbusBridge {
 
     companion object {
         private const val BRIDGE_NAME = "_nimbus"
@@ -40,7 +40,10 @@ class NimbusBridge(private val appUrl: String) {
         }
         webView.addJavascriptInterface(this, BRIDGE_NAME)
         initialize(webView, binders)
-        webView.loadUrl(appUrl)
+    }
+
+    fun loadUrl(appUrl: String){
+        bridgeWebView?.loadUrl(appUrl)
     }
 
     /**
