@@ -36,7 +36,7 @@ class NimbusBridgeTest {
 
   @Before
   fun setUp() {
-    bridge = NimbusBridge("http://localhost")
+    bridge = NimbusBridge()
     bridge.add(mockExtension1Binder, mockExtension2Binder)
   }
 
@@ -76,6 +76,7 @@ class NimbusBridgeTest {
   @Test
   fun attachLoadsAppUrl() {
     bridge.attach(mockWebView)
+    bridge.loadUrl("http://localhost")
     verify { mockWebView.loadUrl("http://localhost") }
   }
 

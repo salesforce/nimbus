@@ -73,12 +73,13 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
-        val bridge = NimbusBridge("file:///android_asset/test-www/index.html")
+        val bridge = NimbusBridge()
 
         runOnUiThread {
             webView.addJavascriptInterface(testBridge, "mochaTestBridge")
             bridge.add(CallbackTestExtensionBinder(CallbackTestExtension()))
             bridge.attach(webView)
+            bridge.loadUrl("file:///android_asset/test-www/index.html")
         }
 
         testBridge.readyLatch.await(5, TimeUnit.SECONDS)
