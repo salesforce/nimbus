@@ -21,11 +21,6 @@ jobs:
           command: echo "ruby-2.5.3" > ~/.ruby-version
 
       - run:
-          name: Fetch CocoaPods Specs
-          command: |
-            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
-
-      - run:
           name: CocoaPods
           working_directory: platforms/apple
           command: |
@@ -78,11 +73,6 @@ jobs:
       - run:
           name: Set Ruby Version
           command: echo "ruby-2.5.3" > ~/.ruby-version
-
-      - run:
-          name: Fetch CocoaPods Specs
-          command: |
-            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
 
       - run:
           name: CocoaPods
