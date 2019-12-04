@@ -18,6 +18,12 @@ npm run serve:demo
 
 Then launch one of the platforms apps located under `platforms/`.
 
+### Generated Code
+
+If you change the templates for any of the generated code, ensure that
+you run the 'Generate Code from Templates' aggregate target in the
+Xcode project to regenerate the destination source files.
+
 ## Contributing
 
 ### Code of Conduct

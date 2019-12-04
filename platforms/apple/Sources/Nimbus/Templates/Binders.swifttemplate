@@ -9,6 +9,8 @@
 
 // swiftlint:disable line_length file_length
 
+import Foundation
+
 extension Binder {
 <%_  for (index, arity) in arities.enumerated() { -%>
 <%_     if index == 0 { _%>

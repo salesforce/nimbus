@@ -10,6 +10,8 @@
 
 // swiftlint:disable line_length file_length
 
+import Foundation
+
 extension Binder {
 
     /**

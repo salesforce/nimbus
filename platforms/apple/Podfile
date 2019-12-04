@@ -1,21 +1,12 @@
 
+install! 'cocoapods',
+         :integrate_targets => false
 platform :ios, '11.0'
 inhibit_all_warnings!
 
 pod 'SwiftLint',  '~> 0.30'
 pod 'SwiftFormat/CLI', '~> 0.39.0'
+pod 'Sourcery', '~> 0.17.0'
 
-def sourcery
-  pod 'Sourcery', '~> 0.17.0'
-end
-
-target 'NimbusApp' do
-end
-
-target 'Nimbus' do
-  sourcery
-end
-
-target 'NimbusTests' do
-  sourcery
+target 'dummy' do
 end

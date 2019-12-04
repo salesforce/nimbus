@@ -6,6 +6,21 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		29397AF723982EBE0005F2F7 /* Generate Code from Templates */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 29397AF823982EBE0005F2F7 /* Build configuration list for PBXAggregateTarget "Generate Code from Templates" */;
+			buildPhases = (
+				29397AFB23982EC30005F2F7 /* Generate Source */,
+				29397AFC239830A60005F2F7 /* Generate Tests */,
+			);
+			dependencies = (
+			);
+			name = "Generate Code from Templates";
+			productName = "Generate binders";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		291A85E921E52D3E00510832 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85E821E52D3E00510832 /* AppDelegate.swift */; };
 		291A85EB21E52D3E00510832 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85EA21E52D3E00510832 /* ViewController.swift */; };
@@ -43,7 +58,6 @@
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F3839B234BC61000BF854B /* ParameterErrorTests.swift */; };
 		29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */; };
-		5D9FB1E5D3EC59D913F3266B /* libPods-NimbusTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */; };
 		682D46B3234158860049B636 /* CallableTests.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 682D46B2234158860049B636 /* CallableTests.swifttemplate */; };
 		682D46B5234160650049B636 /* CallableTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682D46B4234160650049B636 /* CallableTests.generated.swift */; };
 		68B855F2233EE7FD00D1F243 /* BinderTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B855F1233EE7FD00D1F243 /* BinderTests.generated.swift */; };
@@ -53,8 +67,6 @@
 		68FA8B8B233DE57500682431 /* Binders.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 68FA8B87233DE57500682431 /* Binders.swifttemplate */; };
 		68FA8B94233DEAF500682431 /* Binders.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B91233DEAE900682431 /* Binders.generated.swift */; };
 		68FA8B95233DEAF900682431 /* Callables.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B90233DEAE900682431 /* Callables.generated.swift */; };
-		A3293154C796248DD6E6EC07 /* libPods-Nimbus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */; };
-		ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,7 +140,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.debug.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.debug.xcconfig"; sourceTree = "<group>"; };
 		291A85E521E52D3E00510832 /* NimbusApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NimbusApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		291A85E821E52D3E00510832 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		291A85EA21E52D3E00510832 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -176,7 +187,6 @@
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		29F3839B234BC61000BF854B /* ParameterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterErrorTests.swift; sourceTree = "<group>"; };
 		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
-		522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusTests.debug.xcconfig"; path = "Target Support Files/Pods-NimbusTests/Pods-NimbusTests.debug.xcconfig"; sourceTree = "<group>"; };
 		63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
 		682D46B2234158860049B636 /* CallableTests.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = text; path = CallableTests.swifttemplate; sourceTree = "<group>"; };
 		682D46B4234160650049B636 /* CallableTests.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableTests.generated.swift; sourceTree = "<group>"; };
@@ -188,12 +198,8 @@
 		68FA8B88233DE57500682431 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		68FA8B90233DEAE900682431 /* Callables.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Callables.generated.swift; sourceTree = "<group>"; };
 		68FA8B91233DEAE900682431 /* Binders.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binders.generated.swift; sourceTree = "<group>"; };
-		79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusTests.release.xcconfig"; path = "Target Support Files/Pods-NimbusTests/Pods-NimbusTests.release.xcconfig"; sourceTree = "<group>"; };
-		AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NimbusApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbusApp.release.xcconfig"; path = "Target Support Files/Pods-NimbusApp/Pods-NimbusApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,7 +208,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */,
-				ACCD3D57D13E98F1C2B56A8B /* libPods-NimbusApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +215,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3293154C796248DD6E6EC07 /* libPods-Nimbus.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				294433572200FD8D00E6D084 /* Nimbus.framework in Frameworks */,
-				5D9FB1E5D3EC59D913F3266B /* libPods-NimbusTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,8 +359,6 @@
 			children = (
 				2970E498224F0D46008DC004 /* WebKit.framework */,
 				F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */,
-				F4C5ADAA535D8E3DA7092137 /* libPods-NimbusApp.a */,
-				AF2274BBF9474A8711990E1F /* libPods-NimbusTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -442,12 +443,8 @@
 		CFB418AC54B2560C2CE6A834 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */,
-				F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */,
 				63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */,
 				D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */,
-				522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */,
-				79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -470,7 +467,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A85F721E52D4000510832 /* Build configuration list for PBXNativeTarget "NimbusApp" */;
 			buildPhases = (
-				9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */,
 				291A85E121E52D3E00510832 /* Sources */,
 				291A85E221E52D3E00510832 /* Frameworks */,
 				29610FB821E532C9007058EA /* Embed IP address */,
@@ -491,8 +487,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
-				ADDCA848A505444DAEEA2F2F /* [CP] Check Pods Manifest.lock */,
-				68FA8B8F233DE92600682431 /* Generate Binding Code */,
 				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
@@ -512,8 +506,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2944335A2200FD8D00E6D084 /* Build configuration list for PBXNativeTarget "NimbusTests" */;
 			buildPhases = (
-				17C3C069440937E7CD171100 /* [CP] Check Pods Manifest.lock */,
-				68B855EE233EE75400D1F243 /* Generate Tests */,
 				2944334E2200FD8D00E6D084 /* Sources */,
 				2944334F2200FD8D00E6D084 /* Frameworks */,
 				29DA183C220CF4B100D02CDA /* Build test web app */,
@@ -619,6 +611,9 @@
 					291A860221E530BC00510832 = {
 						CreatedOnToolsVersion = 10.1;
 					};
+					29397AF723982EBE0005F2F7 = {
+						CreatedOnToolsVersion = 11.2.1;
+					};
 					294433512200FD8D00E6D084 = {
 						CreatedOnToolsVersion = 10.1;
 					};
@@ -664,6 +659,7 @@
 				2970E42E224F0A05008DC004 /* NimbusDesktop */,
 				2970E43F224F0A06008DC004 /* NimbusDesktopTests */,
 				2970E44A224F0A06008DC004 /* NimbusDesktopUITests */,
+				29397AF723982EBE0005F2F7 /* Generate Code from Templates */,
 			);
 		};
 /* End PBXProject section */
@@ -732,7 +728,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		17C3C069440937E7CD171100 /* [CP] Check Pods Manifest.lock */ = {
+		29397AFB23982EC30005F2F7 /* Generate Source */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -740,18 +736,34 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "Generate Source";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NimbusTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "./Pods/Sourcery/bin/sourcery \\\n  --sources ./Sources/Nimbus \\\n  --output ./Sources/Nimbus/Generated \\\n  --templates ./Sources/Nimbus/Templates\n";
+			showEnvVarsInLog = 0;
+		};
+		29397AFC239830A60005F2F7 /* Generate Tests */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Tests";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Pods/Sourcery/bin/sourcery \\\n  --sources ./Sources/NimbusTests \\\n  --output ./Sources/NimbusTests/Generated \\\n  --templates ./Sources/NimbusTests/Templates\n";
 			showEnvVarsInLog = 0;
 		};
 		29610FB821E532C9007058EA /* Embed IP address */ = {
@@ -809,86 +821,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/bash -l";
 			shellScript = "pushd ${SRCROOT}/../..\nnpm install\n";
-			showEnvVarsInLog = 0;
-		};
-		68B855EE233EE75400D1F243 /* Generate Tests */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Tests";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "$PODS_ROOT/Sourcery/bin/sourcery --sources ./Sources/NimbusTests --output ./Sources/NimbusTests/Generated --templates ./Sources/NimbusTests/Templates\n";
-		};
-		68FA8B8F233DE92600682431 /* Generate Binding Code */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Binding Code";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "$PODS_ROOT/Sourcery/bin/sourcery --sources ./Sources/Nimbus --output ./Sources/Nimbus/Generated --templates ./Sources/Nimbus/Templates\n";
-		};
-		9FEF50A5D8465398A936A9DE /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NimbusApp-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		ADDCA848A505444DAEEA2F2F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Nimbus-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1153,7 +1085,6 @@
 		};
 		291A85F821E52D4000510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 01552C3AE14BA4164914D75B /* Pods-NimbusApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1176,7 +1107,6 @@
 		};
 		291A85F921E52D4000510832 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F758AEB65FD9A33F4F5EC397 /* Pods-NimbusApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1198,7 +1128,6 @@
 		};
 		291A860D21E530BC00510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1228,7 +1157,6 @@
 		};
 		291A860E21E530BC00510832 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1256,9 +1184,24 @@
 			};
 			name = Release;
 		};
+		29397AF923982EBE0005F2F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		29397AFA23982EBE0005F2F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		2944335B2200FD8D00E6D084 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 522006E9B2BC1DBA57E13019 /* Pods-NimbusTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;
@@ -1278,7 +1221,6 @@
 		};
 		2944335C2200FD8D00E6D084 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79C32209DFDF24C3BA948B3E /* Pods-NimbusTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;
@@ -1498,6 +1440,15 @@
 			buildConfigurations = (
 				291A860D21E530BC00510832 /* Debug */,
 				291A860E21E530BC00510832 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29397AF823982EBE0005F2F7 /* Build configuration list for PBXAggregateTarget "Generate Code from Templates" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29397AF923982EBE0005F2F7 /* Debug */,
+				29397AFA23982EBE0005F2F7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
