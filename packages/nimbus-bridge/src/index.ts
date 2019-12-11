@@ -59,22 +59,43 @@ class Nimbus {
 
   public promisify = (src: any) => {
     let dest: any = {};
+
+    let methodsWithClosuresToPromisify = "";
+    if (src['getMethodsWithClosuresToPromisify'] !== undefined) {
+      methodsWithClosuresToPromisify = src.getMethodsWithClosuresToPromisify.call(src)
+    }
+
+    let methodsWithClosuresToPromisifyArray = methodsWithClosuresToPromisify.split(',');
     Object.keys(src).forEach(key => {
       let func = src[key];
-      dest[key] = (...args: any[]) => {
-        args = this.cloneArguments(args);
-        args = args.map(arg => {
-          if (typeof arg === "object") {
-            return JSON.stringify(arg);
+      if (methodsWithClosuresToPromisifyArray.includes(key)) {
+        dest[key] = (...args: any[]) => {
+          let functionArgs = nimbus.cloneArguments(args);
+          return new Promise(function (resolve, reject) {
+            var promiseId = nimbus.uuidv4();
+            nimbus.promises[promiseId] = { resolve, reject };
+
+            func.call(src, ...functionArgs, promiseId);
+          });
+        };
+      }
+      else {
+        dest[key] = (...args: any[]) => {
+          args = this.cloneArguments(args);
+          args = args.map(arg => {
+            if (typeof arg === "object") {
+              return JSON.stringify(arg);
+            }
+            return arg;
+          });
+
+          let result = func.call(src, ...args);
+          if (result !== undefined) {
+            result = JSON.parse(result);
           }
-          return arg;
-        });
-        let result = func.call(src, ...args);
-        if (result !== undefined) {
-          result = JSON.parse(result);
-        }
-        return Promise.resolve(result);
-      };
+          return Promise.resolve(result);
+        };
+      }
     });
     return dest;
   };

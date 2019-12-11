@@ -46,4 +46,9 @@ class DeviceExtension(context: Context) : NimbusExtension {
     fun getDeviceInfo(): DeviceInfo {
         return cachedDeviceInfo
     }
+
+    @ExtensionMethod(promisifyClosure = true)
+    fun getDeviceDesignLocation(arg: (param0: String) -> Unit) {
+        arg("Mountain View, CA")
+    }
 }

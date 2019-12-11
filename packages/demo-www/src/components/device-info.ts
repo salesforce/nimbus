@@ -2,7 +2,8 @@ import { DeviceInfo } from 'nimbus-bridge';
 
 const template = document.createElement('template');
 template.innerHTML = `
-<slot></slot>
+<slot id='first'></slot>
+<slot id='second'></slot>
 `;
 
 class NimbusDeviceInfo extends HTMLElement {
@@ -19,7 +20,7 @@ class NimbusDeviceInfo extends HTMLElement {
                     console.log(JSON.stringify(info));
                     let shadowRoot = this.shadowRoot;
                     if (shadowRoot === null) return;
-                    let slot = shadowRoot.querySelector('slot');
+                    let slot = shadowRoot.querySelector('#first');
                     if (slot !== null) {
                         slot.innerHTML = `
           <p>Manufacturer: ${info.manufacturer}</p>
@@ -27,6 +28,19 @@ class NimbusDeviceInfo extends HTMLElement {
           <p>Platform: ${info.platform}</p>
           <p>Version: ${info.platformVersion}</p>
           <p>App Version: ${info.appVersion}</p>
+        `;
+                    }
+                }
+            );
+            window.DeviceExtension.getDeviceDesignLocation().then(
+                (name: string): void => {
+                    console.log(name);
+                    let shadowRoot = this.shadowRoot;
+                    if (shadowRoot === null) return;
+                    let slot = shadowRoot.querySelector('#second');
+                    if (slot !== null) {
+                        slot.innerHTML = `
+          <p>Designed at: ${name}</p>
         `;
                     }
                 }

@@ -25,26 +25,26 @@ class BinderTests: XCTestCase {
 <%_     if index == 0 { _%>
     func testBindNullaryNoReturn() {
         binder.bind(BindTarget.nullaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [])
+        _ = try? binder.callable?.call(args: [], forPromisifiedClosure: false)
         XCTAssert(binder.target.called)
     }
 
     func testBindNullaryNoReturnThrows() {
         binder.bind(BindTarget.nullaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssertThrowsError(try binder.callable?.call(args: [], forPromisifiedClosure: false))
         XCTAssert(binder.target.called)
     }
 
     func testBindNullaryWithReturn() {
         binder.bind(BindTarget.nullaryWithReturn, as: "")
-        let value = try? binder.callable?.call(args: []) as? String
+        let value = try? binder.callable?.call(args: [], forPromisifiedClosure: false) as? String
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some("value"))
     }
 
     func testBindNullaryWithNSArrayReturn() {
         binder.bind(BindTarget.nullaryWithNSArrayReturn, as: "")
-        let value = try? binder.callable?.call(args: []) as? NSArray
+        let value = try? binder.callable?.call(args: [], forPromisifiedClosure: false) as? NSArray
         XCTAssert(binder.target.called)
         let isExpectedType = value is NSArray
         XCTAssertEqual(isExpectedType, true)
@@ -52,7 +52,7 @@ class BinderTests: XCTestCase {
 
     func testBindNullaryWithNSDictionaryReturn() {
         binder.bind(BindTarget.nullaryWithNSDictionaryReturn, as: "")
-        let value = try? binder.callable?.call(args: []) as? NSDictionary
+        let value = try? binder.callable?.call(args: [], forPromisifiedClosure: false) as? NSDictionary
         XCTAssert(binder.target.called)
         let isExpectedType = value is NSDictionary
         XCTAssertEqual(isExpectedType, true)
@@ -60,32 +60,32 @@ class BinderTests: XCTestCase {
 
     func testBindNullaryWithReturnThrows() {
         binder.bind(BindTarget.nullaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssertThrowsError(try binder.callable?.call(args: [], forPromisifiedClosure: false))
         XCTAssert(binder.target.called)
     }
 <%_      } else { _%>
     func testBind<%= arity.name.capitalizingFirstLetter() %>NoReturn() {
         binder.bind(BindTarget.<%= arity.name %>NoReturn, as: "")
-        _ = try? binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false)
         XCTAssert(binder.target.called)
     }
 
     func testBind<%= arity.name.capitalizingFirstLetter() %>NoReturnThrows() {
         binder.bind(BindTarget.<%= arity.name %>NoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>]))
+        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false))
         XCTAssert(binder.target.called)
     }
 
     func testBind<%= arity.name.capitalizingFirstLetter() %>WithReturn() throws {
         binder.bind(BindTarget.<%= arity.name %>WithReturn, as: "")
-        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>]) as? Int
+        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(<%= arities.takeAsSum(count: index)%>))
     }
 
     func testBind<%= arity.name.capitalizingFirstLetter() %>WithNSArrayReturn() throws {
         binder.bind(BindTarget.<%= arity.name %>WithNSArrayReturn, as: "")
-        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>]) as? NSArray
+        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false) as? NSArray
         XCTAssert(binder.target.called)
         if let value = value,
             let result = value.firstObject as? Int {
@@ -97,7 +97,7 @@ class BinderTests: XCTestCase {
 
     func testBind<%= arity.name.capitalizingFirstLetter() %>WithNSDictionaryReturn() throws {
         binder.bind(BindTarget.<%= arity.name %>WithNSDictionaryReturn, as: "")
-        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>]) as? NSDictionary
+        let value = try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false) as? NSDictionary
         XCTAssert(binder.target.called)
         if let value = value,
             let result = value["result"] as? Int {
@@ -109,7 +109,7 @@ class BinderTests: XCTestCase {
 
     func testBind<%= arity.name.capitalizingFirstLetter() %>WithReturnThrows() throws {
         binder.bind(BindTarget.<%= arity.name %>WithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>]))
+        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAsString(count: index) %>], forPromisifiedClosure: false))
         XCTAssert(binder.target.called)
     }
 
@@ -121,7 +121,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 1) %><% } %>))
@@ -133,7 +133,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]))
+        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -146,7 +146,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 2) %><% } %>))
@@ -162,7 +162,7 @@ class BinderTests: XCTestCase {
             resultArray = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
@@ -179,7 +179,7 @@ class BinderTests: XCTestCase {
             resultDict = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
@@ -196,7 +196,7 @@ class BinderTests: XCTestCase {
             result = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index - 1)%><% } else { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index + 1) %><% } %>))
@@ -213,7 +213,7 @@ class BinderTests: XCTestCase {
             resultArray2 = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray1, <%= arr0 %>)
@@ -230,7 +230,7 @@ class BinderTests: XCTestCase {
             resultDict = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, <%= arr0 %>)
@@ -247,7 +247,7 @@ class BinderTests: XCTestCase {
             result = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict, <%= dict0 %>)
@@ -264,7 +264,7 @@ class BinderTests: XCTestCase {
             resultArray = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict, <%= dict0 %>)
@@ -281,7 +281,7 @@ class BinderTests: XCTestCase {
             resultDict2 = value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>])
+        _ = try? binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false)
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, <%= dict0 %>)
@@ -294,7 +294,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]))
+        XCTAssertThrowsError(try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>], forPromisifiedClosure: false))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -479,7 +479,7 @@ class TestBinder: Binder {
 
     init() {}
 
-    func bind(_ callable: Callable, as name: String) {
+    func bind(_ callable: Callable, as name: String, closureTransform: TrailingClosure) {
         self.callable = callable
     }
 

@@ -110,4 +110,29 @@ extension WKWebView {
             }
         }
     }
+
+    internal func resolvePromise(promiseId: String, result: Any) {
+        var resultString = ""
+        if result is NSArray || result is NSDictionary {
+            // swiftlint:disable:next force_try
+            let data = try! JSONSerialization.data(withJSONObject: result, options: [])
+            resultString = String(data: data, encoding: String.Encoding.utf8)!
+            self.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString));")
+        } else {
+            switch result {
+            case is ():
+                resultString = "undefined"
+            case let value as EncodableValue:
+                // swiftlint:disable:next force_try
+                resultString = try! String(data: JSONEncoder().encode(value), encoding: .utf8)!
+            default:
+                fatalError("Unsupported return type \(type(of: result))")
+            }
+            self.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
+        }
+    }
+
+    internal func rejectPromise(promiseId: String, error: Error) {
+        self.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+    }
 }

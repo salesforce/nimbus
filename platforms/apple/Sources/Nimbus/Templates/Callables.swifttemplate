@@ -18,7 +18,7 @@ struct Callable<%= index %><R<% if index > 0 { -%>, <%= getCommaSeparatedString(
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != <%= index %> {
             throw ParameterError.argumentCount(expected: <%= index %>, actual: args.count)
         }

@@ -17,14 +17,14 @@ class CallableTests: XCTestCase {
 <%_  for (index, arity) in arities.enumerated() { -%>
     func test<%= arity.name.capitalizingFirstLetter() %>Callable() {
         let callable = make_callable(Testable.<%= arity.name %>(testable))
-        let result = try? callable.call(args: [<%_ if index > 0 { -%><%= Array(1...index).map({(element: Int) in String(format: "%d", element)}).joined(separator: ", ") -%><% } _%>]) as? Int
+        let result = try? callable.call(args: [<%_ if index > 0 { -%><%= Array(1...index).map({(element: Int) in String(format: "%d", element)}).joined(separator: ", ") -%><% } _%>], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, <%= index %>)
     }
 
     func test<%= arity.name.capitalizingFirstLetter() %>ArgCountFails() {
         let callable = make_callable(Testable.<%= arity.name %>(testable))
-        XCTAssertThrowsError(try callable.call(args: [<%= Array(1...index+1).map({ "\($0)" }).joined(separator: ", ") -%>]))
+        XCTAssertThrowsError(try callable.call(args: [<%= Array(1...index+1).map({ "\($0)" }).joined(separator: ", ") -%>], forPromisifiedClosure: false))
     }
 <%_  } -%>
 
@@ -36,7 +36,7 @@ class CallableTests: XCTestCase {
             print("the int is \(value)")
             expect.fulfill()
         }
-        _ = try? callable.call(args: [1, callback])
+        _ = try? callable.call(args: [1, callback], forPromisifiedClosure: false)
         wait(for: [expect], timeout: 5)
     }
 }

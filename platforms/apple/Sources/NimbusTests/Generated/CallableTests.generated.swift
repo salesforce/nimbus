@@ -17,69 +17,69 @@ class CallableTests: XCTestCase {
 
     func testNullaryCallable() {
         let callable = make_callable(Testable.nullary(testable))
-        let result = try? callable.call(args: []) as? Int
+        let result = try? callable.call(args: [], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 0)
     }
 
     func testNullaryArgCountFails() {
         let callable = make_callable(Testable.nullary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1]))
+        XCTAssertThrowsError(try callable.call(args: [1], forPromisifiedClosure: false))
     }
     func testUnaryCallable() {
         let callable = make_callable(Testable.unary(testable))
-        let result = try? callable.call(args: [1]) as? Int
+        let result = try? callable.call(args: [1], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 1)
     }
 
     func testUnaryArgCountFails() {
         let callable = make_callable(Testable.unary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1, 2]))
+        XCTAssertThrowsError(try callable.call(args: [1, 2], forPromisifiedClosure: false))
     }
     func testBinaryCallable() {
         let callable = make_callable(Testable.binary(testable))
-        let result = try? callable.call(args: [1, 2]) as? Int
+        let result = try? callable.call(args: [1, 2], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 2)
     }
 
     func testBinaryArgCountFails() {
         let callable = make_callable(Testable.binary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1, 2, 3]))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3], forPromisifiedClosure: false))
     }
     func testTernaryCallable() {
         let callable = make_callable(Testable.ternary(testable))
-        let result = try? callable.call(args: [1, 2, 3]) as? Int
+        let result = try? callable.call(args: [1, 2, 3], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 3)
     }
 
     func testTernaryArgCountFails() {
         let callable = make_callable(Testable.ternary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4]))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4], forPromisifiedClosure: false))
     }
     func testQuaternaryCallable() {
         let callable = make_callable(Testable.quaternary(testable))
-        let result = try? callable.call(args: [1, 2, 3, 4]) as? Int
+        let result = try? callable.call(args: [1, 2, 3, 4], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 4)
     }
 
     func testQuaternaryArgCountFails() {
         let callable = make_callable(Testable.quaternary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5]))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5], forPromisifiedClosure: false))
     }
     func testQuinaryCallable() {
         let callable = make_callable(Testable.quinary(testable))
-        let result = try? callable.call(args: [1, 2, 3, 4, 5]) as? Int
+        let result = try? callable.call(args: [1, 2, 3, 4, 5], forPromisifiedClosure: false) as? Int
         XCTAssertTrue(testable.called)
         XCTAssertEqual(result, 5)
     }
 
     func testQuinaryArgCountFails() {
         let callable = make_callable(Testable.quinary(testable))
-        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5, 6]))
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5, 6], forPromisifiedClosure: false))
     }
 
     func testCallbackable() {
@@ -90,7 +90,7 @@ class CallableTests: XCTestCase {
             print("the int is \(value)")
             expect.fulfill()
         }
-        _ = try? callable.call(args: [1, callback])
+        _ = try? callable.call(args: [1, callback], forPromisifiedClosure: false)
         wait(for: [expect], timeout: 5)
     }
 }

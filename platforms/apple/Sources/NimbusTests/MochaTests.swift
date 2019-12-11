@@ -5,6 +5,8 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+// swiftlint:disable line_length file_length
+
 import Nimbus
 import WebKit
 import XCTest
@@ -109,6 +111,21 @@ public class CallbackTestExtension {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
+    func promiseWithPrimitive(completion: @escaping (String) -> Swift.Void) {
+        completion("one")
+    }
+    func promiseWithDictionaryParam(completion: @escaping(MochaTests.MochaMessage) -> Swift.Void) {
+        var mochaMessage = MochaTests.MochaMessage()
+        mochaMessage.intField = 6
+        mochaMessage.stringField = "int param is 6"
+        completion(mochaMessage)
+    }
+    func promiseWithMultipleParamsAndDictionaryParam(param0: Int, param1: String, completion: @escaping(MochaTests.MochaMessage) -> Swift.Void) {
+        var mochaMessage = MochaTests.MochaMessage()
+        mochaMessage.intField = param0
+        mochaMessage.stringField = param1
+        completion(mochaMessage)
+    }
 }
 
 extension CallbackTestExtension: NimbusExtension {
@@ -119,5 +136,8 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(CallbackTestExtension.promiseWithPrimitive, as: "promiseWithPrimitive", closureTransform: .promise)
+        connection.bind(CallbackTestExtension.promiseWithDictionaryParam, as: "promiseWithDictionaryParam", closureTransform: .promise)
+        connection.bind(CallbackTestExtension.promiseWithMultipleParamsAndDictionaryParam, as: "promiseWithMultipleParamsAndDictionaryParam", closureTransform: .promise)
     }
 }

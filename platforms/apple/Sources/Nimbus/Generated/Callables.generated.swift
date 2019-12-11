@@ -18,7 +18,7 @@ struct Callable0<R>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 0 {
             throw ParameterError.argumentCount(expected: 0, actual: args.count)
         }
@@ -36,7 +36,7 @@ struct Callable1<R, A0>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 1 {
             throw ParameterError.argumentCount(expected: 1, actual: args.count)
         }
@@ -57,7 +57,7 @@ struct Callable2<R, A0, A1>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 2 {
             throw ParameterError.argumentCount(expected: 2, actual: args.count)
         }
@@ -79,7 +79,7 @@ struct Callable3<R, A0, A1, A2>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 3 {
             throw ParameterError.argumentCount(expected: 3, actual: args.count)
         }
@@ -102,7 +102,7 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 4 {
             throw ParameterError.argumentCount(expected: 4, actual: args.count)
         }
@@ -126,7 +126,7 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
         self.function = function
     }
 
-    func call(args: [Any]) throws -> Any {
+    func call(args: [Any], forPromisifiedClosure: Bool = false) throws -> Any {
         if args.count != 5 {
             throw ParameterError.argumentCount(expected: 5, actual: args.count)
         }
