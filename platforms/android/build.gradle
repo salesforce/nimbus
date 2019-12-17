@@ -25,13 +25,6 @@ allprojects {
     }
 }
 
-configure(subprojects - project(':demo-app')) {
-    afterEvaluate { project ->
-        project.apply from: rootProject.file('gradle/lint.gradle')
-        project.apply from: rootProject.file('gradle/publishing.gradle')
-    }
-}
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

@@ -51,3 +51,6 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
+
+apply from: rootProject.file('gradle/lint.gradle')
+apply from: rootProject.file('gradle/publishing.gradle')
