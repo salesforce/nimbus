@@ -337,7 +337,7 @@ class NimbusProcessor : AbstractProcessor() {
         )
     }
 
-    private fun addReturnStatementToMethod(element: ExecutableElement, methodSpec: MethodSpec.Builder, argsString: String, isPromise: Boolean): Unit {
+    private fun addReturnStatementToMethod(element: ExecutableElement, methodSpec: MethodSpec.Builder, argsString: String, isPromise: Boolean) {
         val supertypes = processingEnv.typeUtils.directSupertypes(element.returnType)
         var found = false
         for (supertype in supertypes) {

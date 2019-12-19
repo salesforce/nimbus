@@ -2,7 +2,11 @@ package com.salesforce.nimbus.extensions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.salesforce.nimbus.*
+import com.salesforce.nimbus.Extension
+import com.salesforce.nimbus.ExtensionMethod
+import com.salesforce.nimbus.TrailingClosure
+import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.NimbusExtension
 import org.json.JSONObject
 
 @Extension(name = "DeviceExtension")
