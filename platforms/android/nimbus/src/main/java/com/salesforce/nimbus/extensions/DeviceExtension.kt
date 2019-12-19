@@ -2,10 +2,7 @@ package com.salesforce.nimbus.extensions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.salesforce.nimbus.Extension
-import com.salesforce.nimbus.ExtensionMethod
-import com.salesforce.nimbus.JSONSerializable
-import com.salesforce.nimbus.NimbusExtension
+import com.salesforce.nimbus.*
 import org.json.JSONObject
 
 @Extension(name = "DeviceExtension")
@@ -47,7 +44,7 @@ class DeviceExtension(context: Context) : NimbusExtension {
         return cachedDeviceInfo
     }
 
-    @ExtensionMethod(promisifyClosure = true)
+    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
     fun getDeviceDesignLocation(arg: (param0: String) -> Unit) {
         arg("Mountain View, CA")
     }

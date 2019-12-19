@@ -59,16 +59,21 @@ class Nimbus {
 
   public promisify = (src: any) => {
     let dest: any = {};
-
-    let methodsWithClosuresToPromisify = "";
-    if (src['getMethodsWithClosuresToPromisify'] !== undefined) {
-      methodsWithClosuresToPromisify = src.getMethodsWithClosuresToPromisify.call(src)
+    let trailingClosuresAsPromises: Array<string> = [];
+    if (src['getExtensionMetadata'] !== undefined) {
+      console.log('ccc');
+      let extensionMetadata = src.getExtensionMetadata.call(src);
+      if (extensionMetadata !== undefined) {
+        extensionMetadata = JSON.parse(extensionMetadata)
+        if (extensionMetadata['trailingClosuresAsPromises'] !== undefined) {
+          trailingClosuresAsPromises = extensionMetadata['trailingClosuresAsPromises'];
+        }
+      }
     }
 
-    let methodsWithClosuresToPromisifyArray = methodsWithClosuresToPromisify.split(',');
     Object.keys(src).forEach(key => {
       let func = src[key];
-      if (methodsWithClosuresToPromisifyArray.includes(key)) {
+      if (trailingClosuresAsPromises.includes(key)) {
         dest[key] = (...args: any[]) => {
           let functionArgs = nimbus.cloneArguments(args);
           return new Promise(function (resolve, reject) {
@@ -78,8 +83,7 @@ class Nimbus {
             func.call(src, ...functionArgs, promiseId);
           });
         };
-      }
-      else {
+      } else {
         dest[key] = (...args: any[]) => {
           args = this.cloneArguments(args);
           args = args.map(arg => {

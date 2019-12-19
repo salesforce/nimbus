@@ -1876,7 +1876,7 @@ class TestBinder: Binder {
 
     init() {}
 
-    func bind(_ callable: Callable, as name: String, closureTransform: TrailingClosure) {
+    func bind(_ callable: Callable, as name: String, trailingClosure: TrailingClosure) {
         self.callable = callable
     }
 

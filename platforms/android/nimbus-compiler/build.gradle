@@ -4,6 +4,7 @@ apply plugin: 'kotlin'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'org.json:json:20180813'
     implementation project(':nimbus-annotations')
     implementation 'com.squareup:javapoet:1.11.1'
 }

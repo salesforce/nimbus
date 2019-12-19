@@ -31,7 +31,7 @@ class Callback: Callable {
     func call(args: [Any], forPromisifiedClosure: Bool) throws -> Any {
         if forPromisifiedClosure {
             if args.count != 1 {
-                fatalError("Promise can only pass one success result")
+                throw ParameterError.argumentCount(expected: 1, actual: args.count)
             }
             var result: EncodableValue
             if type(of: args.first) == Void.self {

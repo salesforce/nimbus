@@ -13,5 +13,5 @@ public protocol Binder {
     associatedtype Target
     var target: Target { get }
 
-    func bind(_ callable: Callable, as name: String, closureTransform: TrailingClosure)
+    func bind(_ callable: Callable, as name: String, trailingClosure: TrailingClosure)
 }

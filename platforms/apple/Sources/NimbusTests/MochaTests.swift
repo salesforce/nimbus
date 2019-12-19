@@ -136,8 +136,8 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
-        connection.bind(CallbackTestExtension.promiseWithPrimitive, as: "promiseWithPrimitive", closureTransform: .promise)
-        connection.bind(CallbackTestExtension.promiseWithDictionaryParam, as: "promiseWithDictionaryParam", closureTransform: .promise)
-        connection.bind(CallbackTestExtension.promiseWithMultipleParamsAndDictionaryParam, as: "promiseWithMultipleParamsAndDictionaryParam", closureTransform: .promise)
+        connection.bind(CallbackTestExtension.promiseWithPrimitive, as: "promiseWithPrimitive", trailingClosure: .promise)
+        connection.bind(CallbackTestExtension.promiseWithDictionaryParam, as: "promiseWithDictionaryParam", trailingClosure: .promise)
+        connection.bind(CallbackTestExtension.promiseWithMultipleParamsAndDictionaryParam, as: "promiseWithMultipleParamsAndDictionaryParam", trailingClosure: .promise)
     }
 }

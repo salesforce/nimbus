@@ -57,10 +57,10 @@ public class Connection<C>: Binder {
     /**
      Bind the callable object to a function `name` under this conenctions namespace.
      */
-    public func bind(_ callable: Callable, as name: String, closureTransform: TrailingClosure) {
+    public func bind(_ callable: Callable, as name: String, trailingClosure: TrailingClosure) {
         bindings[name] = callable
         var forPromisifiedClosure = "false"
-        if case TrailingClosure.promise = closureTransform {
+        if case TrailingClosure.promise = trailingClosure {
             forPromisifiedClosure = "true"
         }
         let stubScript = """
