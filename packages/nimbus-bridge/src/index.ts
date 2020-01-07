@@ -61,7 +61,6 @@ class Nimbus {
     let dest: any = {};
     let trailingClosuresAsPromises: Array<string> = [];
     if (src['getExtensionMetadata'] !== undefined) {
-      console.log('ccc');
       let extensionMetadata = src.getExtensionMetadata.call(src);
       if (extensionMetadata !== undefined) {
         extensionMetadata = JSON.parse(extensionMetadata)

@@ -60,10 +60,6 @@ public class DeviceExtension {
         return deviceInfo
     }
 
-    func getDeviceDesignLocation(closure: (String) -> Void) {
-        closure("Cupertino, CA")
-    }
-
     let deviceInfo = DeviceInfo()
 }
 
@@ -71,6 +67,5 @@ extension DeviceExtension: NimbusExtension {
     public func bindToWebView(webView: WKWebView) {
         let connection = webView.addConnection(to: self, as: "DeviceExtension")
         connection.bind(DeviceExtension.getDeviceInfo, as: "getDeviceInfo")
-        connection.bind(DeviceExtension.getDeviceDesignLocation, as: "getDeviceDesignLocation", trailingClosure: .promise)
     }
 }

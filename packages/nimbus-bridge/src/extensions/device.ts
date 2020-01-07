@@ -13,7 +13,6 @@
 export interface DeviceExtension {
     /// Return information about the current device
     getDeviceInfo(): Promise<DeviceInfo>;
-    getDeviceDesignLocation(): Promise<string>;
 }
 
 export interface DeviceInfo {

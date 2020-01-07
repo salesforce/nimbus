@@ -339,27 +339,23 @@ class NimbusProcessor : AbstractProcessor() {
 
     private fun addReturnStatementToMethod(element: ExecutableElement, methodSpec: MethodSpec.Builder, argsString: String, isPromise: Boolean) {
         val supertypes = processingEnv.typeUtils.directSupertypes(element.returnType)
-        var found = false
-        for (supertype in supertypes) {
-            if (supertype.toString().equals("com.salesforce.nimbus.JSONSerializable")) {
-                found = true
-            }
-        }
-
+        val found = supertypes.any { supertype -> supertype.toString().equals("com.salesforce.nimbus.JSONSerializable") }
+        val statement: String
         if (found) {
             methodSpec.returns(String::class.java)
             if (isPromise) {
-                methodSpec.addStatement("target.\$N($argsString).stringify()", element.simpleName.toString())
+                statement = "target.\$N($argsString).stringify()"
             } else {
-                methodSpec.addStatement("return target.\$N($argsString).stringify()", element.simpleName.toString())
+                statement = "return target.\$N($argsString).stringify()"
             }
         } else {
             // TODO: should we even allow this? what should the behavior be?
             if (isPromise) {
-                methodSpec.addStatement("target.\$N($argsString)", element.simpleName.toString())
+                statement = "target.\$N($argsString)"
             } else {
-                methodSpec.addStatement("return target.\$N($argsString)", element.simpleName.toString())
+                statement = "return target.\$N($argsString)"
             }
         }
+        methodSpec.addStatement(statement, element.simpleName)
     }
 }

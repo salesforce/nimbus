@@ -21,4 +21,5 @@ public protocol Callable {
 enum ParameterError: Error, Equatable {
     case conversion
     case argumentCount(expected: Int, actual: Int)
+    case promiseWithCallback
 }

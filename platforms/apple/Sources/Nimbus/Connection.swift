@@ -39,15 +39,11 @@ public class Connection<C>: Binder {
         }
 
         func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
-            guard
-                let params = message.body as? NSDictionary,
+            guard let params = message.body as? NSDictionary,
                 let method = params["method"] as? String,
                 let args = params["args"] as? [Any],
                 let promiseId = params["promiseId"] as? String,
-                let promisifyCallback = params["promisifyCallback"] as? Bool else {
-                return
-            }
-
+                let promisifyCallback = params["promisifyCallback"] as? Bool else { return }
             connection.call(method, args: args, promise: promiseId, promisifyCallback: promisifyCallback)
         }
 
@@ -89,12 +85,13 @@ public class Connection<C>: Binder {
         if let callable = bindings[method] {
             do {
                 // walk args, converting callbacks into Callables
-                var args = args.map { arg -> Any in
+                var args = try args.map { arg -> Any in
                     switch arg {
                     case let dict as NSDictionary:
                         if let callbackId = dict["callbackId"] as? String {
                             if promisifyCallback {
-                                fatalError("Trailing closure that is promsified can not have callback ID")
+                                // Trailing closure that is promsified can not have callback ID
+                                throw ParameterError.promiseWithCallback
                             } else {
                                 return Callback(webView: webView!, callbackId: callbackId)
                             }
