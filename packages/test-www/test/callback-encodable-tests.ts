@@ -22,6 +22,8 @@ interface CallbackTestExtension {
   promiseWithPrimitive(): Promise<String>;
   promiseWithDictionaryParam(): Promise<MochaMessage>;
   promiseWithMultipleParamsAndDictionaryParam(param0: number, param1: string): Promise<MochaMessage>;
+  promiseRejects(): Promise<MochaMessage>;
+  promiseWithMultipleParamsRejects(param0: number, param1: number): Promise<MochaMessage>;
 }
 
 declare var callbackTestExtension: CallbackTestExtension;
@@ -78,7 +80,7 @@ describe('Callbacks with', () => {
     });
   });
 
-  it('promise called with one string param', (done) => {
+  it('method that returns promise called with one string param', (done) => {
     callbackTestExtension.promiseWithPrimitive().then((result) => {
       expect(result).to.equal("one");
       done();
@@ -97,6 +99,20 @@ describe('Callbacks with', () => {
     callbackTestExtension.promiseWithMultipleParamsAndDictionaryParam(777, "promise made").then((result) => {
       expect(result).to.deep.equal(
         { intField: 777, stringField: 'promise made' });
+      done();
+    });
+  });
+
+  it('promise called and returns in a rejected state.', (done) => {
+    callbackTestExtension.promiseRejects().catch((error) => {
+      expect(error).equals('rejected');
+      done();
+    });
+  });
+
+  it('promise called with multiple param and returns in a rejected state.', (done) => {
+    callbackTestExtension.promiseWithMultipleParamsRejects(777, 888).catch((error) => {
+      expect(error).equals('rejected');
       done();
     });
   });

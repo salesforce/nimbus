@@ -117,4 +117,14 @@ class CallbackTestExtension : NimbusExtension {
         var mochaMessage = MochaTests.MochaMessage(param1, param0)
         arg(mochaMessage)
     }
+
+    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
+    fun promiseRejects(arg: (param0: MochaTests.MochaMessage) -> Unit) {
+        throw java.lang.IllegalArgumentException("rejected")
+    }
+
+    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
+    fun promiseWithMultipleParamsRejects(param0: Int, param1: Int, arg: (param0: MochaTests.MochaMessage) -> Unit) {
+        throw java.lang.IllegalArgumentException("rejected")
+    }
 }

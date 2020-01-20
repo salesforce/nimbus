@@ -11,6 +11,10 @@ import Nimbus
 import WebKit
 import XCTest
 
+enum PromiseRejectError: Error, Equatable {
+    case rejected
+}
+
 class MochaTests: XCTestCase, WKNavigationDelegate {
     struct MochaMessage: Encodable {
         var stringField = "This is a string"
@@ -126,6 +130,12 @@ public class CallbackTestExtension {
         mochaMessage.stringField = param1
         completion(mochaMessage)
     }
+    func promiseRejects(completion: @escaping (MochaTests.MochaMessage) -> Swift.Void) throws {
+        throw PromiseRejectError.rejected
+    }
+    func promiseWithMultipleParamsRejects(param0: Int, param1: Int, completion: @escaping (MochaTests.MochaMessage) -> Swift.Void) throws {
+        throw PromiseRejectError.rejected
+    }
 }
 
 extension CallbackTestExtension: NimbusExtension {
@@ -139,5 +149,7 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.promiseWithPrimitive, as: "promiseWithPrimitive", trailingClosure: .promise)
         connection.bind(CallbackTestExtension.promiseWithDictionaryParam, as: "promiseWithDictionaryParam", trailingClosure: .promise)
         connection.bind(CallbackTestExtension.promiseWithMultipleParamsAndDictionaryParam, as: "promiseWithMultipleParamsAndDictionaryParam", trailingClosure: .promise)
+        connection.bind(CallbackTestExtension.promiseRejects, as: "promiseRejects", trailingClosure: .promise)
+        connection.bind(CallbackTestExtension.promiseWithMultipleParamsRejects, as: "promiseWithMultipleParamsRejects", trailingClosure: .promise)
     }
 }
