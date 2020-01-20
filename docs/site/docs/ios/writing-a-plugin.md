@@ -16,7 +16,7 @@ _____
 In the `bindToWebView` implementation, you should call `addConnection` on `WKWebView` which is made available from an extension in the `Nimbus` framework.
 
 ```swift
-let connection = webView.addConnection(to: self, as: "scratchPlugin")
+let connection = webView.addConnection(to: self, as: "dharmaPlugin")
 ```
 
 The first parameter to `addConnection` specifies which instance the connection is mapped to. The second parameter specifies what the name this connection will be available as in the webview. This will be the object your javascript code will call functions on to access functionality exposed by this plugin.
@@ -24,7 +24,7 @@ _____
 Then call `bind` on the resulting connection for each function you want to be bound to the webview.
 
 ```swift
-connection.bind(ScratchPlugin.theNumbers, as: "theNumbers")
+connection.bind(DharmaPlugin.theNumbers, as: "theNumbers")
 ```
 
 The first parameter is the method you want to bind, and the second parameter is the name you want the method bound to. This will be the function name your javascript code will call to invoke this method.
