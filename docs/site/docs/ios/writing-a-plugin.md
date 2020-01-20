@@ -41,8 +41,7 @@ _____
 You can bind methods that take a closure as their last parameter. On the javascript side, the function passed as the last parameter is treated as a completion block and is invoked when the completion block is called on the native side.
 
 ```javascript
-dharmaPlugin.checkBoat(
-  function (boatName) {
+dharmaPlugin.checkBoat("Penny", function (boatName) {
     alert(boatName + " boat");
   });
 ```
