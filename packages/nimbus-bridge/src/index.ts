@@ -30,7 +30,7 @@ class Nimbus {
       let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
       extensionNames.forEach((extension: string) => {
         Object.assign(window, {
-          [extension]: this.promisify(window[`_${extension}`])
+          [extension]: Object.assign(window[extension] || {}, this.promisify(window[`_${extension}`]))
         });
       });
     }
