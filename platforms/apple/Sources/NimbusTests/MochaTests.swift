@@ -33,6 +33,9 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             self.failures = failures
             expectation.fulfill()
         }
+        func onTestFail(testTitle: String, errMessage: String) {
+            NSLog("[\(testTitle)] failed: \(errMessage)")
+        }
 
         func ready() {}
         func sendMessage(name: String, includeParam: Bool) {
@@ -77,12 +80,13 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         connection.bind(MochaTestBridge.testsCompleted, as: "testsCompleted")
         connection.bind(MochaTestBridge.ready, as: "ready")
         connection.bind(MochaTestBridge.sendMessage, as: "sendMessage")
+        connection.bind(MochaTestBridge.onTestFail, as: "onTestFail")
         let callbackTestExtension = CallbackTestExtension()
         callbackTestExtension.bindToWebView(webView: webView)
 
         loadWebViewAndWait()
 
-        webView.evaluateJavaScript("mocha.run((failures) => { mochaTestBridge.testsCompleted(failures); }); true;") { _, error in
+        webView.evaluateJavaScript("mocha.run(failures => { mochaTestBridge.testsCompleted(failures); }).on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message)); true;") { _, error in
 
             if let error = error {
                 XCTFail(error.localizedDescription)

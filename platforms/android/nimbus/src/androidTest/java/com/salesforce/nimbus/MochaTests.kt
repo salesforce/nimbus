@@ -7,6 +7,7 @@
 
 package com.salesforce.nimbus
 
+import android.util.Log
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
@@ -50,6 +51,11 @@ class MochaTests {
             this.failures = failures
             completionLatch.countDown()
         }
+        @JavascriptInterface
+        fun onTestFail(testTitle: String, errMessage: String) {
+            failures += 1;
+            Log.e("MOCHA", "[$testTitle]: $errMessage")
+        }
 
         @JavascriptInterface
         fun sendMessage(name: String, includeParam: Boolean) {
@@ -85,7 +91,7 @@ class MochaTests {
         testBridge.readyLatch.await(5, TimeUnit.SECONDS)
 
         runOnUiThread {
-            webView.evaluateJavascript("mocha.run((failures) => { mochaTestBridge.testsCompleted(failures); }); true;") {}
+            webView.evaluateJavascript("mocha.run(failures => { mochaTestBridge.testsCompleted(failures); }).on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message)); true;") {}
         }
 
         testBridge.completionLatch.await(5, TimeUnit.SECONDS)
