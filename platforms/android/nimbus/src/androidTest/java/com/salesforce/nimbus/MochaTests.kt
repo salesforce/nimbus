@@ -53,7 +53,6 @@ class MochaTests {
         }
         @JavascriptInterface
         fun onTestFail(testTitle: String, errMessage: String) {
-            failures += 1;
             Log.e("MOCHA", "[$testTitle]: $errMessage")
         }
 
