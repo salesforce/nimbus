@@ -10,7 +10,7 @@ This RFC discusses a number of options to enable this on both iOS and Android.
 
 # iOS
 
-**(1) Podspec with a `prepare_command` step**
+**1 - Podspec with a `prepare_command` step**
 
 ```ruby
 spec.prepare_command = <<-CMD
@@ -27,7 +27,7 @@ Cons:
 - This is not technically the intended use of `prepare_command`
 - Requires a non-trivial amount of effort to publish artifacts or automate releases (which we should probably do anyway)
 
-**(2) Podspec with a source specification**
+**2 - Podspec with a source specification**
 
 ```ruby
 spec.source = { :http => 'https://github.com/salesforce/nimbus/archive/0.0.7.zip' }
@@ -41,7 +41,7 @@ Pros:
 Cons: 
 - Requires a non-trivial amount of effort to publish artifacts or automate releases (which we should probably do anyway)
 
-**(3) Podspec with a script phase**
+**3 - Podspec with a script phase**
 
 ```ruby
 spec.script_phase = { :name => 'Hello World', :script => 'echo "Hello World"' }
@@ -57,7 +57,7 @@ Cons:
 
 # Android
 
-**(1) New Nimbus Module**
+**1 - New Nimbus Module**
 
 We could add a new module to the Nimbus Android project. This module would contain a single Loader class that would vend the `nimbus.js` source. It would obtain the source with a phase added to the module's gradle script which would download the build artifact from the GitHub release, similar to the above iOS options.
 
