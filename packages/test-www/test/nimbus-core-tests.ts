@@ -5,16 +5,19 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import 'mocha';
+import "mocha";
+import { expect } from "chai";
+import setup from "./nimbus-core-tests-setup";
+import nimbus from "nimbus-bridge";
 
-describe('Foo', () => {
-  it('does something', (done) => {
-    done();
-  });
-});
+setup;
+nimbus;
 
-describe('Bar', () => {
-  it.skip('fails', (done) => {
-    done(new Error("meh"));
+describe("Nimbus JS initialization", () => {
+  it("preserves existing objects", () => {
+    expect(nimbus).to.be.an("object", "nimbus should be an object")
+    expect(window.mochaTestBridge).to.be.an("object", "mochaTestBridge should be an object")
+    expect(window.mochaTestBridge.testsCompleted).to.be.a("function")
+    expect(window.mochaTestBridge.myProp).to.equal("exists", "mochaTestBridge.myProp should still exist")
   });
 });
