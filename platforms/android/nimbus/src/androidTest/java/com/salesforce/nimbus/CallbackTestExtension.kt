@@ -102,6 +102,11 @@ class CallbackTestExtension : NimbusExtension {
     }
 
     @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
+    fun promiseWithNoParameter(arg: () -> Unit) {
+        arg()
+    }
+
+    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
     fun promiseWithPrimitive(arg: (param0: String) -> Unit) {
         arg("one")
     }

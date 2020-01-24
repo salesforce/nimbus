@@ -115,6 +115,9 @@ public class CallbackTestExtension {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
+    func promiseWithNoParameter(completion: @escaping () -> Swift.Void) {
+        completion()
+    }
     func promiseWithPrimitive(completion: @escaping (String) -> Swift.Void) {
         completion("one")
     }
@@ -146,6 +149,7 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(CallbackTestExtension.promiseWithNoParameter, as: "promiseWithNoParameter", trailingClosure: .promise)
         connection.bind(CallbackTestExtension.promiseWithPrimitive, as: "promiseWithPrimitive", trailingClosure: .promise)
         connection.bind(CallbackTestExtension.promiseWithDictionaryParam, as: "promiseWithDictionaryParam", trailingClosure: .promise)
         connection.bind(CallbackTestExtension.promiseWithMultipleParamsAndDictionaryParam, as: "promiseWithMultipleParamsAndDictionaryParam", trailingClosure: .promise)
