@@ -3,11 +3,11 @@ layout: docs
 ---
 # Plugin Testing Best Practices
 
-Testing your Nimbus plugins, like all code, is important. Since plugins should, ideally, be well contained and singel responsibility, this makes them ideal for good unit testing. Since Nimbus is simply binding existing functions to a webview, plugin business logic can be tested independently with `XCTest` and don't, necessarily, need to be tested over the Nimbus bridge.
+Testing your Nimbus plugins, like all code, is important. Since plugins should, ideally, be well contained and have a single responsibility, this makes them ideal for good unit testing. Since Nimbus is simply binding existing functions to a webview, plugin business logic can be tested independently with `XCTest` and don't, necessarily, need to be tested over the Nimbus bridge. This means that all of your tests can be focused and isolated and you can test your plugins unique logic without having to do so across the bridge.
 
 The focus of your testing across the Nimbus bridge should be on verifying the shape of parameters and return values, which will be serialized to json automatically by Nimbus. Combining that with other tests verifying business logic should give your plugins good coverage.
 
-This guide will give an example of two kinds of testing strategies. One uses `XCTest` and a purpose-built Nimbus plugin to relay results to your code from the webview. The second uses Mocha, a javascript testing library, to perform assertions in the webview.
+This guide will give an example of testing with `XCTest` and a purpose-built Nimbus plugin to relay results to your code from the webview.
 
 # XCTest
 
@@ -52,7 +52,7 @@ class DharmaPluginTests: NimbusPluginTestsBase {
 }
 ```
 
-Here is an example of a shim plugin implementation:
+In the above example, the `testBridge` referenced in the javascript executed on the web view is the result of binding the below shim plugin to the bridge:
 ```swift
 class NimbusTestBridge: NimbusExtension {
     var currentExpectation: XCTestExpectation?
@@ -70,7 +70,7 @@ class NimbusTestBridge: NimbusExtension {
 }
 ```
 
-Combined with the following implementation of `NimbusPluginTestsBase`:
+Combine that with the following implementation of `NimbusPluginTestsBase` which instantiates the shim plugin and holds the actual `NimbusBridge` instance. This base class also has affordances for injecting the nimbus js source into the test webview:
 
 ```swift
 class NimbusPluginTestsBase: XCTestCase, WKNavigationDelegate {
@@ -119,6 +119,6 @@ class NimbusPluginTestsBase: XCTestCase, WKNavigationDelegate {
 }
 ```
 
-This combination allows you to call any of the functions that your plugin publishes and allow them to do any sort of asynchronous work and then receive the result via the shim plugin implementation. This also allows you to keep the actual tests fairly succinct and easy to read. This is merely an example implementation and should/could be reduced or extended depending on your specific needs.
+This combination allows you to inherit from this base test case class, and call any of the functions that your plugin publishes and allow them to do any sort of asynchronous work and then receive the result via the shim plugin implementation. This also allows you to keep the actual tests fairly succinct and easy to read.
 
-# Mocha
+This is merely an example implementation and should/could be reduced or extended depending on your specific needs.
