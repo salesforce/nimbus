@@ -59,7 +59,7 @@ Cons:
 
 **1 - New Nimbus Module**
 
-We could add a new module to the Nimbus Android project. This module would contain a single Loader class that would vend the `nimbus.js` source. It would obtain the source with a phase added to the module's gradle script which would download the build artifact from the GitHub release, similar to the above iOS options.
+We could add a new module to the Nimbus Android project. This module would contain a single Loader class that would vend the `nimbus.js` source. At build time, the module would build the nimbus js source locally and include it as a resource in the resulting AAR. This module would also contain utilities to automatically inject the nimbus script into the `<head>` tag of a loading page. Ideally, this behavior would be the default, but also optional for consumers who wish to inject the nimbus js differently.
 
 Pros: 
 - Fairly simple, seems to be idiomatic for the platform
