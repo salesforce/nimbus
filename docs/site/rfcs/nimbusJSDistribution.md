@@ -8,6 +8,8 @@ We don't currently have any officially supported way for native consumers to imp
 
 This RFC discusses a number of options to enable this on both iOS and Android.
 
+**The decision is to move forward with Option 2 for iOS and the single proposed option on Android**
+
 # iOS
 
 **1 - Podspec with a `prepare_command` step**
@@ -27,7 +29,7 @@ Cons:
 - This is not technically the intended use of `prepare_command`
 - Requires a non-trivial amount of effort to publish artifacts or automate releases (which we should probably do anyway)
 
-**2 - Podspec with a source specification - Preferred Option**
+**2 - Podspec with a source specification - Chosen Option**
 
 ```ruby
 spec.source = { :http => 'https://github.com/salesforce/nimbus/archive/0.0.7.zip' }
@@ -59,7 +61,7 @@ Cons:
 
 # Android
 
-**1 - New Nimbus Module**
+**1 - New Nimbus Module - Chosen Option**
 
 We could add a new module to the Nimbus Android project. This module would contain a single Loader class that would vend the `nimbus.js` source. At build time, the module would build the nimbus js source locally and include it as a resource in the resulting AAR. This module would also contain utilities to automatically inject the nimbus script into the `<head>` tag of a loading page. Ideally, this behavior would be the default, but also optional for consumers who wish to inject the nimbus js differently.
 
