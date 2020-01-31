@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1010"
+   LastUpgradeVersion = "1130"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "291A85E421E52D3E00510832"
-               BuildableName = "NimbusApp.app"
-               BlueprintName = "NimbusApp"
+               BlueprintIdentifier = "CC97223C23E4834400F899E7"
+               BuildableName = "NimbusJS.framework"
+               BlueprintName = "NimbusJS"
                ReferencedContainer = "container:Nimbus.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,26 +27,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291A85E421E52D3E00510832"
-            BuildableName = "NimbusApp.app"
-            BlueprintName = "NimbusApp"
-            ReferencedContainer = "container:Nimbus.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2944336E2202012F00E6D084"
-               BuildableName = "NimbusAppUITests.xctest"
-               BlueprintName = "NimbusAppUITests"
-               ReferencedContainer = "container:Nimbus.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -69,16 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291A85E421E52D3E00510832"
-            BuildableName = "NimbusApp.app"
-            BlueprintName = "NimbusApp"
-            ReferencedContainer = "container:Nimbus.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -86,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "291A85E421E52D3E00510832"
-            BuildableName = "NimbusApp.app"
-            BlueprintName = "NimbusApp"
+            BlueprintIdentifier = "CC97223C23E4834400F899E7"
+            BuildableName = "NimbusJS.framework"
+            BlueprintName = "NimbusJS"
             ReferencedContainer = "container:Nimbus.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

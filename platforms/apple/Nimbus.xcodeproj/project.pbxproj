@@ -67,6 +67,13 @@
 		68FA8B8B233DE57500682431 /* Binders.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 68FA8B87233DE57500682431 /* Binders.swifttemplate */; };
 		68FA8B94233DEAF500682431 /* Binders.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B91233DEAE900682431 /* Binders.generated.swift */; };
 		68FA8B95233DEAF900682431 /* Callables.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FA8B90233DEAE900682431 /* Callables.generated.swift */; };
+		CC4AB48A23E4919D00DC0613 /* testJSSource.js in Resources */ = {isa = PBXBuildFile; fileRef = CC4AB48723E48DDB00DC0613 /* testJSSource.js */; };
+		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
+		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
+		CC97224F23E4834400F899E7 /* NimbusJS.h in Headers */ = {isa = PBXBuildFile; fileRef = CC97223F23E4834400F899E7 /* NimbusJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CC97225223E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
+		CC97225323E4834400F899E7 /* NimbusJS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CC97225C23E4847C00F899E7 /* WebView+NimbusJS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +119,27 @@
 			remoteGlobalIDString = 291A860221E530BC00510832;
 			remoteInfo = Nimbus;
 		};
+		CC97224723E4834400F899E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 291A85DD21E52D3E00510832 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC97223C23E4834400F899E7;
+			remoteInfo = NimbusJS;
+		};
+		CC97224923E4834400F899E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 291A85DD21E52D3E00510832 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 291A85E421E52D3E00510832;
+			remoteInfo = NimbusApp;
+		};
+		CC97225023E4834400F899E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 291A85DD21E52D3E00510832 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC97223C23E4834400F899E7;
+			remoteInfo = NimbusJS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -122,6 +150,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				291A860B21E530BC00510832 /* Nimbus.framework in Embed Frameworks */,
+				CC97225323E4834400F899E7 /* NimbusJS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -198,6 +227,14 @@
 		68FA8B88233DE57500682431 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		68FA8B90233DEAE900682431 /* Callables.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Callables.generated.swift; sourceTree = "<group>"; };
 		68FA8B91233DEAE900682431 /* Binders.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binders.generated.swift; sourceTree = "<group>"; };
+		CC4AB48723E48DDB00DC0613 /* testJSSource.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testJSSource.js; sourceTree = "<group>"; };
+		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
+		CC97224023E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CC97224523E4834400F899E7 /* NimbusJSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NimbusJSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC97224C23E4834400F899E7 /* NimbusJSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusJSTests.swift; sourceTree = "<group>"; };
+		CC97224E23E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WebView+NimbusJS.swift"; sourceTree = "<group>"; };
 		D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -208,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */,
+				CC97225223E4834400F899E7 /* NimbusJS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +294,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC97223A23E4834400F899E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC97224223E4834400F899E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -269,6 +322,8 @@
 				2970E430224F0A05008DC004 /* NimbusDesktop */,
 				2970E443224F0A06008DC004 /* NimbusDesktopTests */,
 				2970E44E224F0A06008DC004 /* NimbusDesktopUITests */,
+				CC97223E23E4834400F899E7 /* NimbusJS */,
+				CC97224B23E4834400F899E7 /* NimbusJSTests */,
 				291A85E621E52D3E00510832 /* Products */,
 				2961102821E54662007058EA /* Frameworks */,
 				CFB418AC54B2560C2CE6A834 /* Pods */,
@@ -285,6 +340,8 @@
 				2970E42F224F0A05008DC004 /* NimbusDesktop.app */,
 				2970E440224F0A06008DC004 /* NimbusDesktopTests.xctest */,
 				2970E44B224F0A06008DC004 /* NimbusDesktopUITests.xctest */,
+				CC97223D23E4834400F899E7 /* NimbusJS.framework */,
+				CC97224523E4834400F899E7 /* NimbusJSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -440,6 +497,28 @@
 			path = Generated;
 			sourceTree = "<group>";
 		};
+		CC97223E23E4834400F899E7 /* NimbusJS */ = {
+			isa = PBXGroup;
+			children = (
+				CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */,
+				CC97223F23E4834400F899E7 /* NimbusJS.h */,
+				CC97224023E4834400F899E7 /* Info.plist */,
+			);
+			name = NimbusJS;
+			path = Sources/NimbusJS;
+			sourceTree = "<group>";
+		};
+		CC97224B23E4834400F899E7 /* NimbusJSTests */ = {
+			isa = PBXGroup;
+			children = (
+				CC97224C23E4834400F899E7 /* NimbusJSTests.swift */,
+				CC97224E23E4834400F899E7 /* Info.plist */,
+				CC4AB48723E48DDB00DC0613 /* testJSSource.js */,
+			);
+			name = NimbusJSTests;
+			path = Sources/NimbusJSTests;
+			sourceTree = "<group>";
+		};
 		CFB418AC54B2560C2CE6A834 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -460,6 +539,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC97223823E4834400F899E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC97224F23E4834400F899E7 /* NimbusJS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -477,6 +564,7 @@
 			);
 			dependencies = (
 				291A860921E530BC00510832 /* PBXTargetDependency */,
+				CC97225123E4834400F899E7 /* PBXTargetDependency */,
 			);
 			name = NimbusApp;
 			productName = NimbusApp;
@@ -594,13 +682,50 @@
 			productReference = 2970E44B224F0A06008DC004 /* NimbusDesktopUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CC97223C23E4834400F899E7 /* NimbusJS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC97225423E4834400F899E7 /* Build configuration list for PBXNativeTarget "NimbusJS" */;
+			buildPhases = (
+				CC97223823E4834400F899E7 /* Headers */,
+				CC97223923E4834400F899E7 /* Sources */,
+				CC97223A23E4834400F899E7 /* Frameworks */,
+				CC97223B23E4834400F899E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NimbusJS;
+			productName = NimbusJS;
+			productReference = CC97223D23E4834400F899E7 /* NimbusJS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CC97224423E4834400F899E7 /* NimbusJSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC97225723E4834400F899E7 /* Build configuration list for PBXNativeTarget "NimbusJSTests" */;
+			buildPhases = (
+				CC97224123E4834400F899E7 /* Sources */,
+				CC97224223E4834400F899E7 /* Frameworks */,
+				CC97224323E4834400F899E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC97224823E4834400F899E7 /* PBXTargetDependency */,
+				CC97224A23E4834400F899E7 /* PBXTargetDependency */,
+			);
+			name = NimbusJSTests;
+			productName = NimbusJSTests;
+			productReference = CC97224523E4834400F899E7 /* NimbusJSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		291A85DD21E52D3E00510832 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Salesforce.com, inc.";
 				TargetAttributes = {
@@ -637,6 +762,13 @@
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 2970E42E224F0A05008DC004;
 					};
+					CC97223C23E4834400F899E7 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					CC97224423E4834400F899E7 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = 291A85E421E52D3E00510832;
+					};
 				};
 			};
 			buildConfigurationList = 291A85E021E52D3E00510832 /* Build configuration list for PBXProject "Nimbus" */;
@@ -660,6 +792,8 @@
 				2970E43F224F0A06008DC004 /* NimbusDesktopTests */,
 				2970E44A224F0A06008DC004 /* NimbusDesktopUITests */,
 				29397AF723982EBE0005F2F7 /* Generate Code from Templates */,
+				CC97223C23E4834400F899E7 /* NimbusJS */,
+				CC97224423E4834400F899E7 /* NimbusJSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -722,6 +856,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC97223B23E4834400F899E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC97224323E4834400F899E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC4AB48A23E4919D00DC0613 /* testJSSource.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -902,6 +1051,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC97223923E4834400F899E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC97225C23E4847C00F899E7 /* WebView+NimbusJS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC97224123E4834400F899E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -934,6 +1099,21 @@
 			isa = PBXTargetDependency;
 			target = 291A860221E530BC00510832 /* Nimbus */;
 			targetProxy = 2970E45D224F0A0F008DC004 /* PBXContainerItemProxy */;
+		};
+		CC97224823E4834400F899E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC97223C23E4834400F899E7 /* NimbusJS */;
+			targetProxy = CC97224723E4834400F899E7 /* PBXContainerItemProxy */;
+		};
+		CC97224A23E4834400F899E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 291A85E421E52D3E00510832 /* NimbusApp */;
+			targetProxy = CC97224923E4834400F899E7 /* PBXContainerItemProxy */;
+		};
+		CC97225123E4834400F899E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC97223C23E4834400F899E7 /* NimbusJS */;
+			targetProxy = CC97225023E4834400F899E7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1086,6 +1266,7 @@
 		291A85F821E52D4000510832 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1108,6 +1289,7 @@
 		291A85F921E52D4000510832 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1414,6 +1596,106 @@
 			};
 			name = Release;
 		};
+		CC97225523E4834400F899E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 62J96EUJ9N;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/NimbusJS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusJS;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CC97225623E4834400F899E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 62J96EUJ9N;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sources/NimbusJS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusJS;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CC97225823E4834400F899E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Sources/NimbusJSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusJSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NimbusApp.app/NimbusApp";
+			};
+			name = Debug;
+		};
+		CC97225923E4834400F899E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Sources/NimbusJSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.NimbusJSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NimbusApp.app/NimbusApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1494,6 +1776,24 @@
 			buildConfigurations = (
 				2970E456224F0A06008DC004 /* Debug */,
 				2970E457224F0A06008DC004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC97225423E4834400F899E7 /* Build configuration list for PBXNativeTarget "NimbusJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC97225523E4834400F899E7 /* Debug */,
+				CC97225623E4834400F899E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC97225723E4834400F899E7 /* Build configuration list for PBXNativeTarget "NimbusJSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC97225823E4834400F899E7 /* Debug */,
+				CC97225923E4834400F899E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
