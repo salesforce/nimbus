@@ -12,9 +12,18 @@ enum NimbusJSError: Error {
     case sourceNotFound
 }
 
-extension WKWebView {
-    func injectNimbusJavascript(scriptName: String = "nimbus", bundle: Bundle = Bundle.main) throws {
-        guard let sourcePath = bundle.path(forResource: scriptName, ofType: "js") else {
+public extension WKWebView {
+    func injectNimbusJavascript(scriptName: String = "nimbus", bundle: Bundle? = nil) throws {
+        let bundlesToSearch: [Bundle]
+        if let bundle = bundle {
+            bundlesToSearch = [bundle]
+        } else {
+            bundlesToSearch = Bundle.allFrameworks
+        }
+        let foundPath = bundlesToSearch.compactMap { mapBundle in
+            return mapBundle.path(forResource: scriptName, ofType: "js")
+        }.first
+        guard let sourcePath = foundPath else {
             throw NimbusJSError.sourceNotFound
         }
 
