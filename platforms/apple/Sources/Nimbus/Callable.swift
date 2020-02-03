@@ -14,12 +14,11 @@ public protocol Callable {
      Call the wrapped function with the specified arguments.
      - Throws when the argument types or arity to not match
      */
-    func call(args: [Any], forPromisifiedClosure: Bool) throws -> Any
+    func call(args: [Any]) throws -> Any
 }
 
 /// Represents an error when the type or number of arguments is incorrect
 enum ParameterError: Error, Equatable {
     case conversion
     case argumentCount(expected: Int, actual: Int)
-    case promiseWithCallback
 }

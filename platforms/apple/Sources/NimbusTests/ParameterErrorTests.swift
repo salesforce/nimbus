@@ -18,7 +18,7 @@ class ParameterErrorTests: XCTestCase {
 
     func testTooFewArgsError() {
         let callable = make_callable(self.threeArgs)
-        XCTAssertThrowsError(try callable.call(args: [1, 2], forPromisifiedClosure: false)) { error in
+        XCTAssertThrowsError(try callable.call(args: [1, 2])) { error in
             guard let paramError = error as? ParameterError else {
                 return XCTFail("Expected argument count error, not \(error)")
             }
@@ -28,7 +28,7 @@ class ParameterErrorTests: XCTestCase {
 
     func testTooManyArgsError() {
         let callable = make_callable(ParameterErrorTests.noArgs(self))
-        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5], forPromisifiedClosure: false)) { error in
+        XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5])) { error in
             guard let paramError = error as? ParameterError else {
                     return XCTFail("Expected argument count error, not \(error)")
             }

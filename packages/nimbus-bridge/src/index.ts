@@ -59,46 +59,22 @@ class Nimbus {
 
   public promisify = (src: any) => {
     let dest: any = {};
-    let trailingClosuresAsPromises: Array<string> = [];
-    if (src['getExtensionMetadata'] !== undefined) {
-      let extensionMetadata = src.getExtensionMetadata.call(src);
-      if (extensionMetadata !== undefined) {
-        extensionMetadata = JSON.parse(extensionMetadata)
-        if (extensionMetadata['trailingClosuresAsPromises'] !== undefined) {
-          trailingClosuresAsPromises = extensionMetadata['trailingClosuresAsPromises'];
-        }
-      }
-    }
-
     Object.keys(src).forEach(key => {
       let func = src[key];
-      if (trailingClosuresAsPromises.includes(key)) {
-        dest[key] = (...args: any[]) => {
-          let functionArgs = nimbus.cloneArguments(args);
-          return new Promise(function (resolve, reject) {
-            var promiseId = nimbus.uuidv4();
-            nimbus.promises[promiseId] = { resolve, reject };
-
-            func.call(src, ...functionArgs, promiseId);
-          });
-        };
-      } else {
-        dest[key] = (...args: any[]) => {
-          args = this.cloneArguments(args);
-          args = args.map(arg => {
-            if (typeof arg === "object") {
-              return JSON.stringify(arg);
-            }
-            return arg;
-          });
-
-          let result = func.call(src, ...args);
-          if (result !== undefined) {
-            result = JSON.parse(result);
+      dest[key] = (...args: any[]) => {
+        args = this.cloneArguments(args);
+        args = args.map(arg => {
+          if (typeof arg === "object") {
+            return JSON.stringify(arg);
           }
-          return Promise.resolve(result);
-        };
-      }
+          return arg;
+        });
+        let result = func.call(src, ...args);
+        if (result !== undefined) {
+          result = JSON.parse(result);
+        }
+        return Promise.resolve(result);
+      };
     });
     return dest;
   };

@@ -100,21 +100,4 @@ class CallbackTestExtension : NimbusExtension {
         jo1.put("six", 6)
         arg(jo0, jo1)
     }
-
-    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
-    fun promiseWithPrimitive(arg: (param0: String) -> Unit) {
-        arg("one")
-    }
-
-    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
-    fun promiseWithDictionaryParam(arg: (param0: MochaTests.MochaMessage) -> Unit) {
-        var mochaMessage = MochaTests.MochaMessage("int param is 6", 6)
-        arg(mochaMessage)
-    }
-
-    @ExtensionMethod(trailingClosure = TrailingClosure.PROMISE)
-    fun promiseWithMultipleParamsAndDictionaryParam(param0: Int, param1: String, arg: (param0: MochaTests.MochaMessage) -> Unit) {
-        var mochaMessage = MochaTests.MochaMessage(param1, param0)
-        arg(mochaMessage)
-    }
 }
