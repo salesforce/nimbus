@@ -149,7 +149,7 @@ class Nimbus {
   // in the storage
   public resolvePromise = (promiseUuid: string, data: any, error: any) => {
     if (error) {
-      this.promises[promiseUuid].reject(error);
+      this.promises[promiseUuid].reject(data);
     } else {
       this.promises[promiseUuid].resolve(data);
     }

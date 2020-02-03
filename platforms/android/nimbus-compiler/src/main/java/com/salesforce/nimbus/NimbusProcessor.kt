@@ -356,27 +356,6 @@ class NimbusProcessor : AbstractProcessor() {
                 statement = "return target.\$N($argsString)"
             }
         }
-
-        if (isPromise) {
-            methodSpec.beginControlFlow("try")
-            methodSpec.addStatement(statement, element.simpleName)
-            methodSpec.nextControlFlow("catch (Exception e)")
-            methodSpec.beginControlFlow("if (webView != null)")
-            val argBlock = CodeBlock.builder()
-                    .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
-                    .indent()
-                    .add("new \$T(argId),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
-                    .add("null,\n")
-                    .add("new \$T(e.getMessage()),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
-                    .unindent()
-                    .add("};\n")
-                    .build()
-            methodSpec.addCode(argBlock)
-            methodSpec.addStatement("callJavascript(webView, \"nimbus.resolvePromise\", args, null)")
-            methodSpec.endControlFlow()
-            methodSpec.endControlFlow()
-        } else {
-            methodSpec.addStatement(statement, element.simpleName)
-        }
+        methodSpec.addStatement(statement, element.simpleName)
     }
 }
