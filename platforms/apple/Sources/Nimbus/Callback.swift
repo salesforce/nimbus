@@ -30,15 +30,16 @@ class Callback: Callable {
 
     func call(args: [Any], forPromisifiedClosure: Bool) throws -> Any {
         if forPromisifiedClosure {
-            var result = EncodableValue.void
-            if args.count == 1 {
-                if type(of: args.first) == Void.self {
-                    result = .void
-                } else if let encodable = args.first as? Encodable {
-                    result = .value(encodable)
-                } else {
-                    throw ParameterError.conversion
-                }
+            if args.count != 1 {
+                throw ParameterError.argumentCount(expected: 1, actual: args.count)
+            }
+            var result: EncodableValue
+            if type(of: args.first) == Void.self {
+                result = .void
+            } else if let encodable = args.first as? Encodable {
+                result = .value(encodable)
+            } else {
+                throw ParameterError.conversion
             }
             self.webView?.resolvePromise(promiseId: self.callbackId, result: result)
         } else {

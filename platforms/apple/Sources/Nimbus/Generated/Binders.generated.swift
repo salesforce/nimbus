@@ -53,24 +53,6 @@ extension Binder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind(_ function: @escaping (Target) -> (@escaping () -> Void) throws -> Void, as name: String, trailingClosure: TrailingClosure = .callback) {
-        let boundFunction = function(target)
-        let wrappedFunction = { (callable: Callable) -> Void in
-            try boundFunction {
-                var forPromisifiedClosure = false
-                if case TrailingClosure.promise = trailingClosure {
-                    forPromisifiedClosure = true
-                }
-                _ = try! callable.call(args: [], forPromisifiedClosure: forPromisifiedClosure) // swiftlint:disable:this force_try
-            }
-        }
-        let callable = make_callable(wrappedFunction)
-        bind(callable, as: name, trailingClosure: trailingClosure)
-    }
-
-    /**
-     Bind the specified function to this connection.
-     */
     public func bind<A0>(_ function: @escaping (Target) -> (A0) throws -> Void, as name: String, trailingClosure: TrailingClosure = .callback) {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)

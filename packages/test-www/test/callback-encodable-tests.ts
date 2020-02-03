@@ -19,7 +19,6 @@ interface CallbackTestExtension {
   callbackWithSinglePrimitiveParam(completion: (param0: number) => void): void;
   callbackWithTwoPrimitiveParams(completion: (param0: number, param1: number) => void): void;
   callbackWithPrimitiveAndUddtParams(completion: (param0: number, param1: MochaMessage) => void): void;
-  promiseWithNoParameter(): Promise<void>;
   promiseWithPrimitive(): Promise<String>;
   promiseWithDictionaryParam(): Promise<MochaMessage>;
   promiseWithMultipleParamsAndDictionaryParam(param0: number, param1: string): Promise<MochaMessage>;
@@ -84,12 +83,6 @@ describe('Callbacks with', () => {
   it('method that returns promise called with one string param', (done) => {
     callbackTestExtension.promiseWithPrimitive().then((result) => {
       expect(result).to.equal("one");
-      done();
-    });
-  });
-
-  it('promise called and returns nothing', (done) => {
-    callbackTestExtension.promiseWithNoParameter().then(() => {
       done();
     });
   });
