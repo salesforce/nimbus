@@ -8,9 +8,9 @@
 import "./nimbus-core-tests";
 import "./broadcast-tests";
 import "./callback-encodable-tests";
-import nimbus from "nimbus-bridge";
+import __nimbus from "nimbus-bridge";
 
 window.onload = () => {
-  nimbus;
+  __nimbus;
   mochaTestBridge.ready();
 };

@@ -18,7 +18,7 @@ class Callback(val webView: WebView, val callbackId: String) {
 
     protected fun finalize() {
         webView.post {
-            webView.evaluateJavascript("nimbus.releaseCallback('$callbackId');") {}
+            webView.evaluateJavascript("window.__nimbus.releaseCallback('$callbackId');") {}
         }
     }
 
@@ -28,7 +28,7 @@ class Callback(val webView: WebView, val callbackId: String) {
     fun call(vararg args: Any) {
         val jsonArgs = JSONArray(args)
         webView.post {
-            webView.evaluateJavascript("nimbus.callCallback('$callbackId', $jsonArgs);") {}
+            webView.evaluateJavascript("window.__nimbus.callCallback('$callbackId', $jsonArgs);") {}
         }
     }
 }

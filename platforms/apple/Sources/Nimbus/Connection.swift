@@ -59,12 +59,18 @@ public class Connection<C>: Binder {
     public func bind(_ callable: Callable, as name: String) {
         bindings[name] = callable
         let stubScript = """
-        \(namespace) = window.\(namespace) || {};
+        if (window.__nimbus === undefined) {
+            window.__nimbus = {};
+        }
+        if (window.__nimbus.\(namespace) === undefined) {
+            window.__nimbus.\(namespace) = {};
+        }
+        \(namespace) = window.__nimbus.\(namespace);
         \(namespace).\(name) = function() {
-            let functionArgs = nimbus.cloneArguments(arguments);
+            let functionArgs = window.__nimbus.cloneArguments(arguments);
             return new Promise(function(resolve, reject) {
-                var promiseId = nimbus.uuidv4();
-                nimbus.promises[promiseId] = {resolve, reject};
+                var promiseId = window.__nimbus.uuidv4();
+                window.__nimbus.promises[promiseId] = {resolve, reject};
 
                 window.webkit.messageHandlers.\(namespace).postMessage({
                     method: '\(name)',
@@ -123,7 +129,7 @@ public class Connection<C>: Binder {
             // swiftlint:disable:next force_try
             let data = try! JSONSerialization.data(withJSONObject: result, options: [])
             resultString = String(data: data, encoding: String.Encoding.utf8)!
-            webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString));")
+            webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', \(resultString));")
         } else {
             switch result {
             case is ():
@@ -134,12 +140,12 @@ public class Connection<C>: Binder {
             default:
                 fatalError("Unsupported return type \(type(of: result))")
             }
-            webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
+            webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
         }
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
-        webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
     }
 
     public let target: C

@@ -29,8 +29,11 @@ class Nimbus {
       // we're on Android, need to wrap native extension methods
       let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
       extensionNames.forEach((extension: string) => {
-        Object.assign(window, {
-          [extension]: Object.assign(window[extension] || {}, this.promisify(window[`_${extension}`]))
+        Object.assign(this, {
+          [extension]: Object.assign(
+            window[extension] || {},
+            this.promisify(window[`_${extension}`])
+          )
         });
       });
     }
@@ -211,13 +214,18 @@ class Nimbus {
   };
 }
 
-const nimbus = new Nimbus();
+const __nimbus = new Nimbus();
 
 declare global {
   interface Window {
-    nimbus?: Nimbus;
+    __nimbus?: Nimbus;
   }
 }
-window.nimbus = nimbus;
 
-export default nimbus;
+if (window.__nimbus === undefined) {
+  window.__nimbus = __nimbus;
+} else {
+  window.__nimbus = Object.assign(window.__nimbus, __nimbus);
+}
+
+export default __nimbus;

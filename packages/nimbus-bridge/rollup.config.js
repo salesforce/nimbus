@@ -14,7 +14,7 @@ const es5iife = {
   output: [
     {
       file: "dist/iife/nimbus.js",
-      name: "nimbus",
+      name: "__nimbus",
       format: "iife"
     }
   ]
