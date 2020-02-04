@@ -81,13 +81,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-pods-{{ checksum "Podfile.lock" }}
+            - v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
             - v1-pods
 
-      - run:
-          name: Fetch CocoaPods Specs
-          command: |
-            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      #- run:
+         # name: Fetch CocoaPods Specs
+         # command: |
+         #   curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
 
       - run:
           name: CocoaPods
@@ -99,8 +99,8 @@ jobs:
 
       - save_cache:
           paths:
-            - ./Pods
-          key: v1-pods-{{ checksum "Podfile.lock" }}
+            - ./platforms/apple/Pods
+          key: v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
 
       - run:
           name: Build iOS
@@ -130,9 +130,21 @@ jobs:
             npm install
             ./create-nimbus-js.sh
 
-      - store_artifacts:
-          path: NimbusJS.zip
-          destination: NimbusJS.zip
+      - persist_to_workspace:
+          root: .
+          paths:
+            - NimbusJS.zip
+
+  create-tagged-release:
+    docker:
+      - image: cibuilds/github:0.10
+
+    steps:
+      - attach_workspace:
+          at: workspace
+
+      - run: |
+          git describe --tags
 
   build-and-test-android:
     docker:
@@ -191,7 +203,10 @@ workflows:
   build-and-test:
     jobs:
       - build-and-test-ios
-      - build-and-test-macos
-      - build-swiftpm
-      - build-and-test-android
-      - build-and-test-ts
+      #- build-and-test-macos
+      #- build-swiftpm
+      #- build-and-test-android
+      #- build-and-test-ts
+      - create-tagged-release:
+          requires:
+            - build-and-test-ios
