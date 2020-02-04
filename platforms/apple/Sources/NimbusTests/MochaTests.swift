@@ -80,7 +80,11 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
         loadWebViewAndWait()
 
-        webView.evaluateJavaScript("mocha.run(failures => { mochaTestBridge.testsCompleted(failures); }).on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message)); true;") { _, error in
+        webView.evaluateJavaScript("""
+            mocha.run(failures => { mochaTestBridge.testsCompleted(failures); })
+                 .on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message));
+            true;
+            """) { _, error in
 
             if let error = error {
                 XCTFail(error.localizedDescription)
