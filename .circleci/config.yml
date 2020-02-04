@@ -114,6 +114,16 @@ jobs:
             bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
             bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
 
+      - run:
+          name: Build NimbusJS
+          command: |
+            npm install
+            ./create-nimbus-js.sh
+
+      - store_artifacts:
+          path: NimbusJS.zip
+          destination: NimbusJS.zip
+
   build-and-test-android:
     docker:
       - image: circleci/android:api-29-node
