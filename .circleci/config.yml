@@ -84,23 +84,28 @@ jobs:
             - v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
             - v1-pods
 
-      #- run:
-         # name: Fetch CocoaPods Specs
-         # command: |
-         #   curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - restore_cache:
+          keys:
+            - v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
+            - v1-bundler
 
       - run:
           name: CocoaPods
           working_directory: platforms/apple
           command: |
             gem install bundler -v 2.0.1
-            bundle install
+            bundle install --path .bundle
             bundle exec pod install
 
       - save_cache:
           paths:
             - ./platforms/apple/Pods
           key: v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/.bundle
+          key: v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
 
       - run:
           name: Build iOS
@@ -144,7 +149,13 @@ jobs:
           at: workspace
 
       - run: |
-          git describe --tags
+          if [ -z ${CIRCLE_TAG+x} ]
+          then
+            echo "circle tag not set"
+          else
+            echo "tag is $CIRCLE_TAG"
+          fi
+          which ghr
 
   build-and-test-android:
     docker:
