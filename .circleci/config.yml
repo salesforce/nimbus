@@ -149,11 +149,11 @@ jobs:
           at: workspace
 
       - run: |
-          if [ -z ${CIRCLE_TAG+x} ]
+          if [ -z ${HYPE_GITHUB_TOKEN+x} ]
           then
-            echo "circle tag not set"
+            echo "github token not set"
           else
-            echo "tag is $CIRCLE_TAG"
+            echo "token set"
           fi
           which ghr
 
