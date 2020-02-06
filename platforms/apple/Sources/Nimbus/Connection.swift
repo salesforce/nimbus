@@ -7,6 +7,10 @@
 
 import WebKit
 
+public enum JavascriptError: Error {
+    case functionNotFound
+}
+
 /**
  A `Connection` links a web view to native functions.
 
@@ -39,18 +43,66 @@ public class Connection<C>: Binder {
         }
 
         func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
-            guard
-                let params = message.body as? NSDictionary,
-                let method = params["method"] as? String,
-                let args = params["args"] as? [Any],
-                let promiseId = params["promiseId"] as? String else {
-                return
-            }
+            guard let params = message.body as? NSDictionary,
+                let promiseId = params["promiseId"] as? String else { return }
 
-            connection.call(method, args: args, promise: promiseId)
+            let err = unwrapNSNull(params["err"])
+            let result = unwrapNSNull(params["result"])
+            if err != nil || result != nil {
+                handlePromiseCompletion(for: promiseId, err: err as? Error, result: result)
+            } else {
+                // JS-initiated call into native extension.
+                guard let method = params["method"] as? String,
+                    let args = params["args"] as? [Any] else { return }
+
+                connection.call(method, args: args, promise: promiseId)
+            }
+        }
+
+        func handlePromiseCompletion(for promiseId: String, err: Error?, result: Any?) {
+            connection.concurrentPromisesQueue.async(flags: .barrier) { [weak self] in
+                guard let connection = self?.connection else { return } // Ensure connection is still alive.
+                if let completion = connection.promises.removeValue(forKey: promiseId) {
+                    // A completion block is already tracked for this Promise. Call that completion.
+                    let promiseError = err == nil ? nil : PromiseError.message("\(err!)")
+                    completion.call(err: promiseError, result: result)
+                } else {
+                    // The Promise completion is not yet tracked.; there is no guarantee about whether the
+                    // Promise will complete after it is tracked. In this case, store a marker of a completed
+                    // Promise, and call the Promise completion handler immediately in the callJavascript
+                    // completion in invoke().
+                    connection.promises[promiseId] = CompletedPromise(err: err, result: result)
+                    return
+                }
+            }
         }
 
         let connection: Connection
+    }
+
+    /**
+     Invokes a Promise-returning Javascript function and call the specified promiseCompletion when that Promise resolves or rejects.
+     */
+    public func invoke<R>(_ functionName: String, with args: Encodable..., promiseCompletion: @escaping (Error?, R?) -> Void) {
+        webView?.callJavascript(name: "nimbus.callAwaiting", args: [namespace, functionName] + args) { (promiseId, err) -> Void in
+            if err != nil {
+                promiseCompletion(err, nil)
+            } else {
+                guard let promiseId = promiseId as? String else {
+                    promiseCompletion(JavascriptError.functionNotFound, nil)
+                    return
+                }
+                self.concurrentPromisesQueue.async(flags: .barrier) { [weak self] in
+                    if let resolvedPromise = self?.promises.removeValue(forKey: promiseId) {
+                        // The Promise is already resolved (no ordering guarantees), so just call the completion.
+                        promiseCompletion(resolvedPromise.err, resolvedPromise.result as? R)
+                    } else {
+                        // The Promise is not yet resolved/rejected. Track it until it completes.
+                        self?.promises[promiseId] = CallablePromiseCompletion(promiseCompletion)
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -80,6 +132,9 @@ public class Connection<C>: Binder {
         webView?.configuration.userContentController.addUserScript(script)
     }
 
+    /**
+     Called by the ConnectionMessageHandler when JS in the webview invokes a function of a native extension..
+     */
     func call(_ method: String, args: [Any], promise: String) {
         if let callable = bindings[method] {
             do {
@@ -97,6 +152,9 @@ public class Connection<C>: Binder {
                     }
                     return arg
                 }
+
+                // The `callable` here is the generated Callable* struct instantiated when bind() was called.
+                // `args` can be both regular params or `Callback`s which are themselves `Callable`s
                 let rawResult = try callable.call(args: args)
                 if rawResult is NSArray || rawResult is NSDictionary {
                     resolvePromise(promiseId: promise, result: rawResult)
@@ -142,8 +200,54 @@ public class Connection<C>: Binder {
         webView?.evaluateJavaScript("nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
     }
 
+    private static func unwrapNSNull(_ opt: Any?) -> Any? {
+        if opt as? NSNull != nil { return nil }
+        return opt
+    }
+
     public let target: C
     private let namespace: String
     private weak var webView: WKWebView?
     private var bindings: [String: Callable] = [:]
+    private var promises: [String: PromiseCompletion] = [:]
+    private let concurrentPromisesQueue = DispatchQueue(label: "Nimbus.promisesQueue", attributes: .concurrent)
+}
+
+enum PromiseError: Error, Equatable {
+    case message(_ message: String)
+}
+
+protocol PromiseCompletion {
+    func call(err: Error?, result: Any?)
+    var err: Error? { get }
+    var result: Any? { get }
+}
+
+struct CallablePromiseCompletion<R>: PromiseCompletion {
+    typealias FunctionType = (Error?, R?) -> Void
+    let function: FunctionType
+    init(_ function: @escaping FunctionType) {
+        self.function = function
+    }
+
+    func call(err: Error?, result: Any?) {
+        function(err, result as? R)
+    }
+
+    // Unresolved Promises do not yet have errors/results
+    var err: Error? { return nil }
+    var result: Any? { return nil }
+}
+
+struct CompletedPromise: PromiseCompletion {
+    let err: Error?
+    let result: Any?
+    init(err: Error?, result: Any?) {
+        self.err = err
+        self.result = result
+    }
+
+    func call(err: Error?, result: Any?) {
+        // Resolved Promeses already have errors/results
+    }
 }

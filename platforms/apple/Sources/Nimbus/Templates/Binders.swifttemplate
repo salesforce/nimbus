@@ -11,7 +11,7 @@
 
 import Foundation
 
-extension Binder {
+extension NativeBinder {
 <%_  for (index, arity) in arities.enumerated() { -%>
 <%_     if index == 0 { _%>
     /**

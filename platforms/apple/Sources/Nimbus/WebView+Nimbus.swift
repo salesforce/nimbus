@@ -67,7 +67,7 @@ extension WKWebView {
 
      - Parameter name: Message name.  Listeners are keying on unique message names on Javascript side.
      There can be multiple listeners listening on same message.
-     - Parameter arg: Any encodable ojbect to pass to Javascript as useful data.  If there is nothing to be
+     - Parameter arg: Any encodable object to pass to Javascript as useful data.  If there is nothing to be
      passed don't specify the parameter since it has nil as default parameter.
      - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
      have to pass a closure if you are not interested in getting the callback.

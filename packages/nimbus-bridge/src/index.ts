@@ -105,7 +105,7 @@ class Nimbus {
     return clonedArgs;
   };
 
-  public callCallback = (callbackId: string, args: any[]) => {
+  public callCallback = (callbackId: string, args: any[]): void => {
     if (this.callbacks[callbackId]) {
       this.callbacks[callbackId](...args);
     }
@@ -113,17 +113,17 @@ class Nimbus {
 
   // TODO: This version is called by Android, callCallback is called by iOS. The
   // two need to be consolidated.
-  public callCallback2 = (callbackId: string, ...args: any[]) => {
+  public callCallback2 = (callbackId: string, ...args: any[]): void => {
     this.callCallback(callbackId, args);
   };
 
-  public releaseCallback = (callbackId: string) => {
+  public releaseCallback = (callbackId: string): void => {
     delete this.callbacks[callbackId];
   };
 
   // Native side will callback this method. Match the callback to stored promise
   // in the storage
-  public resolvePromise = (promiseUuid: string, data: any, error: any) => {
+  public resolvePromise = (promiseUuid: string, data: any, error: any): void => {
     if (error) {
       this.promises[promiseUuid].reject(data);
     } else {
@@ -146,7 +146,7 @@ class Nimbus {
    * @return Number of listeners that were called by the
    *     message.
    */
-  public broadcastMessage = (message: string, arg: any) => {
+  public broadcastMessage = (message: string, arg: any): number => {
     let messageListeners = this.listenerMap[message];
     var handlerCallCount = 0;
     if (messageListeners) {
@@ -172,7 +172,7 @@ class Nimbus {
    * @param listener A method that should be triggered when a message is
    *     broadcasted.
    */
-  public subscribeMessage = (message: string, listener: Function) => {
+  public subscribeMessage = (message: string, listener: Function): void => {
     let messageListeners = this.listenerMap[message];
     if (!messageListeners) {
       messageListeners = [];
@@ -192,7 +192,7 @@ class Nimbus {
    * @param listener A method that should be triggered when a
    *     message is broadcasted.
    */
-  public unsubscribeMessage = (message: string, listener: Function) => {
+  public unsubscribeMessage = (message: string, listener: Function): void => {
     let messageListeners = this.listenerMap[message];
     if (messageListeners) {
       let counter = 0;
@@ -208,6 +208,38 @@ class Nimbus {
         this.listenerMap[message] = messageListeners;
       }
     }
+  };
+
+  /**
+   * Call a Promise-returning function and track its resolution/rejection.
+   * 
+   * @param namespace String connection name, used both to find the function to
+   * invoke (window.${namespace}.${name} as well as to identify the message
+   * handler to inform about the resolutin/rejection of the Promise.
+   * @param name String name of the function on window.${namespace} to invoke.
+   * @param args arguments to pass to the specified function.
+   */
+  public callAwaiting = (
+    namespace: string,
+    name: string,
+    ...args: any[]
+  ): string | null => {
+    const ext = window[namespace];
+    if (!ext) {
+      console.error(`window.${namespace} was not found.`);
+      return null;
+    }
+    const fn = ext[name];
+    if (!fn) {
+      console.error(`window.${namespace}.${name} was not found.`);
+      return null;
+    }
+    const promise = fn(...args);
+    const promiseId = this.uuidv4();
+    const handler = window.webkit.messageHandlers[namespace];
+    promise.catch((err: any): void => handler.postMessage({ promiseId, err }));
+    promise.then((result: any): void => handler.postMessage({ promiseId, result }));
+    return promiseId;
   };
 }
 
