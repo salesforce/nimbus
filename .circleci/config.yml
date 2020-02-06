@@ -20,16 +20,6 @@ jobs:
           name: Set Ruby Version
           command: echo "ruby-2.5.3" > ~/.ruby-version
 
-      - restore_cache:
-          keys:
-            - v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
-            - v1-pods
-
-      - restore_cache:
-          keys:
-            - v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
-            - v1-bundler
-
       - run:
           name: CocoaPods
           working_directory: platforms/apple
@@ -37,16 +27,6 @@ jobs:
             gem install bundler -v 2.0.1
             bundle install
             bundle exec pod install
-
-      - save_cache:
-          paths:
-            - ./platforms/apple/Pods
-          key: v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
-
-      - save_cache:
-          paths:
-            - ./platforms/apple/.bundle
-          key: v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
 
       - run:
           name: Build macOS
