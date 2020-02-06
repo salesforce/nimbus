@@ -17,9 +17,8 @@ class NimbusDeviceInfo extends HTMLElement {
     }
 
     public connectedCallback(): void {
-        let nimbusWithDeviceExtension = (<any>(window.__nimbus)) as NimbusWithDeviceExtension;
-        if (nimbusWithDeviceExtension !== undefined) {
-          nimbusWithDeviceExtension.DeviceExtension.getDeviceInfo().then(
+        let plugins = (<any>window.__nimbus!.plugins) as NimbusWithDeviceExtension;
+        plugins.DeviceExtension.getDeviceInfo().then(
             (info: DeviceInfo): void => {
               console.log(JSON.stringify(info));
               let shadowRoot = this.shadowRoot;
@@ -36,7 +35,6 @@ class NimbusDeviceInfo extends HTMLElement {
                     }
                 }
             );
-        }
     }
 }
 

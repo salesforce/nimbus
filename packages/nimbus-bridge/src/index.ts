@@ -29,15 +29,18 @@ class Nimbus {
       // we're on Android, need to wrap native extension methods
       let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
       extensionNames.forEach((extension: string) => {
-        Object.assign(this, {
+        Object.assign(this.plugins, {
           [extension]: Object.assign(
-            window[extension] || {},
+            this.plugins[`${extension}`] || {},
             this.promisify(window[`_${extension}`])
           )
         });
       });
     }
   }
+
+  // Store any plugins injected by the native app here.
+  public plugins: { [s: string]: any } = {};
 
   // There can be many promises so creating a storage for later look-up.
   public promises: {
@@ -214,7 +217,7 @@ class Nimbus {
   };
 }
 
-const __nimbus = new Nimbus();
+const nimbus = new Nimbus();
 
 declare global {
   interface Window {
@@ -222,10 +225,10 @@ declare global {
   }
 }
 
-if (window.__nimbus === undefined) {
-  window.__nimbus = __nimbus;
-} else {
-  window.__nimbus = Object.assign(window.__nimbus, __nimbus);
+// If the plugins were injected before nimbus core was run merge those plugins inside to nimbus core.
+if (window.__nimbus !== undefined) {
+  nimbus.plugins = Object.assign(nimbus.plugins, window.__nimbus.plugins);
 }
+window.__nimbus = nimbus;
 
-export default __nimbus;
+export default nimbus;

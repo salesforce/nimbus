@@ -62,12 +62,15 @@ public class Connection<C>: Binder {
         if (window.__nimbus === undefined) {
             window.__nimbus = {};
         }
-        if (window.__nimbus.\(namespace) === undefined) {
-            window.__nimbus.\(namespace) = {};
+        if (window.__nimbus.plugins === undefined) {
+            window.__nimbus.plugins = {};
         }
-        \(namespace) = window.__nimbus.\(namespace);
+        if (window.__nimbus.plugins.\(namespace) === undefined) {
+            window.__nimbus.plugins.\(namespace) = {};
+        }
+        \(namespace) = window.__nimbus.plugins.\(namespace);
         \(namespace).\(name) = function() {
-            let functionArgs = window.__nimbus.cloneArguments(arguments);
+            let functionArgs = __nimbus.cloneArguments(arguments);
             return new Promise(function(resolve, reject) {
                 var promiseId = window.__nimbus.uuidv4();
                 window.__nimbus.promises[promiseId] = {resolve, reject};
@@ -129,7 +132,7 @@ public class Connection<C>: Binder {
             // swiftlint:disable:next force_try
             let data = try! JSONSerialization.data(withJSONObject: result, options: [])
             resultString = String(data: data, encoding: String.Encoding.utf8)!
-            webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', \(resultString));")
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', \(resultString));")
         } else {
             switch result {
             case is ():
@@ -140,12 +143,12 @@ public class Connection<C>: Binder {
             default:
                 fatalError("Unsupported return type \(type(of: result))")
             }
-            webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
         }
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
-        webView?.evaluateJavaScript("window.__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
     }
 
     public let target: C

@@ -74,13 +74,13 @@ fun WebView.broadcastMessage(name: String, arg: JSONSerializable? = null, comple
         """
             try {
                 var value = ${arg.stringify()};
-                window.__nimbus.broadcastMessage('$name', value);
+                __nimbus.broadcastMessage('$name', value);
             } catch(e) {
                 console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
             }
         """.trimIndent()
     } else {
-        "window.__nimbus.broadcastMessage('$name');"
+        "__nimbus.broadcastMessage('$name');"
     }
     evaluateJavascript(scriptTemplate) { value ->
         completionHandler?.let {
