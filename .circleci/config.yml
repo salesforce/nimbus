@@ -35,7 +35,7 @@ jobs:
           working_directory: platforms/apple
           command: |
             gem install bundler -v 2.0.1
-            bundle install
+            bundle install --path .bundle
             bundle exec pod install
 
       - save_cache:
