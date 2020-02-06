@@ -148,14 +148,10 @@ jobs:
       - attach_workspace:
           at: workspace
 
-      - run: |
-          if [ -z ${HYPE_GITHUB_TOKEN+x} ]
-          then
-            echo "github token not set"
-          else
-            echo "token set"
-          fi
-          which ghr
+      - run:
+          name: "Create GitHub Release"
+          command: |
+            ghr -t ${HYPE_GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./workspace/NimbusJS.zip
 
   build-and-test-android:
     docker:
@@ -214,10 +210,15 @@ workflows:
   build-and-test:
     jobs:
       - build-and-test-ios
-      #- build-and-test-macos
-      #- build-swiftpm
-      #- build-and-test-android
-      #- build-and-test-ts
+      - build-and-test-macos
+      - build-swiftpm
+      - build-and-test-android
+      - build-and-test-ts
       - create-tagged-release:
           requires:
             - build-and-test-ios
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
