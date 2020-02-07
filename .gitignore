@@ -169,4 +169,4 @@ $RECYCLE.BIN/
 
 NimbusJS.zip
 
-platforms/android/nimbusjs/src/main/res/nimbus.js
+platforms/android/nimbusjs/src/main/res/raw/nimbus.js
