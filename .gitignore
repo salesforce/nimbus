@@ -168,3 +168,5 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/node,macos,windows,typings,visualstudiocode
 
 NimbusJS.zip
+
+platforms/android/nimbusjs/src/main/res/nimbus.js

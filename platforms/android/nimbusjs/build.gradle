@@ -26,7 +26,7 @@ android {
 
 preBuild.doFirst {
     println("Building nimbus.js")
-    def proc = "./buildNimbusJS.sh".execute()
+    def proc = "./nimbusjs/buildNimbusJS.sh".execute()
     proc.waitForProcessOutput(System.out, System.err)
 }
 
