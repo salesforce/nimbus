@@ -20,6 +20,20 @@ declare global {
   }
 }
 
+interface FinishedPromise {
+  promiseId: string;
+  err?: any;
+  result?: any;
+}
+
+function promiseFinishedHandler(
+  namespace: string
+): (msg: FinishedPromise) => void {
+  return window.webkit
+    ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
+    : (msg: FinishedPromise): void => window[namespace].finishPromise(msg.promiseId, msg.err, msg.result);
+}
+
 class Nimbus {
   public constructor() {
     if (
@@ -236,9 +250,9 @@ class Nimbus {
     }
     const promise = fn(...args);
     const promiseId = this.uuidv4();
-    const handler = window.webkit.messageHandlers[namespace];
-    promise.catch((err: any): void => handler.postMessage({ promiseId, err }));
-    promise.then((result: any): void => handler.postMessage({ promiseId, result }));
+    const handler = promiseFinishedHandler(namespace);
+    promise.catch((err: any): void => handler({ promiseId, err }));
+    promise.then((result: any): void => handler({ promiseId, result }));
     return promiseId;
   };
 }
