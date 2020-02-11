@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -22,6 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/'] } }
 }
 
 preBuild.doFirst {
