@@ -30,4 +30,11 @@ class PromiseTracker<R>() {
         // TODO: Otherwise, if register has not yet been called, remember the error/result until register is called, and call the callback then.
         // TODO: Tracking/reading of error/result pairs for not-yet-registered Promises must be thread-safe
     }
+
+    /**
+     * Generates a callback for passing to callJavascript with "callAwaiting"
+     */
+    fun registrarFor(promiseCompletion: (String?, R?) -> Void): (Any) -> Unit {
+        return { promiseId: Any -> if (promiseId != null) register(promiseId as String, promiseCompletion) }
+    }
 }
