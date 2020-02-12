@@ -2,6 +2,8 @@
 
 cd ../../packages/nimbus-bridge/
 
+npm install
+
 npm run build
 
 mkdir ../../platforms/android/nimbusjs/src/main/res/raw/
