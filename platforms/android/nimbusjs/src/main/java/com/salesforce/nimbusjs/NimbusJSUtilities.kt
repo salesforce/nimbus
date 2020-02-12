@@ -11,31 +11,13 @@ class NimbusJSUtilities() {
 
         fun injectedNimbusStream(inputStream: InputStream, context: Context): InputStream {
             val jsString = ResourceUtils(context).stringFromRawResource(R.raw.nimbus)
-            var html: String? = this.readAssetStream(inputStream)
+            var html = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
             if (html!!.contains("<head>")) {
                 html = html.replace("<head>", "<head>\n$jsString\n")
             } else if (html.contains("</head>")) {
                 html = html.replace("</head>", jsString + "\n" + "</head>")
             }
             return ByteArrayInputStream(html!!.toByteArray(StandardCharsets.UTF_8))
-        }
-
-        private fun readAssetStream(stream: InputStream): String? {
-            try {
-                val bufferSize = 1024
-                val buffer = CharArray(bufferSize)
-                val out = StringBuilder()
-                val `in`: Reader = InputStreamReader(stream, "UTF-8")
-                while (true) {
-                    val rsz = `in`.read(buffer, 0, buffer.size)
-                    if (rsz < 0) break
-                    out.append(buffer, 0, rsz)
-                }
-                return out.toString()
-            } catch (e: Exception) {
-                Log.e("Nimbus", "Unable to inject Nimbus", e)
-            }
-            return ""
         }
     }
 }

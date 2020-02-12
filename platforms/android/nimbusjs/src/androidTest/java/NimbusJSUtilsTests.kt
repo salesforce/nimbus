@@ -14,6 +14,7 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -37,26 +38,8 @@ class NimbusJSUtilsTests {
     fun testInjectionTwo() {
         var inputStream: InputStream = context.assets.open("testPage.html")
         inputStream = NimbusJSUtilities.injectedNimbusStream(inputStream, context)
-        var resultString = readAssetStream(inputStream)
+        var resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
         var containsNimbus = resultString?.contains("nimbus")
         assertEquals(true, containsNimbus)
-    }
-
-    private fun readAssetStream(stream: InputStream): String? {
-        try {
-            val bufferSize = 1024
-            val buffer = CharArray(bufferSize)
-            val out = StringBuilder()
-            val `in`: Reader = InputStreamReader(stream, "UTF-8")
-            while (true) {
-                val rsz = `in`.read(buffer, 0, buffer.size)
-                if (rsz < 0) break
-                out.append(buffer, 0, rsz)
-            }
-            return out.toString()
-        } catch (e: Exception) {
-
-        }
-        return ""
     }
 }
