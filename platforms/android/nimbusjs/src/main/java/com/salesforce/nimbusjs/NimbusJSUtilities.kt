@@ -7,11 +7,6 @@ import java.nio.charset.StandardCharsets
 
 class NimbusJSUtilities() {
     companion object Injection {
-        fun injectNimbus(webView: WebView, context: Context) {
-                val resourceUtils = ResourceUtils(context)
-                val jsString = resourceUtils.stringFromRawResource(R.raw.nimbus)
-                webView.loadUrl("javascript:($jsString)()")
-        }
 
         fun injectedNimbusStream(inputStream: InputStream, context: Context): InputStream {
             val jsString = ResourceUtils(context).stringFromRawResource(R.raw.nimbus)
@@ -44,7 +39,7 @@ class NimbusJSUtilities() {
     }
 }
 
-fun String.Companion.fromStream(stream: InputStream): String {
+private fun String.Companion.fromStream(stream: InputStream): String {
     val result = ByteArrayOutputStream()
     val buffer = ByteArray(1024)
     var length = stream.read(buffer)
@@ -55,7 +50,7 @@ fun String.Companion.fromStream(stream: InputStream): String {
     return result.toString(StandardCharsets.UTF_8.name())
 }
 
-class ResourceUtils(val context: Context) {
+private class ResourceUtils(val context: Context) {
     fun stringFromRawResource(id: Int): String {
         val inputStream = context.resources.openRawResource(id)
         val string = String.fromStream(inputStream)

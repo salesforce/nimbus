@@ -10,6 +10,7 @@ import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
@@ -33,58 +34,29 @@ class NimbusJSUtilsTests {
     }
 
     @Test
-    fun testInjection() {
-        runOnUiThread {
-            webView = WebView(this.context)
-            webView.settings.javaScriptEnabled = true
-            webView.webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    readyLock.countDown()
-                }
+    fun testInjectionTwo() {
+        var inputStream: InputStream = context.assets.open("testPage.html")
+        inputStream = NimbusJSUtilities.injectedNimbusStream(inputStream, context)
+        var resultString = readAssetStream(inputStream)
+        var containsNimbus = resultString?.contains("nimbus")
+        assertEquals(true, containsNimbus)
+    }
 
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                    return true
-                }
-
-                override fun onLoadResource(view: WebView?, url: String?) {
-                    super.onLoadResource(view, url)
-                }
-
-                override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                    try {
-                        val method = request!!.method
-                        val url = URL(request.url.toString())
-                        val conn = url.openConnection() as HttpURLConnection
-                        conn.requestMethod = method
-                        conn.readTimeout = 30 * 1000
-                        conn.connectTimeout = 30 * 1000
-                        var responseHeaders: Map<String, String> = mapOf()
-                        var responseStream = conn.inputStream
-                        responseStream = NimbusJSUtilities.injectedNimbusStream(responseStream, context)
-                        return WebResourceResponse("text/html", "utf-8", 200, "OK", responseHeaders, responseStream)
-                    } catch (ex: SocketTimeoutException) {
-                        println("blah")
-                    } catch (ex: Exception) {
-                        Log.e("blah", ex.toString())
-                        println("blah")
-                    }
-                    return null
-                }
+    private fun readAssetStream(stream: InputStream): String? {
+        try {
+            val bufferSize = 1024
+            val buffer = CharArray(bufferSize)
+            val out = StringBuilder()
+            val `in`: Reader = InputStreamReader(stream, "UTF-8")
+            while (true) {
+                val rsz = `in`.read(buffer, 0, buffer.size)
+                if (rsz < 0) break
+                out.append(buffer, 0, rsz)
             }
-            webView.loadUrl("file:///android_asset/testPage.html")
-        }
+            return out.toString()
+        } catch (e: Exception) {
 
-        readyLock.await(2000, TimeUnit.MILLISECONDS)
-
-        runOnUiThread {
-            val js = "window.nimbus !== undefined"
-            webView.evaluateJavascript(js) { value ->
-                receivedValue = value.toString()
-                lock.countDown()
-            }
         }
-        lock.await(2000, TimeUnit.MILLISECONDS)
-        assertEquals("true", receivedValue)
+        return ""
     }
 }
