@@ -1,6 +1,7 @@
 package com.salesforce.nimbusjs
 
 import android.content.Context
+import android.util.Log
 import android.webkit.WebView
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -32,7 +33,7 @@ class NimbusJSUtilities() {
                 }
                 return out.toString()
             } catch (e: Exception) {
-
+                Log.e("Nimbus", "Unable to inject Nimbus", e)
             }
             return ""
         }
