@@ -142,7 +142,6 @@ jobs:
           working_directory: platforms/apple
           command: |
             bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
-            bash <(curl -s https://codecov.io/bash) -f ./cobertura.xml -X coveragepy -X gcov -X xcode
 
       - run:
           name: Build NimbusJS
@@ -154,6 +153,7 @@ jobs:
           root: .
           paths:
             - NimbusJS.zip
+            - platforms/apple/cobertura.xml
 
   create-tagged-release:
     docker:
@@ -202,7 +202,11 @@ jobs:
           working_directory: platforms/android
           command: |
             ./gradlew jacocoTestReport
-            bash <(curl -s https://codecov.io/bash)
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
 
   build-and-test-ts:
     docker:
@@ -220,6 +224,26 @@ jobs:
       - store_artifacts:
           path: ~/reports
 
+  upload-coverage:
+    docker:
+      - image: circleci/android:api-29-node
+
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: workspace
+
+      - run:
+          name: Upload iOS coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/apple/cobertura.xml -X coveragepy -X gcov -X xcode
+
+      - run:
+          name: Upload Android coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+
 workflows:
   version: 2
   build-and-test:
@@ -229,6 +253,10 @@ workflows:
       - build-swiftpm
       - build-and-test-android
       - build-and-test-ts
+      - upload-coverage:
+          requires:
+            - build-and-test-ios
+            - build-and-test-android
       - create-tagged-release:
           requires:
             - build-and-test-ios
