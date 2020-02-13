@@ -60,12 +60,18 @@ public class DeviceExtension {
         return deviceInfo
     }
 
+    public func getWebInfo(promiseCompletion: @escaping (Error?, NSDictionary?) -> Void) {
+        connection?.invoke("getWebInfo", promiseCompletion: promiseCompletion)
+    }
+
     let deviceInfo = DeviceInfo()
+    weak var connection: WebBinder?
 }
 
 extension DeviceExtension: NimbusExtension {
     public func bindToWebView(webView: WKWebView) {
         let connection = webView.addConnection(to: self, as: "DeviceExtension")
         connection.bind(DeviceExtension.getDeviceInfo, as: "getDeviceInfo")
+        self.connection = connection
     }
 }

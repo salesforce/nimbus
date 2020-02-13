@@ -10,12 +10,12 @@ import WebKit
 
 import Nimbus
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, WKNavigationDelegate {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         title = "Nimbus"
 
-        bridge.addExtension(DeviceExtension())
+        bridge.addExtension(device)
     }
 
     override func loadView() {
@@ -28,9 +28,22 @@ class ViewController: UIViewController {
             ?? URL(string: "http://localhost:3000")!
 
         bridge.attach(to: webView)
+        webView.navigationDelegate = self
         webView.load(URLRequest(url: url))
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        device.getWebInfo { err, result in
+            if let err = err {
+                NSLog("Error: \(err)")
+            } else if let result = result {
+                NSLog("userAgent: \(result["userAgent"]!)")
+                NSLog("href: \(result["href"]!)")
+            }
+        }
     }
 
     lazy var webView = WKWebView(frame: .zero)
     let bridge = NimbusBridge()
+    let device = DeviceExtension()
 }

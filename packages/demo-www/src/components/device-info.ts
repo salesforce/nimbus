@@ -35,6 +35,12 @@ class NimbusDeviceInfo extends HTMLElement {
     }
 }
 
+const DeviceExtension = window.DeviceExtension || (window.DeviceExtension = {})
+DeviceExtension.getWebInfo = () => Promise.resolve({
+    userAgent: navigator.userAgent,
+    href: document.location.href
+})
+
 customElements.define('nimbus-device-info', NimbusDeviceInfo);
 
 export default NimbusDeviceInfo;

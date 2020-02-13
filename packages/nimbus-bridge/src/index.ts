@@ -33,7 +33,7 @@ function promiseFinishedHandler(
   return window.webkit && window.webkit.messageHandlers
     ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
     : (msg: FinishedPromise): void => {
-      window[namespace][`${functionName}_finished`](msg.promiseId, msg.err, msg.result)
+      window[namespace][`${functionName}_finished`](msg.promiseId, msg.err || "", msg.result)
     };
 }
 
