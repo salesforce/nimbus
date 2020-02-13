@@ -264,7 +264,7 @@ class Nimbus {
   ): ((msg: FinishedPromise) => void) => window.webkit && window.webkit.messageHandlers
       ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
       : (msg: FinishedPromise): void => {
-        this.plugins[namespace][`${functionName}_finished`](msg.promiseId, msg.err || "", msg.result)
+        this.plugins[namespace][`__${functionName}_finished`](msg.promiseId, msg.err || "", msg.result)
       };
 }
 

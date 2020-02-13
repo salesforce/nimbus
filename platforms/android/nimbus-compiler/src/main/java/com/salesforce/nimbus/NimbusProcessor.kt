@@ -148,7 +148,7 @@ class NimbusProcessor : AbstractProcessor() {
         val resultTypeArg = lastParamType.typeArguments[1]
         val resultType = if (resultTypeArg.kind == TypeKind.WILDCARD) (resultTypeArg as WildcardType).superBound else resultTypeArg
 
-        val finishedSpec = MethodSpec.methodBuilder("${methodElement.simpleName}_finished")
+        val finishedSpec = MethodSpec.methodBuilder("__${methodElement.simpleName}_finished")
                 .addAnnotation(
                         AnnotationSpec.builder(ClassName.get("android.webkit", "JavascriptInterface"))
                                 .build())
