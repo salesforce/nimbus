@@ -27,11 +27,14 @@ interface FinishedPromise {
 }
 
 function promiseFinishedHandler(
-  namespace: string
+  namespace: string,
+  functionName: string
 ): (msg: FinishedPromise) => void {
-  return window.webkit
+  return window.webkit && window.webkit.messageHandlers
     ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
-    : (msg: FinishedPromise): void => window[namespace].finishPromise(msg.promiseId, msg.err, msg.result);
+    : (msg: FinishedPromise): void => {
+      window[namespace][`${functionName}_finished`](msg.promiseId, msg.err, msg.result)
+    };
 }
 
 class Nimbus {
@@ -236,24 +239,28 @@ class Nimbus {
   public callAwaiting = (
     namespace: string,
     name: string,
+    promiseId: string,
     ...args: any[]
   ): string | null => {
     const ext = window[namespace];
     if (!ext) {
-      console.error(`window.${namespace} was not found.`);
-      return null;
+      return `window.${namespace} was not found.`;
     }
     const fn = ext[name];
     if (!fn) {
-      console.error(`window.${namespace}.${name} was not found.`);
-      return null;
+      return `window.${namespace}.${name} was not found.`;
     }
-    const promise = fn(...args);
-    const promiseId = this.uuidv4();
-    const handler = promiseFinishedHandler(namespace);
-    promise.catch((err: any): void => handler({ promiseId, err }));
-    promise.then((result: any): void => handler({ promiseId, result }));
-    return promiseId;
+    try {
+      const promise = fn(...args);
+      const handler = promiseFinishedHandler(namespace, name);
+      promise.catch((err: any): void => handler({ promiseId, err }));
+      promise.then((result: any): void => handler({ promiseId, result }));
+    } catch (e) {
+      return `${e}`;
+    }
+
+    // Success
+    return null;
   };
 }
 

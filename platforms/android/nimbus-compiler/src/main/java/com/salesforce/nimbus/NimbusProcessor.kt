@@ -134,22 +134,101 @@ class NimbusProcessor : AbstractProcessor() {
     }
 
     private fun addPromisedJavascriptMethod(typeName: String, type: TypeSpec.Builder, methodElement: ExecutableElement) {
-        val methodSpec = MethodSpec.methodBuilder(methodElement.simpleName.toString())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeName.get(methodElement.returnType))
-
-        methodElement.parameters.forEach { methodSpec.addParameter(TypeName.get(it.asType()), it.simpleName.toString()) }
         val lastParam = methodElement.parameters.lastOrNull()
         if (lastParam == null || !lastParam.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
             error(methodElement, "Expected a callback function as the last parameter of ${methodElement.simpleName}.")
             return
         }
 
+        val lastParamType = lastParam.asType() as DeclaredType
+        if (lastParamType.typeArguments.count() != 3) {
+            error(methodElement, "Expected the trailing callback function for ${methodElement.simpleName} to be of type (String?, R?) -> Void")
+            return
+        }
+        val resultTypeArg = lastParamType.typeArguments[1]
+        val resultType = if (resultTypeArg.kind == TypeKind.WILDCARD) (resultTypeArg as WildcardType).superBound else resultTypeArg
+//        if (resultType.kind == TypeKind.INT) resultType = TypeMirror()
+
+        val finishedSpec = MethodSpec.methodBuilder("${methodElement.simpleName}_finished")
+                .addAnnotation(
+                        AnnotationSpec.builder(ClassName.get("android.webkit", "JavascriptInterface"))
+                                .build())
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(String::class.java, "promiseId")
+                .addParameter(String::class.java, "error")
+                .addParameter(String::class.java, "resultString")
+
+        val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
+        when (resultType.kind) {
+            TypeKind.BOOLEAN,
+            TypeKind.INT,
+            TypeKind.DOUBLE,
+            TypeKind.FLOAT,
+            TypeKind.LONG -> {
+                finishedSpec.addStatement("\$T result = (\$T) \$T.parseJSON(resultString)", resultType, resultType, extClass)
+            }
+            TypeKind.DECLARED -> {
+                when (resultType.toString()) {
+                    "java.lang.String" -> {
+                        finishedSpec.addStatement("\$T result = resultString", resultType, extClass, resultType)
+                    }
+                    "java.lang.Boolean",
+                    "java.lang.Integer",
+                    "java.lang.Double",
+                    "java.lang.Float",
+                    "java.lang.Long" -> {
+                        finishedSpec.addStatement("\$T result = (\$T) \$T.parseJSON(resultString)", resultType, resultType, extClass)
+                    }
+                    else -> {
+                        val declaredType = resultType as DeclaredType
+                        if (resultType.toString().startsWith("java.util.ArrayList")) {
+                            finishedSpec.addStatement("\$T result = \$T.\$N(resultString, \$T.class)",
+                                    resultType,
+                                    extClass,
+                                    "arrayFromJSON",
+                                    TypeName.get(declaredType.typeArguments[0]))
+                        } else if (resultType.toString().startsWith("java.util.HashMap")) {
+                            finishedSpec.addStatement("\$T result = \$T.\$N(resultString, \$T.class, \$T.class)",
+                                    resultType,
+                                    extClass,
+                                    "hashMapFromJSON",
+                                    TypeName.get(declaredType.typeArguments[0]),
+                                    TypeName.get(declaredType.typeArguments[1]))
+                        } else {
+                            // TODO: we also want to support kotlinx.serializable eventually
+
+                            // The Binder will fail to compile if a static `fromJSON` method is not found.
+                            // Probably want to emit an error from the annotation processor to fail faster.
+                            finishedSpec.addStatement("\$T result = \$T.fromJSON(resultString)", resultType, resultType)
+                        }
+                    }
+                }
+            }
+            else -> {
+                error(methodElement, "Result type is not allowed")
+            }
+        }
+
+        finishedSpec.addStatement(CodeBlock.of("\$N_promises.finishPromise(promiseId, error, result)", methodElement.simpleName))
+        type.addMethod(finishedSpec.build())
+
+        val promisesFieldName = "${methodElement.simpleName}_promises"
+        type.addField(FieldSpec.builder(ClassName.get("com.salesforce.nimbus", "PromiseTracker"), promisesFieldName, Modifier.FINAL, Modifier.PRIVATE)
+                .initializer("new PromiseTracker<\$T>()", TypeName.get(resultType))
+                .build())
+        val methodSpec = MethodSpec.methodBuilder(methodElement.simpleName.toString())
+                .addModifiers(Modifier.PUBLIC)
+                .returns(TypeName.get(methodElement.returnType))
+
+        methodElement.parameters.dropLast(1).forEach { methodSpec.addParameter(TypeName.get(it.asType()), it.simpleName.toString()) }
+        methodSpec.addParameter(ParameterizedTypeName.get(ClassName.get("kotlin.jvm.functions", "Function2"), TypeName.get(lastParamType.typeArguments[0]), TypeName.get(resultTypeArg), TypeName.get(Unit::class.java)), lastParam.simpleName.toString())
+        methodSpec.addCode(CodeBlock.builder().add("String promiseId = java.util.UUID.randomUUID().toString();\n").build())
         val argBlock = CodeBlock.builder()
-                .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
+                .add("\$T[] args = new \$T[] {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"), ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
                 .indent()
                 .add("new \$T(\$S),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), typeName)
                 .add("new \$T(\$S),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), methodElement.simpleName)
+                .add("new \$T(\$N),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), "promiseId")
 
         methodElement.parameters.dropLast(1).forEach {
             if (isJSONSerializable(it.asType())) {
@@ -172,11 +251,10 @@ class NimbusProcessor : AbstractProcessor() {
 
         argBlock.unindent().add("};\n")
         methodSpec.addCode(argBlock.build())
-
         val body = CodeBlock.builder()
                 .add("if (webView != null) {\n")
                 .indent()
-                .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "nimbus.callAwaiting", "args")
+                .addStatement("\$N.registerAndInvoke(\$N, \$N, \$N, \$N)", promisesFieldName, "webView", "promiseId", "args", lastParam.simpleName)
                 .unindent()
                 .add("} else {\n")
                 .indent()
