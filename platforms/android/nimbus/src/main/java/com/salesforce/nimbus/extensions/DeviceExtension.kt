@@ -60,8 +60,5 @@ class DeviceExtension(context: Context) : NimbusExtension {
     }
 
     @ExtensionMethod(BindingType.PromisedJavascript)
-    fun addOne(x: Int, promiseCompletion: (String?, Int?) -> Void) { }
-
-    @ExtensionMethod(BindingType.PromisedJavascript)
     fun getWebInfo(completion: (String?, WebInfo) -> Unit) {}
 }
