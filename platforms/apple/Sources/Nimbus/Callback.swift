@@ -20,7 +20,7 @@ class Callback: Callable {
     deinit {
         if let webView = self.webView {
             let script = """
-            nimbus.releaseCallback('\(self.callbackId)');
+            __nimbus.releaseCallback('\(self.callbackId)');
             """
             DispatchQueue.main.async {
                 webView.evaluateJavaScript(script)
@@ -58,7 +58,7 @@ class Callback: Callable {
                     return element;
                   }
                 });
-                nimbus.callCallback('\(self.callbackId)', mappedJsonArgs);
+                __nimbus.callCallback('\(self.callbackId)', mappedJsonArgs);
             """)
         }
         return ()

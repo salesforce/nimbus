@@ -86,9 +86,9 @@ extension WKWebView {
                     var jsonData = \(jsonString);
                     var unwrappedArg = jsonData.v;
                     if (unwrappedArg) {
-                        nimbus.broadcastMessage('\(name)', unwrappedArg);
+                        window.__nimbus.broadcastMessage('\(name)', unwrappedArg);
                     } else {
-                        nimbus.broadcastMessage('\(name)');
+                        window.__nimbus.broadcastMessage('\(name)');
                     }
                 } catch(e) {
                     console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());
@@ -96,7 +96,7 @@ extension WKWebView {
             """
         } else {
             script = """
-                nimbus.broadcastMessage('\(name)');
+                window.__nimbus.broadcastMessage('\(name)');
             """
         }
         evaluateJavaScript(script) { (result: Any?, error: Error?) in

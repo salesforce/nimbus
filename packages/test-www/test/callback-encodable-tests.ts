@@ -21,48 +21,63 @@ interface CallbackTestExtension {
   callbackWithPrimitiveAndUddtParams(completion: (param0: number, param1: MochaMessage) => void): void;
 }
 
-declare var callbackTestExtension: CallbackTestExtension;
+declare interface NimbusWithCallbackTestExtension {
+  callbackTestExtension: CallbackTestExtension;
+}
 
-describe('Callbacks with', () => {
-  it('single user defined data type is called', (done) => {
-    callbackTestExtension.callbackWithSingleParam((param0: MochaMessage) => {
-       expect(param0).to.deep.equal(
-         {intField: 42, stringField: 'This is a string'});
-      done();
-    });
+let nimbusWithCallbackTestExtension: NimbusWithCallbackTestExtension;
+
+describe("Callbacks with", () => {
+  before(() => {
+    nimbusWithCallbackTestExtension = (<any>(
+      window.__nimbus!.plugins
+    )) as NimbusWithCallbackTestExtension;
   });
 
-  it('two user defined data types is called', (done) => {
-    callbackTestExtension.callbackWithTwoParams((param0: MochaMessage, param1: MochaMessage) => {
-       expect(param0).to.deep.equal(
-         {intField: 42, stringField: 'This is a string'});
-       expect(param1).to.deep.equal(
-         {intField: 6, stringField: 'int param is 6'});
-      done();
-    });
+  it("single user defined data type is called", done => {
+    nimbusWithCallbackTestExtension.callbackTestExtension.callbackWithSingleParam((param0: MochaMessage) => {
+        expect(param0).to.deep.equal(
+          {intField: 42, stringField: "This is a string"});
+        done();
+      }
+    );
   });
 
-  it('single primitive type is called', (done) => {
-    callbackTestExtension.callbackWithSinglePrimitiveParam((param0: number) => {
-      expect(param0).to.equal(777);
-      done();
-    });
+  it("two user defined data types is called", done => {
+    nimbusWithCallbackTestExtension.callbackTestExtension.callbackWithTwoParams((param0: MochaMessage, param1: MochaMessage) => {
+        expect(param0).to.deep.equal(
+          {intField: 42, stringField: "This is a string"});
+        expect(param1).to.deep.equal(
+          {intField: 6, stringField: "int param is 6"});
+        done();
+      }
+    );
   });
 
-  it('two primitive types is called', (done) => {
-    callbackTestExtension.callbackWithTwoPrimitiveParams((param0: number, param1: number) => {
-       expect(param0).to.equal(777);
-       expect(param1).to.equal(888);
-      done();
-    });
+  it("single primitive type is called", done => {
+    nimbusWithCallbackTestExtension.callbackTestExtension.callbackWithSinglePrimitiveParam((param0: number) => {
+        expect(param0).to.equal(777);
+        done();
+      }
+    );
   });
 
-  it('one primitive types and one user defined data typeis called', (done) => {
-    callbackTestExtension.callbackWithPrimitiveAndUddtParams((param0: number, param1: MochaMessage) => {
-       expect(param0).to.equal(777);
-       expect(param1).to.deep.equal(
-        {intField: 42, stringField: 'This is a string'});
-      done();
-    });
+  it("two primitive types is called", done => {
+    nimbusWithCallbackTestExtension.callbackTestExtension.callbackWithTwoPrimitiveParams((param0: number, param1: number) => {
+        expect(param0).to.equal(777);
+        expect(param1).to.equal(888);
+        done();
+      }
+    );
+  });
+
+  it("one primitive types and one user defined data typeis called", done => {
+    nimbusWithCallbackTestExtension.callbackTestExtension.callbackWithPrimitiveAndUddtParams((param0: number, param1: MochaMessage) => {
+        expect(param0).to.equal(777);
+        expect(param1).to.deep.equal(
+          {intField: 42, stringField: "This is a string"});
+        done();
+      }
+    );
   });
 });
