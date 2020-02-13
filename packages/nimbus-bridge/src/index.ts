@@ -26,17 +26,6 @@ interface FinishedPromise {
   result?: any;
 }
 
-function promiseFinishedHandler(
-  namespace: string,
-  functionName: string
-): (msg: FinishedPromise) => void {
-  return window.webkit && window.webkit.messageHandlers
-    ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
-    : (msg: FinishedPromise): void => {
-      window[namespace][`${functionName}_finished`](msg.promiseId, msg.err || "", msg.result)
-    };
-}
-
 class Nimbus {
   public constructor() {
     if (
@@ -258,7 +247,7 @@ class Nimbus {
     }
     try {
       const promise = fn(...args);
-      const handler = promiseFinishedHandler(namespace, name);
+      const handler = this.promiseFinishedHandler(namespace, name);
       promise.catch((err: any): void => handler({ promiseId, err }));
       promise.then((result: any): void => handler({ promiseId, result }));
     } catch (e) {
@@ -268,6 +257,15 @@ class Nimbus {
     // Success
     return null;
   };
+
+  private promiseFinishedHandler = (
+    namespace: string,
+    functionName: string
+  ): ((msg: FinishedPromise) => void) => window.webkit && window.webkit.messageHandlers
+      ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
+      : (msg: FinishedPromise): void => {
+        this.plugins[namespace][`${functionName}_finished`](msg.promiseId, msg.err || "", msg.result)
+      };
 }
 
 const nimbus = new Nimbus();

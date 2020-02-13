@@ -147,7 +147,6 @@ class NimbusProcessor : AbstractProcessor() {
         }
         val resultTypeArg = lastParamType.typeArguments[1]
         val resultType = if (resultTypeArg.kind == TypeKind.WILDCARD) (resultTypeArg as WildcardType).superBound else resultTypeArg
-//        if (resultType.kind == TypeKind.INT) resultType = TypeMirror()
 
         val finishedSpec = MethodSpec.methodBuilder("${methodElement.simpleName}_finished")
                 .addAnnotation(
