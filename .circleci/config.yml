@@ -244,6 +244,19 @@ jobs:
           command: |
             bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
 
+  upload-android-release:
+    docker:
+      - image: circleci/android:api-29-node
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build and upload Android distribution binaries to Bintray
+          working_directory: platforms/android
+          command: |
+            ./gradlew bintrayUpload
+
 workflows:
   version: 2
   build-and-test:
@@ -260,6 +273,14 @@ workflows:
       - create-tagged-release:
           requires:
             - build-and-test-ios
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+      - upload-android-release:
+          requires:
+            - build-and-test-android
           filters:
             branches:
               ignore: /.*/
