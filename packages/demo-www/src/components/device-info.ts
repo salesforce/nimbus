@@ -10,38 +10,39 @@ declare interface NimbusWithDeviceExtension {
 }
 
 class NimbusDeviceInfo extends HTMLElement {
-    public constructor() {
-        super();
-        let shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.appendChild(template.content.cloneNode(true));
-    }
+  public constructor() {
+    super();
+    let shadowRoot = this.attachShadow({ mode: 'open' });
+    shadowRoot.appendChild(template.content.cloneNode(true));
+  }
 
-    public connectedCallback(): void {
-        let plugins = (<any>window.__nimbus!.plugins) as NimbusWithDeviceExtension;
-        plugins.DeviceExtension.getDeviceInfo().then(
-            (info: DeviceInfo): void => {
-              console.log(JSON.stringify(info));
-              let shadowRoot = this.shadowRoot;
-              if (shadowRoot === null) return;
-              let slot = shadowRoot.querySelector('slot');
-              if (slot !== null) {
-                slot.innerHTML = `
+  public connectedCallback(): void {
+    let plugins = (<any>window.__nimbus!.plugins) as NimbusWithDeviceExtension;
+    plugins.DeviceExtension.getDeviceInfo().then(
+      (info: DeviceInfo): void => {
+        console.log(JSON.stringify(info));
+        let shadowRoot = this.shadowRoot;
+        if (shadowRoot === null) return;
+        let slot = shadowRoot.querySelector('slot');
+        if (slot !== null) {
+          slot.innerHTML = `
           <p>Manufacturer: ${info.manufacturer}</p>
           <p>Model: ${info.model}</p>
           <p>Platform: ${info.platform}</p>
           <p>Version: ${info.platformVersion}</p>
           <p>App Version: ${info.appVersion}</p>
         `;
-                    }
-                }
-            );
-    }
+        }
+      }
+    );
+  }
 }
 
-const DeviceExtension = window.DeviceExtension || (window.DeviceExtension = {})
+const plugins = window.__nimbus!.plugins
+const DeviceExtension = plugins.DeviceExtension || (plugins.DeviceExtension = {})
 DeviceExtension.getWebInfo = () => Promise.resolve({
-    userAgent: navigator.userAgent,
-    href: document.location.href
+  userAgent: navigator.userAgent,
+  href: document.location.href
 })
 
 customElements.define('nimbus-device-info', NimbusDeviceInfo);

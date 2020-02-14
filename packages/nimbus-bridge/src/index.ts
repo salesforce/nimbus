@@ -237,13 +237,13 @@ class Nimbus {
     promiseId: string,
     ...args: any[]
   ): string | null => {
-    const ext = window[namespace];
+    const ext = this.plugins[namespace];
     if (!ext) {
-      return `window.${namespace} was not found.`;
+      return `Plugin ${namespace} was not found: window.__nimbus.plugins.${namespace}`;
     }
     const fn = ext[name];
     if (!fn) {
-      return `window.${namespace}.${name} was not found.`;
+      return `Plugin function ${namespace}.${name} was not found: window.__nimbus.plugins.${namespace}.${name}`;
     }
     try {
       const promise = fn(...args);
