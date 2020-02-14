@@ -56,7 +56,7 @@ public class Connection<C>: Binder {
         }
 
         func handlePromiseCompletion(for promiseId: String, err: Error?, result: Any?) {
-            connection.concurrentPromisesQueue.async(flags: .barrier) { [weak self] in
+            connection.promisesQueue.async { [weak self] in
                 guard let connection = self?.connection else { return } // Ensure connection is still alive.
                 if let completion = connection.promises.removeValue(forKey: promiseId) {
                     // A completion block is tracked for this Promise. Call that completion.
@@ -74,7 +74,7 @@ public class Connection<C>: Binder {
      */
     public func invoke<R>(_ functionName: String, with args: Encodable..., promiseCompletion: @escaping (Error?, R?) -> Void) {
         let promiseId = UUID().uuidString
-        self.concurrentPromisesQueue.sync(flags: .barrier) {
+        self.promisesQueue.sync {
             self.promises[promiseId] = CallablePromiseCompletion(promiseCompletion)
         }
         webView?.callJavascript(name: "nimbus.callAwaiting", args: [namespace, functionName, promiseId] + args) { (errString, err) -> Void in
@@ -85,7 +85,7 @@ public class Connection<C>: Binder {
             if let err = err ?? textError {
                 promiseCompletion(err, nil)
                 // Remove the completion block we just registered, due to the failure to create the Promise.
-                self.concurrentPromisesQueue.async(flags: .barrier) { [weak self] in
+                self.promisesQueue.async { [weak self] in
                     self?.promises.removeValue(forKey: promiseId)
                 }
             }
@@ -205,8 +205,10 @@ public class Connection<C>: Binder {
     private let namespace: String
     private weak var webView: WKWebView?
     private var bindings: [String: Callable] = [:]
+    
+    // Synchronous queue; all accesses of the `promises` dictionary include writes.
+    private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
     private var promises: [String: PromiseCompletion] = [:]
-    private let concurrentPromisesQueue = DispatchQueue(label: "Nimbus.promisesQueue", attributes: .concurrent)
 }
 
 enum PromiseError: Error, Equatable {
