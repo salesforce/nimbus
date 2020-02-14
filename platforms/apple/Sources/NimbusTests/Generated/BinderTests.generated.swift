@@ -1882,7 +1882,6 @@ class TestBinder: Binder {
 
     func invoke<R>(_ functionName: String, with args: Encodable..., promiseCompletion: @escaping (Error?, R?) -> Void) {
     }
-}
 
     public var callable: Callable?
 }
