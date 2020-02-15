@@ -77,7 +77,7 @@ public class Connection<C>: Binder {
         self.promisesQueue.sync {
             self.promises[promiseId] = CallablePromiseCompletion(promiseCompletion)
         }
-        webView?.callJavascript(name: "nimbus.callAwaiting", args: [namespace, functionName, promiseId] + args) { (errString, err) -> Void in
+        webView?.callJavascript(name: "__nimbus.callAwaiting", args: [namespace, functionName, promiseId] + args) { (errString, err) -> Void in
             var textError: Error?
             if let errString = errString as? String {
                 textError = PromiseError.message(errString)

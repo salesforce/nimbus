@@ -96,6 +96,54 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         wait(for: [testBridge.expectation], timeout: 30)
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
+
+    func testExecutePromiseResolved() {
+        let testBridge = MochaTestBridge(webView: webView)
+        let connection = webView.addConnection(to: testBridge, as: "mochaTestBridge")
+        connection.bind(MochaTestBridge.ready, as: "ready")
+
+        loadWebViewAndWait()
+
+        func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
+            connection.invoke("addOne", with: num, promiseCompletion: promiseCompletion)
+        }
+        let expected = expectation(description: "addOne")
+        var err: Error?
+        var result: Int?
+        addOne(5) {
+            err = $0
+            result = $1
+            expected.fulfill()
+        }
+
+        wait(for: [expected], timeout: 30)
+        XCTAssertNil(err)
+        XCTAssertEqual(6, result)
+    }
+
+    func testExecutePromiseRejected() {
+        let testBridge = MochaTestBridge(webView: webView)
+        let connection = webView.addConnection(to: testBridge, as: "mochaTestBridge")
+        connection.bind(MochaTestBridge.ready, as: "ready")
+
+        loadWebViewAndWait()
+
+        func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
+            connection.invoke("failWith", with: "epic fail", promiseCompletion: promiseCompletion)
+        }
+        let expected = expectation(description: "failWith")
+        var err: Error?
+        var result: Int?
+        addOne(5) {
+            err = $0
+            result = $1
+            expected.fulfill()
+        }
+
+        wait(for: [expected], timeout: 30)
+        XCTAssertNotNil(err)
+        XCTAssertNil(result)
+    }
 }
 
 public class CallbackTestExtension {

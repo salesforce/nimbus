@@ -38,7 +38,7 @@ class NimbusDeviceInfo extends HTMLElement {
   }
 }
 
-const plugins = window.__nimbus!.plugins
+const { plugins } = window.__nimbus!
 const DeviceExtension = plugins.DeviceExtension || (plugins.DeviceExtension = {})
 DeviceExtension.getWebInfo = () => Promise.resolve({
   userAgent: navigator.userAgent,

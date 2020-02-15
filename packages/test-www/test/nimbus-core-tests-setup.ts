@@ -7,4 +7,8 @@
 
 const mochaTestBridge = window.mochaTestBridge || {}
 mochaTestBridge.myProp = "exists";
+
+mochaTestBridge.addOne = (x: number) => Promise.resolve(x + 1)
+mochaTestBridge.failWith = (message: string) => Promise.reject(message)
+
 export default mochaTestBridge
