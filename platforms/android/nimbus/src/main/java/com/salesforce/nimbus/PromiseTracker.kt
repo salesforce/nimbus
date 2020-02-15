@@ -25,12 +25,10 @@ class PromiseTracker<R>() {
     fun registerAndInvoke(webView: WebView, promiseId: String, args: Array<JSONSerializable?>, promiseCompletion: Function2<String?, R?, Unit>) {
         promises[promiseId] = promiseCompletion
 
-        webView.callJavascript("nimbus.callAwaiting", args) { error ->
+        webView.callJavascript("__nimbus.callAwaiting", args) { error ->
             if (error != null && error != "null") {
                 promises.remove(promiseId)
-                promiseCompletion?.let {
-                    promiseCompletion(error as String, null)
-                }
+                promiseCompletion(error as String, null)
             }
         }
     }

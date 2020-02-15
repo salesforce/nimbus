@@ -88,8 +88,3 @@ fun Double.toJSONSerializable(): JSONSerializable {
         return PrimitiveJSONSerializable(this)
     }
 }
-
-fun parseJSON(json: String): Any? {
-    val arr = JSONArray("[$json]")
-    return arr.get(0)
-}

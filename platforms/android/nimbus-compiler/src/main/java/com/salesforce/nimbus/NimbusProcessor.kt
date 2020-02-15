@@ -117,7 +117,7 @@ class NimbusProcessor : AbstractProcessor() {
                     val bindingType = it.getAnnotation(ExtensionMethod::class.java).bindingType
                     when (bindingType) {
                         BindingType.Native -> addNativeMethod(type, methodElement)
-                        BindingType.PromisedJavascript -> addPromisedJavascriptMethod(element.simpleName.toString(), type, methodElement)
+                        BindingType.PromisedJavascript -> addPromisedJavascriptMethod(extensionName, type, methodElement)
                         else -> error(it, "Unknown binding type on ${it.simpleName} in $extensionName.")
                     }
                 }
@@ -133,7 +133,7 @@ class NimbusProcessor : AbstractProcessor() {
         return true
     }
 
-    private fun addPromisedJavascriptMethod(typeName: String, type: TypeSpec.Builder, methodElement: ExecutableElement) {
+    private fun addPromisedJavascriptMethod(extensionName: String, type: TypeSpec.Builder, methodElement: ExecutableElement) {
         val lastParam = methodElement.parameters.lastOrNull()
         if (lastParam == null || !lastParam.asType().toString().startsWith("kotlin.jvm.functions.Function")) {
             error(methodElement, "Expected a callback function as the last parameter of ${methodElement.simpleName}.")
@@ -159,25 +159,21 @@ class NimbusProcessor : AbstractProcessor() {
 
         val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
         when (resultType.kind) {
-            TypeKind.BOOLEAN,
-            TypeKind.INT,
-            TypeKind.DOUBLE,
-            TypeKind.FLOAT,
-            TypeKind.LONG -> {
-                finishedSpec.addStatement("\$T result = (\$T) \$T.parseJSON(resultString)", resultType, resultType, extClass)
-            }
+            TypeKind.BOOLEAN -> finishedSpec.addStatement("boolean result = Boolean.parseBoolean(resultString)")
+            TypeKind.INT -> finishedSpec.addStatement("int result = Integer.parseInt(resultString)")
+            TypeKind.DOUBLE -> finishedSpec.addStatement("double result = Double.parseDouble(resultString)")
+            TypeKind.FLOAT -> finishedSpec.addStatement("float result = Float.parseFloat(resultString)")
+            TypeKind.LONG  -> finishedSpec.addStatement("long result = Long.parseLong(resultString)")
             TypeKind.DECLARED -> {
                 when (resultType.toString()) {
                     "java.lang.String" -> {
                         finishedSpec.addStatement("\$T result = resultString", resultType, extClass, resultType)
                     }
-                    "java.lang.Boolean",
-                    "java.lang.Integer",
-                    "java.lang.Double",
-                    "java.lang.Float",
-                    "java.lang.Long" -> {
-                        finishedSpec.addStatement("\$T result = (\$T) \$T.parseJSON(resultString)", resultType, resultType, extClass)
-                    }
+                    "java.lang.Boolean" -> finishedSpec.addStatement("Boolean result = \"null\".equals(resultString) ? null : Boolean.parseBoolean(resultString)")
+                    "java.lang.Integer" -> finishedSpec.addStatement("Integer result = \"null\".equals(resultString) ? null : Integer.parseInt(resultString)")
+                    "java.lang.Double" -> finishedSpec.addStatement("Double result = \"null\".equals(resultString) ? null : Double.parseDouble(resultString)")
+                    "java.lang.Float" -> finishedSpec.addStatement("Float result = \"null\".equals(resultString) ? null : Float.parseFloat(resultString)")
+                    "java.lang.Long" -> finishedSpec.addStatement("Long result = \"null\".equals(resultString) ? null : Long.parseLong(resultString)")
                     else -> {
                         val declaredType = resultType as DeclaredType
                         if (resultType.toString().startsWith("java.util.ArrayList")) {
@@ -225,7 +221,7 @@ class NimbusProcessor : AbstractProcessor() {
         val argBlock = CodeBlock.builder()
                 .add("\$T[] args = new \$T[] {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"), ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
                 .indent()
-                .add("new \$T(\$S),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), typeName)
+                .add("new \$T(\$S),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), extensionName)
                 .add("new \$T(\$S),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), methodElement.simpleName)
                 .add("new \$T(\$N),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), "promiseId")
 

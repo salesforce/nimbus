@@ -100,4 +100,10 @@ class CallbackTestExtension : NimbusExtension {
         jo1.put("six", 6)
         arg(jo0, jo1)
     }
+
+    @ExtensionMethod(BindingType.PromisedJavascript)
+    fun addOne(num: Int, promiseCompletion: (String?, Int?) -> Void) { }
+
+    @ExtensionMethod(BindingType.PromisedJavascript)
+    fun failWith(message: String, promiseCompletion: (String?, Double?) -> Void) { }
 }

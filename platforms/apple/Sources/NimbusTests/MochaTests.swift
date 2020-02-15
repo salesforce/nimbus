@@ -98,19 +98,15 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
     }
 
     func testExecutePromiseResolved() {
-        let testBridge = MochaTestBridge(webView: webView)
-        let connection = webView.addConnection(to: testBridge, as: "mochaTestBridge")
-        connection.bind(MochaTestBridge.ready, as: "ready")
+        let callbackTestExtension = CallbackTestExtension()
+        callbackTestExtension.bindToWebView(webView: webView)
 
         loadWebViewAndWait()
 
-        func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
-            connection.invoke("addOne", with: num, promiseCompletion: promiseCompletion)
-        }
         let expected = expectation(description: "addOne")
         var err: Error?
         var result: Int?
-        addOne(5) {
+        callbackTestExtension.addOne(5) {
             err = $0
             result = $1
             expected.fulfill()
@@ -122,19 +118,15 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
     }
 
     func testExecutePromiseRejected() {
-        let testBridge = MochaTestBridge(webView: webView)
-        let connection = webView.addConnection(to: testBridge, as: "mochaTestBridge")
-        connection.bind(MochaTestBridge.ready, as: "ready")
+        let callbackTestExtension = CallbackTestExtension()
+        callbackTestExtension.bindToWebView(webView: webView)
 
         loadWebViewAndWait()
 
-        func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
-            connection.invoke("failWith", with: "epic fail", promiseCompletion: promiseCompletion)
-        }
         let expected = expectation(description: "failWith")
         var err: Error?
-        var result: Int?
-        addOne(5) {
+        var result: Double?
+        callbackTestExtension.failWith(message: "epic fail") {
             err = $0
             result = $1
             expected.fulfill()
@@ -166,6 +158,16 @@ public class CallbackTestExtension {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
+
+    func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
+        connection?.invoke("addOne", with: num, promiseCompletion: promiseCompletion)
+    }
+
+    func failWith(message: String, promiseCompletion: @escaping (Error?, Double?) -> Void) {
+        connection?.invoke("failWith", with: message, promiseCompletion: promiseCompletion)
+    }
+
+    weak var connection: WebBinder?
 }
 
 extension CallbackTestExtension: NimbusExtension {
@@ -176,5 +178,6 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        self.connection = connection
     }
 }

@@ -13,7 +13,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import junit.framework.Assert.assertEquals
+import junit.framework.Assert.*
 import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
@@ -87,14 +87,70 @@ class MochaTests {
             bridge.loadUrl("file:///android_asset/test-www/index.html")
         }
 
-        testBridge.readyLatch.await(5, TimeUnit.SECONDS)
+        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
 
         runOnUiThread {
             webView.evaluateJavascript("mocha.run(failures => { mochaTestBridge.testsCompleted(failures); }).on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message)); true;") {}
         }
 
-        testBridge.completionLatch.await(5, TimeUnit.SECONDS)
+        assertTrue(testBridge.completionLatch.await(5, TimeUnit.SECONDS))
 
         assertEquals(0, testBridge.failures)
+    }
+
+    @Test
+    fun testExecutePromiseResolved() {
+        val webView = activityRule.activity.webView
+        val testBridge = MochaTestBridge(webView)
+
+        val bridge = NimbusBridge()
+        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+
+        runOnUiThread {
+            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
+            bridge.add(callbackTestBinder)
+            bridge.attach(webView)
+            bridge.loadUrl("file:///android_asset/test-www/index.html")
+        }
+
+        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
+        val completionLatch = CountDownLatch(1)
+        runOnUiThread {
+            callbackTestBinder.addOne(5) { err, result ->
+                assertNull(err)
+                assertEquals(6, result)
+                completionLatch.countDown()
+            }
+        }
+
+        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
+    }
+
+    @Test
+    fun testExecutePromiseRejected() {
+        val webView = activityRule.activity.webView
+        val testBridge = MochaTestBridge(webView)
+
+        val bridge = NimbusBridge()
+        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+
+        runOnUiThread {
+            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
+            bridge.add(callbackTestBinder)
+            bridge.attach(webView)
+            bridge.loadUrl("file:///android_asset/test-www/index.html")
+        }
+
+        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
+        val completionLatch = CountDownLatch(1)
+        runOnUiThread {
+            callbackTestBinder.failWith("epic fail") { err, result ->
+                assertEquals("epic fail", err)
+                assertNull(result)
+                completionLatch.countDown()
+            }
+        }
+
+        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
     }
 }
