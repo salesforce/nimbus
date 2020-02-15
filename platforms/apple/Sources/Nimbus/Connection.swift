@@ -205,7 +205,7 @@ public class Connection<C>: Binder {
     private let namespace: String
     private weak var webView: WKWebView?
     private var bindings: [String: Callable] = [:]
-    
+
     // Synchronous queue; all accesses of the `promises` dictionary include writes.
     private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
     private var promises: [String: PromiseCompletion] = [:]

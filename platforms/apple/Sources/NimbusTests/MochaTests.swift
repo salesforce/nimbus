@@ -81,8 +81,9 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         loadWebViewAndWait()
 
         webView.evaluateJavaScript("""
+            const titleFor = x => x.parent ? `${titleFor(x.parent)} ${x.title}` : x.title
             mocha.run(failures => { mochaTestBridge.testsCompleted(failures); })
-                 .on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message));
+                 .on('fail', (test, err) => mochaTestBridge.onTestFail(titleFor(test), err.message));
             true;
             """) { _, error in
 
@@ -93,7 +94,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         }
 
         wait(for: [testBridge.expectation], timeout: 30)
-        XCTAssertEqual(testBridge.failures, 0)
+        XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
 }
 
