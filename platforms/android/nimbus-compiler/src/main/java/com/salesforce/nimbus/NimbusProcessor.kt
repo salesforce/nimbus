@@ -163,7 +163,7 @@ class NimbusProcessor : AbstractProcessor() {
             TypeKind.INT -> finishedSpec.addStatement("int result = Integer.parseInt(resultString)")
             TypeKind.DOUBLE -> finishedSpec.addStatement("double result = Double.parseDouble(resultString)")
             TypeKind.FLOAT -> finishedSpec.addStatement("float result = Float.parseFloat(resultString)")
-            TypeKind.LONG  -> finishedSpec.addStatement("long result = Long.parseLong(resultString)")
+            TypeKind.LONG -> finishedSpec.addStatement("long result = Long.parseLong(resultString)")
             TypeKind.DECLARED -> {
                 when (resultType.toString()) {
                     "java.lang.String" -> {
