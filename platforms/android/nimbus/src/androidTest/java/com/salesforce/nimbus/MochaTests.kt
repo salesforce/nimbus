@@ -13,7 +13,9 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import junit.framework.Assert.*
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
+import junit.framework.Assert.assertNull
 import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test

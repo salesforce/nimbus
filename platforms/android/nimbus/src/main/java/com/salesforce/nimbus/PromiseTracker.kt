@@ -35,7 +35,7 @@ class PromiseTracker<R>() {
 
     fun finishPromise(promiseId: String, error: String?, result: R?) {
         val promise = promises.remove(promiseId)
-        promise?.let{
+        promise?.let {
             promise(if (error == "") null else error, result)
         }
     }
