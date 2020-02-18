@@ -106,4 +106,7 @@ class CallbackTestExtension : NimbusExtension {
 
     @ExtensionMethod(BindingType.PromisedJavascript)
     fun failWith(message: String, promiseCompletion: (String?, Double?) -> Void) { }
+
+    @ExtensionMethod(BindingType.PromisedJavascript)
+    fun wait(milliseconds: Int, promiseCompletion: (String?, Unit) -> Void) { }
 }

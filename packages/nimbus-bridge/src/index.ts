@@ -43,6 +43,14 @@ class Nimbus {
         });
       });
     }
+
+    // When the page unloads, reject all Promises for native-->web calls.
+    window.addEventListener("unload", (): void => {
+      Object.entries(this.jsPromisehandlers).forEach(([promiseId, handler]) => {
+        handler({ promiseId, err: "ERROR_PAGE_UNLOADED" });
+      });
+      this.jsPromisehandlers = {};
+    });
   }
 
   // Store any plugins injected by the native app here.
@@ -53,6 +61,9 @@ class Nimbus {
     [s: string]: { resolve: Function; reject: Function };
   } = {};
   private callbacks: { [s: string]: Function } = {};
+  private jsPromisehandlers: {
+    [s: string]: (msg: FinishedPromise) => void;
+  } = {};
 
   // Dictionary to manage message&subscriber relationship.
   public listenerMap: { [s: string]: Function[] } = {};
@@ -224,7 +235,7 @@ class Nimbus {
 
   /**
    * Call a Promise-returning function and track its resolution/rejection.
-   * 
+   *
    * @param namespace String connection name, used both to find the function to
    * invoke (window.${namespace}.${name} as well as to identify the message
    * handler to inform about the resolutin/rejection of the Promise.
@@ -250,6 +261,7 @@ class Nimbus {
       const handler = this.promiseFinishedHandler(namespace, name);
       promise.catch((err: any): void => handler({ promiseId, err }));
       promise.then((result: any): void => handler({ promiseId, result }));
+      this.jsPromisehandlers[promiseId] = handler;
     } catch (e) {
       return `${e}`;
     }
@@ -261,11 +273,25 @@ class Nimbus {
   private promiseFinishedHandler = (
     namespace: string,
     functionName: string
-  ): ((msg: FinishedPromise) => void) => window.webkit && window.webkit.messageHandlers
-      ? (msg: FinishedPromise): void => window.webkit.messageHandlers[namespace].postMessage(msg)
+  ): ((msg: FinishedPromise) => void) => {
+    let alreadyRun = false;
+
+    return window.webkit && window.webkit.messageHandlers
+      ? (msg: FinishedPromise): void => {
+        if (!alreadyRun) {
+          window.webkit.messageHandlers[namespace].postMessage(msg);
+          alreadyRun = true;
+          delete this.jsPromisehandlers[msg.promiseId];
+        }
+      }
       : (msg: FinishedPromise): void => {
-        this.plugins[namespace][`__${functionName}_finished`](msg.promiseId, msg.err || "", msg.result || null)
+        if (!alreadyRun) {
+          this.plugins[namespace][`__${functionName}_finished`](msg.promiseId, msg.err || "", msg.result || null);
+          alreadyRun = true;
+          delete this.jsPromisehandlers[msg.promiseId];
+        }
       };
+  }
 }
 
 const nimbus = new Nimbus();

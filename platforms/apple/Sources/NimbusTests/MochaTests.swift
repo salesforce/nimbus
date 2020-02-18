@@ -136,6 +136,42 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         XCTAssertNotNil(err)
         XCTAssertNil(result)
     }
+
+    func testPromiseRejectedOnRefresh() {
+        let callbackTestExtension = CallbackTestExtension()
+        callbackTestExtension.bindToWebView(webView: webView)
+
+        loadWebViewAndWait()
+
+        let expected = expectation(description: "wait")
+        var err: Error?
+        callbackTestExtension.wait(milliseconds: 60000) { error, _ in
+            err = error
+            expected.fulfill()
+        }
+
+        webView.reload()
+
+        wait(for: [expected], timeout: 30)
+        XCTAssertEqual(PromiseError.pageUnloaded, err as? PromiseError)
+    }
+
+    func testPromiseResolvingToVoid() {
+        let callbackTestExtension = CallbackTestExtension()
+        callbackTestExtension.bindToWebView(webView: webView)
+
+        loadWebViewAndWait()
+
+        let expected = expectation(description: "wait")
+        var err: Error? = PromiseError.message("not called yet")
+        callbackTestExtension.wait(milliseconds: 10) { error, _ in
+            err = error
+            expected.fulfill()
+        }
+
+        wait(for: [expected], timeout: 30)
+        XCTAssertNil(err)
+    }
 }
 
 public class CallbackTestExtension {
@@ -165,6 +201,10 @@ public class CallbackTestExtension {
 
     func failWith(message: String, promiseCompletion: @escaping (Error?, Double?) -> Void) {
         connection?.invoke("failWith", with: message, promiseCompletion: promiseCompletion)
+    }
+
+    func wait(milliseconds: Int, promiseCompletion: @escaping (Error?, Void?) -> Void) {
+        connection?.invoke("wait", with: milliseconds, promiseCompletion: promiseCompletion)
     }
 
     weak var connection: WebBinder?

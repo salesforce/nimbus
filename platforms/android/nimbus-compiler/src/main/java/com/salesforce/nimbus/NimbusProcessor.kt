@@ -174,6 +174,7 @@ class NimbusProcessor : AbstractProcessor() {
                     "java.lang.Double" -> finishedSpec.addStatement("Double result = \"null\".equals(resultString) ? null : Double.parseDouble(resultString)")
                     "java.lang.Float" -> finishedSpec.addStatement("Float result = \"null\".equals(resultString) ? null : Float.parseFloat(resultString)")
                     "java.lang.Long" -> finishedSpec.addStatement("Long result = \"null\".equals(resultString) ? null : Long.parseLong(resultString)")
+                    "kotlin.Unit" -> finishedSpec.addStatement("Unit result = Unit.INSTANCE")
                     else -> {
                         val declaredType = resultType as DeclaredType
                         if (resultType.toString().startsWith("java.util.ArrayList")) {

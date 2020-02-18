@@ -42,10 +42,19 @@ public class Connection<C>: Binder {
             guard let params = message.body as? NSDictionary,
                 let promiseId = params["promiseId"] as? String else { return }
 
-            let err = unwrapNSNull(params["err"])
+            let errParam = unwrapNSNull(params["err"])
             let result = unwrapNSNull(params["result"])
-            if err != nil || result != nil {
-                handlePromiseCompletion(for: promiseId, err: err as? Error, result: result)
+            if errParam != nil || result != nil || params.count == 1 {
+                var err = errParam as? Error
+                if let errString = errParam as? String {
+                    switch errString {
+                    case "ERROR_PAGE_UNLOADED":
+                        err = PromiseError.pageUnloaded
+                    default:
+                        err = PromiseError.message(errString)
+                    }
+                }
+                handlePromiseCompletion(for: promiseId, err: err, result: result)
             } else {
                 // JS-initiated call into native extension.
                 guard let method = params["method"] as? String,
@@ -60,8 +69,7 @@ public class Connection<C>: Binder {
                 guard let connection = self?.connection else { return } // Ensure connection is still alive.
                 if let completion = connection.promises.removeValue(forKey: promiseId) {
                     // A completion block is tracked for this Promise. Call that completion.
-                    let promiseError = err == nil ? nil : PromiseError.message("\(err!)")
-                    completion.call(err: promiseError, result: result)
+                    completion.call(err: err, result: result)
                 }
             }
         }
@@ -211,7 +219,8 @@ public class Connection<C>: Binder {
     private var promises: [String: PromiseCompletion] = [:]
 }
 
-enum PromiseError: Error, Equatable {
+public enum PromiseError: Error, Equatable {
+    case pageUnloaded
     case message(_ message: String)
 }
 
@@ -231,11 +240,13 @@ struct CallablePromiseCompletion<R>: PromiseCompletion {
             function(err, nil)
             return
         }
-        
-        if let result = result as? R {
+
+        if R.self == Void.self {
+            function(nil, nil)
+        } else if let result = result as? R {
             function(nil, result)
         } else {
-            function(PromiseError.message("Could not convert to \(R.self)"), nil)
+            function(PromiseError.message("Could not convert \(String(describing: result)) to \(R.self)"), nil)
         }
     }
 }

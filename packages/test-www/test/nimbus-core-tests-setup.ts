@@ -13,5 +13,6 @@ const callbackTestExtension = plugins.callbackTestExtension || (plugins.callback
 
 callbackTestExtension.addOne = (x: number) => Promise.resolve(x + 1)
 callbackTestExtension.failWith = (message: string) => Promise.reject(message)
+callbackTestExtension.wait = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds))
 
 export default mochaTestBridge

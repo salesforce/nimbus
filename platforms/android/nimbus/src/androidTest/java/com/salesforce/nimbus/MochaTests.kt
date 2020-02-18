@@ -153,4 +153,36 @@ class MochaTests {
 
         assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
     }
+
+    @Test
+    fun testPromiseRejectedOnRefresh() {
+        val webView = activityRule.activity.webView
+        val testBridge = MochaTestBridge(webView)
+
+        val bridge = NimbusBridge()
+        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+
+        runOnUiThread {
+            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
+            bridge.add(callbackTestBinder)
+            bridge.attach(webView)
+            bridge.loadUrl("file:///android_asset/test-www/index.html")
+        }
+
+        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
+        val completionLatch = CountDownLatch(1)
+        runOnUiThread {
+            callbackTestBinder.wait(60000) { err, _ ->
+                assertEquals("ERROR_PAGE_UNLOADED", err)
+                completionLatch.countDown()
+            }
+        }
+
+        runOnUiThread {
+            // Destroy the existing web page & JS context
+            bridge.loadUrl("file:///android_asset/test-www/index.html")
+        }
+
+        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
+    }
 }
