@@ -5,13 +5,23 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import __nimbus from "nimbus-bridge";
+import nimbus from "nimbus-bridge";
 import "./nimbus-core-tests";
 import "./broadcast-tests";
 import "./callback-encodable-tests";
-import "./promised-javascript-tests"
+import "./promised-javascript-tests";
+
+const { plugins } = nimbus;
+
+let callbackTestExtension = plugins.callbackTestExtension;
+
+if (callbackTestExtension !== undefined) {
+  callbackTestExtension.addOne = (x: number) => Promise.resolve(x + 1);
+  callbackTestExtension.failWith = (message: string) => Promise.reject(message);
+  callbackTestExtension.wait = (milliseconds: number) =>
+    new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 window.onload = () => {
-  __nimbus;
-  mochaTestBridge.ready();
+  nimbus.plugins.mochaTestBridge.ready();
 };

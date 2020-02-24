@@ -82,8 +82,8 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
         webView.evaluateJavaScript("""
             const titleFor = x => x.parent ? `${titleFor(x.parent)} ${x.title}` : x.title
-            mocha.run(failures => { mochaTestBridge.testsCompleted(failures); })
-                 .on('fail', (test, err) => mochaTestBridge.onTestFail(titleFor(test), err.message));
+            mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
+                 .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
             true;
             """) { _, error in
 

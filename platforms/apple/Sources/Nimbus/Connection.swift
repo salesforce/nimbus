@@ -106,29 +106,15 @@ public class Connection<C>: Binder {
     public func bind(_ callable: Callable, as name: String) {
         bindings[name] = callable
         let stubScript = """
-        if (window.__nimbus === undefined) {
-            window.__nimbus = {};
-        }
-        if (window.__nimbus.plugins === undefined) {
-            window.__nimbus.plugins = {};
-        }
-        if (window.__nimbus.plugins.\(namespace) === undefined) {
-            window.__nimbus.plugins.\(namespace) = {};
-        }
-        \(namespace) = window.__nimbus.plugins.\(namespace);
-        \(namespace).\(name) = function() {
-            let functionArgs = __nimbus.cloneArguments(arguments);
-            return new Promise(function(resolve, reject) {
-                var promiseId = window.__nimbus.uuidv4();
-                window.__nimbus.promises[promiseId] = {resolve, reject};
-
-                window.webkit.messageHandlers.\(namespace).postMessage({
-                    method: '\(name)',
-                    args: functionArgs,
-                    promiseId: promiseId
-                });
-            });
-        };
+        __nimbusPluginExports = window.__nimbusPluginExports || {};
+        (function(){
+          let exports = __nimbusPluginExports["\(namespace)"];
+          if (exports === undefined) {
+            exports = [];
+            __nimbusPluginExports["\(namespace)"] = exports;
+          }
+          exports.push("\(name)");
+        }());
         true;
         """
 

@@ -16,7 +16,7 @@ describe("Message Broadcasting", () => {
       done();
     };
     __nimbus.subscribeMessage("test-message", listener);
-    mochaTestBridge.sendMessage("test-message", false);
+    __nimbus.plugins.mochaTestBridge.sendMessage("test-message", false);
   });
 
   it("encodes the message when including a param", async () => {
@@ -28,7 +28,10 @@ describe("Message Broadcasting", () => {
       };
       __nimbus.subscribeMessage("test-message-with-param", listener);
     });
-    mochaTestBridge.sendMessage("test-message-with-param", true);
+    __nimbus.plugins.mochaTestBridge.sendMessage(
+      "test-message-with-param",
+      true
+    );
     let message = await promise;
     expect(message).to.be.an("object");
     expect(message).to.deep.equal({
@@ -44,6 +47,9 @@ describe("Message Broadcasting", () => {
     __nimbus.subscribeMessage("test-message-no-listener", listener);
     __nimbus.unsubscribeMessage("test-message-no-listener", listener);
     __nimbus.broadcastMessage("test-message-no-listener", undefined);
-    mochaTestBridge.sendMessage("test-message-no-listener", false);
+    __nimbus.plugins.mochaTestBridge.sendMessage(
+      "test-message-no-listener",
+      false
+    );
   });
 });

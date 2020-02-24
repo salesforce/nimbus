@@ -8,16 +8,66 @@
 
 export { DeviceExtension, DeviceInfo } from "./extensions/device";
 
-declare global {
-  interface NimbusNative {
-    makeCallback(callbackId: string): any;
-    nativeExtensionNames(): string;
-  }
-  var _nimbus: NimbusNative;
+export interface Nimbus {
+  // Store any plugins injected by the native app here.
+  plugins: { [s: string]: any };
 
-  interface Window {
-    [s: string]: any;
-  }
+  // Called by native code to execute a pending callback function.
+  callCallback(callbackId: string, args: any[]): void;
+
+  // Called by native code to execute a pending callback function.
+  callCallback2(callbackId: string, ...args: any[]): void;
+
+  // Called by native code to relese a pending callback function.
+  releaseCallback(callbackId: string): void;
+
+  // Called by native code to fulfill a pending promise.
+  resolvePromise(promiseUuid: string, data: any, error: any): void;
+
+  // Call a plugin method that returns a promise and invoke the native promise callback on completion
+  callAwaiting(
+    namespace: string,
+    name: string,
+    promiseId: string,
+    ...args: any[]
+  ): string | null;
+
+  /**
+   * Broadcast a message to subscribed listeners.  Listeners
+   * can receive data associated with the message for more
+   * processing.
+   *
+   * @param message String message that is uniquely
+   *     registered as a key in the listener map.
+   *     Multiple listeners can get triggered from a message.
+   * @param arg Swift encodable type.
+   * @return Number of listeners that were called by the
+   *     message.
+   */
+  broadcastMessage(message: string, arg: any): number;
+
+  /**
+   * Subscribe a listener to message.
+   *
+   * @param message String message that is uniquely registered as a key
+   *     in the listener map.  Multiple listeners can get triggered
+   *     from a message.
+   * @param listener A method that should be triggered when a message is
+   *     broadcasted.
+   */
+  subscribeMessage(message: string, listener: Function): void;
+
+  /**
+   * Unsubscribe a listener from a message. Unsubscribed listener
+   * will not be triggered.
+   *
+   * @param message String message that is uniquely registered as a
+   *     key in the listener map.  Multiple listeners can get
+   *     triggered from a message.
+   * @param listener A method that should be triggered when a
+   *     message is broadcasted.
+   */
+  unsubscribeMessage(message: string, listener: Function): void;
 }
 
 interface FinishedPromise {
@@ -26,275 +76,318 @@ interface FinishedPromise {
   result?: any;
 }
 
-class Nimbus {
-  public constructor() {
-    if (
-      typeof _nimbus !== "undefined" &&
-      _nimbus.nativeExtensionNames !== undefined
-    ) {
-      // we're on Android, need to wrap native extension methods
-      let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
-      extensionNames.forEach((extension: string) => {
-        Object.assign(this.plugins, {
-          [extension]: Object.assign(
-            this.plugins[`${extension}`] || {},
-            this.promisify(window[`_${extension}`])
-          )
-        });
-      });
-    }
-
-    // When the page unloads, reject all Promises for native-->web calls.
-    window.addEventListener("unload", (): void => {
-      Object.entries(this.jsPromisehandlers).forEach(([promiseId, handler]) => {
-        handler({ promiseId, err: "ERROR_PAGE_UNLOADED" });
-      });
-      this.jsPromisehandlers = {};
-    });
+declare global {
+  interface NimbusNative {
+    makeCallback(callbackId: string): any;
+    nativeExtensionNames(): string;
   }
+  var _nimbus: NimbusNative;
+  var __nimbusPluginExports: { [s: string]: string[] };
 
-  // Store any plugins injected by the native app here.
-  public plugins: { [s: string]: any } = {};
+  interface Window {
+    [s: string]: any;
+  }
+}
 
-  // There can be many promises so creating a storage for later look-up.
-  public promises: {
-    [s: string]: { resolve: Function; reject: Function };
-  } = {};
-  private callbacks: { [s: string]: Function } = {};
-  private jsPromisehandlers: {
-    [s: string]: (msg: FinishedPromise) => void;
-  } = {};
+let plugins: { [s: string]: any } = {};
 
-  // Dictionary to manage message&subscriber relationship.
-  public listenerMap: { [s: string]: Function[] } = {};
+// Store promise functions for later invocation
+let uuidsToPromises: {
+  [s: string]: { resolve: Function; reject: Function };
+} = {};
 
-  // influenced from
-  // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-  public uuidv4 = (): string => {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => {
+// Store callback functions for later invocation
+let uuidsToCallbacks: { [s: string]: Function } = {};
+
+// Store event listener functions for later invocation
+let eventNameToListeners: { [s: string]: Function[] } = {};
+
+// Store native promise callbacks
+let jsPromisehandlers: {
+  [s: string]: (msg: FinishedPromise) => void;
+} = {};
+
+// influenced from
+// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+let uuidv4 = (): string => {
+  return "10000000-1000-4000-8000-100000000000".replace(
+    /[018]/g,
+    (c): string => {
       const asNumber = Number(c);
       return (
         asNumber ^
         (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (asNumber / 4)))
       ).toString(16);
-    });
-  };
+    }
+  );
+};
 
-  public promisify = (src: any) => {
-    let dest: any = {};
-    Object.keys(src).forEach(key => {
-      let func = src[key];
-      dest[key] = (...args: any[]) => {
-        args = this.cloneArguments(args);
-        args = args.map(arg => {
-          if (typeof arg === "object") {
-            return JSON.stringify(arg);
-          }
-          return arg;
-        });
-        let result = func.call(src, ...args);
-        if (result !== undefined) {
-          result = JSON.parse(result);
-        }
-        return Promise.resolve(result);
-      };
-    });
-    return dest;
-  };
-
-  public cloneArguments = (args: any[]): any[] => {
-    let clonedArgs = [];
-    for (var i = 0; i < args.length; ++i) {
-      if (typeof args[i] === "function") {
-        const callbackId = this.uuidv4();
-        this.callbacks[callbackId] = args[i];
-        // TODO: this should generalize better, perhaps with an explicit platform
-        // check?
-        if (
-          typeof _nimbus !== "undefined" &&
-          _nimbus.makeCallback !== undefined
-        ) {
-          // TODO: Android passes only the callbackId string, whereas iOS passes an
-          // object with the callbackId property. These need to be merged and handled
-          // the same way to eliminate extraneous code paths
-          clonedArgs.push(callbackId);
-        } else {
-          clonedArgs.push({ callbackId });
-        }
+let cloneArguments = (args: any[]): any[] => {
+  let clonedArgs = [];
+  for (var i = 0; i < args.length; ++i) {
+    if (typeof args[i] === "function") {
+      const callbackId = uuidv4();
+      uuidsToCallbacks[callbackId] = args[i];
+      // TODO: this should generalize better, perhaps with an explicit platform
+      // check?
+      if (
+        typeof _nimbus !== "undefined" &&
+        _nimbus.makeCallback !== undefined
+      ) {
+        // TODO: Android passes only the callbackId string, whereas iOS passes an
+        // object with the callbackId property. These need to be merged and handled
+        // the same way to eliminate extraneous code paths
+        clonedArgs.push(callbackId);
       } else {
-        clonedArgs.push(args[i]);
+        clonedArgs.push({ callbackId });
       }
-    }
-    return clonedArgs;
-  };
-
-  public callCallback = (callbackId: string, args: any[]): void => {
-    if (this.callbacks[callbackId]) {
-      this.callbacks[callbackId](...args);
-    }
-  };
-
-  // TODO: This version is called by Android, callCallback is called by iOS. The
-  // two need to be consolidated.
-  public callCallback2 = (callbackId: string, ...args: any[]): void => {
-    this.callCallback(callbackId, args);
-  };
-
-  public releaseCallback = (callbackId: string): void => {
-    delete this.callbacks[callbackId];
-  };
-
-  // Native side will callback this method. Match the callback to stored promise
-  // in the storage
-  public resolvePromise = (promiseUuid: string, data: any, error: any): void => {
-    if (error) {
-      this.promises[promiseUuid].reject(data);
     } else {
-      this.promises[promiseUuid].resolve(data);
+      clonedArgs.push(args[i]);
     }
-    // remove reference to stored promise
-    delete this.promises[promiseUuid];
-  };
+  }
+  return clonedArgs;
+};
 
-  /**
-   * Broadcast a message to subscribed listeners.  Listeners
-   * can receive data associated with the message for more
-   * processing.
-   *
-   * @param message String message that is uniquely
-   *     registered as a key in the
-   *                listener map.  Multiple listeners can
-   * get triggered from a message.
-   * @param arg Swift encodable type.
-   * @return Number of listeners that were called by the
-   *     message.
-   */
-  public broadcastMessage = (message: string, arg: any): number => {
-    let messageListeners = this.listenerMap[message];
-    var handlerCallCount = 0;
-    if (messageListeners) {
-      messageListeners.forEach(listener => {
-        if (arg) {
-          listener(arg);
-        } else {
-          listener();
+let promisify = (src: any): void => {
+  let dest: any = {};
+  Object.keys(src).forEach((key): void => {
+    let func = src[key];
+    dest[key] = (...args: any[]): any => {
+      args = cloneArguments(args);
+      args = args.map((arg): any => {
+        if (typeof arg === "object") {
+          return JSON.stringify(arg);
         }
-        handlerCallCount++;
+        return arg;
       });
-    }
-    return handlerCallCount;
-  };
-
-  /**
-   * Subscribe a listener to message.
-   *
-   * @param message String message that is uniquely registered as a key
-   *     in the
-   *                listener map.  Multiple listeners can get triggered
-   * from a message.
-   * @param listener A method that should be triggered when a message is
-   *     broadcasted.
-   */
-  public subscribeMessage = (message: string, listener: Function): void => {
-    let messageListeners = this.listenerMap[message];
-    if (!messageListeners) {
-      messageListeners = [];
-    }
-    messageListeners.push(listener);
-    this.listenerMap[message] = messageListeners;
-  };
-
-  /**
-   * Unsubscribe a listener from a message. Unsubscribed listener
-   * will not be triggered.
-   *
-   * @param message String message that is uniquely registered as a
-   *     key in the
-   *                listener map.  Multiple listeners can get
-   * triggered from a message.
-   * @param listener A method that should be triggered when a
-   *     message is broadcasted.
-   */
-  public unsubscribeMessage = (message: string, listener: Function): void => {
-    let messageListeners = this.listenerMap[message];
-    if (messageListeners) {
-      let counter = 0;
-      let found = false;
-      for (counter; counter < messageListeners.length; counter++) {
-        if (messageListeners[counter] === listener) {
-          found = true;
-          break;
-        }
+      let result = func.call(src, ...args);
+      if (result !== undefined) {
+        result = JSON.parse(result);
       }
-      if (found) {
-        messageListeners.splice(counter, 1);
-        this.listenerMap[message] = messageListeners;
+      return Promise.resolve(result);
+    };
+  });
+  return dest;
+};
+
+let callCallback = (callbackId: string, args: any[]): void => {
+  if (uuidsToCallbacks[callbackId]) {
+    uuidsToCallbacks[callbackId](...args);
+  }
+};
+
+// TODO: This version is called by Android, callCallback is called by iOS. The
+// two need to be consolidated.
+let callCallback2 = (callbackId: string, ...args: any[]): void => {
+  callCallback(callbackId, args);
+};
+
+let releaseCallback = (callbackId: string): void => {
+  delete uuidsToCallbacks[callbackId];
+};
+
+// Native side will callback this method. Match the callback to stored promise
+// in the storage
+let resolvePromise = (promiseUuid: string, data: any, error: any): void => {
+  if (error) {
+    uuidsToPromises[promiseUuid].reject(data);
+  } else {
+    uuidsToPromises[promiseUuid].resolve(data);
+  }
+  // remove reference to stored promise
+  delete uuidsToPromises[promiseUuid];
+};
+
+let broadcastMessage = (message: string, arg: any): number => {
+  let messageListeners = eventNameToListeners[message];
+  var handlerCallCount = 0;
+  if (messageListeners) {
+    messageListeners.forEach((listener: any): void => {
+      if (arg) {
+        listener(arg);
+      } else {
+        listener();
+      }
+      handlerCallCount++;
+    });
+  }
+  return handlerCallCount;
+};
+
+let subscribeMessage = (message: string, listener: Function): void => {
+  let messageListeners = eventNameToListeners[message];
+  if (!messageListeners) {
+    messageListeners = [];
+  }
+  messageListeners.push(listener);
+  eventNameToListeners[message] = messageListeners;
+};
+
+let unsubscribeMessage = (message: string, listener: Function): void => {
+  let messageListeners = eventNameToListeners[message];
+  if (messageListeners) {
+    let counter = 0;
+    let found = false;
+    for (counter; counter < messageListeners.length; counter++) {
+      if (messageListeners[counter] === listener) {
+        found = true;
+        break;
       }
     }
-  };
-
-  /**
-   * Call a Promise-returning function and track its resolution/rejection.
-   *
-   * @param namespace String connection name, used both to find the function to
-   * invoke (window.${namespace}.${name} as well as to identify the message
-   * handler to inform about the resolutin/rejection of the Promise.
-   * @param name String name of the function on window.${namespace} to invoke.
-   * @param args arguments to pass to the specified function.
-   */
-  public callAwaiting = (
-    namespace: string,
-    name: string,
-    promiseId: string,
-    ...args: any[]
-  ): string | null => {
-    const ext = this.plugins[namespace];
-    if (!ext) {
-      return `Plugin ${namespace} was not found: window.__nimbus.plugins.${namespace}`;
+    if (found) {
+      messageListeners.splice(counter, 1);
+      eventNameToListeners[message] = messageListeners;
     }
-    const fn = ext[name];
-    if (!fn) {
-      return `Plugin function ${namespace}.${name} was not found: window.__nimbus.plugins.${namespace}.${name}`;
-    }
-    try {
-      const promise = fn(...args);
-      const handler = this.promiseFinishedHandler(namespace, name);
-      promise.catch((err: any): void => handler({ promiseId, err }));
-      promise.then((result: any): void => handler({ promiseId, result }));
-      this.jsPromisehandlers[promiseId] = handler;
-    } catch (e) {
-      return `${e}`;
-    }
+  }
+};
 
-    // Success
-    return null;
-  };
+let promiseFinishedHandler = (
+  namespace: string,
+  functionName: string
+): ((msg: FinishedPromise) => void) => {
+  let alreadyRun = false;
 
-  private promiseFinishedHandler = (
-    namespace: string,
-    functionName: string
-  ): ((msg: FinishedPromise) => void) => {
-    let alreadyRun = false;
-
-    return window.webkit && window.webkit.messageHandlers
-      ? (msg: FinishedPromise): void => {
+  return window.webkit && window.webkit.messageHandlers
+    ? (msg: FinishedPromise): void => {
         if (!alreadyRun) {
           window.webkit.messageHandlers[namespace].postMessage(msg);
           alreadyRun = true;
-          delete this.jsPromisehandlers[msg.promiseId];
+          delete jsPromisehandlers[msg.promiseId];
         }
       }
-      : (msg: FinishedPromise): void => {
+    : (msg: FinishedPromise): void => {
         if (!alreadyRun) {
-          this.plugins[namespace][`__${functionName}_finished`](msg.promiseId, msg.err || "", msg.result || null);
+          plugins[namespace][`__${functionName}_finished`](
+            msg.promiseId,
+            msg.err || "",
+            msg.result || null
+          );
           alreadyRun = true;
-          delete this.jsPromisehandlers[msg.promiseId];
+          delete jsPromisehandlers[msg.promiseId];
         }
       };
+};
+
+/**
+ * Call a Promise-returning function and track its resolution/rejection.
+ *
+ * @param namespace String connection name, used both to find the function to
+ * invoke (window.${namespace}.${name} as well as to identify the message
+ * handler to inform about the resolutin/rejection of the Promise.
+ * @param name String name of the function on window.${namespace} to invoke.
+ * @param args arguments to pass to the specified function.
+ */
+let callAwaiting = (
+  namespace: string,
+  name: string,
+  promiseId: string,
+  ...args: any[]
+): string | null => {
+  const ext = plugins[namespace];
+  if (!ext) {
+    return `Plugin ${namespace} was not found: window.__nimbus.plugins.${namespace}`;
   }
+  const fn = ext[name];
+  if (!fn) {
+    return `Plugin function ${namespace}.${name} was not found: window.__nimbus.plugins.${namespace}.${name}`;
+  }
+  try {
+    const promise = fn(...args);
+    const handler = promiseFinishedHandler(namespace, name);
+    promise.catch((err: any): void => handler({ promiseId, err }));
+    promise.then((result: any): void => handler({ promiseId, result }));
+    jsPromisehandlers[promiseId] = handler;
+  } catch (e) {
+    return `${e}`;
+  }
+
+  // Success
+  return null;
+};
+
+// Android plugin import
+if (
+  typeof _nimbus !== "undefined" &&
+  _nimbus.nativeExtensionNames !== undefined
+) {
+  // we're on Android, need to wrap native extension methods
+  let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
+  extensionNames.forEach((extension: string): void => {
+    Object.assign(plugins, {
+      [extension]: Object.assign(
+        plugins[`${extension}`] || {},
+        promisify(window[`_${extension}`])
+      )
+    });
+  });
 }
 
-const nimbus = new Nimbus();
+// iOS plugin import
+if (typeof __nimbusPluginExports !== "undefined") {
+  Object.keys(__nimbusPluginExports).forEach((pluginName: string): void => {
+    let plugin = {};
+    __nimbusPluginExports[pluginName].forEach((method: string): void => {
+      Object.assign(plugin, {
+        [method]: function(): Promise<any> {
+          let functionArgs = cloneArguments(Array.from(arguments));
+          return new Promise(function(resolve, reject): void {
+            var promiseId = uuidv4();
+            uuidsToPromises[promiseId] = { resolve, reject };
+            window.webkit.messageHandlers[pluginName].postMessage({
+              method: method,
+              args: functionArgs,
+              promiseId: promiseId
+            });
+          });
+        }
+      });
+    });
+    Object.assign(plugins, {
+      [pluginName]: plugin
+    });
+  });
+}
+
+let nimbusBuilder = {
+  plugins: plugins
+};
+
+Object.defineProperties(nimbusBuilder, {
+  callCallback: {
+    value: callCallback
+  },
+  callCallback2: {
+    value: callCallback2
+  },
+  releaseCallback: {
+    value: releaseCallback
+  },
+  resolvePromise: {
+    value: resolvePromise
+  },
+  callAwaiting: {
+    value: callAwaiting
+  },
+  broadcastMessage: {
+    value: broadcastMessage
+  },
+  subscribeMessage: {
+    value: subscribeMessage
+  },
+  unsubscribeMessage: {
+    value: unsubscribeMessage
+  }
+});
+
+let nimbus: Nimbus = nimbusBuilder as Nimbus;
+
+// When the page unloads, reject all Promises for native-->web calls.
+window.addEventListener("unload", (): void => {
+  Object.entries(jsPromisehandlers).forEach(([promiseId, handler]): void => {
+    handler({ promiseId, err: "ERROR_PAGE_UNLOADED" });
+  });
+  jsPromisehandlers = {};
+});
 
 declare global {
   interface Window {
@@ -302,10 +395,6 @@ declare global {
   }
 }
 
-// If the plugins were injected before nimbus core was run merge those plugins inside to nimbus core.
-if (window.__nimbus !== undefined) {
-  nimbus.plugins = Object.assign(nimbus.plugins, window.__nimbus.plugins);
-}
 window.__nimbus = nimbus;
 
 export default nimbus;
