@@ -259,17 +259,20 @@ jobs:
 
 workflows:
   version: 2
-  build-and-test:
+  create-release-from-tag:
     jobs:
-      - build-and-test-ios
-      - build-and-test-macos
-      - build-swiftpm
-      - build-and-test-android
-      - build-and-test-ts
-      - upload-coverage:
-          requires:
-            - build-and-test-ios
-            - build-and-test-android
+      - build-and-test-ios:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - build-and-test-android:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
       - create-tagged-release:
           requires:
             - build-and-test-ios
@@ -286,3 +289,15 @@ workflows:
               ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
+
+  build-and-test:
+    jobs:
+      - build-and-test-ios
+      - build-and-test-macos
+      - build-swiftpm
+      - build-and-test-android
+      - build-and-test-ts
+      - upload-coverage:
+          requires:
+            - build-and-test-ios
+            - build-and-test-android
