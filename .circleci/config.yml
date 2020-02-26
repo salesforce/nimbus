@@ -157,16 +157,21 @@ jobs:
 
   create-tagged-release:
     docker:
-      - image: cibuilds/github:0.10
+      - image: circleci/node:10
 
     steps:
       - attach_workspace:
           at: workspace
 
       - run:
+          name: "Install node github release CLI"
+          command: |
+            sudo npm install -g github-release-cli
+
+      - run:
           name: "Create GitHub Release"
           command: |
-            ghr -t ${HYPE_GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ./workspace/NimbusJS.zip
+            github-release upload -T ${HYPE_GITHUB_TOKEN_2} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} ./workspace/NimbusJS.zip
 
   build-and-test-android:
     docker:
