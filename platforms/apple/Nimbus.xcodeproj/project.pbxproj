@@ -893,7 +893,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Pods/Sourcery/bin/sourcery \\\n  --sources ./Sources/Nimbus \\\n  --output ./Sources/Nimbus/Generated \\\n  --templates ./Sources/Nimbus/Templates\n";
+			shellScript = "./Pods/Sourcery/bin/sourcery \\\n  --sources ./Sources/Nimbus \\\n  --output ./Sources/Nimbus/Generated \\\n  --templates ./Sources/Nimbus/Templates --disableCache\n";
 			showEnvVarsInLog = 0;
 		};
 		29397AFC239830A60005F2F7 /* Generate Tests */ = {

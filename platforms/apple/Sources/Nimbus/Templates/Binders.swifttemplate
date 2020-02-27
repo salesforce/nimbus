@@ -53,7 +53,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> Void, as name: String) {
+    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> Void, as name: String)<%= getCommaSeparatedString(count: index, formattingPurpose: .forWhereClause) %> {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)
         bind(callable, as: name)
@@ -62,7 +62,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<R: Encodable, <%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> R, as name: String) {
+    public func bind<R: Encodable, <%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> R, as name: String)<%= getCommaSeparatedString(count: index, formattingPurpose: .forWhereClause) %> {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)
         bind(callable, as: name)
@@ -71,7 +71,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSArray, as name: String) {
+    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSArray, as name: String)<%= getCommaSeparatedString(count: index, formattingPurpose: .forWhereClause) %> {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)
         bind(callable, as: name)
@@ -80,7 +80,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSDictionary, as name: String) {
+    public func bind<<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>>(_ function: @escaping (Target) -> (<%= getCommaSeparatedString(count: index, formattingPurpose: .forTemplateDeclaration) %>) throws -> NSDictionary, as name: String)<%= getCommaSeparatedString(count: index, formattingPurpose: .forWhereClause) %> {
         let boundFunction = function(target)
         let callable = make_callable(boundFunction)
         bind(callable, as: name)
@@ -89,7 +89,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0 in
@@ -103,7 +103,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSArray) -> Void) throws -> Void, as name: String) {
+    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSArray) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0 in
@@ -117,7 +117,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSDictionary) -> Void) throws -> Void, as name: String) {
+    public func bind<% if index > 1 { %><<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>><% }%>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (NSDictionary) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0 in
@@ -131,7 +131,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CB1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CB1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cb1 in
@@ -145,7 +145,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBA1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBA1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cba1 in
@@ -159,7 +159,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBD1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CB0: Encodable, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CB0, CBD1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cb0, cbd1 in
@@ -173,7 +173,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBA1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBA1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cba1 in
@@ -187,7 +187,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CB1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CB1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cb1 in
@@ -201,7 +201,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBD1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBA0: NSArray, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBA0, CBD1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cba0, cbd1 in
@@ -215,7 +215,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CB1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CB1: Encodable>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CB1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cb1 in
@@ -229,7 +229,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBA1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBA1: NSArray>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBA1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cba1 in
@@ -243,7 +243,7 @@ extension NativeBinder {
     /**
      Bind the specified function to this connection.
      */
-    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBD1) -> Void) throws -> Void, as name: String) {
+    public func bind<<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>CBD0: NSDictionary, CBD1: NSDictionary>(_ function: @escaping (Target) -> (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forTemplateDeclaration) %>, <% }%>@escaping (CBD0, CBD1) -> Void) throws -> Void, as name: String)<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWhereClause) %><% }%> {
         let boundFunction = function(target)
         let wrappedFunction = { (<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forWrappedFunctionClosure) %>, <% }%>callable: Callable) -> Void in
             try boundFunction<% if index > 1 { %>(<%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forBoundFunctionArgs) %>)<% } %> { cbd0, cbd1 in
