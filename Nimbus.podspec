@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Nimbus'
-  s.version          = '0.0.8'
+  s.version          = '0.0.9'
   s.summary          = 'Nimbus is a framework for building cross-platform hybrid applications.'
   s.homepage         = 'https://github.com/salesforce/nimbus'
   s.source           = { :git => 'https://github.com/salesforce/nimbus.git', :tag => s.version.to_s }
