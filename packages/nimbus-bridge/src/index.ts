@@ -141,6 +141,8 @@ let cloneArguments = (args: any[]): any[] => {
       } else {
         clonedArgs.push({ callbackId });
       }
+    } else if (typeof args[i] === "object") {
+      clonedArgs.push(JSON.stringify(args[i]))
     } else {
       clonedArgs.push(args[i]);
     }
@@ -154,12 +156,6 @@ let promisify = (src: any): void => {
     let func = src[key];
     dest[key] = (...args: any[]): any => {
       args = cloneArguments(args);
-      args = args.map((arg): any => {
-        if (typeof arg === "object") {
-          return JSON.stringify(arg);
-        }
-        return arg;
-      });
       let result = func.call(src, ...args);
       if (result !== undefined) {
         result = JSON.parse(result);
@@ -249,23 +245,23 @@ let promiseFinishedHandler = (
 
   return window.webkit && window.webkit.messageHandlers
     ? (msg: FinishedPromise): void => {
-        if (!alreadyRun) {
-          window.webkit.messageHandlers[namespace].postMessage(msg);
-          alreadyRun = true;
-          delete jsPromisehandlers[msg.promiseId];
-        }
+      if (!alreadyRun) {
+        window.webkit.messageHandlers[namespace].postMessage(msg);
+        alreadyRun = true;
+        delete jsPromisehandlers[msg.promiseId];
       }
+    }
     : (msg: FinishedPromise): void => {
-        if (!alreadyRun) {
-          plugins[namespace][`__${functionName}_finished`](
-            msg.promiseId,
-            msg.err || "",
-            msg.result || null
-          );
-          alreadyRun = true;
-          delete jsPromisehandlers[msg.promiseId];
-        }
-      };
+      if (!alreadyRun) {
+        plugins[namespace][`__${functionName}_finished`](
+          msg.promiseId,
+          msg.err || "",
+          msg.result || null
+        );
+        alreadyRun = true;
+        delete jsPromisehandlers[msg.promiseId];
+      }
+    };
 };
 
 /**
@@ -328,9 +324,9 @@ if (typeof __nimbusPluginExports !== "undefined") {
     let plugin = {};
     __nimbusPluginExports[pluginName].forEach((method: string): void => {
       Object.assign(plugin, {
-        [method]: function(): Promise<any> {
+        [method]: function (): Promise<any> {
           let functionArgs = cloneArguments(Array.from(arguments));
-          return new Promise(function(resolve, reject): void {
+          return new Promise(function (resolve, reject): void {
             var promiseId = uuidv4();
             uuidsToPromises[promiseId] = { resolve, reject };
             window.webkit.messageHandlers[pluginName].postMessage({
