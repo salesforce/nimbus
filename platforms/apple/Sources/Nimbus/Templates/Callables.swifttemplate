@@ -23,9 +23,12 @@ struct Callable<%= index %><R<% if index > 0 { -%>, <%= getCommaSeparatedString(
             throw ParameterError.argumentCount(expected: <%= index %>, actual: args.count)
         }
 <%_     if index > 0 { -%>
-        if let arg0 = args[0] as? A0<%if index > 1 { -%>,<% } else { %> {<% } %>
+<%          for CURR_POSITION in 0..<index { -%>
+        let decodedArg<%=CURR_POSITION%> = decodedArg(value: args[<%=CURR_POSITION%>], type: A<%=CURR_POSITION%>.self)
+<%          } -%>
+        if let arg0 = decodedArg0 ?? args[0] as? A0<%if index > 1 { -%>,<% } else { %> {<% } %>
 <%          for CURR_POSITION in 1..<index { -%>
-            let arg<%= CURR_POSITION %> = args[<%= CURR_POSITION %>] as? A<%= CURR_POSITION %><% if CURR_POSITION == index - 1 { %> {<% } else { %>,<% } %>
+            let arg<%= CURR_POSITION %> = decodedArg<%= CURR_POSITION %> ?? args[<%= CURR_POSITION %>] as? A<%= CURR_POSITION %><% if CURR_POSITION == index - 1 { %> {<% } else { %>,<% } %>
 <%          } -%>
             return try function(<%= getCommaSeparatedString(count: index, formattingPurpose: .forBoundFunctionArgs) %>)
         }

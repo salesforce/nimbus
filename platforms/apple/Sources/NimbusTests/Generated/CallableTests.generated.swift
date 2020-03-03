@@ -201,7 +201,7 @@ class Testable {
     static let decodableJSON = """
         {
             "name": "TheName",
-            "number: 42
+            "number": 42
         }
     """
 

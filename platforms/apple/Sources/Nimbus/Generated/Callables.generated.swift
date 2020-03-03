@@ -40,7 +40,8 @@ struct Callable1<R, A0>: Callable {
         if args.count != 1 {
             throw ParameterError.argumentCount(expected: 1, actual: args.count)
         }
-        if let arg0 = args[0] as? A0 {
+        let decodedArg0 = decodedArg(value: args[0], type: A0.self)
+        if let arg0 = decodedArg0 ?? args[0] as? A0 {
             return try function(arg0)
         }
         throw ParameterError.conversion
@@ -61,8 +62,10 @@ struct Callable2<R, A0, A1>: Callable {
         if args.count != 2 {
             throw ParameterError.argumentCount(expected: 2, actual: args.count)
         }
-        if let arg0 = args[0] as? A0,
-            let arg1 = args[1] as? A1 {
+        let decodedArg0 = decodedArg(value: args[0], type: A0.self)
+        let decodedArg1 = decodedArg(value: args[1], type: A1.self)
+        if let arg0 = decodedArg0 ?? args[0] as? A0,
+            let arg1 = decodedArg1 ?? args[1] as? A1 {
             return try function(arg0, arg1)
         }
         throw ParameterError.conversion
@@ -83,9 +86,12 @@ struct Callable3<R, A0, A1, A2>: Callable {
         if args.count != 3 {
             throw ParameterError.argumentCount(expected: 3, actual: args.count)
         }
-        if let arg0 = args[0] as? A0,
-            let arg1 = args[1] as? A1,
-            let arg2 = args[2] as? A2 {
+        let decodedArg0 = decodedArg(value: args[0], type: A0.self)
+        let decodedArg1 = decodedArg(value: args[1], type: A1.self)
+        let decodedArg2 = decodedArg(value: args[2], type: A2.self)
+        if let arg0 = decodedArg0 ?? args[0] as? A0,
+            let arg1 = decodedArg1 ?? args[1] as? A1,
+            let arg2 = decodedArg2 ?? args[2] as? A2 {
             return try function(arg0, arg1, arg2)
         }
         throw ParameterError.conversion
@@ -106,10 +112,14 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
         if args.count != 4 {
             throw ParameterError.argumentCount(expected: 4, actual: args.count)
         }
-        if let arg0 = args[0] as? A0,
-            let arg1 = args[1] as? A1,
-            let arg2 = args[2] as? A2,
-            let arg3 = args[3] as? A3 {
+        let decodedArg0 = decodedArg(value: args[0], type: A0.self)
+        let decodedArg1 = decodedArg(value: args[1], type: A1.self)
+        let decodedArg2 = decodedArg(value: args[2], type: A2.self)
+        let decodedArg3 = decodedArg(value: args[3], type: A3.self)
+        if let arg0 = decodedArg0 ?? args[0] as? A0,
+            let arg1 = decodedArg1 ?? args[1] as? A1,
+            let arg2 = decodedArg2 ?? args[2] as? A2,
+            let arg3 = decodedArg3 ?? args[3] as? A3 {
             return try function(arg0, arg1, arg2, arg3)
         }
         throw ParameterError.conversion
@@ -130,11 +140,16 @@ struct Callable5<R, A0, A1, A2, A3, A4>: Callable {
         if args.count != 5 {
             throw ParameterError.argumentCount(expected: 5, actual: args.count)
         }
-        if let arg0 = args[0] as? A0,
-            let arg1 = args[1] as? A1,
-            let arg2 = args[2] as? A2,
-            let arg3 = args[3] as? A3,
-            let arg4 = args[4] as? A4 {
+        let decodedArg0 = decodedArg(value: args[0], type: A0.self)
+        let decodedArg1 = decodedArg(value: args[1], type: A1.self)
+        let decodedArg2 = decodedArg(value: args[2], type: A2.self)
+        let decodedArg3 = decodedArg(value: args[3], type: A3.self)
+        let decodedArg4 = decodedArg(value: args[4], type: A4.self)
+        if let arg0 = decodedArg0 ?? args[0] as? A0,
+            let arg1 = decodedArg1 ?? args[1] as? A1,
+            let arg2 = decodedArg2 ?? args[2] as? A2,
+            let arg3 = decodedArg3 ?? args[3] as? A3,
+            let arg4 = decodedArg4 ?? args[4] as? A4 {
             return try function(arg0, arg1, arg2, arg3, arg4)
         }
         throw ParameterError.conversion
