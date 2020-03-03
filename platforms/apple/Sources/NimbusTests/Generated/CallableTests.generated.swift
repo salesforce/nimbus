@@ -7,6 +7,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
+// swiftlint:disable line_length vertical_whitespace
 
 import XCTest
 
@@ -82,6 +83,106 @@ class CallableTests: XCTestCase {
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5, 6]))
     }
 
+    func testNullaryDecodable() {
+        let callable = make_callable(Testable.nullaryDecodable(testable))
+        let result = try? callable.call(args: [])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+
+            XCTAssertEqual(args.count, 0)
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+    func testUnaryDecodable() {
+        let callable = make_callable(Testable.unaryDecodable(testable))
+        let result = try? callable.call(args: [Testable.decodableJSON])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }
+
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+    func testBinaryDecodable() {
+        let callable = make_callable(Testable.binaryDecodable(testable))
+        let result = try? callable.call(args: [Testable.decodableJSON, Testable.decodableJSON])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }
+
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+    func testTernaryDecodable() {
+        let callable = make_callable(Testable.ternaryDecodable(testable))
+        let result = try? callable.call(args: [Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }
+
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+    func testQuaternaryDecodable() {
+        let callable = make_callable(Testable.quaternaryDecodable(testable))
+        let result = try? callable.call(args: [Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }
+
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+    func testQuinaryDecodable() {
+        let callable = make_callable(Testable.quinaryDecodable(testable))
+        let result = try? callable.call(args: [Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON, Testable.decodableJSON])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }
+
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
         let expect = expectation(description: "called callback")
@@ -96,6 +197,19 @@ class CallableTests: XCTestCase {
 }
 
 class Testable {
+
+    static let decodableJSON = """
+        {
+            "name": "TheName",
+            "number: 42
+        }
+    """
+
+    struct TestableDecodableStruct: Decodable {
+        let name: String
+        let number: Int
+    }
+
     private(set) var called = false
 
     func nullary() -> Int {
@@ -127,6 +241,38 @@ class Testable {
         called = true
         return 5
     }
+
+
+    func nullaryDecodable() -> [TestableDecodableStruct] {
+        called = true
+        return []
+    }
+
+    func unaryDecodable(arg0: TestableDecodableStruct) -> [TestableDecodableStruct] {
+        called = true
+        return [arg0]
+    }
+
+    func binaryDecodable(arg0: TestableDecodableStruct, arg1: TestableDecodableStruct) -> [TestableDecodableStruct] {
+        called = true
+        return [arg0, arg1]
+    }
+
+    func ternaryDecodable(arg0: TestableDecodableStruct, arg1: TestableDecodableStruct, arg2: TestableDecodableStruct) -> [TestableDecodableStruct] {
+        called = true
+        return [arg0, arg1, arg2]
+    }
+
+    func quaternaryDecodable(arg0: TestableDecodableStruct, arg1: TestableDecodableStruct, arg2: TestableDecodableStruct, arg3: TestableDecodableStruct) -> [TestableDecodableStruct] {
+        called = true
+        return [arg0, arg1, arg2, arg3]
+    }
+
+    func quinaryDecodable(arg0: TestableDecodableStruct, arg1: TestableDecodableStruct, arg2: TestableDecodableStruct, arg3: TestableDecodableStruct, arg4: TestableDecodableStruct) -> [TestableDecodableStruct] {
+        called = true
+        return [arg0, arg1, arg2, arg3, arg4]
+    }
+
 
     func callbackable(arg0: Int, arg1: (Int) -> Void) {
         arg1(arg0)

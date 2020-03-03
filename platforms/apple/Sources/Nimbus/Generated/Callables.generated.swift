@@ -182,3 +182,11 @@ func make_callable<R, A0, A1, A2, A3>(_ function: @escaping ((A0, A1, A2, A3)) t
 func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping ((A0, A1, A2, A3, A4)) throws -> R) -> Callable {
     return Callable5(function)
 }
+
+private func decodedArg<A>(value: Any?, type: A.Type) -> A? {
+    if let argString = value as? String,
+        let data = argString.data(using: .utf8) {
+        return decodeJSON(data, destinationType: type)
+    }
+    return nil
+}

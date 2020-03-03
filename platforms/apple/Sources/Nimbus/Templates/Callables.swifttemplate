@@ -44,3 +44,11 @@ func make_callable<R<% if index > 0 { -%>, <%= getCommaSeparatedString(count: in
     return Callable<%=index%>(function)
 }
 <% } -%>
+
+private func decodedArg<A>(value: Any?, type: A.Type) -> A? {
+    if let argString = value as? String,
+        let data = argString.data(using: .utf8) {
+        return decodeJSON(data, destinationType: type)
+    }
+    return nil
+}

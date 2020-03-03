@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
+// swiftlint:disable line_length vertical_whitespace
 
 import XCTest
 
@@ -28,6 +29,28 @@ class CallableTests: XCTestCase {
     }
 <%_  } -%>
 
+<%_  for (index, arity) in arities.enumerated() { -%>
+    func test<%= arity.name.capitalizingFirstLetter() %>Decodable() {
+        let callable = make_callable(Testable.<%= arity.name %>Decodable(testable))
+        let result = try? callable.call(args: [<%_ if index > 0 { -%><%= Array(1...index).map({(element: Int) in String("Testable.decodableJSON")}).joined(separator: ", ") -%><% } _%>])
+        let arrayResult = result as? [Testable.TestableDecodableStruct]
+        XCTAssertNotNil(arrayResult)
+        XCTAssertTrue(testable.called)
+        if let args = arrayResult {
+            <%_ if index > 0 { -%>
+            for arg in args {
+                XCTAssertEqual(arg.name, "TheName")
+                XCTAssertEqual(arg.number, 42)
+            }<% } _%>
+            <%_ if index == 0 { -%>
+            XCTAssertEqual(args.count, 0)<% } _%>
+        } else {
+            XCTFail("result wasn't an array")
+        }
+    }
+
+<%_  } -%>
+
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
         let expect = expectation(description: "called callback")
@@ -42,6 +65,19 @@ class CallableTests: XCTestCase {
 }
 
 class Testable {
+
+    static let decodableJSON = """
+        {
+            "name": "TheName",
+            "number: 42
+        }
+    """
+
+    struct TestableDecodableStruct: Decodable {
+        let name: String
+        let number: Int
+    }
+
     private(set) var called = false
 
 <%_  for (index, arity) in arities.enumerated() { -%>
@@ -51,6 +87,15 @@ class Testable {
     }
 
 <%_  } -%>
+
+<%_ for (index, arity) in arities.enumerated() { -%>
+    func <%= arity.name %>Decodable(<% if index > 0 {%><%= getCommaSeparatedString(count: index, formattingPurpose: .forMethodArgsAsDecodableStruct)%><% } %>) -> [TestableDecodableStruct] {
+        called = true
+        return [<% if index > 0 { %><%= getCommaSeparatedString(count: index, formattingPurpose: .forBoundFunctionArgs)%><% } %>]
+    }
+
+<%_ } -%>
+
     func callbackable(arg0: Int, arg1: (Int) -> Void) {
         arg1(arg0)
     }
