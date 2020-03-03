@@ -11,7 +11,6 @@ import android.util.Log
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
@@ -35,7 +34,8 @@ class MochaTests {
         }
     }
 
-    class MochaTestBridge(val webView: WebView) {
+    @Extension(name = "mochaTestBridge")
+    class MochaTestBridge(val webView: WebView) : NimbusExtension {
 
         val readyLatch = CountDownLatch(1)
         val completionLatch = CountDownLatch(1)
@@ -43,22 +43,22 @@ class MochaTests {
         // Set to -1 initially to indicate we never got a completion callback
         var failures = -1
 
-        @JavascriptInterface
+        @ExtensionMethod
         fun ready() {
             readyLatch.countDown()
         }
 
-        @JavascriptInterface
+        @ExtensionMethod
         fun testsCompleted(failures: Int) {
             this.failures = failures
             completionLatch.countDown()
         }
-        @JavascriptInterface
+        @ExtensionMethod
         fun onTestFail(testTitle: String, errMessage: String) {
             Log.e("MOCHA", "[$testTitle]: $errMessage")
         }
 
-        @JavascriptInterface
+        @ExtensionMethod
         fun sendMessage(name: String, includeParam: Boolean) {
             webView.post {
                 var arg: JSONSerializable? = null
@@ -83,8 +83,8 @@ class MochaTests {
         val bridge = NimbusBridge()
 
         runOnUiThread {
-            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
             bridge.add(CallbackTestExtensionBinder(CallbackTestExtension()))
+            bridge.add(MochaTestBridgeBinder(testBridge))
             bridge.attach(webView)
             bridge.loadUrl("file:///android_asset/test-www/index.html")
         }
@@ -92,7 +92,12 @@ class MochaTests {
         assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
 
         runOnUiThread {
-            webView.evaluateJavascript("mocha.run(failures => { mochaTestBridge.testsCompleted(failures); }).on('fail', (test, err) => mochaTestBridge.onTestFail(test.title, err.message)); true;") {}
+            webView.evaluateJavascript("""
+            const titleFor = x => x.parent ? (titleFor(x.parent) + " " + x.title) : x.title
+            mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
+                 .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
+            true;
+            """.trimIndent()) {}
         }
 
         assertTrue(testBridge.completionLatch.await(5, TimeUnit.SECONDS))
@@ -109,8 +114,8 @@ class MochaTests {
         val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
 
         runOnUiThread {
-            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
             bridge.add(callbackTestBinder)
+            bridge.add(MochaTestBridgeBinder(testBridge))
             bridge.attach(webView)
             bridge.loadUrl("file:///android_asset/test-www/index.html")
         }
@@ -137,7 +142,7 @@ class MochaTests {
         val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
 
         runOnUiThread {
-            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
+            bridge.add(MochaTestBridgeBinder(testBridge))
             bridge.add(callbackTestBinder)
             bridge.attach(webView)
             bridge.loadUrl("file:///android_asset/test-www/index.html")
@@ -165,7 +170,7 @@ class MochaTests {
         val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
 
         runOnUiThread {
-            webView.addJavascriptInterface(testBridge, "mochaTestBridge")
+            bridge.add(MochaTestBridgeBinder(testBridge))
             bridge.add(callbackTestBinder)
             bridge.attach(webView)
             bridge.loadUrl("file:///android_asset/test-www/index.html")
