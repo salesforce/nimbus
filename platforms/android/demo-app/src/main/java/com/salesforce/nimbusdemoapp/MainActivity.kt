@@ -22,29 +22,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        WebView.setWebContentsDebuggingEnabled(true)
         val webView = findViewById<WebView>(R.id.webview)
         val deviceExtension = DeviceExtensionBinder(DeviceExtension(this))
         bridge.add(deviceExtension)
         bridge.attach(webView)
-
-        webView.webViewClient = object: WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                runOnUiThread {
-                    deviceExtension.getWebInfo { err, result ->
-                        if (err != null) {
-                            println("Error: $err")
-                        } else {
-                            println("href: ${result.href}")
-                            println("userAgent: ${result.userAgent}")
-                        }
-                    }
-                }
-            }
-        }
-
         bridge.loadUrl("http://10.0.2.2:3000")
-        WebView.setWebContentsDebuggingEnabled(true)
     }
 
     override fun onDestroy() {

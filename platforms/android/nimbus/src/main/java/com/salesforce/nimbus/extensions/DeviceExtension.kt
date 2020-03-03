@@ -2,11 +2,10 @@ package com.salesforce.nimbus.extensions
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.salesforce.nimbus.BindingType
 import com.salesforce.nimbus.Extension
 import com.salesforce.nimbus.ExtensionMethod
-import com.salesforce.nimbus.NimbusExtension
 import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.NimbusExtension
 import org.json.JSONObject
 
 @Extension(name = "DeviceExtension")
@@ -29,17 +28,7 @@ class DeviceExtension(context: Context) : NimbusExtension {
         }
     }
 
-    class WebInfo(val userAgent: String, val href: String) {
-        companion object {
-            @JvmStatic
-            fun fromJSON(json: String): WebInfo {
-                val obj = JSONObject(json)
-                return WebInfo(obj.getString("userAgent"), obj.getString("href"))
-            }
-        }
-    }
-
-    val cachedDeviceInfo: DeviceInfo
+    private val cachedDeviceInfo: DeviceInfo
 
     init {
         var appVersion = "unknown"
@@ -57,12 +46,4 @@ class DeviceExtension(context: Context) : NimbusExtension {
     fun getDeviceInfo(): DeviceInfo {
         return cachedDeviceInfo
     }
-
-    @ExtensionMethod
-    fun getDeviceInfoAsync(completion: (String?, DeviceInfo?) -> Void) {
-        completion(null, getDeviceInfo())
-    }
-
-    @ExtensionMethod(BindingType.PromisedJavascript)
-    fun getWebInfo(completion: (String?, WebInfo) -> Unit) {}
 }
