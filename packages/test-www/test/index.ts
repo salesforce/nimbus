@@ -9,7 +9,6 @@ import nimbus from "nimbus-bridge";
 import "./nimbus-core-tests";
 import "./broadcast-tests";
 import "./callback-encodable-tests";
-import "./promised-javascript-tests";
 
 const { plugins } = nimbus;
 

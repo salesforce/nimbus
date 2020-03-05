@@ -12,7 +12,7 @@
 
 import Foundation
 
-extension NativeBinder {
+extension Binder {
 
     /**
      Bind the specified function to this connection.

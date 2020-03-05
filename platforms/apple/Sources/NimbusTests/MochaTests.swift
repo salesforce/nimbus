@@ -58,6 +58,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
     func loadWebViewAndWait() {
         loadingExpectation = expectation(description: "web view loaded")
+        loadingExpectation?.assertForOverFulfill = false
         if let url = Bundle(for: MochaTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
         }
@@ -90,87 +91,10 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             if let error = error {
                 XCTFail(error.localizedDescription)
             }
-
         }
 
         wait(for: [testBridge.expectation], timeout: 30)
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
-    }
-
-    func testExecutePromiseResolved() {
-        let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bindToWebView(webView: webView)
-
-        loadWebViewAndWait()
-
-        let expected = expectation(description: "addOne")
-        var err: Error?
-        var result: Int?
-        callbackTestExtension.addOne(5) {
-            err = $0
-            result = $1
-            expected.fulfill()
-        }
-
-        wait(for: [expected], timeout: 30)
-        XCTAssertNil(err)
-        XCTAssertEqual(6, result)
-    }
-
-    func testExecutePromiseRejected() {
-        let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bindToWebView(webView: webView)
-
-        loadWebViewAndWait()
-
-        let expected = expectation(description: "failWith")
-        var err: Error?
-        var result: Double?
-        callbackTestExtension.failWith(message: "epic fail") {
-            err = $0
-            result = $1
-            expected.fulfill()
-        }
-
-        wait(for: [expected], timeout: 30)
-        XCTAssertNotNil(err)
-        XCTAssertNil(result)
-    }
-
-    func testPromiseRejectedOnRefresh() {
-        let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bindToWebView(webView: webView)
-
-        loadWebViewAndWait()
-
-        let expected = expectation(description: "wait")
-        var err: Error?
-        callbackTestExtension.wait(milliseconds: 60000) { error, _ in
-            err = error
-            expected.fulfill()
-        }
-
-        webView.reload()
-
-        wait(for: [expected], timeout: 30)
-        XCTAssertEqual(PromiseError.pageUnloaded, err as? PromiseError)
-    }
-
-    func testPromiseResolvingToVoid() {
-        let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bindToWebView(webView: webView)
-
-        loadWebViewAndWait()
-
-        let expected = expectation(description: "wait")
-        var err: Error? = PromiseError.message("not called yet")
-        callbackTestExtension.wait(milliseconds: 10) { error, _ in
-            err = error
-            expected.fulfill()
-        }
-
-        wait(for: [expected], timeout: 30)
-        XCTAssertNil(err)
     }
 }
 
@@ -194,20 +118,6 @@ public class CallbackTestExtension {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
-
-    func addOne(_ num: Int, promiseCompletion: @escaping (Error?, Int?) -> Void) {
-        connection?.invoke("addOne", with: num, promiseCompletion: promiseCompletion)
-    }
-
-    func failWith(message: String, promiseCompletion: @escaping (Error?, Double?) -> Void) {
-        connection?.invoke("failWith", with: message, promiseCompletion: promiseCompletion)
-    }
-
-    func wait(milliseconds: Int, promiseCompletion: @escaping (Error?, Void?) -> Void) {
-        connection?.invoke("wait", with: milliseconds, promiseCompletion: promiseCompletion)
-    }
-
-    weak var connection: WebBinder?
 }
 
 extension CallbackTestExtension: NimbusExtension {
@@ -218,6 +128,5 @@ extension CallbackTestExtension: NimbusExtension {
         connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
-        self.connection = connection
     }
 }

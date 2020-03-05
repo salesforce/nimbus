@@ -39,65 +39,19 @@ public class Connection<C>: Binder {
         }
 
         func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
-            guard let params = message.body as? NSDictionary,
-                let promiseId = params["promiseId"] as? String else { return }
-
-            let errParam = unwrapNSNull(params["err"])
-            let result = unwrapNSNull(params["result"])
-            if errParam != nil || result != nil || params.count == 1 {
-                var err = errParam as? Error
-                if let errString = errParam as? String {
-                    switch errString {
-                    case "ERROR_PAGE_UNLOADED":
-                        err = PromiseError.pageUnloaded
-                    default:
-                        err = PromiseError.message(errString)
-                    }
-                }
-                handlePromiseCompletion(for: promiseId, err: err, result: result)
-            } else {
-                // JS-initiated call into native extension.
-                guard let method = params["method"] as? String,
-                    let args = params["args"] as? [Any] else { return }
-
-                connection.call(method, args: args, promise: promiseId)
+            guard
+                let params = message.body as? NSDictionary,
+                let method = params["method"] as? String,
+                let args = params["args"] as? [Any],
+                let promiseId = params["promiseId"] as? String
+            else {
+                return
             }
-        }
 
-        func handlePromiseCompletion(for promiseId: String, err: Error?, result: Any?) {
-            connection.promisesQueue.async { [weak self] in
-                guard let connection = self?.connection else { return } // Ensure connection is still alive.
-                if let completion = connection.promises.removeValue(forKey: promiseId) {
-                    // A completion block is tracked for this Promise. Call that completion.
-                    completion.call(err: err, result: result)
-                }
-            }
+            connection.call(method, args: args, promise: promiseId)
         }
 
         let connection: Connection
-    }
-
-    /**
-     Invokes a Promise-returning Javascript function and call the specified promiseCompletion when that Promise resolves or rejects.
-     */
-    public func invoke<R>(_ functionName: String, with args: Encodable..., promiseCompletion: @escaping (Error?, R?) -> Void) {
-        let promiseId = UUID().uuidString
-        self.promisesQueue.sync {
-            self.promises[promiseId] = CallablePromiseCompletion(promiseCompletion)
-        }
-        webView?.callJavascript(name: "__nimbus.callAwaiting", args: [namespace, functionName, promiseId] + args) { (errString, err) -> Void in
-            var textError: Error?
-            if let errString = errString as? String {
-                textError = PromiseError.message(errString)
-            }
-            if let err = err ?? textError {
-                promiseCompletion(err, nil)
-                // Remove the completion block we just registered, due to the failure to create the Promise.
-                self.promisesQueue.async { [weak self] in
-                    self?.promises.removeValue(forKey: promiseId)
-                }
-            }
-        }
     }
 
     /**
@@ -199,40 +153,4 @@ public class Connection<C>: Binder {
     private let namespace: String
     private weak var webView: WKWebView?
     private var bindings: [String: Callable] = [:]
-
-    // Synchronous queue; all accesses of the `promises` dictionary include writes.
-    private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
-    private var promises: [String: PromiseCompletion] = [:]
-}
-
-public enum PromiseError: Error, Equatable {
-    case pageUnloaded
-    case message(_ message: String)
-}
-
-protocol PromiseCompletion {
-    func call(err: Error?, result: Any?)
-}
-
-struct CallablePromiseCompletion<R>: PromiseCompletion {
-    typealias FunctionType = (Error?, R?) -> Void
-    let function: FunctionType
-    init(_ function: @escaping FunctionType) {
-        self.function = function
-    }
-
-    func call(err: Error?, result: Any?) {
-        guard err == nil else {
-            function(err, nil)
-            return
-        }
-
-        if R.self == Void.self {
-            function(nil, nil)
-        } else if let result = result as? R {
-            function(nil, result)
-        } else {
-            function(PromiseError.message("Could not convert \(String(describing: result)) to \(R.self)"), nil)
-        }
-    }
 }

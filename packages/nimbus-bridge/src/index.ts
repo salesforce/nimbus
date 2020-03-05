@@ -24,14 +24,6 @@ export interface Nimbus {
   // Called by native code to fulfill a pending promise.
   resolvePromise(promiseUuid: string, data: any, error: any): void;
 
-  // Call a plugin method that returns a promise and invoke the native promise callback on completion
-  callAwaiting(
-    namespace: string,
-    name: string,
-    promiseId: string,
-    ...args: any[]
-  ): string | null;
-
   /**
    * Broadcast a message to subscribed listeners.  Listeners
    * can receive data associated with the message for more
@@ -70,12 +62,6 @@ export interface Nimbus {
   unsubscribeMessage(message: string, listener: Function): void;
 }
 
-interface FinishedPromise {
-  promiseId: string;
-  err?: any;
-  result?: any;
-}
-
 declare global {
   interface NimbusNative {
     makeCallback(callbackId: string): any;
@@ -101,11 +87,6 @@ let uuidsToCallbacks: { [s: string]: Function } = {};
 
 // Store event listener functions for later invocation
 let eventNameToListeners: { [s: string]: Function[] } = {};
-
-// Store native promise callbacks
-let jsPromisehandlers: {
-  [s: string]: (msg: FinishedPromise) => void;
-} = {};
 
 // influenced from
 // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -142,7 +123,7 @@ let cloneArguments = (args: any[]): any[] => {
         clonedArgs.push({ callbackId });
       }
     } else if (typeof args[i] === "object") {
-      clonedArgs.push(JSON.stringify(args[i]))
+      clonedArgs.push(JSON.stringify(args[i]));
     } else {
       clonedArgs.push(args[i]);
     }
@@ -237,70 +218,6 @@ let unsubscribeMessage = (message: string, listener: Function): void => {
   }
 };
 
-let promiseFinishedHandler = (
-  namespace: string,
-  functionName: string
-): ((msg: FinishedPromise) => void) => {
-  let alreadyRun = false;
-
-  return window.webkit && window.webkit.messageHandlers
-    ? (msg: FinishedPromise): void => {
-      if (!alreadyRun) {
-        window.webkit.messageHandlers[namespace].postMessage(msg);
-        alreadyRun = true;
-        delete jsPromisehandlers[msg.promiseId];
-      }
-    }
-    : (msg: FinishedPromise): void => {
-      if (!alreadyRun) {
-        plugins[namespace][`__${functionName}_finished`](
-          msg.promiseId,
-          msg.err || "",
-          msg.result || null
-        );
-        alreadyRun = true;
-        delete jsPromisehandlers[msg.promiseId];
-      }
-    };
-};
-
-/**
- * Call a Promise-returning function and track its resolution/rejection.
- *
- * @param namespace String connection name, used both to find the function to
- * invoke (window.${namespace}.${name} as well as to identify the message
- * handler to inform about the resolutin/rejection of the Promise.
- * @param name String name of the function on window.${namespace} to invoke.
- * @param args arguments to pass to the specified function.
- */
-let callAwaiting = (
-  namespace: string,
-  name: string,
-  promiseId: string,
-  ...args: any[]
-): string | null => {
-  const ext = plugins[namespace];
-  if (!ext) {
-    return `Plugin ${namespace} was not found: window.__nimbus.plugins.${namespace}`;
-  }
-  const fn = ext[name];
-  if (!fn) {
-    return `Plugin function ${namespace}.${name} was not found: window.__nimbus.plugins.${namespace}.${name}`;
-  }
-  try {
-    const promise = fn(...args);
-    const handler = promiseFinishedHandler(namespace, name);
-    promise.catch((err: any): void => handler({ promiseId, err }));
-    promise.then((result: any): void => handler({ promiseId, result }));
-    jsPromisehandlers[promiseId] = handler;
-  } catch (e) {
-    return `${e}`;
-  }
-
-  // Success
-  return null;
-};
-
 // Android plugin import
 if (
   typeof _nimbus !== "undefined" &&
@@ -324,9 +241,9 @@ if (typeof __nimbusPluginExports !== "undefined") {
     let plugin = {};
     __nimbusPluginExports[pluginName].forEach((method: string): void => {
       Object.assign(plugin, {
-        [method]: function (): Promise<any> {
+        [method]: function(): Promise<any> {
           let functionArgs = cloneArguments(Array.from(arguments));
-          return new Promise(function (resolve, reject): void {
+          return new Promise(function(resolve, reject): void {
             var promiseId = uuidv4();
             uuidsToPromises[promiseId] = { resolve, reject };
             window.webkit.messageHandlers[pluginName].postMessage({
@@ -361,9 +278,6 @@ Object.defineProperties(nimbusBuilder, {
   resolvePromise: {
     value: resolvePromise
   },
-  callAwaiting: {
-    value: callAwaiting
-  },
   broadcastMessage: {
     value: broadcastMessage
   },
@@ -379,10 +293,14 @@ let nimbus: Nimbus = nimbusBuilder as Nimbus;
 
 // When the page unloads, reject all Promises for native-->web calls.
 window.addEventListener("unload", (): void => {
-  Object.entries(jsPromisehandlers).forEach(([promiseId, handler]): void => {
-    handler({ promiseId, err: "ERROR_PAGE_UNLOADED" });
-  });
-  jsPromisehandlers = {};
+  if (typeof _nimbus !== "undefined") {
+    // TODO: android
+    // _nimbus.pageUnloaded();
+  } else if (typeof window.webkit !== "undefined") {
+    window.webkit.messageHandlers._nimbus.postMessage({
+      method: "pageUnloaded"
+    });
+  }
 });
 
 declare global {
