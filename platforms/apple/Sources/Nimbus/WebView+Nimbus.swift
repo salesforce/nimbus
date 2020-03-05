@@ -28,6 +28,7 @@ extension WKWebView {
      - Parameter completionHandler: A block to invoke when script evaluation completes or fails. You do not
      have to pass a closure if you are not interested in getting the callback.
      */
+    @available(*, deprecated, message: "Call `NimbusBridge.invoke` instead")
     public func callJavascript(name: String, args: [Encodable], completionHandler: ((Any?, Error?) -> Void)? = nil) {
         let jsonEncoder = JSONEncoder()
         var encodableValues = [EncodableValue]()
