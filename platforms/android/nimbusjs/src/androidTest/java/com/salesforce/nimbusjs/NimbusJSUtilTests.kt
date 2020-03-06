@@ -25,48 +25,6 @@ class NimbusJSUtilsTests {
     }
 
     @Test
-    fun testInjectionScript() {
-        val html = """
-            <html>
-            <head>
-                Here is the head of the document
-                <inject><script>console.log('test');</script>
-            </head>
-            <body>
-                And here is the body
-            </body>
-            </html>
-        """.trimIndent()
-        val htmlWithEmptyString = html.replace("<inject>", "")
-        val input = ByteArrayInputStream(htmlWithEmptyString.toByteArray(Charsets.UTF_8))
-        val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
-        var resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
-        val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
-        assertEquals(true, resultString.equals(htmlWithNimbus))
-    }
-
-    @Test
-    fun testInjectionScriptWithoutClosingTag() {
-        val html = """
-            <html>
-            <head>
-                Here is the head of the document
-                <inject><script src="test.js"/>
-            </head>
-            <body>
-                And here is the body
-            </body>
-            </html>
-        """.trimIndent()
-        val htmlWithEmptyString = html.replace("<inject>", "")
-        val input = ByteArrayInputStream(htmlWithEmptyString.toByteArray(Charsets.UTF_8))
-        val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
-        var resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
-        val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
-        assertEquals(true, resultString.equals(htmlWithNimbus))
-    }
-
-    @Test
     fun testInjectionHead() {
         val html = """
             <head><inject>
@@ -77,21 +35,6 @@ class NimbusJSUtilsTests {
         val input = ByteArrayInputStream(htmlWithEmptyString.toByteArray(Charsets.UTF_8))
         val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
         var resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
-        val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
-        assertEquals(true, resultString.equals(htmlWithNimbus))
-    }
-
-    @Test
-    fun testInjectionBody() {
-        val html = """
-            <body><inject>
-                Here is the body of the document
-            </body>
-        """.trimIndent()
-        val htmlWithEmptyString = html.replace("<inject>", "")
-        val input = ByteArrayInputStream(htmlWithEmptyString.toByteArray(Charsets.UTF_8))
-        val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
-        val resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
         val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
         assertEquals(true, resultString.equals(htmlWithNimbus))
     }
