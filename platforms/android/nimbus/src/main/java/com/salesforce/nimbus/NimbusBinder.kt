@@ -14,18 +14,18 @@ import android.webkit.WebView
  */
 interface NimbusBinder {
 
-  /**
-   * Returns the [NimbusExtension] that this binder is bound to.
-   */
-  fun getExtension(): NimbusExtension
+    /**
+     * Returns the [NimbusExtension] that this binder is bound to.
+     */
+    fun getExtension(): NimbusExtension
 
-  /**
-   * Returns the name of the extension which will be used as the javascript interface.
-   */
-  fun getExtensionName(): String
+    /**
+     * Returns the name of the extension which will be used as the javascript interface.
+     */
+    fun getExtensionName(): String
 
-  /**
-   * Sets the [WebView] on the binder so it can make internal calls to it.
-   */
-  fun setWebView(webView: WebView?)
+    /**
+     * Sets the [WebView] on the binder so it can make internal calls to it.
+     */
+    fun setWebView(webView: WebView?)
 }

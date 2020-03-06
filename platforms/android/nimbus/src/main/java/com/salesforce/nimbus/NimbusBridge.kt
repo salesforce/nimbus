@@ -12,7 +12,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
@@ -75,8 +75,8 @@ class NimbusBridge {
             if (asPrimitive != null) {
                 jsonArray.put(asPrimitive.value)
             } else {
-              jsonArray.put(if (jsonSerializable == null) JSONObject.NULL
-              else JSONObject(jsonSerializable.stringify()))
+                jsonArray.put(if (jsonSerializable == null) JSONObject.NULL
+                else JSONObject(jsonSerializable.stringify()))
             }
         }
         val jsonString = jsonArray.toString()
@@ -107,8 +107,8 @@ class NimbusBridge {
     @Suppress("unused")
     @JavascriptInterface
     fun resolvePromise(promiseId: String, json: String?) {
-        var value: Any?
-        json.let {
+        var value: Any? = null
+        json?.let {
             value = JSONObject(it).get("value")
         }
         val promise = promises.remove(promiseId)
