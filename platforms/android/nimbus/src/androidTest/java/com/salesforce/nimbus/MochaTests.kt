@@ -123,7 +123,10 @@ class MochaTests {
         assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
-            callbackTestBinder.addOne(5) { err, result ->
+            bridge.invoke(
+                "__nimbus.plugins.callbackTestExtension.addOne",
+                args = arrayOf(5.toJSONSerializable())
+            ) { err, result ->
                 assertNull(err)
                 assertEquals(6, result)
                 completionLatch.countDown()
@@ -151,7 +154,10 @@ class MochaTests {
         assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
-            callbackTestBinder.failWith("epic fail") { err, result ->
+            bridge.invoke(
+                "__nimbus.plugins.callbackTestExtension.failWith",
+                arrayOf("epic fail".toJSONSerializable())
+            ) { err, result ->
                 assertEquals("epic fail", err)
                 assertNull(result)
                 completionLatch.countDown()
@@ -179,7 +185,10 @@ class MochaTests {
         assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
-            callbackTestBinder.wait(60000) { err, _ ->
+            bridge.invoke(
+                "__nimbus.plugins.callbackTestExtension.wait",
+                arrayOf(60000.toJSONSerializable())
+            ) { err, _ ->
                 assertEquals("ERROR_PAGE_UNLOADED", err)
                 completionLatch.countDown()
             }

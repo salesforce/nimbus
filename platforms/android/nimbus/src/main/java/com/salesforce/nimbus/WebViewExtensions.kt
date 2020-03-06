@@ -24,9 +24,10 @@ import org.json.JSONObject
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
+@Deprecated("Call `NimbusBridge.invoke` instead. This method will be removed prior to v1.0.0")
 fun WebView.callJavascript(name: String, args: Array<JSONSerializable?> = emptyArray(), completionHandler: ((result: Any?) -> Unit)? = null) {
     val jsonArray = JSONArray()
-    args.forEachIndexed { index, jsonSerializable ->
+    args.forEach { jsonSerializable ->
         val asPrimitive = jsonSerializable as? PrimitiveJSONSerializable
         if (asPrimitive != null) {
             jsonArray.put(asPrimitive.value)

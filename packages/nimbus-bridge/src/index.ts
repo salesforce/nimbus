@@ -66,6 +66,7 @@ declare global {
   interface NimbusNative {
     makeCallback(callbackId: string): any;
     nativeExtensionNames(): string;
+    pageUnloaded(): void;
   }
   var _nimbus: NimbusNative;
   var __nimbusPluginExports: { [s: string]: string[] };
@@ -294,8 +295,7 @@ let nimbus: Nimbus = nimbusBuilder as Nimbus;
 // When the page unloads, reject all Promises for native-->web calls.
 window.addEventListener("unload", (): void => {
   if (typeof _nimbus !== "undefined") {
-    // TODO: android
-    // _nimbus.pageUnloaded();
+    _nimbus.pageUnloaded();
   } else if (typeof window.webkit !== "undefined") {
     window.webkit.messageHandlers._nimbus.postMessage({
       method: "pageUnloaded"
