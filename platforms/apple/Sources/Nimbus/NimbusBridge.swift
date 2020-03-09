@@ -39,12 +39,11 @@ public class NimbusBridge: NSObject {
      Invokes a Promise-returning Javascript function and call the specified
      promiseCompletion when that Promise resolves or rejects.
      */
-    public func invoke<R>( // swiftlint:disable:this function_body_length
-        _ functionName: String,
-        with args: Encodable...,
+    func invoke<R>( // swiftlint:disable:this function_body_length
+        _ identifierSegments: [String],
+        with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
-
         let promiseId = UUID().uuidString
         promisesQueue.sync {
             self.promises[promiseId] = { error, value in
@@ -67,22 +66,29 @@ public class NimbusBridge: NSObject {
             }
         }
 
+        let idSegmentString: String
         let argString: String
         do {
             let data = try JSONEncoder().encode(args.map(EncodableValue.value))
             argString = String(data: data, encoding: .utf8)!
+
+            let idData = try JSONEncoder().encode(identifierSegments)
+            idSegmentString = String(data: idData, encoding: .utf8)!
         } catch {
             return callback(error, nil)
         }
 
         let script = """
         {
+            let idSegments = \(idSegmentString);
             let rawArgs = \(argString);
             let args = rawArgs.map((a) => { a.v });
             let promise = undefined;
             try {
-                // TODO: fortify this against injection
-                promise = Promise.resolve(\(functionName)(...args));
+                let fn = idSegments.reduce((state, key) => {
+                    return state[key];
+                }, window);
+                promise = Promise.resolve(fn(...args));
             } catch (error) {
                 promise = Promise.reject(error);
             }
@@ -112,6 +118,19 @@ public class NimbusBridge: NSObject {
                 callback?(error, nil)
             }
         }
+    }
+
+    /**
+     Invokes a Promise-returning Javascript function and call the specified
+     promiseCompletion when that Promise resolves or rejects.
+     */
+    public func invoke<R>(
+        _ identifierPath: String,
+        with args: Encodable...,
+        callback: @escaping (Error?, R?) -> Void
+    ) {
+        let identifierSegments = identifierPath.split(separator: ",").map(String.init)
+        invoke(identifierSegments, with: args, callback: callback)
     }
 
     var extensions: [NimbusExtension] = []

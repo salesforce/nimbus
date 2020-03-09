@@ -61,13 +61,16 @@ class NimbusBridge {
         bridgeWebView = null
     }
 
-    fun invoke(
-        functionName: String,
+    private fun invokeInternal(
+        identifierSegments: Array<String>,
         args: Array<JSONSerializable?> = emptyArray(),
         callback: ((String?, Any?) -> Unit)
     ) {
         val promiseId = UUID.randomUUID().toString()
         promises[promiseId] = callback
+
+        val segmentArray = JSONArray(identifierSegments)
+        val segmentString = segmentArray.toString()
 
         val jsonArray = JSONArray()
         args.forEachIndexed { _, jsonSerializable ->
@@ -82,11 +85,14 @@ class NimbusBridge {
         val jsonString = jsonArray.toString()
         val script = """
         {
+            let idSegments = $segmentString;
             let args = $jsonString;
             let promise = undefined;
             try {
-                // TODO: fortify this against injection
-                promise = Promise.resolve($functionName(...args));
+                let fn = idSegments.reduce((state, key) => {
+                    return state[key];
+                }, window);
+                promise = Promise.resolve(fn(...args));
             } catch (error) {
                 promise = Promise.reject(error);
             }
@@ -102,6 +108,14 @@ class NimbusBridge {
         bridgeWebView?.handler?.post {
             bridgeWebView?.evaluateJavascript(script, null)
         }
+    }
+
+    fun invoke(
+        functionName: String,
+        args: Array<JSONSerializable?> = emptyArray(),
+        callback: ((String?, Any?) -> Unit)
+    ) {
+        invokeInternal(functionName.split('.').toTypedArray(), args, callback)
     }
 
     @Suppress("unused")
