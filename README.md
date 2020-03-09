@@ -24,13 +24,6 @@ If you change the templates for any of the generated code, ensure that
 you run the 'Generate Code from Templates' aggregate target in the
 Xcode project to regenerate the destination source files.
 
-## Usage Patterns
-
-See [DeviceExtension.swift](./platforms/apple/Sources/Nimbus/Extensions/DeviceExtension.swift)
-or [DeviceExtension.kt](./platforms/android/nimbus/src/main/java/com/salesforce/nimbus/extensions/DeviceExtension.kt)
-for examples of creating methods callable from Web to Native (see `getDeviceInfo()`) and
-Native to Web (see `getWebInfo()`)
-
 ## Contributing
 
 ### Code of Conduct
