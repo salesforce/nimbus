@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'Nimbus'
+  s.name             = 'NimbusBridge'
   s.version          = '0.0.9'
   s.summary          = 'Nimbus is a framework for building cross-platform hybrid applications.'
   s.homepage         = 'https://github.com/salesforce/nimbus'
