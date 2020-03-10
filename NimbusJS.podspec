@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            = 'NimbusJS'
-  s.version         = '0.0.9'
+  s.version         = '0.99.0'
   s.summary         = 'NimbusJS supplies the javascript necessary for the Nimbus framework'
   s.homepage        = 'https://github.com/salesforce/nimbus'
   s.source          = { :http => 'https://github.com/salesforce/nimbus/releases/download/0.0.9/NimbusJS.zip' }
