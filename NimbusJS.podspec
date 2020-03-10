@@ -12,4 +12,6 @@ Pod::Spec.new do |s|
   s.swift_version   = '4.2'
 
   s.ios.deployment_target = '11.0'
+
+  s.dependency 'NimbusBridge', '= 0.99.0'
 end
