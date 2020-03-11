@@ -11,7 +11,7 @@
         "serve": "cross-env rollup -c ./rollup.config.js --watch"
     },
     "dependencies": {
-        "nimbus-bridge": "^0.99.0"
+        "nimbus-bridge": "^0.99.1"
     },
     "devDependencies": {
         "@types/chai": "^4.1.7",
