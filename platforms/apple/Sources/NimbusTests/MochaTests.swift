@@ -77,7 +77,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         connection.bind(MochaTestBridge.sendMessage, as: "sendMessage")
         connection.bind(MochaTestBridge.onTestFail, as: "onTestFail")
         let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bindToWebView(webView: webView)
+        callbackTestExtension.bind(to: webView, bridge: NimbusBridge())
 
         loadWebViewAndWait()
 
@@ -120,8 +120,8 @@ public class CallbackTestExtension {
     }
 }
 
-extension CallbackTestExtension: NimbusExtension {
-    public func bindToWebView(webView: WKWebView) {
+extension CallbackTestExtension: Plugin {
+    public func bind(to webView: WKWebView, bridge: NimbusBridge) {
         let connection = webView.addConnection(to: self, as: "callbackTestExtension")
         connection.bind(CallbackTestExtension.callbackWithSingleParam, as: "callbackWithSingleParam")
         connection.bind(CallbackTestExtension.callbackWithTwoParams, as: "callbackWithTwoParams")

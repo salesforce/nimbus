@@ -53,7 +53,7 @@ struct DeviceInfo: Codable {
     #endif
 }
 
-public class DeviceExtension {
+public class DeviceInfoPlugin {
     public init() {}
 
     func getDeviceInfo() -> DeviceInfo {
@@ -63,9 +63,9 @@ public class DeviceExtension {
     let deviceInfo = DeviceInfo()
 }
 
-extension DeviceExtension: NimbusExtension {
-    public func bindToWebView(webView: WKWebView) {
+extension DeviceInfoPlugin: Plugin {
+    public func bind(to webView: WKWebView, bridge: NimbusBridge) {
         let connection = webView.addConnection(to: self, as: "DeviceExtension")
-        connection.bind(DeviceExtension.getDeviceInfo, as: "getDeviceInfo")
+        connection.bind(DeviceInfoPlugin.getDeviceInfo, as: "getDeviceInfo")
     }
 }

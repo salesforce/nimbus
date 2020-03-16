@@ -14,8 +14,7 @@ class ViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         title = "Nimbus"
-
-        bridge.addExtension(DeviceExtension())
+        bridge.addPlugin(DeviceInfoPlugin())
     }
 
     override func loadView() {

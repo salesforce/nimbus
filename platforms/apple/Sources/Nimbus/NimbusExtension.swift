@@ -7,6 +7,7 @@
 
 import WebKit
 
-@objc public protocol NimbusExtension {
+@available(*, deprecated, message: "Use the `Plugin` protocol instead. `NimbusExtension` will be removed in the future")
+public protocol NimbusExtension: Plugin {
     func bindToWebView(webView: WKWebView)
 }

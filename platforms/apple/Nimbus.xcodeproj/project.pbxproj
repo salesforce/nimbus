@@ -35,6 +35,7 @@
 		2922900F241165570014B95A /* InvocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922900E241165570014B95A /* InvocationTests.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
 		29245EE6220CE18100F9EEAF /* test-www in Resources */ = {isa = PBXBuildFile; fileRef = 29245EE5220CE18100F9EEAF /* test-www */; };
+		29264F5E24197E4F00D68664 /* Plugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29264F5D24197E4F00D68664 /* Plugin.swift */; };
 		294433472200FA3700E6D084 /* Callback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433422200FA3700E6D084 /* Callback.swift */; };
 		294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433432200FA3700E6D084 /* WebView+Nimbus.swift */; };
 		294433492200FA3700E6D084 /* EncodableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433442200FA3700E6D084 /* EncodableValue.swift */; };
@@ -187,6 +188,7 @@
 		2922900E241165570014B95A /* InvocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvocationTests.swift; sourceTree = "<group>"; };
 		29245EE1220CE13000F9EEAF /* MochaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MochaTests.swift; sourceTree = "<group>"; };
 		29245EE5220CE18100F9EEAF /* test-www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "test-www"; path = "../../../../packages/test-www/dist/test-www"; sourceTree = "<group>"; };
+		29264F5D24197E4F00D68664 /* Plugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plugin.swift; sourceTree = "<group>"; };
 		294433422200FA3700E6D084 /* Callback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Callback.swift; sourceTree = "<group>"; };
 		294433432200FA3700E6D084 /* WebView+Nimbus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WebView+Nimbus.swift"; sourceTree = "<group>"; };
 		294433442200FA3700E6D084 /* EncodableValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncodableValue.swift; sourceTree = "<group>"; };
@@ -381,13 +383,14 @@
 				294433452200FA3700E6D084 /* Callable.swift */,
 				294433422200FA3700E6D084 /* Callback.swift */,
 				294433462200FA3700E6D084 /* Connection.swift */,
+				CC251495240D6764001E8D8C /* DecodableUtils.swift */,
 				294433442200FA3700E6D084 /* EncodableValue.swift */,
 				291A860621E530BC00510832 /* Info.plist */,
 				291A860521E530BC00510832 /* Nimbus.h */,
 				291A85FC21E5302C00510832 /* NimbusBridge.swift */,
 				291A85FD21E5302C00510832 /* NimbusExtension.swift */,
+				29264F5D24197E4F00D68664 /* Plugin.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
-				CC251495240D6764001E8D8C /* DecodableUtils.swift */,
 			);
 			name = Nimbus;
 			path = Sources/Nimbus;
@@ -1010,6 +1013,7 @@
 				CC251496240D6764001E8D8C /* DecodableUtils.swift in Sources */,
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
 				2944334A2200FA3700E6D084 /* Callable.swift in Sources */,
+				29264F5E24197E4F00D68664 /* Plugin.swift in Sources */,
 				68FA8B95233DEAF900682431 /* Callables.generated.swift in Sources */,
 				291A861121E531B200510832 /* NimbusExtension.swift in Sources */,
 			);

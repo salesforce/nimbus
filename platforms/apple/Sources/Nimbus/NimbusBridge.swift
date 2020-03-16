@@ -9,15 +9,21 @@ import Foundation
 import WebKit
 
 public class NimbusBridge: NSObject {
-    @objc public func addExtension(ext: NimbusExtension) {
-        extensions.append(ext)
+    @available(*, deprecated, message: "Use `NimbusBridge.addPlugin()` instead")
+    public func addExtension(ext: NimbusExtension) {
+        plugins.append(ext)
     }
 
+    @available(*, deprecated, message: "Use `NimbusBridge.addPlugin()` instead")
     public func addExtension<T: NimbusExtension>(_ ext: T) {
-        extensions.append(ext)
+        plugins.append(ext)
     }
 
-    @objc public func attach(to webView: WKWebView) {
+    public func addPlugin<T: Plugin>(_ plugin: T) {
+        plugins.append(plugin)
+    }
+
+    public func attach(to webView: WKWebView) {
         guard self.webView == nil else {
             return
         }
@@ -30,8 +36,8 @@ public class NimbusBridge: NSObject {
             configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
 
-        for ext in extensions {
-            ext.bindToWebView(webView: webView)
+        for plugin in plugins {
+            plugin.bind(to: webView, bridge: self)
         }
     }
 
@@ -133,7 +139,7 @@ public class NimbusBridge: NSObject {
         invoke(identifierSegments, with: args, callback: callback)
     }
 
-    var extensions: [NimbusExtension] = []
+    var plugins: [Plugin] = []
     private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
     typealias PromiseCallback = (Error?, Any?) -> Void
     private var promises: [String: PromiseCallback] = [:]

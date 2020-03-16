@@ -135,7 +135,7 @@ jobs:
       - run:
           name: Lint CocoaPod Spec
           working_directory: platforms/apple
-          command: bundle exec pod lib lint --private ../../NimbusBridge.podspec
+          command: bundle exec pod lib lint --allow-warnings --private ../../NimbusBridge.podspec
 
       - run:
           name: Get code coverage
