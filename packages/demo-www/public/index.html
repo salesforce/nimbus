@@ -15,6 +15,16 @@
       <div>
         Welcome to Nimbus
       </div>
+      <input type="button" value="Call Device Info" onclick="recallDeviceInfo();"/>
+      <script>
+        function success(info) {
+          console.log("blerp");
+          console.log(info);
+        }
+        function recallDeviceInfo() {
+            __nimbus.plugins.DeviceExtension.getDeviceInfo().then(success);
+        }
+      </script>
       <nimbus-device-info></nimbus-device-info>
     </nimbus-demo-app>
   </body>

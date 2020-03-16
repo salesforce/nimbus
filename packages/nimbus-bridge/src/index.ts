@@ -148,16 +148,10 @@ let promisify = (src: any): void => {
   return dest;
 };
 
-let callCallback = (callbackId: string, args: any[]): void => {
+let callCallback = (callbackId: string, ...args: any[]): void => {
   if (uuidsToCallbacks[callbackId]) {
-    uuidsToCallbacks[callbackId](...args);
+    uuidsToCallbacks[callbackId](args);
   }
-};
-
-// TODO: This version is called by Android, callCallback is called by iOS. The
-// two need to be consolidated.
-let callCallback2 = (callbackId: string, ...args: any[]): void => {
-  callCallback(callbackId, args);
 };
 
 let releaseCallback = (callbackId: string): void => {
@@ -242,9 +236,9 @@ if (typeof __nimbusPluginExports !== "undefined") {
     let plugin = {};
     __nimbusPluginExports[pluginName].forEach((method: string): void => {
       Object.assign(plugin, {
-        [method]: function(): Promise<any> {
+        [method]: function (): Promise<any> {
           let functionArgs = cloneArguments(Array.from(arguments));
-          return new Promise(function(resolve, reject): void {
+          return new Promise(function (resolve, reject): void {
             var promiseId = uuidv4();
             uuidsToPromises[promiseId] = { resolve, reject };
             window.webkit.messageHandlers[pluginName].postMessage({
@@ -269,9 +263,6 @@ let nimbusBuilder = {
 Object.defineProperties(nimbusBuilder, {
   callCallback: {
     value: callCallback
-  },
-  callCallback2: {
-    value: callCallback2
   },
   releaseCallback: {
     value: releaseCallback

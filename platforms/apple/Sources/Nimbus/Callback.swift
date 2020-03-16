@@ -58,7 +58,7 @@ class Callback: Callable {
                     return element;
                   }
                 });
-                __nimbus.callCallback('\(self.callbackId)', mappedJsonArgs);
+                __nimbus.callCallback('\(self.callbackId)', ...mappedJsonArgs);
             """)
         }
         return ()
