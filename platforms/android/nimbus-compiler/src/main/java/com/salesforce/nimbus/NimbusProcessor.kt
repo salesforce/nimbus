@@ -183,7 +183,7 @@ class NimbusProcessor : AbstractProcessor() {
                                         CodeBlock.builder()
                                             .add("if (webView != null) {\n")
                                             .indent()
-                                            .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "__nimbus.callCallback2", "args")
+                                            .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "__nimbus.callCallback", "args")
                                             .unindent()
                                             .add("}\n")
                                             .addStatement("return null")
