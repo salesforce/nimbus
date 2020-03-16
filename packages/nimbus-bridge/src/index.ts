@@ -150,7 +150,7 @@ let promisify = (src: any): void => {
 
 let callCallback = (callbackId: string, ...args: any[]): void => {
   if (uuidsToCallbacks[callbackId]) {
-    uuidsToCallbacks[callbackId](args);
+    uuidsToCallbacks[callbackId](...args);
   }
 };
 
