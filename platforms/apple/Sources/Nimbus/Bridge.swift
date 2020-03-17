@@ -8,13 +8,16 @@
 import Foundation
 import WebKit
 
-public class NimbusBridge: NSObject {
-    @available(*, deprecated, message: "Use `NimbusBridge.addPlugin()` instead")
+@available(*, deprecated, message: "Use `Bridge` instead")
+public typealias NimbusBridge = Bridge
+
+public class Bridge: NSObject {
+    @available(*, deprecated, message: "Use `Bridge.addPlugin()` instead")
     public func addExtension(ext: NimbusExtension) {
         plugins.append(ext)
     }
 
-    @available(*, deprecated, message: "Use `NimbusBridge.addPlugin()` instead")
+    @available(*, deprecated, message: "Use `Bridge.addPlugin()` instead")
     public func addExtension<T: NimbusExtension>(_ ext: T) {
         plugins.append(ext)
     }
@@ -146,7 +149,7 @@ public class NimbusBridge: NSObject {
     weak var webView: WKWebView?
 }
 
-extension NimbusBridge: WKScriptMessageHandler {
+extension Bridge: WKScriptMessageHandler {
     public func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any] else { return }
         guard let method = body["method"] as? String else { return }

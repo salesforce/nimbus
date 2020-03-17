@@ -30,7 +30,7 @@
 		291A860721E530BC00510832 /* Nimbus.h in Headers */ = {isa = PBXBuildFile; fileRef = 291A860521E530BC00510832 /* Nimbus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; };
 		291A860B21E530BC00510832 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		291A861021E531B200510832 /* NimbusBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* NimbusBridge.swift */; };
+		291A861021E531B200510832 /* Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* Bridge.swift */; };
 		291A861121E531B200510832 /* NimbusExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FD21E5302C00510832 /* NimbusExtension.swift */; };
 		2922900F241165570014B95A /* InvocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922900E241165570014B95A /* InvocationTests.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
@@ -59,7 +59,7 @@
 		298503D9228DEAAC00C1071E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503D8228DEAAC00C1071E /* Binder.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F3839B234BC61000BF854B /* ParameterErrorTests.swift */; };
-		29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */; };
+		29F8D60F223AF857005C5AC1 /* DeviceInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceInfoPlugin.swift */; };
 		682D46B3234158860049B636 /* CallableTests.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 682D46B2234158860049B636 /* CallableTests.swifttemplate */; };
 		682D46B5234160650049B636 /* CallableTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682D46B4234160650049B636 /* CallableTests.generated.swift */; };
 		68B855F2233EE7FD00D1F243 /* BinderTests.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B855F1233EE7FD00D1F243 /* BinderTests.generated.swift */; };
@@ -180,7 +180,7 @@
 		291A85EF21E52D4000510832 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		291A85F221E52D4000510832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		291A85F421E52D4000510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		291A85FC21E5302C00510832 /* NimbusBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusBridge.swift; sourceTree = "<group>"; };
+		291A85FC21E5302C00510832 /* Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridge.swift; sourceTree = "<group>"; };
 		291A85FD21E5302C00510832 /* NimbusExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusExtension.swift; sourceTree = "<group>"; };
 		291A860321E530BC00510832 /* Nimbus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nimbus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		291A860521E530BC00510832 /* Nimbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Nimbus.h; sourceTree = "<group>"; };
@@ -221,7 +221,7 @@
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		29F3839B234BC61000BF854B /* ParameterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterErrorTests.swift; sourceTree = "<group>"; };
-		29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceExtension.swift; sourceTree = "<group>"; };
+		29F8D60E223AF857005C5AC1 /* DeviceInfoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoPlugin.swift; sourceTree = "<group>"; };
 		63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
 		682D46B2234158860049B636 /* CallableTests.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = text; path = CallableTests.swifttemplate; sourceTree = "<group>"; };
 		682D46B4234160650049B636 /* CallableTests.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableTests.generated.swift; sourceTree = "<group>"; };
@@ -378,7 +378,7 @@
 			children = (
 				68FA8B8D233DE5DD00682431 /* Generated */,
 				68FA8B84233DE53300682431 /* Templates */,
-				29F8D60D223AF83B005C5AC1 /* Extensions */,
+				29F8D60D223AF83B005C5AC1 /* Plugin */,
 				298503D8228DEAAC00C1071E /* Binder.swift */,
 				294433452200FA3700E6D084 /* Callable.swift */,
 				294433422200FA3700E6D084 /* Callback.swift */,
@@ -387,7 +387,7 @@
 				294433442200FA3700E6D084 /* EncodableValue.swift */,
 				291A860621E530BC00510832 /* Info.plist */,
 				291A860521E530BC00510832 /* Nimbus.h */,
-				291A85FC21E5302C00510832 /* NimbusBridge.swift */,
+				291A85FC21E5302C00510832 /* Bridge.swift */,
 				291A85FD21E5302C00510832 /* NimbusExtension.swift */,
 				29264F5D24197E4F00D68664 /* Plugin.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
@@ -463,12 +463,12 @@
 			path = NimbusDesktopUITests;
 			sourceTree = "<group>";
 		};
-		29F8D60D223AF83B005C5AC1 /* Extensions */ = {
+		29F8D60D223AF83B005C5AC1 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				29F8D60E223AF857005C5AC1 /* DeviceExtension.swift */,
+				29F8D60E223AF857005C5AC1 /* DeviceInfoPlugin.swift */,
 			);
-			path = Extensions;
+			path = Plugin;
 			sourceTree = "<group>";
 		};
 		68B855EC233E750800D1F243 /* Generated */ = {
@@ -1003,10 +1003,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29F8D60F223AF857005C5AC1 /* DeviceExtension.swift in Sources */,
+				29F8D60F223AF857005C5AC1 /* DeviceInfoPlugin.swift in Sources */,
 				298503D9228DEAAC00C1071E /* Binder.swift in Sources */,
 				68FA8B94233DEAF500682431 /* Binders.generated.swift in Sources */,
-				291A861021E531B200510832 /* NimbusBridge.swift in Sources */,
+				291A861021E531B200510832 /* Bridge.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
 				294433492200FA3700E6D084 /* EncodableValue.swift in Sources */,

@@ -31,5 +31,5 @@ class ViewController: UIViewController {
     }
 
     lazy var webView = WKWebView(frame: .zero)
-    let bridge = NimbusBridge()
+    let bridge = Bridge()
 }

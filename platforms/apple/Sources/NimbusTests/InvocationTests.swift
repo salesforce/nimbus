@@ -13,7 +13,7 @@ import XCTest
 class InvocationTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
-    var bridge = NimbusBridge()
+    var bridge = Bridge()
 
     override func setUp() {
         webView = WKWebView()
