@@ -8,20 +8,7 @@
 import Foundation
 import WebKit
 
-@available(*, deprecated, message: "Use `Bridge` instead")
-public typealias NimbusBridge = Bridge
-
 public class Bridge: NSObject {
-    @available(*, deprecated, message: "Use `Bridge.addPlugin()` instead")
-    public func addExtension(ext: NimbusExtension) {
-        plugins.append(ext)
-    }
-
-    @available(*, deprecated, message: "Use `Bridge.addPlugin()` instead")
-    public func addExtension<T: NimbusExtension>(_ ext: T) {
-        plugins.append(ext)
-    }
-
     public func addPlugin<T: Plugin>(_ plugin: T) {
         plugins.append(plugin)
     }
