@@ -7,6 +7,11 @@ apply plugin: 'jacoco-android'
 android {
     compileSdkVersion 29
 
+    def versionFile = file('../../../lerna.json')
+    def parsedVersion = new groovy.json.JsonSlurper().parseText(versionFile.text)
+    project.version = parsedVersion.version.toString()
+    logger.warn("nimbus version: " + project.version.toString())
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
