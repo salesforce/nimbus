@@ -1,6 +1,15 @@
+require 'json'
+
+root = __dir__
+package_version = lambda do |filename = 'lerna.json'|
+  path = File.join(root, filename)
+  JSON.load(File.read(path))['version']
+end
+
+version = package_version.call
 Pod::Spec.new do |s|
   s.name             = 'NimbusBridge'
-  s.version          = '0.99.1'
+  s.version          = version
   s.summary          = 'Nimbus is a framework for building cross-platform hybrid applications.'
   s.homepage         = 'https://github.com/salesforce/nimbus'
   s.source           = { :git => 'https://github.com/salesforce/nimbus.git', :tag => s.version.to_s }
