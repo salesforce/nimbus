@@ -587,6 +587,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 291A860C21E530BC00510832 /* Build configuration list for PBXNativeTarget "Nimbus" */;
 			buildPhases = (
+				CC13116724256DBA002D698D /* Set Version */,
 				29CD07F62214BC9D007D3AF3 /* Run SwiftLint */,
 				291A85FE21E530BC00510832 /* Headers */,
 				291A85FF21E530BC00510832 /* Sources */,
@@ -698,6 +699,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CC97225423E4834400F899E7 /* Build configuration list for PBXNativeTarget "NimbusJS" */;
 			buildPhases = (
+				CC131168242571DE002D698D /* Set Version */,
 				CC97223823E4834400F899E7 /* Headers */,
 				CC97223923E4834400F899E7 /* Sources */,
 				CC97223A23E4834400F899E7 /* Frameworks */,
@@ -983,6 +985,42 @@
 			shellPath = "/bin/bash -l";
 			shellScript = "pushd ${SRCROOT}/../..\nnpm install\n";
 			showEnvVarsInLog = 0;
+		};
+		CC13116724256DBA002D698D /* Set Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Set Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FULL_VERSION=\"$(grep -Ei '\\\"version\\\": \\\"([.0-9]+)\\\"' ../../lerna.json)\"\nVERSION=\"$(echo ${FULL_VERSION}\\ | grep -E -o '[0-9]+.[0-9]+.[0-9]')\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${VERSION}\" $BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\n";
+		};
+		CC131168242571DE002D698D /* Set Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Set Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FULL_VERSION=\"$(grep -Ei '\\\"version\\\": \\\"([.0-9]+)\\\"' ../../lerna.json)\"\nVERSION=\"$(echo ${FULL_VERSION}\\ | grep -E -o '[0-9]+.[0-9]+.[0-9]')\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${VERSION}\" $BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
