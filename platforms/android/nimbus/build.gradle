@@ -10,7 +10,6 @@ android {
     def versionFile = file('../../../lerna.json')
     def parsedVersion = new groovy.json.JsonSlurper().parseText(versionFile.text)
     project.version = parsedVersion.version.toString()
-    logger.warn("nimbus version: " + project.version.toString())
 
     defaultConfig {
         minSdkVersion 21
