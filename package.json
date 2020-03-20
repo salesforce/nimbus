@@ -6,7 +6,7 @@
     },
     "scripts": {
         "prepare": "lerna bootstrap",
-        "bump": "lerna version --no-git-tag-version --no-push; ./sync-apple-versions.sh",
+        "bump": "lerna version --no-git-tag-version --no-push",
         "lint": "lerna run lint",
         "serve:demo": "lerna run serve --scope demo-www --stream",
         "clean": "lerna run clean"
