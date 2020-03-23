@@ -1,19 +1,12 @@
 ---
-clean:
+clean: true
 min_acl: public
+author: Salesforce, inc.
+author_url: https://opensource.salesforce.com
 github_url: https://github.com/salesforce/nimbus
-author: Salesforce
-author_url: https://salesforce.com
-output: ../../docs/dist/docs/api/swift
+output: ./.build/docs
+theme: fullwidth
+hide_documentation_coverage: true
+swift_build_tool: spm
+build_tool_arguments: ["--build-path", "./.build"]
 module: Nimbus
-xcodebuild_arguments:
-  [
-    "-workspace",
-    "Nimbus.xcworkspace",
-    "-scheme",
-    "Nimbus",
-    "-sdk",
-    "iphonesimulator",
-  ]
----
-
