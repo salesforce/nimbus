@@ -192,6 +192,11 @@ jobs:
           working_directory: platforms/android
           command: ./gradlew ktlint
 
+      - run:
+          name: Build Kotlin Docs
+          working_directory: platforms/android
+          command: ./gradlew dokka
+
       - store_artifacts:
           path: platforms/android/nimbus/build/reports
           destination: reports
@@ -209,6 +214,7 @@ jobs:
           root: .
           paths:
             - platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/nimbus/build/dokka
 
   build-and-test-ts:
     docker:
