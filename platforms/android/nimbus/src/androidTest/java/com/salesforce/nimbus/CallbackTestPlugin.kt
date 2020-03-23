@@ -3,41 +3,41 @@ package com.salesforce.nimbus
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Extension(name = "callbackTestExtension")
-class CallbackTestExtension : NimbusExtension {
-    @ExtensionMethod
+@PluginOptions(name = "callbackTestPlugin")
+class CallbackTestPlugin : Plugin {
+    @BoundMethod
     fun callbackWithSingleParam(arg: (param0: MochaTests.MochaMessage) -> Unit) {
         arg(MochaTests.MochaMessage())
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithTwoParams(arg: (param0: MochaTests.MochaMessage, param1: MochaTests.MochaMessage) -> Unit) {
         var mochaMessage = MochaTests.MochaMessage("int param is 6", 6)
         arg(MochaTests.MochaMessage(), mochaMessage)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithSinglePrimitiveParam(arg: (param0: Int) -> Unit) {
         arg(777)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithTwoPrimitiveParams(arg: (param0: Int, param1: Int) -> Unit) {
         arg(777, 888)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: MochaTests.MochaMessage) -> Unit) {
         arg(777, MochaTests.MochaMessage())
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithPrimitiveAndArrayParams(arg: (param0: Int, param1: JSONArray) -> Unit) {
         var ja = JSONArray(listOf("one", "two", "three"))
         arg(777, ja)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithPrimitiveAndDictionaryParams(arg: (param0: Int, param1: JSONObject) -> Unit) {
         var jo = JSONObject()
         jo.put("one", 1)
@@ -46,20 +46,20 @@ class CallbackTestExtension : NimbusExtension {
         arg(777, jo)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithArrayAndUddtParams(arg: (param0: JSONArray, param1: MochaTests.MochaMessage) -> Unit) {
         var ja = JSONArray(listOf("one", "two", "three"))
         arg(ja, MochaTests.MochaMessage())
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithArrayAndArrayParams(arg: (param0: JSONArray, param1: JSONArray) -> Unit) {
         var ja0 = JSONArray(listOf("one", "two", "three"))
         var ja1 = JSONArray(listOf("four", "five", "six"))
         arg(ja0, ja1)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithArrayAndDictionaryParams(arg: (param0: JSONArray, param1: JSONObject) -> Unit) {
         var ja = JSONArray(listOf("one", "two", "three"))
         var jo = JSONObject()
@@ -69,7 +69,7 @@ class CallbackTestExtension : NimbusExtension {
         arg(ja, jo)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: MochaTests.MochaMessage) -> Unit) {
         var jo = JSONObject()
         jo.put("one", 1)
@@ -78,7 +78,7 @@ class CallbackTestExtension : NimbusExtension {
         arg(jo, MochaTests.MochaMessage())
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithDictionaryAndArrayParams(arg: (param0: JSONObject, param1: JSONArray) -> Unit) {
         var jo = JSONObject()
         jo.put("one", 1)
@@ -88,7 +88,7 @@ class CallbackTestExtension : NimbusExtension {
         arg(jo, ja)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun callbackWithDictionaryAndDictionaryParams(arg: (param0: JSONObject, param1: JSONObject) -> Unit) {
         var jo0 = JSONObject()
         jo0.put("one", 1)

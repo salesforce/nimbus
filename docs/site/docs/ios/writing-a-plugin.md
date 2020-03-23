@@ -1,57 +1,61 @@
 ---
 layout: docs
 ---
+
 # Writing a Nimbus Plugin
 
 Plugins are how native functionality is exposed to hybrid features. Typically, plugins are small and have a single responsibility. Plugins are intended to be composable and you should keep this in mind while building your own plugins.
 
-Making a plugin means building a class in Swift that conforms to the `NimbusExtension` protocol shown below. Any conforming types must be of a class type in order to implement the protocol. Your plugin should import `WebKit` and `Nimbus`.
+Making a plugin means building a class in Swift that conforms to the `Nimbus.Plugin` protocol. Any conforming types must be of a class type in order to implement the protocol. Your plugin should import `WebKit` and `Nimbus`.
 
-```swift
-@objc public protocol NimbusExtension {
-    func bindToWebView(webView: WKWebView)
-}
-```
-_____
-In the `bindToWebView` implementation, you should call `addConnection` on `WKWebView` which is made available from an extension in the `Nimbus` framework.
+---
+
+In the `bind(to:bridge:)` implementation, you should call `addConnection` on `WKWebView` which is made available from an extension in the `Nimbus` framework.
 
 ```swift
 let connection = webView.addConnection(to: self, as: "dharmaPlugin")
 ```
 
-The first parameter to `addConnection` specifies which instance the connection is mapped to. The second parameter specifies what the name this connection will be available as in the webview. This will be the object your javascript code will call functions on to access functionality exposed by this plugin.
-_____
-Then call `bind` on the resulting connection for each function you want to be bound to the webview.
+The first parameter to `addConnection` specifies which instance the connection is mapped to. The second parameter specifies what the name this connection will be available as in the web view. This will be the object your javascript code will call functions on to access functionality exposed by this plugin.
+
+---
+
+Then call `bind` on the resulting connection for each function you want to be bound to the web view.
 
 ```swift
 connection.bind(DharmaPlugin.theNumbers, as: "theNumbers")
 ```
 
 The first parameter is the method you want to bind, and the second parameter is the name you want the method bound to. This will be the function name your javascript code will call to invoke this method.
-_____
+
+---
+
 You can bind methods with a return value. On the javascript side, a bound method with a return value will return a promise, which is resolved when the bound method returns.
 
 ```javascript
-dharmaPlugin.theNumbers()
-  .then(function (theNumbers){
-    alert("numbers: " + theNumbers);
-  });
+dharmaPlugin.theNumbers().then(theNumbers => {
+    alert(`numbers: ${theNumbers}`);
+});
 ```
-_____
+
+---
+
 You can bind methods that take a closure as their last parameter. On the javascript side, the function passed as the last parameter is treated as a completion block and is invoked when the completion block is called on the native side.
 
 ```javascript
-dharmaPlugin.checkBoat("Penny", function (boatName) {
-    alert(boatName + " boat");
-  });
+dharmaPlugin.checkBoat("Penny", boatName => {
+    alert(`${boatName} boat`);
+});
 ```
 
 Any native parameters or return types must conform to `Encodable` in order for them to be bound. You can bind methods with up to 5 parameters, the last of which can be a callback. If you need more parameters than is available, it's recommended that you build an `Encodable` struct to wrap the necessary context.
 
 The native plugin and example javascript calling that plugin are included in their entirety below.
-_____
+
+---
 
 ##### DharmaPlugin.swift
+
 ```swift
 import Foundation
 import WebKit
@@ -69,8 +73,8 @@ class DharmaPlugin {
     }
 }
 
-extension DharmaPlugin: NimbusExtension {
-    func bindToWebView(webView: WKWebView) {
+extension DharmaPlugin: Plugin {
+    func bind(to webView: WKWebView, bridge: Bridge) {
         let connection = webView.addConnection(to: self, as: "dharmaPlugin")
         connection.bind(DharmaPlugin.theNumbers, as: "theNumbers")
         connection.bind(DharmaPlugin.checkBoat, as: "checkBoat")
@@ -88,8 +92,7 @@ extension DharmaPlugin {
 ```
 
 ```html
-<head>
-</head>
+<head> </head>
 <style>
     .big {
         width: 100%;
@@ -98,33 +101,33 @@ extension DharmaPlugin {
 </style>
 <body>
     <script>
-    function callNumbers() {
-        if (typeof dharmaPlugin !== 'undefined') {
-            dharmaPlugin.theNumbers().then(function (theNumbers){
-              alert("numbers: " + theNumbers);
-            });
+        function callNumbers() {
+            if (typeof dharmaPlugin !== "undefined") {
+                dharmaPlugin.theNumbers().then(function(theNumbers) {
+                    alert("numbers: " + theNumbers);
+                });
+            }
         }
-    }
-    function checkPennys() {
-        if (typeof dharmaPlugin !== 'undefined') {
-        dharmaPlugin.checkBoat("Penny", function (boatName) {
-          alert(boatName + " boat");
-          });
+        function checkPennys() {
+            if (typeof dharmaPlugin !== "undefined") {
+                dharmaPlugin.checkBoat("Penny", function(boatName) {
+                    alert(boatName + " boat");
+                });
+            }
         }
-    }
-    function checkJacks() {
-        if (typeof dharmaPlugin !== 'undefined') {
-          dharmaPlugin.checkBoat("Jack", function (boatName) {
-            alert(boatName + " boat");
-          });
+        function checkJacks() {
+            if (typeof dharmaPlugin !== "undefined") {
+                dharmaPlugin.checkBoat("Jack", function(boatName) {
+                    alert(boatName + " boat");
+                });
+            }
         }
-    }
     </script>
     <h1>Here is the page</h1>
     <button class="big" onclick="callNumbers()">Numbers</button>
-    <br>
+    <br />
     <button class="big" onclick="checkPennys()">Penny's</button>
-    <br>
+    <br />
     <button class="big" onclick="checkJacks()">Jack's</button>
 </body>
 ```

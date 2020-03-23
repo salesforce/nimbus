@@ -12,12 +12,12 @@ import "./callback-encodable-tests";
 
 const { plugins } = nimbus;
 
-let callbackTestExtension = plugins.callbackTestExtension;
+let callbackTestPlugin = plugins.callbackTestPlugin;
 
-if (callbackTestExtension !== undefined) {
-  callbackTestExtension.addOne = (x: number) => Promise.resolve(x + 1);
-  callbackTestExtension.failWith = (message: string) => Promise.reject(message);
-  callbackTestExtension.wait = (milliseconds: number) =>
+if (callbackTestPlugin !== undefined) {
+  callbackTestPlugin.addOne = (x: number) => Promise.resolve(x + 1);
+  callbackTestPlugin.failWith = (message: string) => Promise.reject(message);
+  callbackTestPlugin.wait = (milliseconds: number) =>
     new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 

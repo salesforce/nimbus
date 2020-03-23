@@ -42,34 +42,34 @@ class NimbusProcessor : AbstractProcessor() {
         val extensionNames = hashSetOf<String>()
 
         // get all extension classes
-        env.getElementsAnnotatedWith(Extension::class.java).forEach { extensionElement ->
+        env.getElementsAnnotatedWith(PluginOptions::class.java).forEach { extensionElement ->
 
             // make sure this is a class
             if (extensionElement.kind != ElementKind.CLASS) {
-                error(extensionElement, "Only classes can be annotated with ${Extension::class.java.simpleName}.")
+                error(extensionElement, "Only classes can be annotated with ${PluginOptions::class.java.simpleName}.")
                 return true
             }
 
-            // make sure it implements NimbusExtension
-            if (types.directSupertypes(extensionElement.asType()).map { it.toString() }.none { it == "com.salesforce.nimbus.NimbusExtension" }) {
-                error(extensionElement, "${Extension::class.java.simpleName} class must extend com.salesforce.nimbus.NimbusExtension.")
+            // make sure it implements `Plugin`
+            if (types.directSupertypes(extensionElement.asType()).map { it.toString() }.none { it == "com.salesforce.nimbus.Plugin" || it == "com.salesforce.nimbus.NimbusExtension" }) {
+                error(extensionElement, "${PluginOptions::class.java.simpleName} class must extend com.salesforce.nimbus.Plugin or com.salesforce.nimbus.NimbusExtension.")
                 return true
             }
 
             // get extension name
-            val extensionName = extensionElement.getAnnotation(Extension::class.java).name
+            val extensionName = extensionElement.getAnnotation(PluginOptions::class.java).name
 
             // check if we already have used this name
             if (extensionName in extensionNames) {
-                error(extensionElement, "A ${Extension::class.java.simpleName} with name $extensionName already exists.")
+                error(extensionElement, "A ${PluginOptions::class.java.simpleName} with name $extensionName already exists.")
                 return true
             } else {
                 extensionNames.add(extensionName)
             }
 
-            // get all methods annotated with ExtensionMethod
+            // get all methods annotated with BoundMethod
             val extensionMethodsElements = extensionElement.enclosedElements.filter {
-                it.kind == ElementKind.METHOD && it.getAnnotation(ExtensionMethod::class.java) != null
+                it.kind == ElementKind.METHOD && it.getAnnotation(BoundMethod::class.java) != null
             }
 
             extensionMethodsElements.groupBy { it.enclosingElement }.forEach { (element, methods) ->
@@ -80,7 +80,7 @@ class NimbusProcessor : AbstractProcessor() {
                 val webViewClassName = ClassName.get("android.webkit", "WebView")
                 // the binder needs to capture the bound target to pass through calls to it
                 val type = TypeSpec.classBuilder(typeName)
-                    .addSuperinterface(ClassName.get("com.salesforce.nimbus", "NimbusBinder"))
+                    .addSuperinterface(ClassName.get("com.salesforce.nimbus", "Binder"))
                     .addModifiers(Modifier.PUBLIC)
                     .addMethod(MethodSpec.constructorBuilder()
                         .addParameter(TypeName.get(element.asType()), "target")
@@ -89,20 +89,20 @@ class NimbusProcessor : AbstractProcessor() {
                         .build())
                     .addField(TypeName.get(element.asType()), "target", Modifier.FINAL, Modifier.PRIVATE)
                     .addField(webViewClassName, "webView", Modifier.PRIVATE)
-                    .addField(FieldSpec.builder(stringClassName, "extensionName", Modifier.FINAL, Modifier.PRIVATE)
+                    .addField(FieldSpec.builder(stringClassName, "pluginName", Modifier.FINAL, Modifier.PRIVATE)
                         .initializer("\"$extensionName\"")
                         .build())
-                    .addMethod(MethodSpec.methodBuilder("getExtension")
+                    .addMethod(MethodSpec.methodBuilder("getPlugin")
                         .addAnnotation(Override::class.java)
                         .addModifiers(Modifier.PUBLIC)
-                        .returns(ClassName.get("com.salesforce.nimbus", "NimbusExtension"))
+                        .returns(ClassName.get("com.salesforce.nimbus", "Plugin"))
                         .addStatement("return target")
                         .build())
-                    .addMethod(MethodSpec.methodBuilder("getExtensionName")
+                    .addMethod(MethodSpec.methodBuilder("getPluginName")
                         .addAnnotation(Override::class.java)
                         .addModifiers(Modifier.PUBLIC)
                         .returns(stringClassName)
-                        .addStatement("return extensionName")
+                        .addStatement("return pluginName")
                         .build())
                     .addMethod(MethodSpec.methodBuilder("setWebView")
                         .addAnnotation(Override::class.java)
@@ -300,8 +300,8 @@ class NimbusProcessor : AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(
-            ExtensionMethod::class.java.canonicalName,
-            Extension::class.java.canonicalName)
+            BoundMethod::class.java.canonicalName,
+            PluginOptions::class.java.canonicalName)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {

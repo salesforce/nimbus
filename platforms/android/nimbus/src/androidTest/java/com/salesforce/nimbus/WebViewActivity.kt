@@ -20,7 +20,7 @@ class WebViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web_view)
 
-        webView = findViewById(R.id.webView) as WebView
+        webView = findViewById(R.id.webView)
         webView.settings.javaScriptEnabled = true
     }
 }

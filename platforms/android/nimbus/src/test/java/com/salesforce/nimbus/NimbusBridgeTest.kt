@@ -16,28 +16,28 @@ import org.junit.Test
  */
 class NimbusBridgeTest {
 
-    private lateinit var bridge: NimbusBridge
+    private lateinit var bridge: Bridge
     private val mockWebSettings = mockk<WebSettings>(relaxed = true, relaxUnitFun = true) {
         every { javaScriptEnabled } returns false
     }
     private val mockWebView = mockk<WebView>(relaxed = true) {
         every { settings } returns mockWebSettings
     }
-    private val mockExtension1 = mockk<Extension1>(relaxed = true)
-    private val mockExtension1Binder = mockk<Extension1Binder>(relaxed = true) {
-        every { getExtension() } returns mockExtension1
-        every { getExtensionName() } returns "Test"
+    private val mockPlugin1 = mockk<Plugin1>(relaxed = true)
+    private val mockPlugin1Binder = mockk<Plugin1Binder>(relaxed = true) {
+        every { getPlugin() } returns mockPlugin1
+        every { getPluginName() } returns "Test"
     }
-    private val mockExtension2 = mockk<Extension2>(relaxed = true)
-    private val mockExtension2Binder = mockk<Extension2Binder>(relaxed = true) {
-        every { getExtension() } returns mockExtension2
-        every { getExtensionName() } returns "Test2"
+    private val mockPlugin2 = mockk<Plugin2>(relaxed = true)
+    private val mockPlugin2Binder = mockk<Plugin2Binder>(relaxed = true) {
+        every { getPlugin() } returns mockPlugin2
+        every { getPluginName() } returns "Test2"
     }
 
     @Before
     fun setUp() {
-        bridge = NimbusBridge()
-        bridge.add(mockExtension1Binder, mockExtension2Binder)
+        bridge = Bridge()
+        bridge.add(mockPlugin1Binder, mockPlugin2Binder)
     }
 
     @Test
@@ -53,24 +53,24 @@ class NimbusBridgeTest {
     }
 
     @Test
-    fun attachAllowsExtensionsToCustomize() {
+    fun attachAllowsPluginsToCustomize() {
         bridge.attach(mockWebView)
-        verify { mockExtension1.customize(mockWebView) }
-        verify { mockExtension2.customize(mockWebView) }
+        verify { mockPlugin1.customize(mockWebView, bridge) }
+        verify { mockPlugin2.customize(mockWebView, bridge) }
     }
 
     @Test
     fun attachSetsWebViewOnBinders() {
         bridge.attach(mockWebView)
-        verify { mockExtension1Binder.setWebView(mockWebView) }
-        verify { mockExtension2Binder.setWebView(mockWebView) }
+        verify { mockPlugin1Binder.setWebView(mockWebView) }
+        verify { mockPlugin2Binder.setWebView(mockWebView) }
     }
 
     @Test
     fun attachAddsBinderJavascriptInterfaces() {
         bridge.attach(mockWebView)
-        verify { mockWebView.addJavascriptInterface(ofType(Extension1Binder::class), eq("_Test")) }
-        verify { mockWebView.addJavascriptInterface(ofType(Extension2Binder::class), eq("_Test2")) }
+        verify { mockWebView.addJavascriptInterface(ofType(Plugin1Binder::class), eq("_Test")) }
+        verify { mockWebView.addJavascriptInterface(ofType(Plugin2Binder::class), eq("_Test2")) }
     }
 
     @Test
@@ -88,19 +88,19 @@ class NimbusBridgeTest {
     }
 
     @Test
-    fun detachCleansUpExtensions() {
+    fun detachCleansUpPlugins() {
         bridge.attach(mockWebView)
         bridge.detach()
-        verify { mockExtension1.cleanup(mockWebView) }
-        verify { mockExtension2.cleanup(mockWebView) }
+        verify { mockPlugin1.cleanup(mockWebView, bridge) }
+        verify { mockPlugin2.cleanup(mockWebView, bridge) }
     }
 
     @Test
     fun detachSetsWebViewToNullOnBinders() {
         bridge.attach(mockWebView)
         bridge.detach()
-        verify { mockExtension1Binder.setWebView(null) }
-        verify { mockExtension2Binder.setWebView(null) }
+        verify { mockPlugin1Binder.setWebView(null) }
+        verify { mockPlugin2Binder.setWebView(null) }
     }
 
     @Test
@@ -127,26 +127,26 @@ class NimbusBridgeTest {
     }
 
     @Test
-    fun nativeExtensionNamesReturnsJsonArrayStringOfNames() {
+    fun nativePluginNamesReturnsJsonArrayStringOfNames() {
         bridge.attach(mockWebView)
-        val nativeExtensionNames = bridge.nativeExtensionNames()
-        assertEquals("[\"Test\",\"Test2\"]", nativeExtensionNames)
+        val nativePluginNames = bridge.nativePluginNames()
+        assertEquals("[\"Test\",\"Test2\"]", nativePluginNames)
     }
 }
 
-@Extension(name = "Test")
-class Extension1 : NimbusExtension {
+@PluginOptions(name = "Test")
+class Plugin1 : Plugin {
 
-    @ExtensionMethod
+    @BoundMethod
     fun foo(): String {
         return "foo"
     }
 }
 
-@Extension(name = "Test2")
-class Extension2 : NimbusExtension {
+@PluginOptions(name = "Test2")
+class Plugin2 : Plugin {
 
-    @ExtensionMethod
+    @BoundMethod
     fun foo(): String {
         return "foo"
     }

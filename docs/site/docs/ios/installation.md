@@ -40,7 +40,7 @@ import Nimbus
 
 ```swift
 let bridge = NimbusBridge()
-bridge.addExtension(DeviceExtension())
+bridge.addPlugin(DeviceInfoPlugin())
 bridge.attach(to: webView)
 webView.load(URLRequest(url: appURL))
 ```

@@ -12,6 +12,12 @@ public protocol NimbusExtension: Plugin {
     func bindToWebView(webView: WKWebView)
 }
 
+extension Plugin where Self: NimbusExtension {
+    public func bind(to webView: WKWebView, bridge: Bridge) {
+        bindToWebView(webView: webView)
+    }
+}
+
 @available(*, deprecated, message: "Use `Bridge` instead")
 public typealias NimbusBridge = Bridge
 

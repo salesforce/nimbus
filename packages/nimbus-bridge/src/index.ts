@@ -6,7 +6,7 @@
 // https://opensource.org/licenses/BSD-3-Clause
 //
 
-export { DeviceExtension, DeviceInfo } from "./extensions/device";
+export { DeviceInfoPlugin, DeviceInfo } from "./plugins/device";
 
 export interface Nimbus {
   // Store any plugins injected by the native app here.
@@ -65,7 +65,7 @@ export interface Nimbus {
 declare global {
   interface NimbusNative {
     makeCallback(callbackId: string): any;
-    nativeExtensionNames(): string;
+    nativePluginNames(): string;
     pageUnloaded(): void;
   }
   var _nimbus: NimbusNative;
@@ -214,12 +214,9 @@ let unsubscribeMessage = (message: string, listener: Function): void => {
 };
 
 // Android plugin import
-if (
-  typeof _nimbus !== "undefined" &&
-  _nimbus.nativeExtensionNames !== undefined
-) {
+if (typeof _nimbus !== "undefined" && _nimbus.nativePluginNames !== undefined) {
   // we're on Android, need to wrap native extension methods
-  let extensionNames = JSON.parse(_nimbus.nativeExtensionNames());
+  let extensionNames = JSON.parse(_nimbus.nativePluginNames());
   extensionNames.forEach((extension: string): void => {
     Object.assign(plugins, {
       [extension]: Object.assign(
@@ -236,9 +233,9 @@ if (typeof __nimbusPluginExports !== "undefined") {
     let plugin = {};
     __nimbusPluginExports[pluginName].forEach((method: string): void => {
       Object.assign(plugin, {
-        [method]: function (): Promise<any> {
+        [method]: function(): Promise<any> {
           let functionArgs = cloneArguments(Array.from(arguments));
-          return new Promise(function (resolve, reject): void {
+          return new Promise(function(resolve, reject): void {
             var promiseId = uuidv4();
             uuidsToPromises[promiseId] = { resolve, reject };
             window.webkit.messageHandlers[pluginName].postMessage({

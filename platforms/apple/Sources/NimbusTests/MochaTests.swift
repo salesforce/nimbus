@@ -76,8 +76,8 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         connection.bind(MochaTestBridge.ready, as: "ready")
         connection.bind(MochaTestBridge.sendMessage, as: "sendMessage")
         connection.bind(MochaTestBridge.onTestFail, as: "onTestFail")
-        let callbackTestExtension = CallbackTestExtension()
-        callbackTestExtension.bind(to: webView, bridge: Bridge())
+        let callbackTestPlugin = CallbackTestPlugin()
+        callbackTestPlugin.bind(to: webView, bridge: Bridge())
 
         loadWebViewAndWait()
 
@@ -98,7 +98,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
     }
 }
 
-public class CallbackTestExtension {
+public class CallbackTestPlugin {
     func callbackWithSingleParam(completion: @escaping (MochaTests.MochaMessage) -> Swift.Void) {
         let mochaMessage = MochaTests.MochaMessage()
         completion(mochaMessage)
@@ -120,13 +120,13 @@ public class CallbackTestExtension {
     }
 }
 
-extension CallbackTestExtension: Plugin {
+extension CallbackTestPlugin: Plugin {
     public func bind(to webView: WKWebView, bridge: Bridge) {
-        let connection = webView.addConnection(to: self, as: "callbackTestExtension")
-        connection.bind(CallbackTestExtension.callbackWithSingleParam, as: "callbackWithSingleParam")
-        connection.bind(CallbackTestExtension.callbackWithTwoParams, as: "callbackWithTwoParams")
-        connection.bind(CallbackTestExtension.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
-        connection.bind(CallbackTestExtension.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
-        connection.bind(CallbackTestExtension.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        let connection = webView.addConnection(to: self, as: "callbackTestPlugin")
+        connection.bind(CallbackTestPlugin.callbackWithSingleParam, as: "callbackWithSingleParam")
+        connection.bind(CallbackTestPlugin.callbackWithTwoParams, as: "callbackWithTwoParams")
+        connection.bind(CallbackTestPlugin.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
+        connection.bind(CallbackTestPlugin.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
+        connection.bind(CallbackTestPlugin.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
     }
 }

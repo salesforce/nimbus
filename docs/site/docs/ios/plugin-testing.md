@@ -1,6 +1,7 @@
 ---
 layout: docs
 ---
+
 # Plugin Testing Best Practices
 
 Testing your Nimbus plugins, like all code, is important. Since plugins should, ideally, be well contained and have a single responsibility, this makes them ideal for good unit testing. Since Nimbus is simply binding existing functions to a webview, plugin business logic can be tested independently with `XCTest` and don't, necessarily, need to be tested over the Nimbus bridge. This means that all of your tests can be focused and isolated and you can test your plugins unique logic without having to do so across the bridge.
@@ -12,6 +13,7 @@ This guide will give an example of testing with `XCTest` and a purpose-built Nim
 # XCTest
 
 The basic strategy for testing with `XCTest` is as follows:
+
 1. Prepare a Nimbus Bridge
     - Load the plugin you wish to test
     - Load a shim plugin that you can use to receive test results
@@ -29,7 +31,7 @@ class DharmaPluginTests: NimbusPluginTestsBase {
     override func setUp() {
         super.setUp()
         plugin = DharmaPlugin()
-        nimbus.addExtension(plugin)
+        nimbus.addplugin(plugin)
         loadWebViewAndWait()
     }
 
@@ -53,8 +55,9 @@ class DharmaPluginTests: NimbusPluginTestsBase {
 ```
 
 In the above example, the `testBridge` referenced in the javascript executed on the web view is the result of binding the below shim plugin to the bridge:
+
 ```swift
-class NimbusTestBridge: NimbusExtension {
+class NimbusTestBridge: Plugin {
     var currentExpectation: XCTestExpectation?
     var currentResult: Any?
 
@@ -82,7 +85,7 @@ class NimbusPluginTestsBase: XCTestCase, WKNavigationDelegate {
     override func setUp() {
         nimbus = NimbusBridge()
         testBridge = NimbusTestBridge()
-        nimbus.addExtension(testBridge)
+        nimbus.addPlugin(testBridge)
         webView = WKWebView()
         webView.navigationDelegate = self
     }

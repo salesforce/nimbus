@@ -10,24 +10,33 @@ package com.salesforce.nimbus
 import android.webkit.WebView
 
 /**
- * Defines an extension which will be bound to the [NimbusBridge]. Implementations of this interface
- * must also be annotated with [Extension].
+ * Defines an extension which will be bound to the [Bridge]. Implementations of this interface
+ * must also be annotated with [PluginOptions].
  */
-interface NimbusExtension {
+@Deprecated("Use the `Plugin` interface instead.")
+interface NimbusExtension : Plugin {
 
     /**
      * Customize the [WebView] prior to the extension being initialized. Do not add any javascript
-     * interfaces to the [WebView] here. They will be added by the [NimbusBridge].
+     * interfaces to the [WebView] here. They will be added by the [Bridge].
      */
     fun customize(webView: WebView) {
         /* default empty implementation so simple extensions don't need to override */
     }
 
+    override fun customize(webView: WebView, bridge: Bridge) {
+        customize(webView)
+    }
+
     /**
      * Do any cleanup of the [WebView] necessary for this extension. Do not remove any javascript
-     * interfaces from the [WebView] here. They will be removed by the [NimbusBridge].
+     * interfaces from the [WebView] here. They will be removed by the [Bridge].
      */
     fun cleanup(webView: WebView) {
         /* default empty implementation so simple extensions don't need to override */
+    }
+
+    override fun cleanup(webView: WebView, bridge: Bridge) {
+        cleanup(webView)
     }
 }

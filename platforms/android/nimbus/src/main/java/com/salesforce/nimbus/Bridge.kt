@@ -16,19 +16,19 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
-class NimbusBridge {
+class Bridge {
 
     companion object {
         private const val BRIDGE_NAME = "_nimbus"
     }
 
     private var bridgeWebView: WebView? = null
-    private val binders = mutableListOf<NimbusBinder>()
+    private val binders = mutableListOf<Binder>()
 
     /**
      * Adds a [NimbusBinder] to the bridge.
      */
-    fun add(vararg binder: NimbusBinder) {
+    fun add(vararg binder: Binder) {
         binders.addAll(binder)
     }
 
@@ -168,23 +168,23 @@ class NimbusBridge {
      */
     @Suppress("unused")
     @JavascriptInterface
-    fun nativeExtensionNames(): String {
-        val names = binders.map { it.getExtensionName() }
+    fun nativePluginNames(): String {
+        val names = binders.map { it.getPluginName() }
         val result = JSONArray(names)
         return result.toString()
     }
 
-    private fun initialize(webView: WebView, binders: Collection<NimbusBinder>) {
+    private fun initialize(webView: WebView, binders: Collection<Binder>) {
         binders.forEach { binder ->
 
             // customize web view if needed
-            binder.getExtension().customize(webView)
+            binder.getPlugin().customize(webView, this)
 
             // bind web view to binder
             binder.setWebView(webView)
 
             // add the javascript interface for the binder
-            val extensionName = binder.getExtensionName()
+            val extensionName = binder.getPluginName()
             webView.addJavascriptInterface(binder, "_$extensionName")
         }
     }
@@ -194,17 +194,17 @@ class NimbusBridge {
         promises.clear()
     }
 
-    private fun cleanup(webView: WebView, binders: Collection<NimbusBinder>) {
+    private fun cleanup(webView: WebView, binders: Collection<Binder>) {
         binders.forEach { binder ->
 
             // cleanup web view if needed
-            binder.getExtension().cleanup(webView)
+            binder.getPlugin().cleanup(webView, this)
 
             // unbind web view from binder
             binder.setWebView(null)
 
             // remove the javascript interface for the binder
-            val extensionName = binder.getExtensionName()
+            val extensionName = binder.getPluginName()
             webView.removeJavascriptInterface("_$extensionName")
         }
     }

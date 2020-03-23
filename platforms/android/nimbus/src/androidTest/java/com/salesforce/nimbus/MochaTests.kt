@@ -34,8 +34,8 @@ class MochaTests {
         }
     }
 
-    @Extension(name = "mochaTestBridge")
-    class MochaTestBridge(val webView: WebView) : NimbusExtension {
+    @PluginOptions(name = "mochaTestBridge")
+    class MochaTestBridge(private val webView: WebView) : Plugin {
 
         val readyLatch = CountDownLatch(1)
         val completionLatch = CountDownLatch(1)
@@ -43,22 +43,22 @@ class MochaTests {
         // Set to -1 initially to indicate we never got a completion callback
         var failures = -1
 
-        @ExtensionMethod
+        @BoundMethod
         fun ready() {
             readyLatch.countDown()
         }
 
-        @ExtensionMethod
+        @BoundMethod
         fun testsCompleted(failures: Int) {
             this.failures = failures
             completionLatch.countDown()
         }
-        @ExtensionMethod
+        @BoundMethod
         fun onTestFail(testTitle: String, errMessage: String) {
             Log.e("MOCHA", "[$testTitle]: $errMessage")
         }
 
-        @ExtensionMethod
+        @BoundMethod
         fun sendMessage(name: String, includeParam: Boolean) {
             webView.post {
                 var arg: JSONSerializable? = null
@@ -80,10 +80,10 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
-        val bridge = NimbusBridge()
+        val bridge = Bridge()
 
         runOnUiThread {
-            bridge.add(CallbackTestExtensionBinder(CallbackTestExtension()))
+            bridge.add(CallbackTestPluginBinder(CallbackTestPlugin()))
             bridge.add(MochaTestBridgeBinder(testBridge))
             bridge.attach(webView)
             bridge.loadUrl("file:///android_asset/test-www/index.html")
@@ -110,8 +110,8 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
-        val bridge = NimbusBridge()
-        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+        val bridge = Bridge()
+        val callbackTestBinder = CallbackTestPluginBinder(CallbackTestPlugin())
 
         runOnUiThread {
             bridge.add(callbackTestBinder)
@@ -124,7 +124,7 @@ class MochaTests {
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
             bridge.invoke(
-                "__nimbus.plugins.callbackTestExtension.addOne",
+                "__nimbus.plugins.callbackTestPlugin.addOne",
                 args = arrayOf(5.toJSONSerializable())
             ) { err, result ->
                 assertNull(err)
@@ -141,8 +141,8 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
-        val bridge = NimbusBridge()
-        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+        val bridge = Bridge()
+        val callbackTestBinder = CallbackTestPluginBinder(CallbackTestPlugin())
 
         runOnUiThread {
             bridge.add(MochaTestBridgeBinder(testBridge))
@@ -155,7 +155,7 @@ class MochaTests {
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
             bridge.invoke(
-                "__nimbus.plugins.callbackTestExtension.failWith",
+                "__nimbus.plugins.callbackTestPlugin.failWith",
                 arrayOf("epic fail".toJSONSerializable())
             ) { err, result ->
                 assertEquals("epic fail", err)
@@ -172,8 +172,8 @@ class MochaTests {
         val webView = activityRule.activity.webView
         val testBridge = MochaTestBridge(webView)
 
-        val bridge = NimbusBridge()
-        val callbackTestBinder = CallbackTestExtensionBinder(CallbackTestExtension())
+        val bridge = Bridge()
+        val callbackTestBinder = CallbackTestPluginBinder(CallbackTestPlugin())
 
         runOnUiThread {
             bridge.add(MochaTestBridgeBinder(testBridge))
@@ -186,7 +186,7 @@ class MochaTests {
         val completionLatch = CountDownLatch(1)
         runOnUiThread {
             bridge.invoke(
-                "__nimbus.plugins.callbackTestExtension.wait",
+                "__nimbus.plugins.callbackTestPlugin.wait",
                 arrayOf(60000.toJSONSerializable())
             ) { err, _ ->
                 assertEquals("ERROR_PAGE_UNLOADED", err)

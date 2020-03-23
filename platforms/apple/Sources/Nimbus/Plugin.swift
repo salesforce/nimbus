@@ -21,9 +21,3 @@ public protocol Plugin: class {
      */
     func bind(to webView: WKWebView, bridge: Bridge)
 }
-
-extension Plugin where Self: NimbusExtension {
-    public func bind(to webView: WKWebView, bridge: Bridge) {
-        bindToWebView(webView: webView)
-    }
-}

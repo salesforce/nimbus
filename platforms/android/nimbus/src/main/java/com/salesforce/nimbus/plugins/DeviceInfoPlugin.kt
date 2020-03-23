@@ -1,15 +1,15 @@
-package com.salesforce.nimbus.extensions
+package com.salesforce.nimbus.plugins
 
 import android.content.Context
 import android.content.pm.PackageManager
-import com.salesforce.nimbus.Extension
-import com.salesforce.nimbus.ExtensionMethod
+import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.JSONSerializable
-import com.salesforce.nimbus.NimbusExtension
+import com.salesforce.nimbus.Plugin
+import com.salesforce.nimbus.PluginOptions
 import org.json.JSONObject
 
-@Extension(name = "DeviceExtension")
-class DeviceExtension(context: Context) : NimbusExtension {
+@PluginOptions(name = "DeviceInfoPlugin")
+class DeviceInfoPlugin(context: Context) : Plugin {
 
     class DeviceInfo(val appVersion: String) : JSONSerializable {
         val platform: String = "Android"
@@ -42,7 +42,7 @@ class DeviceExtension(context: Context) : NimbusExtension {
         cachedDeviceInfo = DeviceInfo(appVersion)
     }
 
-    @ExtensionMethod
+    @BoundMethod
     fun getDeviceInfo(): DeviceInfo {
         return cachedDeviceInfo
     }

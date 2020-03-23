@@ -9,30 +9,17 @@ import Cocoa
 import Nimbus
 import WebKit
 
-class DemoBridge {
-    func currentTime() -> String {
-        return Date().description
-    }
-}
-
-extension DemoBridge: NimbusExtension {
-    func bindToWebView(webView: WKWebView) {
-        let connection = webView.addConnection(to: self, as: "DemoBridge")
-        connection.bind(DemoBridge.currentTime, as: "currentTime")
-    }
-}
-
 class ViewController: NSViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         title = "Nimbus"
-        bridge.addExtension(DemoBridge())
+        bridge.addPlugin(DeviceInfoPlugin())
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         title = "Nimbus"
-        bridge.addExtension(DemoBridge())
+        bridge.addPlugin(DeviceInfoPlugin())
     }
 
     override func loadView() {
@@ -43,5 +30,5 @@ class ViewController: NSViewController {
     }
 
     lazy var webView = WKWebView(frame: .zero)
-    let bridge = NimbusBridge()
+    let bridge = Bridge()
 }

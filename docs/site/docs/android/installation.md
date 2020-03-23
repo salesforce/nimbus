@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val webView = findViewById<WebView>(R.id.webview)
-        bridge.add(DeviceExtensionBinder(DeviceExtension(this)))
+        bridge.add(DeviceInfoPluginBinder(DeviceInfoPlugin(this)))
         bridge.attach(webView)
         bridge.loadUrl("http://10.0.2.2:3000")
         WebView.setWebContentsDebuggingEnabled(true)

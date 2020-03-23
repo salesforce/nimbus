@@ -9,23 +9,22 @@ package com.salesforce.nimbusdemoapp
 
 import android.os.Bundle
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import com.salesforce.nimbus.NimbusBridge
-import com.salesforce.nimbus.extensions.DeviceExtension
-import com.salesforce.nimbus.extensions.DeviceExtensionBinder
+import com.salesforce.nimbus.Bridge
+import com.salesforce.nimbus.plugins.DeviceInfoPlugin
+import com.salesforce.nimbus.plugins.DeviceInfoPluginBinder
 
 class MainActivity : AppCompatActivity() {
 
-    private val bridge: NimbusBridge = NimbusBridge()
+    private val bridge: Bridge = Bridge()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         WebView.setWebContentsDebuggingEnabled(true)
         val webView = findViewById<WebView>(R.id.webview)
-        val deviceExtension = DeviceExtensionBinder(DeviceExtension(this))
-        bridge.add(deviceExtension)
+        val deviceInfoPlugin = DeviceInfoPluginBinder(DeviceInfoPlugin(this))
+        bridge.add(deviceInfoPlugin)
         bridge.attach(webView)
         bridge.loadUrl("http://10.0.2.2:3000")
     }
