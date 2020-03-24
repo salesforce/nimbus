@@ -227,16 +227,6 @@ jobs:
           command: |
             npm install
             npm run lint -- -- -f junit -o ~/reports/eslint.xml
-      - run:
-          name: Build Docs
-          working_directory: docs
-          command: |
-            npm install
-            npm run build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - docs/dist
       - store_test_results:
           path: ~/reports
       - store_artifacts:
@@ -275,7 +265,7 @@ jobs:
           command: |
             ./gradlew bintrayUpload
 
-  assemble-docs:
+  build-docs:
     docker:
       - image: circleci/node:10
 
@@ -284,15 +274,40 @@ jobs:
       - attach_workspace:
           at: ./doc-build
       - run:
+          name: Build Docs
+          working_directory: docs
+          command: |
+            npm install
+            npm run build -- --pathprefix='/nimbus'
+      - run:
           name: Assemble Doc Fragments
-          working_directory: ./doc-build
           command: |
             mkdir -p docs/dist/docs/api
-            mv ./platforms/android/nimbus/build/dokka docs/dist/docs/api/android
-            mv ./platforms/apple/.build/docs docs/dist/docs/api/swift
-      - store_artifacts:
-          path: doc-build/docs/dist
-          destination: docs
+            mv doc-build/platforms/android/nimbus/build/dokka docs/dist/docs/api/android
+            mv doc-build/platforms/apple/.build/docs docs/dist/docs/api/swift
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docs/dist
+
+  publish-docs:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./doc-build
+      - run:
+          name: Publish Docs
+          working_directory: docs
+          command: |
+            npm install
+            npx gh-pages \
+              -d ../doc-build/docs/dist \
+              -r https://hype-bot:${HYPE_GITHUB_TOKEN}@github.com/salesforce/nimbus.git \
+              -u "Hype Bot <hybridplatform@salesforce.com>" \
+              -m "[skip ci] Update docs"
 
 workflows:
   version: 2
@@ -334,11 +349,19 @@ workflows:
       - build-swiftpm
       - build-and-test-android
       - build-and-test-ts
-      - assemble-docs:
+      - build-docs:
           requires:
             - build-and-test-ts
             - build-and-test-ios
             - build-and-test-android
+      - publish-docs:
+          requires:
+            - build-docs
+          filters:
+            branches:
+              only:
+                - master
+                - doc-publishing
       - upload-coverage:
           requires:
             - build-and-test-ios
