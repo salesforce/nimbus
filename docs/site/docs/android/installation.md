@@ -54,3 +54,18 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
+
+# NimbusJS
+
+1. Add NimbusJS to your app's `build.gradle`:
+```groovy
+dependencies {
+    implementation 'com.salesforce.nimbus:nimbus:1.0.0'
+    implementation 'com.salesforce.nimbus:nimbusjs:1.0.0'
+    kapt 'com.salesforce.nimbus:nimbus-compiler:1.0.0'
+}
+```
+
+2. Inject nimbus.js:
+
+You can refer directly to the nimbus.js source included as a resource in the NimbusJS AAR or you can use `NimbusJSUtilities.injectedNimbusStream(...)` to inject nimbus.js into a page load stream intercepted in your webview.
