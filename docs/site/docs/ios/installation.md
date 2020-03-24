@@ -12,21 +12,21 @@ _Cocoapods_
 
 ```ruby
 target 'MyApp' do
-  pod 'NimbusBridge', :git => 'https://github.com/salesforce/nimbus.git', :tag => '0.0.2'
+  pod 'NimbusBridge', :git => 'https://github.com/salesforce/nimbus.git', :tag => '1.0.0'
 end
 ```
 
 _Carthage_
 
 ```ruby
-github 'salesforce/nimbus' ~> 0.0.2
+github 'salesforce/nimbus' ~> 1.0.0
 ```
 
 _Swift Package_
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/salesforce/nimbus.git", from: "0.0.2"),
+  .package(url: "https://github.com/salesforce/nimbus.git", from: "1.0.0"),
 ]
 ```
 

@@ -26,8 +26,8 @@ apply plugin: 'kotlin-kapt'
 
 ```groovy
 dependencies {
-    implementation 'com.salesforce.nimbus:nimbus:0.0.2'
-    kapt 'com.salesforce.nimbus:nimbus-compiler:0.0.2'
+    implementation 'com.salesforce.nimbus:nimbus:1.0.0'
+    kapt 'com.salesforce.nimbus:nimbus-compiler:1.0.0'
 }
 ```
 
