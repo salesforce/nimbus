@@ -227,6 +227,16 @@ jobs:
           command: |
             npm install
             npm run lint -- -- -f junit -o ~/reports/eslint.xml
+      - run:
+          name: Build Docs
+          working_directory: docs
+          command: |
+            npm install
+            npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docs/dist
       - store_test_results:
           path: ~/reports
       - store_artifacts:
