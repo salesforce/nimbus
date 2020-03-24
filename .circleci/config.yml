@@ -275,6 +275,25 @@ jobs:
           command: |
             ./gradlew bintrayUpload
 
+  assemble-docs:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./doc-build
+      - run:
+          name: Assemble Doc Fragments
+          working_directory: ./doc-build
+          command: |
+            mkdir -p docs/dist/docs/api
+            mv ./platforms/android/nimbus/build/dokka docs/dist/docs/api/android
+            mv ./platforms/apple/.build/docs docs/dist/docs/api/swift
+      - store_artifacts:
+          path: doc-build/docs/dist
+          destination: docs
+
 workflows:
   version: 2
   create-release-from-tag:
@@ -315,6 +334,11 @@ workflows:
       - build-swiftpm
       - build-and-test-android
       - build-and-test-ts
+      - assemble-docs:
+          requires:
+            - build-and-test-ts
+            - build-and-test-ios
+            - build-and-test-android
       - upload-coverage:
           requires:
             - build-and-test-ios
