@@ -307,7 +307,8 @@ jobs:
               -d ../doc-build/docs/dist \
               -r https://hype-bot:${HYPE_GITHUB_TOKEN}@github.com/salesforce/nimbus.git \
               -u "Hype Bot <hybridplatform@salesforce.com>" \
-              -m "[skip ci] Update docs"
+              -m "[skip ci] Update docs" \
+              --no-history
 
 workflows:
   version: 2
