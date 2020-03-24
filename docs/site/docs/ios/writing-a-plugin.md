@@ -48,7 +48,7 @@ dharmaPlugin.checkBoat("Penny", boatName => {
 });
 ```
 
-Any native parameters or return types must conform to `Decodable` in order for them to be bound. You can bind methods with up to 5 parameters, the last of which can be a callback. If you need more parameters than is available, it's recommended that you build an `Decodable` struct to wrap the necessary context.
+Any parameters to native bound methods must conform to `Decodable`. Return types must conform to `Encodable` in order for them to be bound. You can bind methods with up to 5 parameters, the last of which can be a callback. If you need more parameters than is available, it's recommended that you build an `Decodable` struct to wrap the necessary context.
 
 The native plugin and example javascript calling that plugin are included in their entirety below.
 
