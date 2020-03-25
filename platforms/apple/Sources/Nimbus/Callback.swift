@@ -50,6 +50,7 @@ class Callback: Callable {
 
         DispatchQueue.main.async {
             self.webView?.evaluateJavaScript("""
+            {
                 var jsonArgs = \(formattedJsonArgs);
                 var mappedJsonArgs = jsonArgs.map(element => {
                   if (element.hasOwnProperty('v')) {
@@ -59,6 +60,8 @@ class Callback: Callable {
                   }
                 });
                 __nimbus.callCallback('\(self.callbackId)', ...mappedJsonArgs);
+            }
+            null;
             """)
         }
         return ()
