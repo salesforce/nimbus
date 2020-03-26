@@ -25,9 +25,9 @@ Then annotate each function you'd like to bind to the webview with the `BoundMet
 
 ```kotlin
 @BoundMethod
-    fun getDeviceInfo(): DeviceInfo {
-        return cachedDeviceInfo
-    }
+fun getDeviceInfo(): DeviceInfo {
+    return cachedDeviceInfo
+}
 ```
 
 Each bound function will be available in the webview with an equivalent function name. For example, the above function will be available as `getDeviceInfo`.
