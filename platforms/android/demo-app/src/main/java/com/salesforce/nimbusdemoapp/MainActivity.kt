@@ -10,13 +10,13 @@ package com.salesforce.nimbusdemoapp
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import com.salesforce.nimbus.Bridge
-import com.salesforce.nimbus.plugins.DeviceInfoPlugin
-import com.salesforce.nimbus.plugins.DeviceInfoPluginBinder
+import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.bridge.webview.plugins.DeviceInfoPlugin
+import com.salesforce.nimbus.bridge.webview.plugins.DeviceInfoPluginBinder
 
 class MainActivity : AppCompatActivity() {
 
-    private val bridge: Bridge = Bridge()
+    private val bridge = WebViewBridge()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val deviceInfoPlugin = DeviceInfoPluginBinder(DeviceInfoPlugin(this))
         bridge.add(deviceInfoPlugin)
         bridge.attach(webView)
-        bridge.loadUrl("http://10.0.2.2:3000")
+        webView.loadUrl("http://10.0.2.2:3000")
     }
 
     override fun onDestroy() {
