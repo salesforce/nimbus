@@ -43,7 +43,7 @@ artifacts {
 
 dokka {
     outputFormat = 'html'
-    outputDirectory = '../../../docs/dist/docs/api/android'
+    outputDirectory = "$buildDir/dokka"
 }
 
 apply from: rootProject.file('gradle/lint.gradle')

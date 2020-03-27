@@ -198,11 +198,11 @@ jobs:
           command: ./gradlew dokka
 
       - store_artifacts:
-          path: platforms/android/nimbus/build/reports
+          path: platforms/android/nimbus-bridge-webview/build/reports
           destination: reports
 
       - store_test_results:
-          path: platforms/android/nimbus/build/test-results
+          path: platforms/android/nimbus-bridge-webview/build/test-results
 
       - run:
           name: Codecov Android
@@ -213,8 +213,9 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/nimbus/build/dokka
+            - platforms/android/nimbus-bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/nimbus-bridge-webview/build/dokka
+            - platforms/android/nimbus-core/build/dokka
 
   build-and-test-ts:
     docker:
@@ -258,7 +259,7 @@ jobs:
       - run:
           name: Upload Android coverage
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/nimbus/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/nimbus-bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
 
   upload-android-release:
     docker:
@@ -291,7 +292,8 @@ jobs:
           name: Assemble Doc Fragments
           command: |
             mkdir -p docs/dist/docs/api
-            mv doc-build/platforms/android/nimbus/build/dokka docs/dist/docs/api/android
+            mv doc-build/platforms/android/nimbus-bridge-webview/build/dokka docs/dist/docs/api/android
+            mv doc-build/platforms/android/nimbus-core/build/dokka docs/dist/docs/api/android
             mv doc-build/platforms/apple/.build/docs docs/dist/docs/api/apple
             mv doc-build/packages/nimbus-bridge/dist/typedoc docs/dist/docs/api/ts
       - persist_to_workspace:
