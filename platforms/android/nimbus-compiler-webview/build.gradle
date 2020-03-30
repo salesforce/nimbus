@@ -10,9 +10,6 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
-
 buildscript {
 
     def versionFile = file('../../../lerna.json')

@@ -8,9 +8,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
-
 buildscript {
     def versionFile = file('../../../lerna.json')
     def parsedVersion = new JsonSlurper().parseText(versionFile.text)
