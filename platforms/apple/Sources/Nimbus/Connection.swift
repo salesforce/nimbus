@@ -6,4 +6,5 @@
 //
 
 public protocol Connection: class, Binder {
+
 }

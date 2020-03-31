@@ -9,6 +9,7 @@ import Foundation
 import JavaScriptCore
 
 public class JSContextBridge {
+
     public func addPlugin<T: Plugin>(_ plugin: T) {
         // TODO:
     }
