@@ -27,7 +27,8 @@ public class Bridge: NSObject {
         #endif
 
         for plugin in plugins {
-            plugin.bind(to: webView, bridge: self)
+            let connection = webView.addConnection(to: plugin, as: plugin.namespace)
+            plugin.bind(to: connection, bridge: self)
         }
     }
 

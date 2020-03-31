@@ -77,7 +77,8 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         connection.bind(testBridge.sendMessage, as: "sendMessage")
         connection.bind(testBridge.onTestFail, as: "onTestFail")
         let callbackTestPlugin = CallbackTestPlugin()
-        callbackTestPlugin.bind(to: webView, bridge: Bridge())
+        let callbackConnection = webView.addConnection(to: callbackTestPlugin, as: callbackTestPlugin.namespace)
+        callbackTestPlugin.bind(to: callbackConnection, bridge: Bridge())
 
         loadWebViewAndWait()
 
@@ -121,12 +122,18 @@ public class CallbackTestPlugin {
 }
 
 extension CallbackTestPlugin: Plugin {
-    public func bind(to webView: WKWebView, bridge: Bridge) {
-        let connection = webView.addConnection(to: self, as: "callbackTestPlugin")
-        connection.bind(self.callbackWithSingleParam, as: "callbackWithSingleParam")
-        connection.bind(self.callbackWithTwoParams, as: "callbackWithTwoParams")
-        connection.bind(self.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
-        connection.bind(self.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
-        connection.bind(self.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+    public var namespace: String {
+        return "callbackTestPlugin"
+    }
+
+    public func bind(to connection: Connection, bridge: Bridge) {
+        // TODO:
+        if let webViewConnection = connection as? WebViewConnection<CallbackTestPlugin> {
+            webViewConnection.bind(CallbackTestPlugin.callbackWithSingleParam, as: "callbackWithSingleParam")
+            webViewConnection.bind(CallbackTestPlugin.callbackWithTwoParams, as: "callbackWithTwoParams")
+            webViewConnection.bind(CallbackTestPlugin.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
+            webViewConnection.bind(CallbackTestPlugin.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
+            webViewConnection.bind(CallbackTestPlugin.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        }
     }
 }
