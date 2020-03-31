@@ -65,8 +65,8 @@ class WebViewBridgeTest {
     @Test
     fun attachBindsToBinders() {
         webViewBridge.attach(mockWebView)
-        verify { mockPlugin1Binder.bind(mockWebView) }
-        verify { mockPlugin2Binder.bind(mockWebView) }
+        verify { mockPlugin1Binder.bind(webViewBridge) }
+        verify { mockPlugin2Binder.bind(webViewBridge) }
     }
 
     @Test

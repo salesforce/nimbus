@@ -5,15 +5,14 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-package com.salesforce.nimbus.bridge.webview
+package com.salesforce.nimbus
 
-import com.salesforce.nimbus.JSONSerializable
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
 
 // Making this internal so it's not a footgun to consumers
-internal class PrimitiveJSONSerializable(val value: Any) :
+class PrimitiveJSONSerializable(val value: Any) :
     JSONSerializable {
     private val stringifiedValue: String
 

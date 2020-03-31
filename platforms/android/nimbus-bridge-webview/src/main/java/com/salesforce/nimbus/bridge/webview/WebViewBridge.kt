@@ -13,6 +13,7 @@ import android.webkit.WebView
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
 import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.PrimitiveJSONSerializable
 import com.salesforce.nimbus.Promise
 import com.salesforce.nimbus.Runtime
 import org.json.JSONArray
@@ -28,7 +29,7 @@ class WebViewBridge : Bridge<WebView>,
 
     private var bridgeWebView: WebView? = null
     private val binders = mutableListOf<Binder<WebView>>()
-    private val promises: ConcurrentHashMap<String, Function2<String?, Any?, Unit>> = ConcurrentHashMap()
+    private val promises: ConcurrentHashMap<String, Promise> = ConcurrentHashMap()
 
     override fun add(vararg binder: Binder<WebView>) {
         binders.addAll(binder)
@@ -57,7 +58,7 @@ class WebViewBridge : Bridge<WebView>,
     override fun invoke(
         functionName: String,
         args: Array<JSONSerializable?>,
-        callback: Promise
+        callback: ((String?, Any?) -> Unit)?
     ) {
         invokeInternal(functionName.split('.').toTypedArray(), args, callback)
     }
@@ -69,10 +70,10 @@ class WebViewBridge : Bridge<WebView>,
     private fun invokeInternal(
         identifierSegments: Array<String>,
         args: Array<JSONSerializable?> = emptyArray(),
-        callback: ((String?, Any?) -> Unit)
+        callback: Promise?
     ) {
         val promiseId = UUID.randomUUID().toString()
-        promises[promiseId] = callback
+        callback?.let { promises[promiseId] = it }
 
         val segmentArray = JSONArray(identifierSegments)
         val segmentString = segmentArray.toString()
@@ -118,23 +119,14 @@ class WebViewBridge : Bridge<WebView>,
     @Suppress("unused")
     @JavascriptInterface
     fun resolvePromise(promiseId: String, json: String?) {
-        var value: Any? = null
-        json?.let {
-            value = JSONObject(it).get("value")
-        }
-        val promise = promises.remove(promiseId)
-        promise?.let {
-            it(null, value)
-        }
+        val value = json?.let { JSONObject(it).get("value") }
+        promises.remove(promiseId)?.invoke(null, value)
     }
 
     @Suppress("unused")
     @JavascriptInterface
     fun rejectPromise(promiseId: String, error: String) {
-        val promise = promises.remove(promiseId)
-        promise?.let {
-            it(error, null)
-        }
+        promises.remove(promiseId)?.invoke(error, null)
     }
 
     @Suppress("unused")
@@ -176,7 +168,7 @@ class WebViewBridge : Bridge<WebView>,
             binder.getPlugin().customize(this)
 
             // bind web view to binder
-            binder.bind(webView)
+            binder.bind(this)
 
             // add the javascript interface for the binder
             val plugin = binder.getPluginName()

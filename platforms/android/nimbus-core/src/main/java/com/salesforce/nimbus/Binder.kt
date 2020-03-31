@@ -24,9 +24,9 @@ interface Binder<JavascriptEngine> {
     fun getPluginName(): String
 
     /**
-     * Binds to the [JavascriptEngine].
+     * Binds to the [Runtime].
      */
-    fun bind(javascriptEngine: JavascriptEngine)
+    fun bind(runtime: Runtime<JavascriptEngine>)
 
     /**
      * Unbinds from the [JavascriptEngine].

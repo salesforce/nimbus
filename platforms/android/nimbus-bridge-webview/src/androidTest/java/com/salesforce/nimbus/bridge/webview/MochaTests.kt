@@ -16,6 +16,7 @@ import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.JSONSerializable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import com.salesforce.nimbus.toJSONSerializable
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

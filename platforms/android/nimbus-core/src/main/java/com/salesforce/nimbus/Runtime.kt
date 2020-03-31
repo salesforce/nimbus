@@ -16,6 +16,6 @@ interface Runtime<JavascriptEngine> {
     fun invoke(
         functionName: String,
         args: Array<JSONSerializable?> = emptyArray(),
-        callback: Promise
+        callback: ((String?, Any?) -> Unit)?
     )
 }

@@ -78,8 +78,8 @@ class WebViewBinderGenerator : AbstractProcessor() {
                 val packageName = processingEnv.elementUtils.getPackageOf(element).qualifiedName.toString()
                 val typeName = element.simpleName.toString() + "Binder"
                 val stringClassName = ClassName.get(String::class.java)
-
                 val webViewClassName = ClassName.get("android.webkit", "WebView")
+                val runtimeClassName = ParameterizedTypeName.get(ClassName.get("com.salesforce.nimbus", "Runtime"), webViewClassName)
                 // the binder needs to capture the bound target to pass through calls to it
                 val type = TypeSpec.classBuilder(typeName)
                     .addSuperinterface(ParameterizedTypeName.get(ClassName.get("com.salesforce.nimbus", "Binder"), webViewClassName))
@@ -90,7 +90,7 @@ class WebViewBinderGenerator : AbstractProcessor() {
                         .addStatement("this.\$N = \$N", "target", "target")
                         .build())
                     .addField(TypeName.get(element.asType()), "target", Modifier.FINAL, Modifier.PRIVATE)
-                    .addField(webViewClassName, "webView", Modifier.PRIVATE)
+                    .addField(runtimeClassName, "runtime", Modifier.PRIVATE)
                     .addField(FieldSpec.builder(stringClassName, "pluginName", Modifier.FINAL, Modifier.PRIVATE)
                         .initializer("\"$extensionName\"")
                         .build())
@@ -109,13 +109,13 @@ class WebViewBinderGenerator : AbstractProcessor() {
                     .addMethod(MethodSpec.methodBuilder("bind")
                         .addAnnotation(Override::class.java)
                         .addModifiers(Modifier.PUBLIC)
-                        .addParameter(webViewClassName, "webView")
-                        .addStatement("this.\$N = \$N", "webView", "webView")
+                        .addParameter(runtimeClassName, "runtime")
+                        .addStatement("this.\$N = \$N", "runtime", "runtime")
                         .build())
                     .addMethod(MethodSpec.methodBuilder("unbind")
                         .addAnnotation(Override::class.java)
                         .addModifiers(Modifier.PUBLIC)
-                        .addStatement("this.\$N = \$N", "webView", "null")
+                        .addStatement("this.\$N = \$N", "runtime", "null")
                         .build())
 
                 methods.forEach {
@@ -159,7 +159,7 @@ class WebViewBinderGenerator : AbstractProcessor() {
                                     val argBlock = CodeBlock.builder()
                                         .add("\$T[] args = {\n", ClassName.get("com.salesforce.nimbus", "JSONSerializable"))
                                         .indent()
-                                        .add("new \$T(\$NId),\n", ClassName.get("com.salesforce.nimbus.bridge.webview", "PrimitiveJSONSerializable"), it.simpleName)
+                                        .add("new \$T(\$NId),\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"), it.simpleName)
 
                                     declaredType.typeArguments.dropLast(1).forEachIndexed { index, typeMirror ->
                                         if (typeMirror.kind == TypeKind.WILDCARD) {
@@ -176,10 +176,10 @@ class WebViewBinderGenerator : AbstractProcessor() {
                                             if (found) {
                                                 argBlock.add("arg$index, \n")
                                             } else {
-                                                argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus.bridge.webview", "PrimitiveJSONSerializable"))
+                                                argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                             }
                                         } else {
-                                            argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus.bridge.webview", "PrimitiveJSONSerializable"))
+                                            argBlock.add("arg$index != null ? new \$T(arg$index) : null,\n", ClassName.get("com.salesforce.nimbus", "PrimitiveJSONSerializable"))
                                         }
                                     }
 
@@ -188,9 +188,9 @@ class WebViewBinderGenerator : AbstractProcessor() {
                                     invoke.addCode(argBlock.build())
                                     invoke.addCode(
                                         CodeBlock.builder()
-                                            .add("if (webView != null) {\n")
+                                            .add("if (runtime != null) {\n")
                                             .indent()
-                                            .addStatement("callJavascript(\$N, \$S, \$N, null)", "webView", "__nimbus.callCallback", "args")
+                                            .addStatement("runtime.invoke(\$S, \$N, null)", "__nimbus.callCallback", "args")
                                             .unindent()
                                             .add("}\n")
                                             .addStatement("return null")
@@ -216,7 +216,7 @@ class WebViewBinderGenerator : AbstractProcessor() {
                                     methodSpec.addStatement("\$T \$N = \$L", it.asType(), it.simpleName, func)
                                 } else if (it.asType().toString().startsWith("java.util.ArrayList")) {
                                     methodSpec.addParameter(String::class.java, it.simpleName.toString() + "String")
-                                    val extClass = ClassName.get("com.salesforce.nimbus.bridge.webview", "PrimitiveExtensionsKt")
+                                    val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
                                     methodSpec.addStatement("\$T \$N = \$T.\$N(\$NString, \$T.class)",
                                         it.asType(),
                                         it.simpleName,
@@ -226,7 +226,7 @@ class WebViewBinderGenerator : AbstractProcessor() {
                                         TypeName.get(declaredType.typeArguments[0]))
                                 } else if (it.asType().toString().startsWith("java.util.HashMap")) {
                                     methodSpec.addParameter(String::class.java, it.simpleName.toString() + "String")
-                                    val extClass = ClassName.get("com.salesforce.nimbus.bridge.webview", "PrimitiveExtensionsKt")
+                                    val extClass = ClassName.get("com.salesforce.nimbus", "PrimitiveExtensionsKt")
                                     methodSpec.addStatement("\$T \$N = \$T.\$N(\$NString, \$T.class, \$T.class)",
                                         it.asType(),
                                         it.simpleName,
@@ -296,7 +296,6 @@ class WebViewBinderGenerator : AbstractProcessor() {
 
                 JavaFile.builder(packageName, type.build())
                     .indent("    ")
-                    .addStaticImport(ClassName.get("com.salesforce.nimbus.bridge.webview", "WebViewExtensionsKt"), "callJavascript")
                     .build()
                     .writeTo(processingEnv.filer)
             }
