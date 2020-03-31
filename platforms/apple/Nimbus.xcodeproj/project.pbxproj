@@ -49,6 +49,10 @@
 		68B855F2233EE7FD00D1F243 /* BinderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B855F1233EE7FD00D1F243 /* BinderTests.swift */; };
 		CC251496240D6764001E8D8C /* DecodableUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC251495240D6764001E8D8C /* DecodableUtils.swift */; };
 		CC251498240D6C13001E8D8C /* DecodableUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC251497240D6C13001E8D8C /* DecodableUtilsTests.swift */; };
+		CC430D922433C56000CA12A0 /* WebViewConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D902433C39800CA12A0 /* WebViewConnection.swift */; };
+		CC430D932433C56A00CA12A0 /* JSContextBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */; };
+		CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */; };
+		CC430D972433CD6100CA12A0 /* JSContext+Nimbus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D962433CD6100CA12A0 /* JSContext+Nimbus.swift */; };
 		CC4AB48A23E4919D00DC0613 /* testJSSource.js in Resources */ = {isa = PBXBuildFile; fileRef = CC4AB48723E48DDB00DC0613 /* testJSSource.js */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
@@ -205,6 +209,10 @@
 		68B855F1233EE7FD00D1F243 /* BinderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinderTests.swift; sourceTree = "<group>"; };
 		CC251495240D6764001E8D8C /* DecodableUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodableUtils.swift; sourceTree = "<group>"; };
 		CC251497240D6C13001E8D8C /* DecodableUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodableUtilsTests.swift; sourceTree = "<group>"; };
+		CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextBridge.swift; sourceTree = "<group>"; };
+		CC430D902433C39800CA12A0 /* WebViewConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewConnection.swift; sourceTree = "<group>"; };
+		CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnection.swift; sourceTree = "<group>"; };
+		CC430D962433CD6100CA12A0 /* JSContext+Nimbus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSContext+Nimbus.swift"; sourceTree = "<group>"; };
 		CC4AB48723E48DDB00DC0613 /* testJSSource.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testJSSource.js; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
@@ -357,7 +365,11 @@
 				294433462200FA3700E6D084 /* Connection.swift */,
 				CC251495240D6764001E8D8C /* DecodableUtils.swift */,
 				294433442200FA3700E6D084 /* EncodableValue.swift */,
+				CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */,
+				CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */,
+				CC430D962433CD6100CA12A0 /* JSContext+Nimbus.swift */,
 				29264F5D24197E4F00D68664 /* Plugin.swift */,
+				CC430D902433C39800CA12A0 /* WebViewConnection.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
 			);
 			name = Nimbus;
@@ -926,8 +938,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				29F8D60F223AF857005C5AC1 /* DeviceInfoPlugin.swift in Sources */,
+				CC430D932433C56A00CA12A0 /* JSContextBridge.swift in Sources */,
 				298503D9228DEAAC00C1071E /* Binder.swift in Sources */,
+				CC430D922433C56000CA12A0 /* WebViewConnection.swift in Sources */,
 				291A861021E531B200510832 /* Bridge.swift in Sources */,
+				CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
 				294433492200FA3700E6D084 /* EncodableValue.swift in Sources */,
@@ -935,6 +950,7 @@
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
 				2944334A2200FA3700E6D084 /* Callable.swift in Sources */,
 				29264F5E24197E4F00D68664 /* Plugin.swift in Sources */,
+				CC430D972433CD6100CA12A0 /* JSContext+Nimbus.swift in Sources */,
 				291A861121E531B200510832 /* Deprecated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

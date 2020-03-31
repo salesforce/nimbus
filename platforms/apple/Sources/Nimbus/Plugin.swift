@@ -11,7 +11,7 @@ import WebKit
  A plugin integrates native capabilities into a JavaScript runtime environment.
  */
 public protocol Plugin: class {
-
+    var namespace: String { get }
     /**
      Bind this plugin to the specified web view and Nimbus bridge.
 

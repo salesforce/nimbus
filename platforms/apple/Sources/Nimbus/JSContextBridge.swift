@@ -5,7 +5,15 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-public protocol Connection: class {
-    func bind(_ callable: Callable, as name: String)
-    func call(_ method: String, args: [Any], promise: String)
+import Foundation
+import JavaScriptCore
+
+public class JSContextBridge: NSObject {
+    public func addPlugin<T: Plugin>(_ plugin: T) {
+        // TODO:
+    }
+
+    public func attach(to context: JSContext) {
+        // TODO:
+    }
 }

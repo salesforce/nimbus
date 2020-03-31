@@ -11,8 +11,8 @@ extension WKWebView {
     /**
      Create a connection from this web view to the specified object.
      */
-    public func addConnection<C>(to target: C, as namespace: String) -> Connection<C> {
-        return Connection(from: self, to: target, as: namespace)
+    public func addConnection<C>(to target: C, as namespace: String) -> WebViewConnection<C> {
+        return WebViewConnection(from: self, to: target, as: namespace)
     }
 
     /**
