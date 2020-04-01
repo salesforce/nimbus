@@ -22,3 +22,9 @@ public protocol Plugin: class {
      */
     func bind<C>(to connection: C) where C: Connection
 }
+
+public extension Plugin {
+    var namespace: String {
+        return String(describing: self)
+    }
+}

@@ -68,7 +68,4 @@ extension DeviceInfoPlugin: Plugin {
         connection.bind(self.getDeviceInfo, as: "getDeviceInfo")
     }
 
-    public var namespace: String {
-        return "DeviceInfoPlugin"
-    }
 }
