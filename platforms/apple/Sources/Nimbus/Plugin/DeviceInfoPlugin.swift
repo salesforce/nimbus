@@ -53,7 +53,7 @@ struct DeviceInfo: Codable {
     #endif
 }
 
-public class DeviceInfoPlugin {
+public final class DeviceInfoPlugin {
     public init() {}
 
     func getDeviceInfo() -> DeviceInfo {
