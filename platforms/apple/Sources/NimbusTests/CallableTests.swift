@@ -1,12 +1,10 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-
 //
 // Copyright (c) 2019, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
+
 // swiftlint:disable line_length vertical_whitespace
 
 import XCTest
@@ -27,6 +25,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.nullary(testable))
         XCTAssertThrowsError(try callable.call(args: [1]))
     }
+
     func testUnaryCallable() {
         let callable = make_callable(Testable.unary(testable))
         let result = try? callable.call(args: [1]) as? Int
@@ -38,6 +37,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.unary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2]))
     }
+
     func testBinaryCallable() {
         let callable = make_callable(Testable.binary(testable))
         let result = try? callable.call(args: [1, 2]) as? Int
@@ -49,6 +49,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.binary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3]))
     }
+
     func testTernaryCallable() {
         let callable = make_callable(Testable.ternary(testable))
         let result = try? callable.call(args: [1, 2, 3]) as? Int
@@ -60,6 +61,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.ternary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4]))
     }
+
     func testQuaternaryCallable() {
         let callable = make_callable(Testable.quaternary(testable))
         let result = try? callable.call(args: [1, 2, 3, 4]) as? Int
@@ -71,6 +73,7 @@ class CallableTests: XCTestCase {
         let callable = make_callable(Testable.quaternary(testable))
         XCTAssertThrowsError(try callable.call(args: [1, 2, 3, 4, 5]))
     }
+
     func testQuinaryCallable() {
         let callable = make_callable(Testable.quinary(testable))
         let result = try? callable.call(args: [1, 2, 3, 4, 5]) as? Int
@@ -182,7 +185,6 @@ class CallableTests: XCTestCase {
         }
     }
 
-
     func testCallbackable() {
         let callable = make_callable(Testable.callbackable(testable))
         let expect = expectation(description: "called callback")
@@ -242,7 +244,6 @@ class Testable {
         return 5
     }
 
-
     func nullaryDecodable() -> [TestableDecodableStruct] {
         called = true
         return []
@@ -272,7 +273,6 @@ class Testable {
         called = true
         return [arg0, arg1, arg2, arg3, arg4]
     }
-
 
     func callbackable(arg0: Int, arg1: (Int) -> Void) {
         arg1(arg0)

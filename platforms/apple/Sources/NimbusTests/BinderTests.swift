@@ -1,6 +1,3 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-
 //
 // Copyright (c) 2019, Salesforce.com, inc.
 // All rights reserved.

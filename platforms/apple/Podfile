@@ -6,7 +6,6 @@ inhibit_all_warnings!
 
 pod 'SwiftLint',  '~> 0.30'
 pod 'SwiftFormat/CLI', '~> 0.39.0'
-pod 'Sourcery', '~> 0.17.0'
 
 target 'dummy' do
 end
