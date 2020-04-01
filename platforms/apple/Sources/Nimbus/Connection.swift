@@ -6,6 +6,4 @@
 //
 
 public protocol Connection: class, Binder {
-//    associatedtype Target
-//    func call(_ method: String, args: [Any], promise: String)
 }
