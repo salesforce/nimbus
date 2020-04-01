@@ -12,6 +12,7 @@
  */
 public protocol Plugin: class {
     var namespace: String { get }
+
     /**
      Bind this plugin to the specified web view and Nimbus bridge.
 
@@ -19,5 +20,5 @@ public protocol Plugin: class {
      to the web view, make additional configuration changes to the web view, or
      call additional methods on the nimbus bridge prior to the web app being loaded.
      */
-    func bind(to connection: Connection, bridge: Bridge)
+    func bind<C>(to connection: C) where C: Connection
 }

@@ -7,7 +7,9 @@
 
 import JavaScriptCore
 
-public class JSContextConnection<C>: Connection, Binder {
+public class JSContextConnection<C>: Connection {
+    public typealias Target = C
+
 
     init(from context: JSContext, to target: C, as namespace: String) {
         self.context = context

@@ -53,7 +53,7 @@ struct DeviceInfo: Codable {
     #endif
 }
 
-public class DeviceInfoPlugin {
+public final class DeviceInfoPlugin {
     public init() {}
 
     func getDeviceInfo() -> DeviceInfo {
@@ -64,14 +64,11 @@ public class DeviceInfoPlugin {
 }
 
 extension DeviceInfoPlugin: Plugin {
-    public var namespace: String {
-            return "DeviceInfoPlugin"
+    public func bind<C>(to connection: C) where C: Connection {
+        connection.bind(self.getDeviceInfo, as: "getDeviceInfo")
     }
 
-    public func bind(to connection: Connection, bridge: Bridge) {
-        // TODO: 
-        if let webViewConnection = connection as? WebViewConnection<DeviceInfoPlugin> {
-            webViewConnection.bind(DeviceInfoPlugin.getDeviceInfo, as: "getDeviceInfo")
-        }
+    public var namespace: String {
+        return "DeviceInfoPlugin"
     }
 }

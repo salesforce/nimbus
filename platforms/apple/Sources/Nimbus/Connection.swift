@@ -5,7 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-public protocol Connection: class {
-    func bind(_ callable: Callable, as name: String)
-    func call(_ method: String, args: [Any], promise: String)
+public protocol Connection: class, Binder {
+//    associatedtype Target
+//    func call(_ method: String, args: [Any], promise: String)
 }

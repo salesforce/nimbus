@@ -1,2 +1,3 @@
 ---
 BUNDLE_SET: "path .bundle"
+BUNDLE_PATH: ".bundle"

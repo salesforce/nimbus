@@ -13,7 +13,7 @@ import WebKit
  Each connection can bind multiple functions and expose them under
  a single namespace in JavaScript.
  */
-public class WebViewConnection<C>: Connection, Binder {
+public class WebViewConnection<C>: Connection {
     public typealias Target = C
 
     /**
@@ -34,7 +34,7 @@ public class WebViewConnection<C>: Connection, Binder {
      handler will in turn retain the `Connection`.
      */
     private class ConnectionMessageHandler: NSObject, WKScriptMessageHandler {
-        init(connection: Connection) {
+        init(connection: WebViewConnection) {
             self.connection = connection
         }
 
@@ -51,7 +51,7 @@ public class WebViewConnection<C>: Connection, Binder {
             connection.call(method, args: args, promise: promiseId)
         }
 
-        let connection: Connection
+        let connection: WebViewConnection
     }
 
     /**
