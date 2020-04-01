@@ -14,8 +14,6 @@ import WebKit
  a single namespace in JavaScript.
  */
 public class Connection<C>: Binder {
-    public typealias Target = C
-
     /**
      Create a connection from the web view to an object.
      */

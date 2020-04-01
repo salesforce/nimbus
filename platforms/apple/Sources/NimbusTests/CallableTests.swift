@@ -5,7 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-// swiftlint:disable line_length vertical_whitespace
+// swiftlint:disable line_length
 
 import XCTest
 
