@@ -48,13 +48,6 @@ jobs:
           working_directory: platforms/apple
           command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusDesktop -configuration Debug -sdk macosx
 
-      - run:
-          name: Ensure generated code is up-to-date
-          working_directory: platforms/apple
-          command: |
-            xcodebuild build -workspace Nimbus.xcworkspace -scheme 'Generate Code from Templates'
-            git diff-index --quiet HEAD Sources
-
   build-swiftpm:
     macos:
       xcode: "11.3.1"
