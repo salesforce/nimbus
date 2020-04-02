@@ -23,6 +23,7 @@ public protocol Plugin: class {
 
 public extension Plugin {
     var namespace: String {
-        return String(describing: self)
+        let currentType = type(of: self)
+        return String(describing: currentType)
     }
 }
