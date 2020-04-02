@@ -8,7 +8,7 @@
 import Foundation
 import JavaScriptCore
 
-public class JSContextBridge: NSObject {
+public class JSContextBridge {
     public func addPlugin<T: Plugin>(_ plugin: T) {
         // TODO:
     }
