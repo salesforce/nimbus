@@ -173,7 +173,9 @@ jobs:
       - run:
           name: Build Android
           working_directory: platforms/android
-          command: ./gradlew assembleDebug
+          command: |
+            ./gradlew assembleDebug
+            ./gradlew assembleAndroidTest
 
       - run:
           name: Test Android
