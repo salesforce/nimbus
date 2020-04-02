@@ -7,12 +7,10 @@
 
 import JavaScriptCore
 
-public class JSContextConnection<C>: Connection {
-    public typealias Target = C
+public class JSContextConnection: Connection {
 
-    init(from context: JSContext, to target: C, as namespace: String) {
+    init(from context: JSContext, as namespace: String) {
         self.context = context
-        self.target = target
         self.namespace = namespace
     }
 
@@ -24,7 +22,6 @@ public class JSContextConnection<C>: Connection {
         // TODO:
     }
 
-    public let target: C
     private let namespace: String
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]

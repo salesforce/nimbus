@@ -8,12 +8,6 @@
 import WebKit
 
 extension WKWebView {
-    /**
-     Create a connection from this web view to the specified object.
-     */
-    public func addConnection<C>(to target: C, as namespace: String) -> WebViewConnection<C> {
-        return WebViewConnection(from: self, to: target, as: namespace)
-    }
 
     /**
      Broadcast a message to subscribers listening on Javascript side.  Message can be

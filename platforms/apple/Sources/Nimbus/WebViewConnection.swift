@@ -13,15 +13,13 @@ import WebKit
  Each connection can bind multiple functions and expose them under
  a single namespace in JavaScript.
  */
-public class WebViewConnection<C>: Connection {
-    public typealias Target = C
+public class WebViewConnection: Connection {
 
     /**
      Create a connection from the web view to an object.
      */
-    init(from webView: WKWebView, to target: C, as namespace: String) {
+    public init(from webView: WKWebView, as namespace: String) {
         self.webView = webView
-        self.target = target
         self.namespace = namespace
         let messageHandler = ConnectionMessageHandler(connection: self)
         webView.configuration.userContentController.add(messageHandler, name: namespace)
@@ -149,7 +147,6 @@ public class WebViewConnection<C>: Connection {
         return opt
     }
 
-    public let target: C
     private let namespace: String
     private weak var webView: WKWebView?
     private var bindings: [String: Callable] = [:]
