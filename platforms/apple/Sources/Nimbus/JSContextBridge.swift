@@ -11,10 +11,21 @@ import JavaScriptCore
 public class JSContextBridge {
 
     public func addPlugin<T: Plugin>(_ plugin: T) {
-        // TODO:
+        plugins.append(plugin)
     }
 
     public func attach(to context: JSContext) {
-        // TODO:
+        guard self.context == nil else {
+            return
+        }
+
+        self.context = context
+        for plugin in plugins {
+            let connection = JSContextConnection(from: context, as: plugin.namespace)
+            plugin.bind(to: connection)
+        }
     }
+
+    var plugins: [Plugin] = []
+    var context: JSContext?
 }
