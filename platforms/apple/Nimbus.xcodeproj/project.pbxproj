@@ -1322,6 +1322,7 @@
 		2944335B2200FD8D00E6D084 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;
 				INFOPLIST_FILE = Sources/NimbusTests/Info.plist;
@@ -1341,6 +1342,7 @@
 		2944335C2200FD8D00E6D084 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4C8Q6SU642;
 				INFOPLIST_FILE = Sources/NimbusTests/Info.plist;

@@ -62,6 +62,13 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         if let url = Bundle(for: MochaTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
         }
+        else {
+            // when running from swiftpm, look for the file relative to the source root
+            let url = URL(fileURLWithPath: "../../packages/test-www/dist/test-www/index.html")
+            if FileManager().fileExists(atPath: url.path) {
+                webView.loadFileURL(url, allowingReadAccessTo: url)
+            }
+        }
         wait(for: [loadingExpectation!], timeout: 5)
     }
 
