@@ -10,6 +10,10 @@ import JavaScriptCore
 
 public class JSContextBridge {
 
+    public init() {
+        self.plugins = []
+    }
+
     public func addPlugin<T: Plugin>(_ plugin: T) {
         plugins.append(plugin)
     }
@@ -20,12 +24,17 @@ public class JSContextBridge {
         }
 
         self.context = context
+        let nimbusDeclaration = """
+        __nimbus = {"plugins": {}};
+        true;
+        """
+        context.evaluateScript(nimbusDeclaration)
         for plugin in plugins {
             let connection = JSContextConnection(from: context, as: plugin.namespace)
             plugin.bind(to: connection)
         }
     }
 
-    var plugins: [Plugin] = []
+    var plugins: [Plugin]
     var context: JSContext?
 }

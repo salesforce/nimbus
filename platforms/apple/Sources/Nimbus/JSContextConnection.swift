@@ -15,7 +15,62 @@ public class JSContextConnection: Connection {
     }
 
     public func bind(_ callable: Callable, as name: String) {
-        // TODO:
+        guard let context = self.context else {
+            return
+        }
+        // get the __nimbus object
+//        var nimbusGlobal = context.objectForKeyedSubscript("__nimbus")?.toDictionary()
+//        // create it if it's nil
+//        if nimbusGlobal == nil {
+//            nimbusGlobal = [:] as [AnyHashable: Any]
+//        }
+//
+//        // get the plugins array
+//        var plugins = nimbusGlobal["plugins"] as [Any]?
+//        // create it if it's nil
+//        if plugins == nil {
+//            plugins = []
+//        }
+//
+//        // get the name plugin on __nimbus
+//        var plugin = plugins?.objectForKeyedSubscript(namespace)
+//        // create it if it's nil
+//        if plugin == nil {
+//            plugin = JSValue(newObjectIn: context)
+//        }
+
+        // create an objc block
+        let binding: @convention(block) (Any?) -> Any? = { args in
+            // call the callable in the block, coercing params
+            do {
+                // return the result
+                let arguments: [Any]
+                if let args = args {
+                    arguments = [args]
+                } else {
+                    arguments = []
+                }
+                return try callable.call(args: arguments)
+            } catch {
+                // Do something with the error
+            }
+            return nil
+        }
+
+        // bind the block as name
+        context.globalObject.setObject(binding, forKeyedSubscript: name)
+
+        let assignmentJS = """
+        var plugin = __nimbus.plugins["\(namespace)"];
+        if (plugin === undefined) {
+            plugin = {};
+            __nimbus.plugins["\(namespace)"] = plugin;
+        }
+        __nimbus.plugins.\(namespace)["\(name)"] = \(name);
+        delete \(name);
+        """
+
+        context.evaluateScript(assignmentJS)
     }
 
     public func call(_ method: String, args: [Any], promise: String) {

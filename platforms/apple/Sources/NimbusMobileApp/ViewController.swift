@@ -7,6 +7,7 @@
 
 import UIKit
 import WebKit
+import JavaScriptCore
 
 import Nimbus
 
@@ -15,6 +16,7 @@ class ViewController: UIViewController {
         super.init(coder: aDecoder)
         title = "Nimbus"
         bridge.addPlugin(DeviceInfoPlugin())
+        jsBridge.addPlugin(DeviceInfoPlugin())
     }
 
     override func loadView() {
@@ -28,8 +30,14 @@ class ViewController: UIViewController {
 
         bridge.attach(to: webView)
         webView.load(URLRequest(url: url))
+
+        if let context = self.context {
+            jsBridge.attach(to: context)
+        }
     }
 
     lazy var webView = WKWebView(frame: .zero)
+    lazy var context = JSContext()
     let bridge = Bridge()
+    let jsBridge = JSContextBridge()
 }
