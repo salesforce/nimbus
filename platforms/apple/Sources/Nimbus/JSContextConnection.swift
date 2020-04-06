@@ -12,49 +12,24 @@ public class JSContextConnection: Connection {
     init(from context: JSContext, as namespace: String) {
         self.context = context
         self.namespace = namespace
+        self.promiseGlobal = context.objectForKeyedSubscript("Promise")
     }
 
     public func bind(_ callable: Callable, as name: String) {
         guard let context = self.context else {
             return
         }
-        // get the __nimbus object
-//        var nimbusGlobal = context.objectForKeyedSubscript("__nimbus")?.toDictionary()
-//        // create it if it's nil
-//        if nimbusGlobal == nil {
-//            nimbusGlobal = [:] as [AnyHashable: Any]
-//        }
-//
-//        // get the plugins array
-//        var plugins = nimbusGlobal["plugins"] as [Any]?
-//        // create it if it's nil
-//        if plugins == nil {
-//            plugins = []
-//        }
-//
-//        // get the name plugin on __nimbus
-//        var plugin = plugins?.objectForKeyedSubscript(namespace)
-//        // create it if it's nil
-//        if plugin == nil {
-//            plugin = JSValue(newObjectIn: context)
-//        }
+        bindings[name] = callable
 
         // create an objc block
-        let binding: @convention(block) (Any?) -> Any? = { args in
-            // call the callable in the block, coercing params
+        let binding: @convention(block) () -> Any? = {
+            let args = JSContext.currentArguments()
             do {
-                // return the result
-                let arguments: [Any]
-                if let args = args {
-                    arguments = [args]
-                } else {
-                    arguments = []
-                }
-                return try callable.call(args: arguments)
+                let result = try callable.call(args: args ?? [])
+                return self.promiseGlobal?.invokeMethod("resolve", withArguments: [result])
             } catch {
-                // Do something with the error
+                return self.promiseGlobal?.invokeMethod("reject", withArguments: [])
             }
-            return nil
         }
 
         // bind the block as name
@@ -80,4 +55,5 @@ public class JSContextConnection: Connection {
     private let namespace: String
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]
+    private let promiseGlobal: JSValue?
 }
