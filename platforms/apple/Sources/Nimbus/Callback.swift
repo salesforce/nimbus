@@ -35,13 +35,9 @@ class Callback: Callable {
                 let jsonData = try jsonEncoder.encode(EncodableValue.value(encodable))
                 let jsonString = String(data: jsonData, encoding: .utf8)!
                 return jsonString
-            } else if arg is NSArray || arg is NSDictionary {
-                let data = try JSONSerialization.data(withJSONObject: arg, options: [])
-                let jsonString = String(data: data, encoding: String.Encoding.utf8)!
-                return jsonString
             } else {
                 // Parameters passed to callback are implied that they
-                // conform to Encodable protocol or be either NSArray or NSDictionary.
+                // conform to Encodable protocol.
                 // If for some reason any elements don't throw parameter error.
                 throw ParameterError.conversion
             }
