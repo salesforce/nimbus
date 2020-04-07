@@ -363,7 +363,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                 else -> {
                     error(
                         functionElement,
-                        "${parameter.asKotlinType().toString()} is an unsupported parameter type."
+                        "${parameter.asKotlinType()} is an unsupported parameter type."
                     )
                 }
             }
