@@ -1,6 +1,6 @@
 {
     "name": "nimbus-bridge",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Nimbus is a bridge for hybrid app development.",
     "license": "BSD-3-Clause",
     "main": "dist/iife/nimbus.js",
