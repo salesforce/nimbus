@@ -241,8 +241,8 @@ extension JSObjectValueContainer: KeyedDecodingContainerProtocol {
     typealias Key = K
 
     var allKeys: [K] {
-        // TODO:
-        let keys: [String] = []
+        let objectKeys = object.context.evaluateScript("Object.keys")!
+        let keys = objectKeys.call(withArguments: [object]).toArray() as? [String] ?? []
         return keys.compactMap { Key(stringValue: $0) }
     }
 
