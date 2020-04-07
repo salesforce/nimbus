@@ -178,14 +178,35 @@ jobs:
       - checkout
 
       - run:
+          name: Store Google Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      
+      - run:
           name: Build Android
           working_directory: platforms/android
-          command: ./gradlew assembleDebug
+          command: |
+            ./gradlew assembleDebug
+            ./gradlew assembleAndroidTest
 
       - run:
           name: Test Android
           working_directory: platforms/android
           command: ./gradlew testDebugUnitTest
+
+      - run:
+          name: Authorize gcloud and set config defaults
+          command: |
+            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+
+      - run:
+          name: Test with Firebase Test Lab
+          working_directory: platforms/android
+          command: |
+            sudo gcloud firebase test android run \
+              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
+              --test nimbus/build/outputs/apk/androidTest/debug/nimbus-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
 
       - run:
           name: Lint Android
