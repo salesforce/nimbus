@@ -193,6 +193,15 @@ jobs:
             sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
       - run:
+          name: Test with Firebase Test Lab
+          working_directory: platforms/android
+          command: |
+            sudo gcloud firebase test android run \
+              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
+              --test demo-app/build/outputs/apk/androidTest/debug/demo-app-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
+
+      - run:
           name: Lint Android
           working_directory: platforms/android
           command: ./gradlew ktlint
