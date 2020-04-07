@@ -370,24 +370,24 @@ workflows:
 
   build-and-test:
     jobs:
-      #- build-and-test-ios
-      #- build-and-test-macos
-      #- build-swiftpm
+      - build-and-test-ios
+      - build-and-test-macos
+      - build-swiftpm
       - build-and-test-android
-      #- build-and-test-ts
-      #- build-docs:
-       #   requires:
-        #    - build-and-test-ts
-         #   - build-and-test-ios
-          #  - build-and-test-android
-      #- publish-docs:
-      #    requires:
-      #      - build-docs
-      #    filters:
-      #      branches:
-      #        only:
-      #          - master
-      #- upload-coverage:
-      #    requires:
-      #      - build-and-test-ios
-      #      - build-and-test-android
+      - build-and-test-ts
+      - build-docs:
+          requires:
+            - build-and-test-ts
+            - build-and-test-ios
+            - build-and-test-android
+      - publish-docs:
+          requires:
+            - build-docs
+          filters:
+            branches:
+              only:
+                - master
+      - upload-coverage:
+          requires:
+            - build-and-test-ios
+            - build-and-test-android

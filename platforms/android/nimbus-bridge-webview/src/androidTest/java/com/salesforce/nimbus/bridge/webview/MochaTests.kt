@@ -111,7 +111,7 @@ class MochaTests {
 
         assertTrue(testBridge.completionLatch.await(5, TimeUnit.SECONDS))
 
-        assertEquals(1, testBridge.failures)
+        assertEquals(0, testBridge.failures)
     }
 
     @Test
