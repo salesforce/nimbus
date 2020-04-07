@@ -198,7 +198,7 @@ jobs:
           command: |
             sudo gcloud firebase test android run \
               --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
-              --test nimbus-bridge-webview/build/outputs/apk/androidTest/debug/nimbus-bridge-webview-debug-androidTest.apk \
+              --test bridge-webview/build/outputs/apk/androidTest/debug/bridge-webview-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
 
       - run:
