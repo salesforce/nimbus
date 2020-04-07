@@ -12,7 +12,7 @@ import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
 import com.salesforce.nimbus.bridge.webview.plugins.DeviceInfoPlugin
-import com.salesforce.nimbus.bridge.webview.plugins.DeviceInfoPluginBinder
+import com.salesforce.nimbus.bridge.webview.plugins.DeviceInfoPluginWebViewBinder
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         WebView.setWebContentsDebuggingEnabled(true)
         val webView = findViewById<WebView>(R.id.webview)
-        val deviceInfoPlugin = DeviceInfoPluginBinder(DeviceInfoPlugin(this))
+        val deviceInfoPlugin = DeviceInfoPluginWebViewBinder(DeviceInfoPlugin(this))
         bridge.add(deviceInfoPlugin)
         bridge.attach(webView)
         webView.loadUrl("http://10.0.2.2:3000")
