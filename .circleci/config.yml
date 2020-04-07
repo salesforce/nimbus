@@ -171,6 +171,10 @@ jobs:
       - checkout
 
       - run:
+          name: Store Google Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      
+      - run:
           name: Build Android
           working_directory: platforms/android
           command: |
@@ -181,6 +185,12 @@ jobs:
           name: Test Android
           working_directory: platforms/android
           command: ./gradlew testDebugUnitTest
+
+      - run:
+          name: Authorize gcloud and set config defaults
+          command: |
+            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
       - run:
           name: Lint Android
@@ -351,24 +361,24 @@ workflows:
 
   build-and-test:
     jobs:
-      - build-and-test-ios
-      - build-and-test-macos
-      - build-swiftpm
+      #- build-and-test-ios
+      #- build-and-test-macos
+      #- build-swiftpm
       - build-and-test-android
-      - build-and-test-ts
-      - build-docs:
-          requires:
-            - build-and-test-ts
-            - build-and-test-ios
-            - build-and-test-android
-      - publish-docs:
-          requires:
-            - build-docs
-          filters:
-            branches:
-              only:
-                - master
-      - upload-coverage:
-          requires:
-            - build-and-test-ios
-            - build-and-test-android
+      #- build-and-test-ts
+      #- build-docs:
+       #   requires:
+        #    - build-and-test-ts
+         #   - build-and-test-ios
+          #  - build-and-test-android
+      #- publish-docs:
+      #    requires:
+      #      - build-docs
+      #    filters:
+      #      branches:
+      #        only:
+      #          - master
+      #- upload-coverage:
+      #    requires:
+      #      - build-and-test-ios
+      #      - build-and-test-android
