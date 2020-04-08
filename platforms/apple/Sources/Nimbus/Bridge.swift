@@ -79,7 +79,7 @@ public class Bridge: NSObject {
         {
             let idSegments = \(idSegmentString);
             let rawArgs = \(argString);
-            let args = rawArgs.map((a) => { a.v });
+            let args = rawArgs.map(a => a.v);
             let promise = undefined;
             try {
                 let fn = idSegments.reduce((state, key) => {
@@ -126,7 +126,7 @@ public class Bridge: NSObject {
         with args: Encodable...,
         callback: @escaping (Error?, R?) -> Void
     ) {
-        let identifierSegments = identifierPath.split(separator: ",").map(String.init)
+        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
         invoke(identifierSegments, with: args, callback: callback)
     }
 

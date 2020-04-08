@@ -18,14 +18,18 @@ class UserDefinedType: Encodable {
 class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
+    var bridge: Bridge!
 
     override func setUp() {
         webView = WKWebView()
+        bridge = Bridge()
+        bridge.attach(to: webView)
         webView.navigationDelegate = self
     }
 
     override func tearDown() {
         webView.navigationDelegate = nil
+        bridge = nil
         webView = nil
     }
 
@@ -51,7 +55,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var returnValue = false
-        webView.callJavascript(name: "testFunction", args: []) { result, _ -> Void in
+        bridge.invoke("testFunction") { (_, result: Any?) -> Void in
             if let result = result as? Bool {
                 returnValue = result
             }
@@ -66,13 +70,13 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var error: Error?
-        webView.callJavascript(name: "methodThatDoesntExist", args: []) { _, callError in
+        bridge.invoke("methodThatDoesntExist") { (callError, _: Any?) in
             error = callError
             expect.fulfill()
         }
         wait(for: [expect], timeout: 5)
 
-        XCTAssertEqual(error?.localizedDescription, .some("A JavaScript exception occurred"))
+        XCTAssertEqual(error?.localizedDescription, .some("The operation couldn’t be completed. (Nimbus.PromiseError error 0.)"))
     }
 
     func testCallMethodWithMultipleParams() {
@@ -91,9 +95,11 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         let optional: Int? = nil
-        let args: [Encodable] = [true, 42, optional, "hello\nworld", UserDefinedType()]
         var result: String?
-        webView.callJavascript(name: "testFunctionWithArgs", args: args) { callResult, _ in
+        bridge.invoke(
+            "testFunctionWithArgs",
+           with: true, 42, optional, "hello\nworld", UserDefinedType()
+        ) { (_, callResult: Any?) in
             if let callResult = callResult as? String {
                 result = callResult
             }
@@ -121,7 +127,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var resultValue: String?
-        webView.callJavascript(name: "testObject.getName", args: []) { result, _ in
+        bridge.invoke("testObject.getName") { (_, result: Any?) in
             if let result = result as? String {
                 resultValue = result
             }

@@ -16,7 +16,6 @@
 		291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; };
 		291A860B21E530BC00510832 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		291A861021E531B200510832 /* Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* Bridge.swift */; };
-		291A861121E531B200510832 /* Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FD21E5302C00510832 /* Deprecated.swift */; };
 		2922900F241165570014B95A /* InvocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922900E241165570014B95A /* InvocationTests.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
 		29245EE6220CE18100F9EEAF /* test-www in Resources */ = {isa = PBXBuildFile; fileRef = 29245EE5220CE18100F9EEAF /* test-www */; };
@@ -163,7 +162,6 @@
 		291A85F221E52D4000510832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		291A85F421E52D4000510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		291A85FC21E5302C00510832 /* Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridge.swift; sourceTree = "<group>"; };
-		291A85FD21E5302C00510832 /* Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deprecated.swift; sourceTree = "<group>"; };
 		291A860321E530BC00510832 /* Nimbus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nimbus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		291A860521E530BC00510832 /* Nimbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Nimbus.h; sourceTree = "<group>"; };
 		291A860621E530BC00510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -355,7 +353,6 @@
 			isa = PBXGroup;
 			children = (
 				29F8D60D223AF83B005C5AC1 /* Plugin */,
-				291A85FD21E5302C00510832 /* Deprecated.swift */,
 				291A860621E530BC00510832 /* Info.plist */,
 				291A860521E530BC00510832 /* Nimbus.h */,
 				298503D8228DEAAC00C1071E /* Binder.swift */,
@@ -950,7 +947,6 @@
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
 				2944334A2200FA3700E6D084 /* Callable.swift in Sources */,
 				29264F5E24197E4F00D68664 /* Plugin.swift in Sources */,
-				291A861121E531B200510832 /* Deprecated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
