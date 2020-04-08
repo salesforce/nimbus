@@ -127,6 +127,11 @@ jobs:
             bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
 
       - run:
+          name: Build iOS Demo app
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusApp -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.4,platform=iOS Simulator,name=iPhone 7'
+
+      - run:
           name: Build NimbusJS
           command: |
             npm install
@@ -173,7 +178,7 @@ jobs:
       - run:
           name: Store Google Service Account
           command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      
+
       - run:
           name: Build Android
           working_directory: platforms/android
