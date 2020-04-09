@@ -60,12 +60,12 @@ class JSValueEncoderContainer<T: Encodable>: Encoder {
     }
 
     public func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-        let container = JSValueKeyedEncodingContainer<Key>(storage: storage, context: context, codingPath: codingPath)
+        let container = JSValueKeyedEncodingContainer<Key>(storage: storage, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     public func unkeyedContainer() -> UnkeyedEncodingContainer {
-        let container = JSValueUnkeyedEncodingContainer(storage: storage, context: context)
+        let container = JSValueUnkeyedEncodingContainer(storage: storage)
         return container
     }
 
@@ -76,12 +76,10 @@ class JSValueEncoderContainer<T: Encodable>: Encoder {
 
 private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     var codingPath: [CodingKey]
-    let context: JSContext
     var storage: JSValueEncoderStorage
     var dictionaryStorage: NSMutableDictionary
 
-    init(storage: JSValueEncoderStorage, context: JSContext, codingPath: [CodingKey]) {
-        self.context = context
+    init(storage: JSValueEncoderStorage, codingPath: [CodingKey]) {
         self.storage = storage
         self.dictionaryStorage = storage.pushKeyedContainer()
         self.codingPath = codingPath
@@ -152,20 +150,20 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, context: context, codingPath: codingPath)
+        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
-        return JSValueUnkeyedEncodingContainer(storage: storage, context: context)
+        return JSValueUnkeyedEncodingContainer(storage: storage)
     }
 
     func superEncoder() -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: context)
+        return JSValueEncoderContainer(value: 5, context: JSContext())
     }
 
     func superEncoder(forKey key: K) -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: context)
+        return JSValueEncoderContainer(value: 5, context: JSContext())
     }
 
     typealias Key = K
@@ -175,14 +173,12 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
 private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     var storage: JSValueEncoderStorage
     var arrayStorage: NSMutableArray
-    let context: JSContext
     var codingPath: [CodingKey]
     var count: Int
 
-    init(storage: JSValueEncoderStorage, context: JSContext) {
+    init(storage: JSValueEncoderStorage) {
         self.storage = storage
         self.arrayStorage = self.storage.pushUnKeyedContainer()
-        self.context = context
         codingPath = []
         count = 0
     }
@@ -252,16 +248,16 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, context: context, codingPath: codingPath)
+        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        return JSValueUnkeyedEncodingContainer(storage: storage, context: context)
+        return JSValueUnkeyedEncodingContainer(storage: storage)
     }
 
     func superEncoder() -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: context)
+        return JSValueEncoderContainer(value: 5, context: JSContext())
     }
 }
 
