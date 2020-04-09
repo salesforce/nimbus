@@ -58,6 +58,7 @@
 		CC97225323E4834400F899E7 /* NimbusJS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CC97225C23E4847C00F899E7 /* WebView+NimbusJS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */; };
 		CC98F37F243CD41000772872 /* JSValueEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC98F37E243CD41000772872 /* JSValueEncoder.swift */; };
+		CCEA62CB243F83B000664E7E /* JSValueEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -217,6 +218,7 @@
 		CC97224E23E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WebView+NimbusJS.swift"; sourceTree = "<group>"; };
 		CC98F37E243CD41000772872 /* JSValueEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = JSValueEncoder.swift; path = Plugin/JSValueEncoder.swift; sourceTree = "<group>"; };
+		CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueEncoderTests.swift; sourceTree = "<group>"; };
 		D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -379,6 +381,7 @@
 				CC251497240D6C13001E8D8C /* DecodableUtilsTests.swift */,
 				2922900E241165570014B95A /* InvocationTests.swift */,
 				CC216515243C0395000DC5D3 /* JSValueDecoderTests.swift */,
+				CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */,
 				29245EE1220CE13000F9EEAF /* MochaTests.swift */,
 				29F3839B234BC61000BF854B /* ParameterErrorTests.swift */,
 				CC355C0A24367CC200E5FDEE /* PluginTests.swift */,
@@ -952,6 +955,7 @@
 				29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */,
 				29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */,
 				29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */,
+				CCEA62CB243F83B000664E7E /* JSValueEncoderTests.swift in Sources */,
 				CC216516243C0395000DC5D3 /* JSValueDecoderTests.swift in Sources */,
 				682D46B5234160650049B636 /* CallableTests.swift in Sources */,
 				2922900F241165570014B95A /* InvocationTests.swift in Sources */,
