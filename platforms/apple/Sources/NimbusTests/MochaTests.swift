@@ -61,8 +61,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         loadingExpectation?.assertForOverFulfill = false
         if let url = Bundle(for: MochaTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
-        }
-        else {
+        } else {
             // when running from swiftpm, look for the file relative to the source root
             let url = URL(fileURLWithPath: "../../packages/test-www/dist/test-www/index.html")
             if FileManager().fileExists(atPath: url.path) {

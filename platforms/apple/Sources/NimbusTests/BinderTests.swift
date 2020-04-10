@@ -10,7 +10,7 @@ import XCTest
 @testable import Nimbus
 
 // repetitive tests are repetitive...
-// swiftlint:disable type_body_length file_length line_length
+// swiftlint:disable type_body_length file_length
 
 class BinderTests: XCTestCase {
     let binder = TestBinder()
