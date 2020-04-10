@@ -73,6 +73,15 @@ class JSValueEncoderTests: XCTestCase {
             if (valueToTest.length !== \(testValue.count)) {
                 return false
             }
+            if (valueToTest[0] !== \(testValue[0])) {
+                return false
+            }
+            if (valueToTest[1] !== \(testValue[1])) {
+                return false
+            }
+            if (valueToTest[2] !== \(testValue[2])) {
+                return false
+            }
             return true
         }
         testValue();
@@ -83,10 +92,11 @@ class JSValueEncoderTests: XCTestCase {
     struct TestEncodable: Encodable {
         let foo: Int
         let bar: String
+        let thing: [Int]
     }
 
     func testBasicStruct() throws {
-        let testValue = TestEncodable(foo: 2, bar: "baz")
+        let testValue = TestEncodable(foo: 2, bar: "baz", thing: [1, 2])
         let encoded = try encoder.encode(testValue, context: context)
         XCTAssertTrue(encoded.isObject)
         let assertScript = """
@@ -95,6 +105,12 @@ class JSValueEncoderTests: XCTestCase {
                 return false
             }
             if (valueToTest.bar !== "\(testValue.bar)") {
+                return false
+            }
+            if (valueToTest.thing[0] !== \(testValue.thing[0])) {
+                return false
+            }
+            if (valueToTest.thing[1] !== \(testValue.thing[1])) {
                 return false
             }
             return true
@@ -111,7 +127,7 @@ class JSValueEncoderTests: XCTestCase {
     }
 
     func testBasicStructNested() throws {
-        let nest = TestEncodable(foo: 2, bar: "baz")
+        let nest = TestEncodable(foo: 2, bar: "baz", thing: [1, 2])
         let testValue = TestEncodableNested(foo: 19, bar: "baz", nest: nest)
         let encoded = try encoder.encode(testValue, context: context)
         XCTAssertTrue(encoded.isObject)
@@ -127,6 +143,12 @@ class JSValueEncoderTests: XCTestCase {
                 return false
             }
             if (valueToTest.nest.bar !== "\(testValue.nest.bar)") {
+                return false
+            }
+            if (valueToTest.nest.thing[0] !== \(testValue.nest.thing[0])) {
+                return false
+            }
+            if (valueToTest.nest.thing[1] !== \(testValue.nest.thing[1])) {
                 return false
             }
             return true

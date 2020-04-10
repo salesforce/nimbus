@@ -470,28 +470,19 @@ private extension JSValueEncoderContainer {
         return try self.box_(value) ?? NSDictionary()
     }
 
-    // This method is called "box_" instead of "box" to disambiguate it from the overloads. Because the return type here is different from all of the "box" overloads (and is more general), any "box" calls in here would call back into "box" recursively instead of calling the appropriate overload, which is not what we want.
     func box_(_ value: Encodable) throws -> NSObject? {
-        // Disambiguation between variable and function is required due to
-        // issue tracked at: https://bugs.swift.org/browse/SR-1846
         let type = Swift.type(of: value)
         if type == Date.self || type == NSDate.self {
-            // Respect Date encoding strategy
             return try self.box((value as! Date)) //swiftlint:disable:this force_cast
         } else if type == Data.self || type == NSData.self {
-            // Respect Data encoding strategy
             return try self.box((value as! Data)) //swiftlint:disable:this force_cast
         } else if type == URL.self || type == NSURL.self {
             // Encode URLs as single strings.
             return self.box((value as! URL).absoluteString) //swiftlint:disable:this force_cast
         } else if type == Decimal.self || type == NSDecimalNumber.self {
-            // JSONSerialization can natively handle NSDecimalNumber.
             return (value as! NSDecimalNumber) //swiftlint:disable:this force_cast
-        } //else if value is _JSONStringDictionaryEncodableMarker {
-//            return try self.box(value as! [String : Encodable])
-//        }
+        }
 
-        // The value should request a container from the __JSONEncoder.
         let depth = self.storage.count
         do {
             try value.encode(to: self)
