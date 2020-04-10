@@ -35,31 +35,44 @@ extension JSValue {
     }
 }
 
+enum JSValueEncoderError: Error {
+    case invalidContext
+}
+
 class JSValueEncoderStorage {
-    var containers: [NSObject] = []
+    var jsValueContainers: [JSValue] = []
+    let context: JSContext
     var count: Int {
-        return containers.count
+        return jsValueContainers.count
+    }
+
+    init(context: JSContext) {
+        self.context = context
     }
 
     func push(container: __owned NSObject) {
-        self.containers.append(container)
+        self.jsValueContainers.append(JSValue(object: container, in: self.context))
     }
 
-    func pushUnKeyedContainer() -> NSMutableArray {
-        let array = NSMutableArray()
-        self.containers.append(array)
-        return array
+    func pushUnKeyedContainer() throws -> JSValue {
+        guard let jsArray = JSValue(newArrayIn: self.context) else {
+            throw JSValueEncoderError.invalidContext
+        }
+        self.jsValueContainers.append(jsArray)
+        return jsArray
     }
 
-    func pushKeyedContainer() -> NSMutableDictionary {
-        let dictionary = NSMutableDictionary()
-        self.containers.append(dictionary)
-        return dictionary
+    func pushKeyedContainer() throws -> JSValue {
+        guard let jsDictionary = JSValue(newObjectIn: self.context) else {
+            throw JSValueEncoderError.invalidContext
+        }
+        self.jsValueContainers.append(jsDictionary)
+        return jsDictionary
     }
 
-    func popContainer() -> NSObject {
-        precondition(!self.containers.isEmpty, "Empty container stack.")
-        return self.containers.popLast()!
+    func popContainer() -> JSValue {
+        precondition(!self.jsValueContainers.isEmpty, "Empty container stack.")
+        return self.jsValueContainers.popLast()!
     }
 }
 
@@ -71,24 +84,24 @@ class JSValueEncoderContainer: Encoder {
 
     init(context: JSContext) {
         self.context = context
-        self.storage = JSValueEncoderStorage()
+        self.storage = JSValueEncoderStorage(context: context)
     }
 
     func resolvedValue() -> JSValue {
-        if storage.count == 1, let main = storage.containers.first {
-            return JSValue(object: main, in: context)
+        if storage.count == 1, let main = storage.jsValueContainers.first {
+            return main
         }
-        return JSValue(object: storage.containers, in: context)
+        return JSValue(object: storage.jsValueContainers, in: context)
     }
 
     public func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-        let containerStorage = storage.pushKeyedContainer()
+        let containerStorage = (try? storage.pushKeyedContainer()) ?? JSValue(newObjectIn: context)
         let container = JSValueKeyedEncodingContainer<Key>(encoder: self, container: containerStorage, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     public func unkeyedContainer() -> UnkeyedEncodingContainer {
-        let containerStorage = storage.pushUnKeyedContainer()
+        let containerStorage = (try? storage.pushUnKeyedContainer()) ?? JSValue(newArrayIn: context)
         let container = JSValueUnkeyedEncodingContainer(encoder: self, container: containerStorage, codingPath: codingPath)
         return container
     }
@@ -100,93 +113,93 @@ class JSValueEncoderContainer: Encoder {
 
 private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     let encoder: JSValueEncoderContainer
-    let container: NSMutableDictionary
+    let container: JSValue?
     var codingPath: [CodingKey]
 
-    init(encoder: JSValueEncoderContainer, container: NSMutableDictionary, codingPath: [CodingKey]) {
+    init(encoder: JSValueEncoderContainer, container: JSValue?, codingPath: [CodingKey]) {
         self.encoder = encoder
         self.container = container
         self.codingPath = codingPath
     }
 
     func encodeNil(forKey key: K) throws {
-        self.container[key.stringValue] = NSNull()
+        container?.append(NSNull(), for: key.stringValue)
     }
 
     func encode(_ value: Bool, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: String, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Double, forKey key: K) throws {
-        self.container[key.stringValue] = try self.encoder.box(value)
+        container?.append(try self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Float, forKey key: K) throws {
-        self.container[key.stringValue] = try self.encoder.box(value)
+        container?.append(try self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Int, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Int8, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Int16, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Int32, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: Int64, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: UInt, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: UInt8, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: UInt16, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: UInt32, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode(_ value: UInt64, forKey key: K) throws {
-        self.container[key.stringValue] = self.encoder.box(value)
+        container?.append(self.encoder.box(value), for: key.stringValue)
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        self.container[key.stringValue] = try self.encoder.box(value)
+        container?.append(try self.encoder.box(value), for: key.stringValue)
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
         let containerKey = key.stringValue
-        let dictionary: NSMutableDictionary
-        if let existingContainer = self.container[containerKey] {
+        let dictionary: JSValue
+        if let existingContainer = container?.objectForKeyedSubscript(containerKey) {
             precondition(
-                existingContainer is NSMutableDictionary,
+                existingContainer.isObject,
                 "Attempt to re-encode into nested KeyedEncodingContainer<\(Key.self)> for key \"\(containerKey)\" is invalid: non-keyed container already encoded for this key"
             )
-            dictionary = existingContainer as! NSMutableDictionary // swiftlint:disable:this force_cast
+            dictionary = existingContainer
         } else {
-            dictionary = NSMutableDictionary()
-            self.container[containerKey] = dictionary
+            dictionary = JSValue(newObjectIn: encoder.context)
+            self.container?.append(dictionary, for: containerKey)
         }
 
         self.codingPath.append(key)
@@ -198,16 +211,16 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
 
     func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
         let containerKey = key.stringValue
-        let array: NSMutableArray
-        if let existingContainer = self.container[containerKey] {
+        let array: JSValue
+        if let existingContainer = container?.objectForKeyedSubscript(containerKey) {
             precondition(
-                existingContainer is NSMutableArray,
+                existingContainer.isArray,
                 "Attempt to re-encode into nested UnkeyedEncodingContainer for key \"\(containerKey)\" is invalid: keyed container/single value already encoded for this key"
             )
-            array = existingContainer as! NSMutableArray //swiftlint:disable:this force_cast
+            array = existingContainer
         } else {
-            array = NSMutableArray()
-            self.container[containerKey] = array
+            array = JSValue(newArrayIn: encoder.context)
+            self.container?.append(array, for: containerKey)
         }
 
         self.codingPath.append(key)
@@ -229,11 +242,11 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
 
 private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     let encoder: JSValueEncoderContainer
-    let container: NSMutableArray
+    let container: JSValue?
     var codingPath: [CodingKey]
     var count: Int
 
-    init(encoder: JSValueEncoderContainer, container: NSMutableArray, codingPath: [CodingKey]) {
+    init(encoder: JSValueEncoderContainer, container: JSValue?, codingPath: [CodingKey]) {
         self.encoder = encoder
         self.container = container
         self.codingPath = codingPath
@@ -241,77 +254,79 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode(_ value: String) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: Double) throws {
-        container.add(try self.encoder.box(value))
+        container?.append(try self.encoder.box(value))
     }
 
     func encode(_ value: Float) throws {
-        container.add(try self.encoder.box(value))
+        container?.append(try self.encoder.box(value))
     }
 
     func encode(_ value: Int) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: Int8) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: Int16) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: Int32) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: Int64) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: UInt) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: UInt8) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: UInt16) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: UInt32) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode(_ value: UInt64) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
         self.encoder.codingPath.append(JSValueKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
-        self.container.add(try self.encoder.box(value))
+        container?.append(try self.encoder.box(value))
     }
 
     func encode(_ value: Bool) throws {
-        container.add(self.encoder.box(value))
+        container?.append(self.encoder.box(value))
     }
 
     func encodeNil() throws {
-        container.add(NSNull())
+        container?.append(NSNull())
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
         self.codingPath.append(JSValueKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
-        let dictionary = NSMutableDictionary()
-        self.container.add(dictionary)
+        let dictionary = JSValue(newObjectIn: encoder.context)
+        if let dictionary = dictionary {
+            self.container?.append(dictionary)
+        }
 
         let container = JSValueKeyedEncodingContainer<NestedKey>(encoder: encoder, container: dictionary, codingPath: codingPath)
         return KeyedEncodingContainer(container)
@@ -321,8 +336,10 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         self.codingPath.append(JSValueKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
-        let array = NSMutableArray()
-        self.container.add(array)
+        let array = JSValue(newArrayIn: encoder.context)
+        if let array = array {
+            self.container?.append(array)
+        }
         return JSValueUnkeyedEncodingContainer(encoder: encoder, container: array, codingPath: codingPath)
     }
 
@@ -459,12 +476,12 @@ private extension JSValueEncoderContainer {
 
     func box(_ dict: [String: Encodable]) throws -> NSObject? {
         let depth = self.storage.count
-        let result = self.storage.pushKeyedContainer()
+        let result = try self.storage.pushKeyedContainer()
         do {
             for (key, value) in dict {
                 self.codingPath.append(JSValueKey(stringValue: key, intValue: nil))
                 defer { self.codingPath.removeLast() }
-                result[key] = try box(value)
+                result.append(try box(value), for: key)
             }
         } catch {
             // If the value pushed a container before throwing, pop it back off to restore state.
