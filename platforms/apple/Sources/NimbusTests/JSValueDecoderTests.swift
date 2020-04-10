@@ -13,7 +13,7 @@ class JSValueDecoderTests: XCTestCase {
     var context: JSContext!
     var decoder: JSValueDecoder!
 
-    override func setUpWithError() throws {
+    override func setUp() {
         context = JSContext()
         decoder = JSValueDecoder()
     }

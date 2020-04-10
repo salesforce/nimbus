@@ -14,12 +14,9 @@ class JSValueEncoderTests: XCTestCase {
     var context: JSContext = JSContext()
     var encoder: JSValueEncoder = JSValueEncoder()
 
-    override func setUpWithError() throws {
+    override func setUp() {
         context = JSContext()
         encoder = JSValueEncoder()
-    }
-
-    override func tearDownWithError() throws {
     }
 
     func executeAssertionScript(_ script: String, testValue: JSValue, key: String) -> Bool {
