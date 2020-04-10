@@ -33,7 +33,7 @@ class PrimitiveJSONSerializable(val value: Any) :
  * A [JSONSerializable] wrapper around an object that is [Serializable] and serialized using a
  * [KSerializer]
  */
-class KotlinJSONSerializable<T>(private val value: T, private val serializer: KSerializer<T>): JSONSerializable {
+class KotlinJSONSerializable<T>(private val value: T, private val serializer: KSerializer<T>) : JSONSerializable {
     override fun stringify(): String {
         return Json(JsonConfiguration.Stable).stringify(serializer, value)
     }
