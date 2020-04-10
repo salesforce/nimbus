@@ -51,7 +51,7 @@ class DeviceInfoPlugin(context: Context) : Plugin {
         return cachedDeviceInfo
     }
 
-    override fun <JavascriptEngine> customize(runtime: Runtime<JavascriptEngine>) {
+    override fun <JavascriptEngine, SerializedOutputType> customize(runtime: Runtime<JavascriptEngine, SerializedOutputType>) {
 
         // example for how to do customizations on a specific JavascriptEngine (WebView, v8)
         when (runtime.getJavascriptEngine()) {
@@ -61,7 +61,7 @@ class DeviceInfoPlugin(context: Context) : Plugin {
         }
     }
 
-    override fun <JavascriptEngine> cleanup(runtime: Runtime<JavascriptEngine>) {
+    override fun <JavascriptEngine, SerializedOutputType> cleanup(runtime: Runtime<JavascriptEngine, SerializedOutputType>) {
 
         // example for how to do cleanup on a specific JavascriptEngine (WebView, v8)
         when (runtime.getJavascriptEngine()) {

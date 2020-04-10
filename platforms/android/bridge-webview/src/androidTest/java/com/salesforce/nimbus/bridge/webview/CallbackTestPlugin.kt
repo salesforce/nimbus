@@ -30,8 +30,8 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: MochaTests.MochaMessage) -> Unit) {
-        arg(777, MochaTests.MochaMessage())
+    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: MochaTests.SerializableMochaMessage) -> Unit) {
+        arg(777, MochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod
@@ -73,12 +73,12 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: MochaTests.MochaMessage) -> Unit) {
+    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: MochaTests.SerializableMochaMessage) -> Unit) {
         val jo = JSONObject()
         jo.put("one", 1)
         jo.put("two", 2)
         jo.put("three", 3)
-        arg(jo, MochaTests.MochaMessage())
+        arg(jo, MochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod

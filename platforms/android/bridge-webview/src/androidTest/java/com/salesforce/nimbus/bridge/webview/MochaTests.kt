@@ -17,6 +17,7 @@ import com.salesforce.nimbus.JSONSerializable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.toJSONSerializable
+import kotlinx.serialization.Serializable
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -38,6 +39,9 @@ class MochaTests {
             return jsonObject.toString()
         }
     }
+
+    @Serializable
+    data class SerializableMochaMessage(val stringField: String = "This is a string", val intField: Int = 42)
 
     @PluginOptions(name = "mochaTestBridge")
     class MochaTestBridge(private val webView: WebView) : Plugin {

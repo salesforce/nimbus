@@ -12,9 +12,8 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
-import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.JavascriptSerializable
 import com.salesforce.nimbus.PrimitiveJSONSerializable
-import com.salesforce.nimbus.Promise
 import com.salesforce.nimbus.Runtime
 import org.json.JSONArray
 import org.json.JSONObject
@@ -22,16 +21,17 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 private const val BRIDGE_NAME = "_nimbus"
+private typealias Promise = ((String?, Any?) -> Unit)
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
-class WebViewBridge : Bridge<WebView>,
-    Runtime<WebView> {
+class WebViewBridge : Bridge<WebView, String>,
+    Runtime<WebView, String> {
 
     private var bridgeWebView: WebView? = null
-    private val binders = mutableListOf<Binder<WebView>>()
+    private val binders = mutableListOf<Binder<WebView, String>>()
     private val promises: ConcurrentHashMap<String, Promise> = ConcurrentHashMap()
 
-    override fun add(vararg binder: Binder<WebView>) {
+    override fun add(vararg binder: Binder<WebView, String>) {
         binders.addAll(binder)
     }
 
@@ -57,7 +57,7 @@ class WebViewBridge : Bridge<WebView>,
 
     override fun invoke(
         functionName: String,
-        args: Array<JSONSerializable?>,
+        args: Array<JavascriptSerializable<String>?>,
         callback: ((String?, Any?) -> Unit)?
     ) {
         invokeInternal(functionName.split('.').toTypedArray(), args, callback)
@@ -69,7 +69,7 @@ class WebViewBridge : Bridge<WebView>,
 
     private fun invokeInternal(
         identifierSegments: Array<String>,
-        args: Array<JSONSerializable?> = emptyArray(),
+        args: Array<JavascriptSerializable<String>?> = emptyArray(),
         callback: Promise?
     ) {
         val promiseId = UUID.randomUUID().toString()
@@ -85,7 +85,7 @@ class WebViewBridge : Bridge<WebView>,
                 jsonArray.put(asPrimitive.value)
             } else {
                 jsonArray.put(if (jsonSerializable == null) JSONObject.NULL
-                else JSONObject(jsonSerializable.stringify()))
+                else JSONObject(jsonSerializable.serialize()))
             }
         }
         val jsonString = jsonArray.toString()
@@ -161,7 +161,7 @@ class WebViewBridge : Bridge<WebView>,
         return result.toString()
     }
 
-    private fun initialize(webView: WebView, binders: Collection<Binder<WebView>>) {
+    private fun initialize(webView: WebView, binders: Collection<Binder<WebView, String>>) {
         binders.forEach { binder ->
 
             // customize web view if needed
@@ -176,7 +176,7 @@ class WebViewBridge : Bridge<WebView>,
         }
     }
 
-    private fun cleanup(webView: WebView, binders: Collection<Binder<WebView>>) {
+    private fun cleanup(webView: WebView, binders: Collection<Binder<WebView, String>>) {
         binders.forEach { binder ->
 
             // cleanup web view if needed

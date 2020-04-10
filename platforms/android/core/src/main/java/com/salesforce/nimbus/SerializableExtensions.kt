@@ -7,11 +7,13 @@
 
 package com.salesforce.nimbus
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
 
-// Making this internal so it's not a footgun to consumers
 class PrimitiveJSONSerializable(val value: Any) :
     JSONSerializable {
     private val stringifiedValue: String
@@ -24,6 +26,16 @@ class PrimitiveJSONSerializable(val value: Any) :
 
     override fun stringify(): String {
         return stringifiedValue
+    }
+}
+
+/**
+ * A [JSONSerializable] wrapper around an object that is [Serializable] and serialized using a
+ * [KSerializer]
+ */
+class KotlinJSONSerializable<T>(private val value: T, private val serializer: KSerializer<T>): JSONSerializable {
+    override fun stringify(): String {
+        return Json(JsonConfiguration.Stable).stringify(serializer, value)
     }
 }
 

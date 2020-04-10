@@ -5,5 +5,6 @@ import com.squareup.kotlinpoet.ClassName
 
 class WebViewBinderGenerator : BinderGenerator() {
     override val javascriptEngine = ClassName("android.webkit", "WebView")
+    override val serializedOutputType = ClassName("kotlin", "String")
     override val functionAnnotationClassName = ClassName("android.webkit", "JavascriptInterface")
 }

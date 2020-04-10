@@ -65,9 +65,38 @@ fun TypeName.toKotlinTypeName(nullable: Boolean = false): TypeName {
 fun TypeMirror.asKotlinTypeName(nullable: Boolean = false) = asTypeName().toKotlinTypeName(nullable = nullable)
 
 /**
+ * Converts a Java [TypeMirror] to a raw Kotlin [TypeName]
+ */
+fun TypeMirror.asRawTypeName(nullable: Boolean = false): TypeName {
+    val typeName = asTypeName().toKotlinTypeName(nullable)
+    return if (typeName is ParameterizedTypeName) {
+        typeName.rawType.toKotlinTypeName(nullable)
+    } else {
+        typeName
+    }
+}
+
+/**
  * Converts a Java [TypeName] from the [Element] to a Kotlin [TypeName]
  */
 fun Element.asKotlinType(nullable: Boolean = false) = asType().asKotlinTypeName(nullable = nullable)
+
+/**
+ * Converts an [Element] to a [TypeName]
+ */
+fun Element.asTypeName() = asType().asTypeName()
+
+/**
+ * Converts an [Element] to a raw [TypeName]
+ */
+fun Element.asRawTypeName(): TypeName {
+    val typeName = asType().asTypeName()
+    return if (typeName is ParameterizedTypeName) {
+        typeName.rawType.toKotlinTypeName()
+    } else {
+        typeName.toKotlinTypeName()
+    }
+}
 
 /**
  * Gets the string version of the [Element.getSimpleName]
@@ -90,6 +119,6 @@ fun KmValueParameter?.isNullable(): Boolean = this?.type.isNullable()
 fun KmTypeProjection?.isNullable(): Boolean = this?.type.isNullable()
 
 /**
- * Convenience function to toggle the nullability of a [ClassName]
+ * Convenience function to toggle the nullability of a [TypeName]
  */
-fun ClassName.nullable(nullable: Boolean) = copy(nullable = nullable)
+fun TypeName.nullable(nullable: Boolean) = copy(nullable = nullable)
