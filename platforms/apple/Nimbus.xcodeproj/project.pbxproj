@@ -57,7 +57,7 @@
 		CC97225223E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97225323E4834400F899E7 /* NimbusJS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CC97225C23E4847C00F899E7 /* WebView+NimbusJS.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */; };
-		CC98F37F243CD41000772872 /* JSValueEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC98F37E243CD41000772872 /* JSValueEncoder.swift */; };
+		CCDEEEAB2440C164009ADEBC /* JSValueEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEEEAA2440C164009ADEBC /* JSValueEncoder.swift */; };
 		CCEA62CB243F83B000664E7E /* JSValueEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -217,7 +217,7 @@
 		CC97224C23E4834400F899E7 /* NimbusJSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusJSTests.swift; sourceTree = "<group>"; };
 		CC97224E23E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC97225A23E4847500F899E7 /* WebView+NimbusJS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WebView+NimbusJS.swift"; sourceTree = "<group>"; };
-		CC98F37E243CD41000772872 /* JSValueEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = JSValueEncoder.swift; path = Plugin/JSValueEncoder.swift; sourceTree = "<group>"; };
+		CCDEEEAA2440C164009ADEBC /* JSValueEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSValueEncoder.swift; sourceTree = "<group>"; };
 		CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueEncoderTests.swift; sourceTree = "<group>"; };
 		D0FE94B18F9A6066886945B1 /* Pods-Nimbus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.release.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.release.xcconfig"; sourceTree = "<group>"; };
 		F0639DA54032B895278BC4F0 /* libPods-Nimbus.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Nimbus.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -361,7 +361,7 @@
 				CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */,
 				CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */,
 				CC216513243C00AE000DC5D3 /* JSValueDecoder.swift */,
-				CC98F37E243CD41000772872 /* JSValueEncoder.swift */,
+				CCDEEEAA2440C164009ADEBC /* JSValueEncoder.swift */,
 				29264F5D24197E4F00D68664 /* Plugin.swift */,
 				CC430D902433C39800CA12A0 /* WebViewConnection.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
@@ -939,7 +939,7 @@
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
 				294433492200FA3700E6D084 /* EncodableValue.swift in Sources */,
-				CC98F37F243CD41000772872 /* JSValueEncoder.swift in Sources */,
+				CCDEEEAB2440C164009ADEBC /* JSValueEncoder.swift in Sources */,
 				CC251496240D6764001E8D8C /* DecodableUtils.swift in Sources */,
 				CC216514243C00AE000DC5D3 /* JSValueDecoder.swift in Sources */,
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
