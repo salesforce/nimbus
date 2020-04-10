@@ -10,7 +10,7 @@ import JavaScriptCore
 
 public class JSValueEncoder {
     public func encode<T>(_ value: T, context: JSContext) throws -> JSValue where T: Encodable {
-        let encoder = JSValueEncoderContainer(value: value, context: context)
+        let encoder = JSValueEncoderContainer(context: context)
         try value.encode(to: encoder)
         return encoder.resolvedValue()
     }
@@ -39,15 +39,13 @@ class JSValueEncoderStorage {
     }
 }
 
-class JSValueEncoderContainer<T: Encodable>: Encoder {
-    var value: T
+class JSValueEncoderContainer: Encoder {
     var codingPath: [CodingKey] = []
     var userInfo: [CodingUserInfoKey: Any] = [:]
     var storage: JSValueEncoderStorage
     let context: JSContext
 
-    init(value: T, context: JSContext) {
-        self.value = value
+    init(context: JSContext) {
         self.context = context
         self.storage = JSValueEncoderStorage()
     }
@@ -159,11 +157,11 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
     }
 
     func superEncoder() -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: JSContext())
+        return JSValueEncoderContainer(context: JSContext())
     }
 
     func superEncoder(forKey key: K) -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: JSContext())
+        return JSValueEncoderContainer(context: JSContext())
     }
 
     typealias Key = K
@@ -257,7 +255,7 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func superEncoder() -> Encoder {
-        return JSValueEncoderContainer(value: 5, context: JSContext())
+        return JSValueEncoderContainer(context: JSContext())
     }
 }
 
