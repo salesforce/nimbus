@@ -58,12 +58,14 @@ class JSValueEncoderContainer: Encoder {
     }
 
     public func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-        let container = JSValueKeyedEncodingContainer<Key>(storage: storage, codingPath: codingPath)
+        let containerStorage = storage.pushKeyedContainer()
+        let container = JSValueKeyedEncodingContainer<Key>(encoder: self, container: containerStorage, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     public func unkeyedContainer() -> UnkeyedEncodingContainer {
-        let container = JSValueUnkeyedEncodingContainer(storage: storage)
+        let containerStorage = storage.pushUnKeyedContainer()
+        let container = JSValueUnkeyedEncodingContainer(encoder: self, container: containerStorage, codingPath: codingPath)
         return container
     }
 
@@ -73,87 +75,118 @@ class JSValueEncoderContainer: Encoder {
 }
 
 private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
+    let encoder: JSValueEncoderContainer
+    let container: NSMutableDictionary
     var codingPath: [CodingKey]
-    var storage: JSValueEncoderStorage
-    var dictionaryStorage: NSMutableDictionary
 
-    init(storage: JSValueEncoderStorage, codingPath: [CodingKey]) {
-        self.storage = storage
-        self.dictionaryStorage = storage.pushKeyedContainer()
+    init(encoder: JSValueEncoderContainer, container: NSMutableDictionary, codingPath: [CodingKey]) {
+        self.encoder = encoder
+        self.container = container
         self.codingPath = codingPath
     }
 
     func encodeNil(forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNull()
+        self.container[key.stringValue] = NSNull()
     }
 
     func encode(_ value: Bool, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: String, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = value as NSString
+        self.container[key.stringValue] = value as NSString
     }
 
     func encode(_ value: Double, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Float, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Int, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Int8, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Int16, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Int32, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: Int64, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: UInt, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: UInt8, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: UInt16, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: UInt32, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode(_ value: UInt64, forKey key: K) throws {
-        self.dictionaryStorage[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = NSNumber(value: value)
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
-        self.dictionaryStorage[key.stringValue] = value
+        self.container[key.stringValue] = value
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, codingPath: codingPath)
+        let containerKey = key.stringValue
+        let dictionary: NSMutableDictionary
+        if let existingContainer = self.container[containerKey] {
+            precondition(
+                existingContainer is NSMutableDictionary,
+                "Attempt to re-encode into nested KeyedEncodingContainer<\(Key.self)> for key \"\(containerKey)\" is invalid: non-keyed container already encoded for this key"
+            )
+            dictionary = existingContainer as! NSMutableDictionary // swiftlint:disable:this force_cast
+        } else {
+            dictionary = NSMutableDictionary()
+            self.container[containerKey] = dictionary
+        }
+
+        self.codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+
+        let container = JSValueKeyedEncodingContainer<NestedKey>(encoder: self.encoder, container: dictionary, codingPath: self.codingPath)
         return KeyedEncodingContainer(container)
     }
 
     func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
-        return JSValueUnkeyedEncodingContainer(storage: storage)
+        let containerKey = key.stringValue
+        let array: NSMutableArray
+        if let existingContainer = self.container[containerKey] {
+            precondition(
+                existingContainer is NSMutableArray,
+                "Attempt to re-encode into nested UnkeyedEncodingContainer for key \"\(containerKey)\" is invalid: keyed container/single value already encoded for this key"
+            )
+            array = existingContainer as! NSMutableArray //swiftlint:disable:this force_cast
+        } else {
+            array = NSMutableArray()
+            self.container[containerKey] = array
+        }
+
+        self.codingPath.append(key)
+        defer { self.codingPath.removeLast() }
+        return JSValueUnkeyedEncodingContainer(encoder: self.encoder, container: array, codingPath: self.codingPath)
     }
 
     func superEncoder() -> Encoder {
@@ -169,89 +202,100 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
 }
 
 private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
-    var storage: JSValueEncoderStorage
-    var arrayStorage: NSMutableArray
+    let encoder: JSValueEncoderContainer
+    let container: NSMutableArray
     var codingPath: [CodingKey]
     var count: Int
 
-    init(storage: JSValueEncoderStorage) {
-        self.storage = storage
-        self.arrayStorage = self.storage.pushUnKeyedContainer()
-        codingPath = []
+    init(encoder: JSValueEncoderContainer, container: NSMutableArray, codingPath: [CodingKey]) {
+        self.encoder = encoder
+        self.container = container
+        self.codingPath = codingPath
         count = 0
     }
 
     func encode(_ value: String) throws {
-        arrayStorage.add(value)
+        container.add(value)
     }
 
     func encode(_ value: Double) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Float) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Int) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Int8) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Int16) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Int32) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: Int64) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: UInt) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: UInt8) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: UInt16) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: UInt32) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode(_ value: UInt64) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        arrayStorage.add(value)
+        container.add(value)
     }
 
     func encode(_ value: Bool) throws {
-        arrayStorage.add(NSNumber(value: value))
+        container.add(NSNumber(value: value))
     }
 
     func encodeNil() throws {
-        arrayStorage.add(NSNull())
+        container.add(NSNull())
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        let container = JSValueKeyedEncodingContainer<NestedKey>(storage: storage, codingPath: codingPath)
+        self.codingPath.append(JSValueKey(index: self.count))
+        defer { self.codingPath.removeLast() }
+
+        let dictionary = NSMutableDictionary()
+        self.container.add(dictionary)
+
+        let container = JSValueKeyedEncodingContainer<NestedKey>(encoder: encoder, container: dictionary, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        return JSValueUnkeyedEncodingContainer(storage: storage)
+        self.codingPath.append(JSValueKey(index: self.count))
+        defer { self.codingPath.removeLast() }
+
+        let array = NSMutableArray()
+        self.container.add(array)
+        return JSValueUnkeyedEncodingContainer(encoder: encoder, container: array, codingPath: codingPath)
     }
 
     func superEncoder() -> Encoder {
@@ -324,4 +368,31 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
         NSLog("single value encode")
     }
 
+}
+
+private struct JSValueKey : CodingKey {
+    public var stringValue: String
+    public var intValue: Int?
+
+    public init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
+
+    public init?(intValue: Int) {
+        self.stringValue = "\(intValue)"
+        self.intValue = intValue
+    }
+
+    public init(stringValue: String, intValue: Int?) {
+        self.stringValue = stringValue
+        self.intValue = intValue
+    }
+
+    init(index: Int) {
+        self.stringValue = "Index \(index)"
+        self.intValue = index
+    }
+
+    static let `super` = JSValueKey(stringValue: "super")!
 }
