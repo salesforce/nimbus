@@ -18,6 +18,23 @@ public class JSValueEncoder {
     }
 }
 
+extension JSValue {
+    func append(_ value: NSObject) {
+        guard self.isArray, let length = self.forProperty("length") else {
+            return
+        }
+        let count = Int(length.toInt32())
+        self.setObject(value, atIndexedSubscript: count)
+    }
+
+    func append(_ value: NSObject, for key: String) {
+        guard self.isObject else {
+            return
+        }
+        self.setObject(value, forKeyedSubscript: key)
+    }
+}
+
 class JSValueEncoderStorage {
     var containers: [NSObject] = []
     var count: Int {

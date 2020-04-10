@@ -29,6 +29,51 @@ class JSValueEncoderTests: XCTestCase {
         }
     }
 
+    func testJSValueExtensionAppend() {
+        let array = JSValue(newArrayIn: context)
+        array?.append(NSNumber(5))
+        array?.append(NSNumber(6))
+        array?.append(NSNumber(7))
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.length !== 3) {
+                return false
+            }
+            if (valueToTest[0] !== 5) {
+                return false
+            }
+            if (valueToTest[1] !== 6) {
+                return false
+            }
+            if (valueToTest[2] !== 7) {
+                return false
+            }
+            return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: array!, key: "valueToTest"))
+    }
+
+    func testJSValueExtensionAppendObject() {
+        let object = JSValue(newObjectIn: context)
+        object?.append(NSNumber(5), for: "foo")
+        object?.append("baz" as NSString, for: "bar")
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.foo !== 5) {
+                return false
+            }
+            if (valueToTest.bar !== "baz") {
+                return false
+            }
+            return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: object!, key: "valueToTest"))
+    }
+
     func testInt() throws {
         let testValue: Int = 5
         let encoded = try encoder.encode(testValue, context: context)
