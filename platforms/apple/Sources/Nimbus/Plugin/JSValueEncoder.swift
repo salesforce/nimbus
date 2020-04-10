@@ -153,7 +153,9 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
-        self.container[key.stringValue] = value
+        self.encoder.codingPath.append(key)
+        defer { self.encoder.codingPath.removeLast() }
+        self.container[key.stringValue] = try self.encoder.box(value)
     }
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
@@ -274,7 +276,9 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        container.add(value)
+        self.encoder.codingPath.append(JSValueKey(index: self.count))
+        defer { self.encoder.codingPath.removeLast() }
+        self.container.add(try self.encoder.box(value))
     }
 
     func encode(_ value: Bool) throws {
@@ -372,7 +376,7 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        NSLog("single value encode")
+        try self.storage.push(container: self.box(value))
     }
 
 }
@@ -506,5 +510,60 @@ private extension JSValueEncoderContainer {
         }
 
         return self.storage.popContainer()
+    }
+}
+
+private class JSValueReferencingEncoder: JSValueEncoderContainer {
+    private enum Reference {
+        /// Referencing a specific index in an array container.
+        case array(NSMutableArray, Int)
+
+        /// Referencing a specific key in a dictionary container.
+        case dictionary(NSMutableDictionary, String)
+    }
+
+    let encoder: JSValueEncoderContainer
+
+    /// The container reference itself.
+    private let reference: Reference
+
+    init(referencing encoder: JSValueEncoderContainer, at index: Int, wrapping array: NSMutableArray) {
+        self.encoder = encoder
+        self.reference = .array(array, index)
+        super.init(context: encoder.context)
+
+        self.codingPath.append(JSValueKey(index: index))
+    }
+
+    init(referencing encoder: JSValueEncoderContainer, key: CodingKey, convertedKey: __shared CodingKey, wrapping dictionary: NSMutableDictionary) {
+        self.encoder = encoder
+        self.reference = .dictionary(dictionary, convertedKey.stringValue)
+        super.init(context: encoder.context)
+
+        self.codingPath.append(key)
+    }
+
+    var canEncodeNewValue: Bool {
+        // With a regular encoder, the storage and coding path grow together.
+        // A referencing encoder, however, inherits its parents coding path, as well as the key it was created for.
+        // We have to take this into account.
+        return self.storage.count == self.codingPath.count - self.encoder.codingPath.count - 1
+    }
+
+    deinit {
+        let value: Any
+        switch self.storage.count {
+        case 0: value = NSDictionary()
+        case 1: value = self.storage.popContainer()
+        default: fatalError("Referencing encoder deallocated with multiple containers on stack.")
+        }
+
+        switch self.reference {
+        case .array(let array, let index):
+            array.insert(value, at: index)
+
+        case .dictionary(let dictionary, let key):
+            dictionary[NSString(string: key)] = value
+        }
     }
 }

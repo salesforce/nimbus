@@ -104,4 +104,36 @@ class JSValueEncoderTests: XCTestCase {
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
 
+    struct TestEncodableNested: Encodable {
+        let foo: Int
+        let bar: String
+        let nest: TestEncodable
+    }
+
+    func testBasicStructNested() throws {
+        let nest = TestEncodable(foo: 2, bar: "baz")
+        let testValue = TestEncodableNested(foo: 19, bar: "baz", nest: nest)
+        let encoded = try encoder.encode(testValue, context: context)
+        XCTAssertTrue(encoded.isObject)
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.foo !== \(testValue.foo)) {
+                return false
+            }
+            if (valueToTest.bar !== "\(testValue.bar)") {
+                return false
+            }
+            if (valueToTest.nest.foo !== \(testValue.nest.foo)) {
+                return false
+            }
+            if (valueToTest.nest.bar !== "\(testValue.nest.bar)") {
+                return false
+            }
+            return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+
 }
