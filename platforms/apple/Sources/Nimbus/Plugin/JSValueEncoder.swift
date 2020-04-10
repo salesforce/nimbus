@@ -97,59 +97,59 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
     }
 
     func encode(_ value: Bool, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: String, forKey key: K) throws {
-        self.container[key.stringValue] = value as NSString
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: Double, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = try self.encoder.box(value)
     }
 
     func encode(_ value: Float, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = try self.encoder.box(value)
     }
 
     func encode(_ value: Int, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: Int8, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: Int16, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: Int32, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: Int64, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: UInt, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: UInt8, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: UInt16, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: UInt32, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode(_ value: UInt64, forKey key: K) throws {
-        self.container[key.stringValue] = NSNumber(value: value)
+        self.container[key.stringValue] = self.encoder.box(value)
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
@@ -224,55 +224,55 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode(_ value: String) throws {
-        container.add(value)
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: Double) throws {
-        container.add(NSNumber(value: value))
+        container.add(try self.encoder.box(value))
     }
 
     func encode(_ value: Float) throws {
-        container.add(NSNumber(value: value))
+        container.add(try self.encoder.box(value))
     }
 
     func encode(_ value: Int) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: Int8) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: Int16) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: Int32) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: Int64) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: UInt) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: UInt8) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: UInt16) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: UInt32) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode(_ value: UInt64) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
@@ -282,7 +282,7 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode(_ value: Bool) throws {
-        container.add(NSNumber(value: value))
+        container.add(self.encoder.box(value))
     }
 
     func encodeNil() throws {
@@ -320,59 +320,59 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
     }
 
     func encode(_ value: Bool) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: String) throws {
-        storage.push(container: value as NSString)
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: Double) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: try self.box(value))
     }
 
     func encode(_ value: Float) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: try self.box(value))
     }
 
     func encode(_ value: Int) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: Int8) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: Int16) throws {
-       storage.push(container: NSNumber(value: value))
+       storage.push(container: self.box(value))
     }
 
     func encode(_ value: Int32) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: Int64) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: UInt) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: UInt8) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: UInt16) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: UInt32) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode(_ value: UInt64) throws {
-        storage.push(container: NSNumber(value: value))
+        storage.push(container: self.box(value))
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
