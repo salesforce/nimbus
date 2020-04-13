@@ -130,6 +130,43 @@ class JSValueEncoderTests: XCTestCase {
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
 
+    func testArrayOfArraysOfInts() throws {
+        let testValue: [[Int]] = [[1, 2], [3, 4], [5, 6]]
+        let encoded = try encoder.encode(testValue, context: context)
+        XCTAssertTrue(encoded.isArray)
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.length !== \(testValue.count)) {
+                return false
+            }
+            if (valueToTest[0][0] !== \(testValue[0][0])) {
+                return false
+            }
+            if (valueToTest[0][1] !== \(testValue[0][1])) {
+                return false
+            }
+
+            if (valueToTest[1][0] !== \(testValue[1][0])) {
+                return false
+            }
+            if (valueToTest[1][1] !== \(testValue[1][1])) {
+                return false
+            }
+
+            if (valueToTest[2][0] !== \(testValue[2][0])) {
+                return false
+            }
+            if (valueToTest[2][1] !== \(testValue[2][1])) {
+                return false
+            }
+
+            return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+
     struct TestEncodable: Encodable {
         let foo: Int
         let bar: String

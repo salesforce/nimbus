@@ -413,7 +413,7 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        //        try self.storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
 }
