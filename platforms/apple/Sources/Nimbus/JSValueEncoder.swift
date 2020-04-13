@@ -32,7 +32,7 @@ struct JSValueEncoderStorage {
         self.context = context
     }
 
-    mutating func push(container: __owned NSObject) {
+    mutating func push(container: __owned Any) {
         self.jsValueContainers.append(JSValue(object: container, in: self.context))
     }
 
@@ -113,65 +113,78 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
     }
 
     func encode(_ value: Bool, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: String, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Double, forKey key: K) throws {
-        container?.append(try self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Float, forKey key: K) throws {
-        container?.append(try self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Int, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Int8, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Int16, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Int32, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: Int64, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: UInt, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: UInt8, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: UInt16, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: UInt32, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode(_ value: UInt64, forKey key: K) throws {
-        container?.append(self.encoder.box(value), for: key.stringValue)
+        container?.append(value, for: key.stringValue)
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
         self.encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
-        container?.append(try self.encoder.box(value), for: key.stringValue)
+        let depth = encoder.storage.count
+        do {
+            try value.encode(to: encoder)
+        } catch {
+            if encoder.storage.count > depth {
+                _ = encoder.storage.popContainer()
+            }
+            throw error
+        }
+
+        guard encoder.storage.count > depth else {
+            return
+        }
+        container?.append(encoder.storage.popContainer(), for: key.stringValue)
     }
 
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey { // swiftlint:disable:this line_length
@@ -244,65 +257,65 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode(_ value: String) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Double) throws {
-        container?.append(try self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Float) throws {
-        container?.append(try self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Int) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Int8) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Int16) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Int32) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Int64) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: UInt) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: UInt8) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: UInt16) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: UInt32) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: UInt64) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
         self.encoder.codingPath.append(JSValueKey(index: self.count))
         defer { self.encoder.codingPath.removeLast() }
-        container?.append(try self.encoder.box(value))
+        container?.append(value)
     }
 
     func encode(_ value: Bool) throws {
-        container?.append(self.encoder.box(value))
+        container?.append(value)
     }
 
     func encodeNil() throws {
@@ -344,63 +357,63 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
     }
 
     func encode(_ value: Bool) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: String) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Double) throws {
-        storage.push(container: try self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Float) throws {
-        storage.push(container: try self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Int) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Int8) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Int16) throws {
-       storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Int32) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: Int64) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: UInt) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: UInt8) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: UInt16) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: UInt32) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode(_ value: UInt64) throws {
-        storage.push(container: self.box(value))
+        storage.push(container: value)
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        try self.storage.push(container: self.box(value))
+        //        try self.storage.push(container: self.box(value))
     }
 
 }
@@ -433,47 +446,24 @@ private struct JSValueKey: CodingKey {
 }
 
 extension JSValue {
-    func append(_ value: NSObject) {
-        self.invokeMethod("push", withArguments: [value])
+    func push(_ values: [Any]) {
+        self.invokeMethod("push", withArguments: values)
     }
 
-    func append(_ value: NSObject, for key: String) {
-        self.setObject(value, forKeyedSubscript: key)
+    func append(_ value: Any) {
+        if let value = JSValue(object: value, in: context) {
+            push([value])
+        }
+    }
+
+    func append(_ value: Any, for key: String) {
+        if let value = JSValue(object: value, in: context) {
+            self.setObject(value, forKeyedSubscript: key)
+        }
     }
 }
 
 private extension JSValueEncoderContainer {
-    /// Returns the given value boxed in a container appropriate for pushing onto the container stack.
-    func box(_ value: Bool) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: Int) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: Int8) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: Int16) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: Int32) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: Int64) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: UInt) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: UInt8) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: UInt16) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: UInt32) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: UInt64) -> NSObject { return NSNumber(value: value) }
-    func box(_ value: String) -> NSObject { return NSString(string: value) }
-
-    func box(_ float: Float) throws -> NSObject {
-        return NSNumber(value: float)
-    }
-
-    func box(_ double: Double) throws -> NSObject {
-
-        return NSNumber(value: double)
-    }
-
-    func box(_ date: Date) throws -> NSObject {
-        return NSNumber(value: date.timeIntervalSince1970)
-    }
-
-    func box(_ data: Data) throws -> NSObject {
-        return NSString(string: data.base64EncodedString())
-    }
-
     func box(_ dict: [String: Encodable]) throws -> NSObject? {
         let depth = self.storage.count
         let result = try self.storage.pushKeyedContainer()
@@ -505,17 +495,17 @@ private extension JSValueEncoderContainer {
     }
 
     func box_(_ value: Encodable) throws -> NSObject? {
-        let type = Swift.type(of: value)
-        if type == Date.self || type == NSDate.self {
-            return try self.box((value as! Date)) //swiftlint:disable:this force_cast
-        } else if type == Data.self || type == NSData.self {
-            return try self.box((value as! Data)) //swiftlint:disable:this force_cast
-        } else if type == URL.self || type == NSURL.self {
-            // Encode URLs as single strings.
-            return self.box((value as! URL).absoluteString) //swiftlint:disable:this force_cast
-        } else if type == Decimal.self || type == NSDecimalNumber.self {
-            return (value as! NSDecimalNumber) //swiftlint:disable:this force_cast
-        }
+//        let type = Swift.type(of: value)
+//        if type == Date.self || type == NSDate.self {
+//            return try self.box((value as! Date)) //swiftlint:disable:this force_cast
+//        } else if type == Data.self || type == NSData.self {
+//            return try self.box((value as! Data)) //swiftlint:disable:this force_cast
+//        } else if type == URL.self || type == NSURL.self {
+//            // Encode URLs as single strings.
+//            return self.box((value as! URL).absoluteString) //swiftlint:disable:this force_cast
+//        } else if type == Decimal.self || type == NSDecimalNumber.self {
+//            return (value as! NSDecimalNumber) //swiftlint:disable:this force_cast
+//        }
 
         let depth = self.storage.count
         do {
