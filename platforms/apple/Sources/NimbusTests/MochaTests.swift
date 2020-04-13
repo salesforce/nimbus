@@ -64,9 +64,10 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         }
         else {
             // when running from swiftpm, look for the file relative to the source root
-            let url = URL(fileURLWithPath: "../../packages/test-www/dist/test-www/index.html")
-            if FileManager().fileExists(atPath: url.path) {
-                webView.loadFileURL(url, allowingReadAccessTo: url)
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/test-www/dist/test-www/index.html", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path) {
+                webView.loadFileURL(url.absoluteURL, allowingReadAccessTo: url.absoluteURL)
             }
         }
         wait(for: [loadingExpectation!], timeout: 5)
