@@ -38,7 +38,7 @@ enum JSValueEncoderError: Error {
     case invalidContext
 }
 
-class JSValueEncoderStorage {
+struct JSValueEncoderStorage {
     var jsValueContainers: [JSValue] = []
     let context: JSContext
     var count: Int {
@@ -49,11 +49,11 @@ class JSValueEncoderStorage {
         self.context = context
     }
 
-    func push(container: __owned NSObject) {
+    mutating func push(container: __owned NSObject) {
         self.jsValueContainers.append(JSValue(object: container, in: self.context))
     }
 
-    func pushUnKeyedContainer() throws -> JSValue {
+    mutating func pushUnKeyedContainer() throws -> JSValue {
         guard let jsArray = JSValue(newArrayIn: self.context) else {
             throw JSValueEncoderError.invalidContext
         }
@@ -61,7 +61,7 @@ class JSValueEncoderStorage {
         return jsArray
     }
 
-    func pushKeyedContainer() throws -> JSValue {
+    mutating func pushKeyedContainer() throws -> JSValue {
         guard let jsDictionary = JSValue(newObjectIn: self.context) else {
             throw JSValueEncoderError.invalidContext
         }
@@ -69,7 +69,7 @@ class JSValueEncoderStorage {
         return jsDictionary
     }
 
-    func popContainer() -> JSValue {
+    mutating func popContainer() -> JSValue {
         precondition(!self.jsValueContainers.isEmpty, "Empty container stack.")
         return self.jsValueContainers.popLast()!
     }
