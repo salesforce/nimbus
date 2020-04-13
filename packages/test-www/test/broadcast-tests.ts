@@ -10,7 +10,7 @@ import { expect } from "chai";
 import __nimbus from "nimbus-bridge";
 
 describe("Message Broadcasting", () => {
-  it("calls listener when message is broadcast", done => {
+  it("calls listener when message is broadcast", (done) => {
     let listener = () => {
       __nimbus.unsubscribeMessage("test-message", listener);
       done();
@@ -36,7 +36,7 @@ describe("Message Broadcasting", () => {
     expect(message).to.be.an("object");
     expect(message).to.deep.equal({
       stringField: "This is a string",
-      intField: 42
+      intField: 42,
     });
   });
 

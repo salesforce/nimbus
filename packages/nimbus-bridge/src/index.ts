@@ -8,9 +8,13 @@
 
 export { DeviceInfoPlugin, DeviceInfo } from "./plugins/device";
 
+export interface NimbusPlugins {
+  [s: string]: any;
+}
+
 export interface Nimbus {
   // Store any plugins injected by the native app here.
-  plugins: { [s: string]: any };
+  plugins: NimbusPlugins;
 
   // Called by native code to execute a pending callback function.
   callCallback(callbackId: string, args: any[]): void;
@@ -292,9 +296,7 @@ window.addEventListener("unload", (): void => {
 });
 
 declare global {
-  interface Window {
-    __nimbus?: Nimbus;
-  }
+  var __nimbus: Nimbus;
 }
 
 window.__nimbus = nimbus;

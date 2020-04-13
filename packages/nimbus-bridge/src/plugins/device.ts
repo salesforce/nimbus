@@ -28,4 +28,6 @@ export interface DeviceInfo {
   appVersion: string;
 }
 
-declare const DeviceInfoPlugin: DeviceInfoPlugin;
+export interface NimbusPlugins {
+  DeviceInfoPlugin: DeviceInfoPlugin;
+}

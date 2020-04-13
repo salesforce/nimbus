@@ -12,13 +12,13 @@ import "./callback-encodable-tests";
 
 const { plugins } = nimbus;
 
-let callbackTestPlugin = plugins.callbackTestPlugin;
+let callbackTestPlugin: any = plugins.callbackTestPlugin;
 
 if (callbackTestPlugin !== undefined) {
   callbackTestPlugin.addOne = (x: number) => Promise.resolve(x + 1);
   callbackTestPlugin.failWith = (message: string) => Promise.reject(message);
   callbackTestPlugin.wait = (milliseconds: number) =>
-    new Promise(resolve => setTimeout(resolve, milliseconds));
+    new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 window.onload = () => {
