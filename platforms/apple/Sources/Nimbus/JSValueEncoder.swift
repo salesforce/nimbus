@@ -17,23 +17,6 @@ class JSValueEncoder {
     }
 }
 
-extension JSValue {
-    func append(_ value: NSObject) {
-        guard self.isArray, let length = self.forProperty("length") else {
-            return
-        }
-        let count = Int(length.toInt32())
-        self.setObject(value, atIndexedSubscript: count)
-    }
-
-    func append(_ value: NSObject, for key: String) {
-        guard self.isObject else {
-            return
-        }
-        self.setObject(value, forKeyedSubscript: key)
-    }
-}
-
 enum JSValueEncoderError: Error {
     case invalidContext
 }
@@ -117,7 +100,11 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
 
     init(encoder: JSValueEncoderContainer, container: JSValue?, codingPath: [CodingKey]) {
         self.encoder = encoder
-        self.container = container
+        if (container?.isObject ?? false) == true {
+            self.container = container
+        } else {
+            self.container = nil
+        }
         self.codingPath = codingPath
     }
 
@@ -247,7 +234,11 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
     init(encoder: JSValueEncoderContainer, container: JSValue?, codingPath: [CodingKey]) {
         self.encoder = encoder
-        self.container = container
+        if (container?.isArray ?? false) == true {
+            self.container = container
+        } else {
+            self.container = nil
+        }
         self.codingPath = codingPath
         count = 0
     }
@@ -439,6 +430,16 @@ private struct JSValueKey: CodingKey {
     }
 
     static let `super` = JSValueKey(stringValue: "super")!
+}
+
+extension JSValue {
+    func append(_ value: NSObject) {
+        self.invokeMethod("push", withArguments: [value])
+    }
+
+    func append(_ value: NSObject, for key: String) {
+        self.setObject(value, forKeyedSubscript: key)
+    }
 }
 
 private extension JSValueEncoderContainer {
