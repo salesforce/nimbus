@@ -9,7 +9,7 @@
 
 import JavaScriptCore
 
-public class JSValueEncoder {
+class JSValueEncoder {
     public func encode<T>(_ value: T, context: JSContext) throws -> JSValue where T: Encodable {
         let encoder = JSValueEncoderContainer(context: context)
         try value.encode(to: encoder)
