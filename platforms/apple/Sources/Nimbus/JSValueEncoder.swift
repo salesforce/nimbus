@@ -110,7 +110,7 @@ class JSValueEncoderContainer: Encoder {
     }
 }
 
-private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
+private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     let encoder: JSValueEncoderContainer
     let container: JSValue?
     var codingPath: [CodingKey]
@@ -187,7 +187,7 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
         container?.append(try self.encoder.box(value), for: key.stringValue)
     }
 
-    func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+    mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey { // swiftlint:disable:this line_length
         let containerKey = key.stringValue
         let dictionary: JSValue
         if let existingContainer = container?.objectForKeyedSubscript(containerKey) {
@@ -208,7 +208,7 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
         return KeyedEncodingContainer(container)
     }
 
-    func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
+    mutating func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
         let containerKey = key.stringValue
         let array: JSValue
         if let existingContainer = container?.objectForKeyedSubscript(containerKey) {
@@ -239,7 +239,7 @@ private class JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContaine
 
 }
 
-private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
+private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     let encoder: JSValueEncoderContainer
     let container: JSValue?
     var codingPath: [CodingKey]
@@ -318,7 +318,7 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         container?.append(NSNull())
     }
 
-    func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+    mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
         self.codingPath.append(JSValueKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
@@ -331,7 +331,7 @@ private class JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         return KeyedEncodingContainer(container)
     }
 
-    func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
+    mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
         self.codingPath.append(JSValueKey(index: self.count))
         defer { self.codingPath.removeLast() }
 
