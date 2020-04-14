@@ -8,9 +8,9 @@ import java.nio.charset.StandardCharsets
 class NimbusJSUtilities() {
     companion object Injection {
         fun injectedNimbusStream(inputStream: InputStream, context: Context): InputStream {
-            val jsString = context.resources.openRawResource(R.raw.nimbus).bufferedReader(StandardCharsets.UTF_8).readText()
-            var html = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
-            val replacedHtml = html?.let {
+            val jsString = context.assets.open("nimbus.js").bufferedReader(StandardCharsets.UTF_8).readText()
+            val html = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
+            val replacedHtml = html.let {
                 // If there is no script tag on a page then inject nimbus in one of head, body, or
                 // html tags.  If none of these tags exist then throw an exception.
                 if (it.contains("<head>")) {

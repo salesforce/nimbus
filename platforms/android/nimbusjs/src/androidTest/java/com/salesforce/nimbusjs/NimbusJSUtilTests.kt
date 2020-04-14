@@ -20,7 +20,8 @@ class NimbusJSUtilsTests {
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        val nimbusJsString = context.resources.openRawResource(R.raw.nimbus).bufferedReader(StandardCharsets.UTF_8).readText()
+        val nimbusJsString = context.assets.open("nimbus.js").bufferedReader(StandardCharsets.UTF_8).readText()
+
         nimbusJsStringWithScriptTags = "<script>\n$nimbusJsString\n</script>"
     }
 
