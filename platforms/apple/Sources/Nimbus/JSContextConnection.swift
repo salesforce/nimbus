@@ -25,8 +25,16 @@ public class JSContextConnection: Connection {
         let binding: @convention(block) () -> Any? = {
             let args = JSContext.currentArguments()
             do {
-                let result = try callable.call(args: args ?? [])
-                return self.promiseGlobal?.invokeMethod("resolve", withArguments: [result])
+                var resultArguments: [Any] = []
+                let rawResult = try callable.call(args: args ?? [])
+                if let intResult = rawResult as? Int {
+                    let jsResult = try? JSValueEncoder().encode(intResult, context: context)
+                    if let jsResult = jsResult {
+                        resultArguments.append(jsResult)
+                    }
+                }
+
+                return self.promiseGlobal?.invokeMethod("resolve", withArguments: resultArguments)
             } catch {
                 return self.promiseGlobal?.invokeMethod("reject", withArguments: [])
             }
