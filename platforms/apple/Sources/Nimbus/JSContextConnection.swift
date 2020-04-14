@@ -20,20 +20,17 @@ public class JSContextConnection: Connection {
             return
         }
         bindings[name] = callable
-
-        // create an objc block
         let binding: @convention(block) () -> Any? = {
             let args = JSContext.currentArguments()
             do {
                 var resultArguments: [Any] = []
                 let rawResult = try callable.call(args: args ?? [])
-                if let intResult = rawResult as? Int {
-                    let jsResult = try? JSValueEncoder().encode(intResult, context: context)
-                    if let jsResult = jsResult {
-                        resultArguments.append(jsResult)
-                    }
+                if type(of: rawResult) as? Encodable.Type != nil {
+                    let encodableResult = rawResult as! Encodable // swiftlint:disable:this force_cast
+                    resultArguments.append(try encodableResult.toJSValue(context: context))
+                } else {
+                    throw ParameterError.conversion
                 }
-
                 return self.promiseGlobal?.invokeMethod("resolve", withArguments: resultArguments)
             } catch {
                 return self.promiseGlobal?.invokeMethod("reject", withArguments: [])
@@ -64,4 +61,10 @@ public class JSContextConnection: Connection {
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]
     private let promiseGlobal: JSValue?
+}
+
+extension Encodable {
+    func toJSValue(context: JSContext) throws -> JSValue {
+        return try JSValueEncoder().encode(self, context: context)
+    }
 }
