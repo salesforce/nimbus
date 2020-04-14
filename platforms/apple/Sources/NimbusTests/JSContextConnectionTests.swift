@@ -24,6 +24,7 @@ class JSContextConnectionTests: XCTestCase {
         func bind<C>(to connection: C) where C: Connection {
             connection.bind(self.anInt, as: "anInt")
             connection.bind(self.arrayOfInts, as: "arrayOfInts")
+            connection.bind(self.aStruct, as: "aStruct")
         }
 
         func anInt() -> Int {
@@ -33,6 +34,15 @@ class JSContextConnectionTests: XCTestCase {
         func arrayOfInts() -> [Int] {
             return [1, 2, 3]
         }
+
+        func aStruct() -> TestStruct {
+            return TestStruct()
+        }
+    }
+
+    struct TestStruct: Encodable {
+        let foo = "foostring"
+        let bar = 10
     }
 
     func testSimpleBinding() throws {
@@ -83,6 +93,31 @@ class JSContextConnectionTests: XCTestCase {
             __nimbus.plugins.ExpectationPlugin.pass()
         }
         __nimbus.plugins.ConnectionTestPlugin.arrayOfInts().then(checkResult);
+        """
+        _ = context.evaluateScript(testScript)
+        wait(for: [current], timeout: 10)
+        XCTAssertTrue(expectationPlugin.passed)
+    }
+
+    func testStructBinding() throws {
+        let current = expectation(description: "struct binding")
+        expectationPlugin.currentExpectation = current
+        let plugin = ConnectionTestPlugin()
+        bridge.addPlugin(plugin)
+        bridge.attach(to: context)
+        let testScript = """
+        function checkResult(result) {
+            if (result.foo !== "foostring") {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            if (result.bar !== 10) {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            __nimbus.plugins.ExpectationPlugin.pass()
+        }
+        __nimbus.plugins.ConnectionTestPlugin.aStruct().then(checkResult);
         """
         _ = context.evaluateScript(testScript)
         wait(for: [current], timeout: 10)
