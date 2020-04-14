@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets
 class NimbusJSUtilities {
     companion object Injection {
         fun injectedNimbusStream(inputStream: InputStream, context: Context): InputStream {
-            val jsString = context.resources.openRawResource(R.raw.nimbus).bufferedReader(StandardCharsets.UTF_8).readText()
+            val jsString = context.assets.open("nimbus.js").bufferedReader(StandardCharsets.UTF_8).readText()
             val html = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
 
             // Inject nimbus script into head or html tag.
