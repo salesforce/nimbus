@@ -23,10 +23,15 @@ class JSContextConnectionTests: XCTestCase {
     private class ConnectionTestPlugin: Plugin {
         func bind<C>(to connection: C) where C: Connection {
             connection.bind(self.anInt, as: "anInt")
+            connection.bind(self.arrayOfInts, as: "arrayOfInts")
         }
 
         func anInt() -> Int {
             return 5
+        }
+
+        func arrayOfInts() -> [Int] {
+            return [1, 2, 3]
         }
     }
 
@@ -40,10 +45,44 @@ class JSContextConnectionTests: XCTestCase {
         function checkResult(result) {
             if (result !== 5) {
                 __nimbus.plugins.ExpectationPlugin.fail()
+                return;
             }
             __nimbus.plugins.ExpectationPlugin.pass()
         }
         __nimbus.plugins.ConnectionTestPlugin.anInt().then(checkResult);
+        """
+        _ = context.evaluateScript(testScript)
+        wait(for: [current], timeout: 10)
+        XCTAssertTrue(expectationPlugin.passed)
+    }
+
+    func testArrayBinding() throws {
+        let current = expectation(description: "array binding")
+        expectationPlugin.currentExpectation = current
+        let plugin = ConnectionTestPlugin()
+        bridge.addPlugin(plugin)
+        bridge.attach(to: context)
+        let testScript = """
+        function checkResult(result) {
+            if (result.length !== 3) {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            if (result[0] !== 1) {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            if (result[1] !== 2) {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            if (result[2] !== 3) {
+                __nimbus.plugins.ExpectationPlugin.fail()
+                return;
+            }
+            __nimbus.plugins.ExpectationPlugin.pass()
+        }
+        __nimbus.plugins.ConnectionTestPlugin.arrayOfInts().then(checkResult);
         """
         _ = context.evaluateScript(testScript)
         wait(for: [current], timeout: 10)
