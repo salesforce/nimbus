@@ -51,6 +51,7 @@
 		CC430D932433C56A00CA12A0 /* JSContextBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */; };
 		CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */; };
 		CC4AB48A23E4919D00DC0613 /* testJSSource.js in Resources */ = {isa = PBXBuildFile; fileRef = CC4AB48723E48DDB00DC0613 /* testJSSource.js */; };
+		CC64245F244619D400604279 /* JSContextConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64245E244619D400604279 /* JSContextConnectionTests.swift */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
 		CC97224F23E4834400F899E7 /* NimbusJS.h in Headers */ = {isa = PBXBuildFile; fileRef = CC97223F23E4834400F899E7 /* NimbusJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -210,6 +211,7 @@
 		CC430D902433C39800CA12A0 /* WebViewConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewConnection.swift; sourceTree = "<group>"; };
 		CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnection.swift; sourceTree = "<group>"; };
 		CC4AB48723E48DDB00DC0613 /* testJSSource.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testJSSource.js; sourceTree = "<group>"; };
+		CC64245E244619D400604279 /* JSContextConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnectionTests.swift; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
 		CC97224023E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -380,6 +382,7 @@
 				2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */,
 				CC251497240D6C13001E8D8C /* DecodableUtilsTests.swift */,
 				2922900E241165570014B95A /* InvocationTests.swift */,
+				CC64245E244619D400604279 /* JSContextConnectionTests.swift */,
 				CC216515243C0395000DC5D3 /* JSValueDecoderTests.swift */,
 				CCEA62CA243F83B000664E7E /* JSValueEncoderTests.swift */,
 				29245EE1220CE13000F9EEAF /* MochaTests.swift */,
@@ -957,6 +960,7 @@
 				29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */,
 				CCEA62CB243F83B000664E7E /* JSValueEncoderTests.swift in Sources */,
 				CC216516243C0395000DC5D3 /* JSValueDecoderTests.swift in Sources */,
+				CC64245F244619D400604279 /* JSContextConnectionTests.swift in Sources */,
 				682D46B5234160650049B636 /* CallableTests.swift in Sources */,
 				2922900F241165570014B95A /* InvocationTests.swift in Sources */,
 				68B855F2233EE7FD00D1F243 /* BinderTests.swift in Sources */,
