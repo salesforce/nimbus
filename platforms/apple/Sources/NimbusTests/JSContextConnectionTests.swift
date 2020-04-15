@@ -12,15 +12,21 @@ class JSContextConnectionTests: XCTestCase {
     var context: JSContext = JSContext()
     var bridge: JSContextBridge = JSContextBridge()
     var expectationPlugin: ExpectationPlugin = ExpectationPlugin()
+    var testPlugin: ConnectionTestPlugin = ConnectionTestPlugin()
 
     override func setUp() {
         expectationPlugin = ExpectationPlugin()
         context = JSContext()
         bridge = JSContextBridge()
         bridge.addPlugin(expectationPlugin)
+        let current = expectation(description: self.name)
+        expectationPlugin.currentExpectation = current
+        testPlugin = ConnectionTestPlugin()
+        bridge.addPlugin(testPlugin)
+        bridge.attach(to: context)
     }
 
-    private class ConnectionTestPlugin: Plugin {
+    class ConnectionTestPlugin: Plugin {
         var receivedInt: Int?
         var receivedStruct: TestStruct?
 
@@ -64,11 +70,6 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testSimpleBinding() throws {
-        let current = expectation(description: "simple binding")
-        expectationPlugin.currentExpectation = current
-        let plugin = ConnectionTestPlugin()
-        bridge.addPlugin(plugin)
-        bridge.attach(to: context)
         let testScript = """
         function checkResult(result) {
             if (result !== 5) {
@@ -80,16 +81,11 @@ class JSContextConnectionTests: XCTestCase {
         __nimbus.plugins.ConnectionTestPlugin.anInt().then(checkResult);
         """
         _ = context.evaluateScript(testScript)
-        wait(for: [current], timeout: 10)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 10)
         XCTAssertTrue(expectationPlugin.passed)
     }
 
     func testArrayBinding() throws {
-        let current = expectation(description: "array binding")
-        expectationPlugin.currentExpectation = current
-        let plugin = ConnectionTestPlugin()
-        bridge.addPlugin(plugin)
-        bridge.attach(to: context)
         let testScript = """
         function checkResult(result) {
             if (result.length !== 3) {
@@ -113,16 +109,11 @@ class JSContextConnectionTests: XCTestCase {
         __nimbus.plugins.ConnectionTestPlugin.arrayOfInts().then(checkResult);
         """
         _ = context.evaluateScript(testScript)
-        wait(for: [current], timeout: 10)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 10)
         XCTAssertTrue(expectationPlugin.passed)
     }
 
     func testStructBinding() throws {
-        let current = expectation(description: "struct binding")
-        expectationPlugin.currentExpectation = current
-        let plugin = ConnectionTestPlugin()
-        bridge.addPlugin(plugin)
-        bridge.attach(to: context)
         let testScript = """
         function checkResult(result) {
             if (result.foo !== "foostring") {
@@ -138,16 +129,11 @@ class JSContextConnectionTests: XCTestCase {
         __nimbus.plugins.ConnectionTestPlugin.aStruct().then(checkResult);
         """
         _ = context.evaluateScript(testScript)
-        wait(for: [current], timeout: 10)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 10)
         XCTAssertTrue(expectationPlugin.passed)
     }
 
     func testIntParameter() throws {
-        let current = expectation(description: "int parameter")
-        expectationPlugin.currentExpectation = current
-        let plugin = ConnectionTestPlugin()
-        bridge.addPlugin(plugin)
-        bridge.attach(to: context)
         let testScript = """
         function checkResult() {
             __nimbus.plugins.ExpectationPlugin.pass();
@@ -155,17 +141,12 @@ class JSContextConnectionTests: XCTestCase {
         __nimbus.plugins.ConnectionTestPlugin.intParameter(11).then(checkResult);
         """
         _ = context.evaluateScript(testScript)
-        wait(for: [current], timeout: 10)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 10)
         XCTAssertTrue(expectationPlugin.passed)
-        XCTAssertEqual(plugin.receivedInt, 11)
+        XCTAssertEqual(testPlugin.receivedInt, 11)
     }
 
     func testStructParameter() throws {
-        let current = expectation(description: "struct parameter")
-        expectationPlugin.currentExpectation = current
-        let plugin = ConnectionTestPlugin()
-        bridge.addPlugin(plugin)
-        bridge.attach(to: context)
         let testScript = """
         var thing = { "foo": "stringfoo", "bar": 12 };
         function checkResult() {
@@ -174,10 +155,10 @@ class JSContextConnectionTests: XCTestCase {
         __nimbus.plugins.ConnectionTestPlugin.structParameter(thing).then(checkResult);
         """
         _ = context.evaluateScript(testScript)
-        wait(for: [current], timeout: 10)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 10)
         XCTAssertTrue(expectationPlugin.passed)
-        XCTAssertEqual(plugin.receivedStruct?.foo, "stringfoo")
-        XCTAssertEqual(plugin.receivedStruct?.bar, 12)
+        XCTAssertEqual(testPlugin.receivedStruct?.foo, "stringfoo")
+        XCTAssertEqual(testPlugin.receivedStruct?.bar, 12)
     }
 }
 
@@ -198,5 +179,12 @@ class ExpectationPlugin: Plugin {
     func pass() {
         passed = true
         currentExpectation?.fulfill()
+    }
+
+    func currentExpectations() -> [XCTestExpectation] {
+        if let current = currentExpectation {
+            return [current]
+        }
+        return []
     }
 }
