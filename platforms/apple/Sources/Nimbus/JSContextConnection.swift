@@ -28,7 +28,7 @@ public class JSContextConnection: Connection {
                 if type(of: rawResult) as? Encodable.Type != nil {
                     let encodableResult = rawResult as! Encodable // swiftlint:disable:this force_cast
                     resultArguments.append(try encodableResult.toJSValue(context: context))
-                } else {
+                } else if type(of: rawResult) != Void.self {
                     throw ParameterError.conversion
                 }
                 return self.promiseGlobal?.invokeMethod("resolve", withArguments: resultArguments)

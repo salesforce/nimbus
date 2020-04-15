@@ -5,6 +5,8 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
+
 /**
  `Callable` is a type-erasing function-like wrapper to provide
  a homogenous interface to functions.
@@ -215,6 +217,9 @@ func make_callable<R, A0, A1, A2, A3, A4>(_ function: @escaping ((A0, A1, A2, A3
 }
 
 private func decodedArg<A>(value: Any?, type: A.Type) -> A? {
+    if let jsArg = value as? JSValue {
+        return decodeJSValue(jsArg, destinationType: type)
+    }
     if let argString = value as? String,
         let data = argString.data(using: .utf8) {
         return decodeJSON(data, destinationType: type)
