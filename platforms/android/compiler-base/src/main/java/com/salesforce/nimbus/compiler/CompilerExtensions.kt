@@ -79,7 +79,7 @@ fun TypeMirror.asRawTypeName(nullable: Boolean = false): TypeName {
 /**
  * Converts a Java [TypeName] from the [Element] to a Kotlin [TypeName]
  */
-fun Element.asKotlinType(nullable: Boolean = false) = asType().asKotlinTypeName(nullable = nullable)
+fun Element.asKotlinTypeName(nullable: Boolean = false) = asType().asKotlinTypeName(nullable = nullable)
 
 /**
  * Converts an [Element] to a [TypeName]

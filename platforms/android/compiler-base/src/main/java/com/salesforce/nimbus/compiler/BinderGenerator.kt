@@ -143,7 +143,7 @@ abstract class BinderGenerator : AbstractProcessor() {
         // the binder class name will be <PluginClass><JavascriptEngine>Binder, such as DeviceInfoPluginWebViewBinder
         val binderTypeName = "${pluginElement.getName()}${javascriptEngine.simpleName}Binder"
         val pluginName = pluginElement.getAnnotation(PluginOptions::class.java).name
-        val pluginTypeName = pluginElement.asKotlinType()
+        val pluginTypeName = pluginElement.asKotlinTypeName()
 
         // read kotlin metadata so we can determine which types are nullable
         val kotlinClass =
@@ -377,7 +377,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                 else -> {
                     error(
                         functionElement,
-                        "${parameter.asKotlinType()} is an unsupported parameter type."
+                        "${parameter.asKotlinTypeName()} is an unsupported parameter type."
                     )
                 }
             }
@@ -433,7 +433,7 @@ abstract class BinderGenerator : AbstractProcessor() {
     ) {
         funSpec.addParameter(
             parameter.getName(),
-            parameter.asKotlinType(nullable = kotlinParameter.isNullable())
+            parameter.asKotlinTypeName(nullable = kotlinParameter.isNullable())
         )
     }
 
@@ -682,7 +682,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                     funSpec.addStatement(
                         "val %N = %T.fromJSON(%NString)",
                         parameter.simpleName,
-                        parameter.asKotlinType(),
+                        parameter.asKotlinTypeName(),
                         parameter.simpleName
                     )
                 } else {
@@ -704,7 +704,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                     parameter.simpleName,
                     ClassName("kotlinx.serialization.json", "Json"),
                     ClassName("kotlinx.serialization.json", "JsonConfiguration"),
-                    parameter.asKotlinType(),
+                    parameter.asKotlinTypeName(),
                     parameter.simpleName
                 )
             }
