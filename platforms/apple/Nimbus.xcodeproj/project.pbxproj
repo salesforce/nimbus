@@ -52,6 +52,7 @@
 		CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */; };
 		CC4AB48A23E4919D00DC0613 /* testJSSource.js in Resources */ = {isa = PBXBuildFile; fileRef = CC4AB48723E48DDB00DC0613 /* testJSSource.js */; };
 		CC64245F244619D400604279 /* JSContextConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64245E244619D400604279 /* JSContextConnectionTests.swift */; };
+		CC64246924479C0400604279 /* JSValueCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64246824479C0400604279 /* JSValueCallback.swift */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
 		CC97224F23E4834400F899E7 /* NimbusJS.h in Headers */ = {isa = PBXBuildFile; fileRef = CC97223F23E4834400F899E7 /* NimbusJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -212,6 +213,7 @@
 		CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnection.swift; sourceTree = "<group>"; };
 		CC4AB48723E48DDB00DC0613 /* testJSSource.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = testJSSource.js; sourceTree = "<group>"; };
 		CC64245E244619D400604279 /* JSContextConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnectionTests.swift; sourceTree = "<group>"; };
+		CC64246824479C0400604279 /* JSValueCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueCallback.swift; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
 		CC97224023E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 				294433442200FA3700E6D084 /* EncodableValue.swift */,
 				CC430D8E24339B0400CA12A0 /* JSContextBridge.swift */,
 				CC430D942433C8EF00CA12A0 /* JSContextConnection.swift */,
+				CC64246824479C0400604279 /* JSValueCallback.swift */,
 				CC216513243C00AE000DC5D3 /* JSValueDecoder.swift */,
 				CCDEEEAA2440C164009ADEBC /* JSValueEncoder.swift */,
 				29264F5D24197E4F00D68664 /* Plugin.swift */,
@@ -940,6 +943,7 @@
 				291A861021E531B200510832 /* Bridge.swift in Sources */,
 				CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
+				CC64246924479C0400604279 /* JSValueCallback.swift in Sources */,
 				2944334B2200FA3700E6D084 /* Connection.swift in Sources */,
 				294433492200FA3700E6D084 /* EncodableValue.swift in Sources */,
 				CCDEEEAB2440C164009ADEBC /* JSValueEncoder.swift in Sources */,

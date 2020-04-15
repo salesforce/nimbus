@@ -21,10 +21,16 @@ public class JSContextConnection: Connection {
         }
         bindings[name] = callable
         let binding: @convention(block) () -> Any? = {
-            let args = JSContext.currentArguments()
+            let args: [Any] = JSContext.currentArguments() ?? []
+            let mappedArgs = args.map { arg -> Any in
+                if let jsArg = arg as? JSValue, jsArg.isFunction() {
+                    return JSValueCallback(callback: jsArg)
+                }
+                return arg
+            }
             do {
                 var resultArguments: [Any] = []
-                let rawResult = try callable.call(args: args ?? [])
+                let rawResult = try callable.call(args: mappedArgs)
                 if type(of: rawResult) as? Encodable.Type != nil {
                     let encodableResult = rawResult as! Encodable // swiftlint:disable:this force_cast
                     resultArguments.append(try encodableResult.toJSValue(context: context))
@@ -66,5 +72,16 @@ public class JSContextConnection: Connection {
 extension Encodable {
     func toJSValue(context: JSContext) throws -> JSValue {
         return try JSValueEncoder().encode(self, context: context)
+    }
+}
+
+extension JSValue {
+    func isFunction() -> Bool {
+        let prototype = context.evaluateScript("Object.prototype.toString")
+        let result = prototype?.invokeMethod("call", withArguments: [self])
+        if result?.isString == true && result?.toString() == "[object Function]" {
+            return true
+        }
+        return false
     }
 }

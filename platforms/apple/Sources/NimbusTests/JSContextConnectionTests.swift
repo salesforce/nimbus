@@ -16,13 +16,16 @@ class JSContextConnectionTests: XCTestCase {
 
     override func setUp() {
         expectationPlugin = ExpectationPlugin()
+        testPlugin = ConnectionTestPlugin()
         context = JSContext()
         bridge = JSContextBridge()
+        bridge.addPlugin(testPlugin)
         bridge.addPlugin(expectationPlugin)
+    }
+
+    func beginPluginTest() {
         let current = expectation(description: self.name)
         expectationPlugin.currentExpectation = current
-        testPlugin = ConnectionTestPlugin()
-        bridge.addPlugin(testPlugin)
         bridge.attach(to: context)
     }
 
@@ -36,6 +39,7 @@ class JSContextConnectionTests: XCTestCase {
             connection.bind(self.aStruct, as: "aStruct")
             connection.bind(self.intParameter, as: "intParameter")
             connection.bind(self.structParameter, as: "structParameter")
+            connection.bind(self.callbackParameter, as: "callbackParameter")
         }
 
         func anInt() -> Int {
@@ -57,6 +61,11 @@ class JSContextConnectionTests: XCTestCase {
         func structParameter(thing: TestStruct) {
             receivedStruct = thing
         }
+
+        func callbackParameter(number: Int, completion: (Int) -> Void) {
+            receivedInt = number
+            completion(number + 1)
+        }
     }
 
     struct TestStruct: Codable {
@@ -70,6 +79,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testSimpleBinding() throws {
+        beginPluginTest()
         let testScript = """
         function checkResult(result) {
             if (result !== 5) {
@@ -86,6 +96,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testArrayBinding() throws {
+        beginPluginTest()
         let testScript = """
         function checkResult(result) {
             if (result.length !== 3) {
@@ -114,6 +125,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testStructBinding() throws {
+        beginPluginTest()
         let testScript = """
         function checkResult(result) {
             if (result.foo !== "foostring") {
@@ -134,6 +146,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testIntParameter() throws {
+        beginPluginTest()
         let testScript = """
         function checkResult() {
             __nimbus.plugins.ExpectationPlugin.pass();
@@ -147,6 +160,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testStructParameter() throws {
+        beginPluginTest()
         let testScript = """
         var thing = { "foo": "stringfoo", "bar": 12 };
         function checkResult() {
@@ -159,6 +173,47 @@ class JSContextConnectionTests: XCTestCase {
         XCTAssertTrue(expectationPlugin.passed)
         XCTAssertEqual(testPlugin.receivedStruct?.foo, "stringfoo")
         XCTAssertEqual(testPlugin.receivedStruct?.bar, 12)
+    }
+
+    func testCallbackParameter() throws {
+        beginPluginTest()
+        let testScript = """
+        function checkResult() {
+
+        }
+        function callbackResult(result) {
+            if (result !== 4) {
+                __nimbus.plugins.ExpectationPlugin.fail();
+            }
+            __nimbus.plugins.ExpectationPlugin.pass();
+        }
+        __nimbus.plugins.ConnectionTestPlugin.callbackParameter(3, callbackResult).then(checkResult);
+        """
+        _ = context.evaluateScript(testScript)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 3)
+        XCTAssertTrue(expectationPlugin.passed)
+        XCTAssertEqual(testPlugin.receivedInt, 3)
+    }
+
+    func testJSValueFunctionExtension() {
+        let numberScript = "5"
+        let numberResult = context.evaluateScript(numberScript)
+        let objectScript = "{ \"foo\": \"bar\" }"
+        let objectResult = context.evaluateScript(objectScript)
+        let arrayScript = "[1, 2, 3]"
+        let arrayResult = context.evaluateScript(arrayScript)
+        let functionScript = """
+        function myThing() {
+            console.log("hello");
+        }
+        myThing;
+        """
+        let functionResult = context.evaluateScript(functionScript)
+
+        XCTAssertEqual(numberResult?.isFunction(), false)
+        XCTAssertEqual(objectResult?.isFunction(), false)
+        XCTAssertEqual(arrayResult?.isFunction(), false)
+        XCTAssertEqual(functionResult?.isFunction(), true)
     }
 }
 
