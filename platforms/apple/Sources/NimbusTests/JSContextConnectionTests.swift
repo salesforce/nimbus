@@ -40,6 +40,7 @@ class JSContextConnectionTests: XCTestCase {
             connection.bind(self.intParameter, as: "intParameter")
             connection.bind(self.structParameter, as: "structParameter")
             connection.bind(self.callbackParameter, as: "callbackParameter")
+            connection.bind(self.callCallbackStructParameter, as: "callCallbackStructParameter")
         }
 
         func anInt() -> Int {
@@ -65,6 +66,12 @@ class JSContextConnectionTests: XCTestCase {
         func callbackParameter(number: Int, completion: (Int) -> Void) {
             receivedInt = number
             completion(number + 1)
+        }
+
+        func callCallbackStructParameter(number: Int, completion: (TestStruct) -> Void) {
+            receivedInt = number
+            let thing = TestStruct(foo: "structparam", bar: 15)
+            completion(thing)
         }
     }
 
@@ -184,10 +191,36 @@ class JSContextConnectionTests: XCTestCase {
         function callbackResult(result) {
             if (result !== 4) {
                 __nimbus.plugins.ExpectationPlugin.fail();
+                return;
             }
             __nimbus.plugins.ExpectationPlugin.pass();
+            return;
         }
         __nimbus.plugins.ConnectionTestPlugin.callbackParameter(3, callbackResult).then(checkResult);
+        """
+        _ = context.evaluateScript(testScript)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 3)
+        XCTAssertTrue(expectationPlugin.passed)
+        XCTAssertEqual(testPlugin.receivedInt, 3)
+    }
+
+    func testCallbackStructParameter() throws {
+        beginPluginTest()
+        let testScript = """
+        function checkResult() {}
+        function callbackResult(result) {
+            if (result.foo !== "structparam") {
+                __nimbus.plugins.ExpectationPlugin.fail();
+                return;
+            }
+            if (result.bar !== 15) {
+                __nimbus.plugins.ExpectationPlugin.fail();
+                return;
+            }
+            __nimbus.plugins.ExpectationPlugin.pass();
+            return;
+        }
+        __nimbus.plugins.ConnectionTestPlugin.callCallbackStructParameter(3, callbackResult).then(checkResult);
         """
         _ = context.evaluateScript(testScript)
         wait(for: expectationPlugin.currentExpectations(), timeout: 3)
