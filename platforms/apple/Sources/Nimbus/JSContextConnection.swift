@@ -13,6 +13,15 @@ public class JSContextConnection: Connection {
         self.context = context
         self.namespace = namespace
         self.promiseGlobal = context.objectForKeyedSubscript("Promise")
+        let connectionJS = """
+        var plugin = __nimbus.plugins["\(namespace)"];
+        if (plugin === undefined) {
+            plugin = {};
+            __nimbus.plugins["\(namespace)"] = plugin;
+        }
+        __nimbus.plugins["\(namespace)"]
+        """
+        self.connectionValue = context.evaluateScript(connectionJS)
     }
 
     public func bind(_ callable: Callable, as name: String) {
@@ -43,20 +52,7 @@ public class JSContextConnection: Connection {
             }
         }
 
-        // bind the block as name
-        context.globalObject.setObject(binding, forKeyedSubscript: name)
-
-        let assignmentJS = """
-        var plugin = __nimbus.plugins["\(namespace)"];
-        if (plugin === undefined) {
-            plugin = {};
-            __nimbus.plugins["\(namespace)"] = plugin;
-        }
-        __nimbus.plugins.\(namespace)["\(name)"] = \(name);
-        delete \(name);
-        """
-
-        context.evaluateScript(assignmentJS)
+        connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
     public func call(_ method: String, args: [Any], promise: String) {
@@ -67,6 +63,7 @@ public class JSContextConnection: Connection {
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]
     private let promiseGlobal: JSValue?
+    private let connectionValue: JSValue?
 }
 
 extension Encodable {
