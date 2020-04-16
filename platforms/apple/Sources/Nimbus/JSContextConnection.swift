@@ -55,10 +55,6 @@ public class JSContextConnection: Connection {
         connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
-    public func call(_ method: String, args: [Any], promise: String) {
-        // TODO:
-    }
-
     private let namespace: String
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]
