@@ -77,11 +77,7 @@ extension Encodable {
 
 extension JSValue {
     func isFunction() -> Bool {
-        let prototype = context.evaluateScript("Object.prototype.toString")
-        let result = prototype?.invokeMethod("call", withArguments: [self])
-        if result?.isString == true && result?.toString() == "[object Function]" {
-            return true
-        }
-        return false
+        let functionType = self.context.evaluateScript("Function")
+        return self.isInstance(of: functionType)
     }
 }
