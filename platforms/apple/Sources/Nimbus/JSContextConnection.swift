@@ -70,7 +70,7 @@ extension Encodable {
 
 extension JSValue {
     func isFunction() -> Bool {
-        let functionType = self.context.evaluateScript("Function")
+        let functionType = self.context.globalObject.objectForKeyedSubscript("Function")
         return self.isInstance(of: functionType)
     }
 }
