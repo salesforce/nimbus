@@ -13,15 +13,13 @@ public class JSContextConnection: Connection {
         self.context = context
         self.namespace = namespace
         self.promiseGlobal = context.objectForKeyedSubscript("Promise")
-        let connectionJS = """
-        var plugin = __nimbus.plugins["\(namespace)"];
-        if (plugin === undefined) {
-            plugin = {};
-            __nimbus.plugins["\(namespace)"] = plugin;
+        let plugins = context.objectForKeyedSubscript("__nimbus")?.objectForKeyedSubscript("plugins")
+        var connection = plugins?.objectForKeyedSubscript(namespace)
+        if connection?.isUndefined == true {
+            connection = JSValue.init(newObjectIn: context)
+            plugins?.setObject(connection, forKeyedSubscript: namespace)
         }
-        __nimbus.plugins["\(namespace)"]
-        """
-        self.connectionValue = context.evaluateScript(connectionJS)
+        self.connectionValue = connection
     }
 
     public func bind(_ callable: Callable, as name: String) {
