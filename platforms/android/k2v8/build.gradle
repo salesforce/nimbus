@@ -42,6 +42,7 @@ dependencies {
     implementation "com.eclipsesource.j2v8:j2v8:6.1.0@aar"
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
+    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
     androidTestImplementation 'com.google.truth:truth:1.0.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.1.0', {
