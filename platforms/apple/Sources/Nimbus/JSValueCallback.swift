@@ -7,6 +7,11 @@
 import Foundation
 import JavaScriptCore
 
+enum JSValueCallbackError: Error {
+    case invalidContext
+    case invalidCallback
+}
+
 class JSValueCallback: Callable {
 
     init(callback: JSValue) {
@@ -15,9 +20,8 @@ class JSValueCallback: Callable {
 
     func call(args: [Any]) throws -> Any {
         guard let context = callback?.context else {
-            return 0
+            throw JSValueCallbackError.invalidContext
         }
-        // encode the args to JSValue
         let jsArgs = try args.map { arg -> JSValue in
             if type(of: arg) as? Encodable.Type != nil {
                 let encodableArg = arg as! Encodable // swiftlint:disable:this force_cast
@@ -27,8 +31,12 @@ class JSValueCallback: Callable {
             }
         }
 
-        // call the function
-        return callback?.call(withArguments: jsArgs) ?? 0
+        let result = callback?.call(withArguments: jsArgs)
+        if let result = result {
+            return result
+        } else {
+            throw JSValueCallbackError.invalidCallback
+        }
     }
 
     var callback: JSValue?
