@@ -163,7 +163,60 @@ class CallJSContextTests: XCTestCase {
         XCTAssertEqual(resultValue, true)
     }
 
+    func testCallNonExistentFunction() throws {
+        let expect = expectation(description: "non existent function")
+        var result: JSValue?
+        var error: Error?
+        bridge.invoke("somethingthatdoesntexist") { (theError, theResult) in
+            error = theError
+            result = theResult
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertNil(result)
+        XCTAssertEqual(error?.localizedDescription, "The operation couldn’t be completed. (Nimbus.JSContextBridgeError error 1.)")
+    }
+
+    func testCallWithMultipleArguments() throws {
+        let expect = expectation(description: "multiple arguments")
+        var result: JSValue?
+        var error: Error?
+        bridge.invoke("testFunctionWithArgs", with: 5, "athing", 15) { (theError, theResult) in
+            result = theResult
+            error = theError
+            expect.fulfill()
+        }
+
+        wait(for: [expect], timeout: 5)
+        XCTAssertNil(error)
+        XCTAssertTrue(result?.isArray ?? false)
+        XCTAssertEqual(result?.objectAtIndexedSubscript(0)?.toInt32(), 5)
+        XCTAssertEqual(result?.objectAtIndexedSubscript(1)?.toString(), "athing")
+        XCTAssertEqual(result?.objectAtIndexedSubscript(2)?.toInt32(), 15)
+    }
+
+    func testCallFunctionOnObject() throws {
+        let expect = expectation(description: "call function on object")
+        var error: Error?
+        var result: JSValue?
+        bridge.invoke("testObject.getName") { (theError, theResult) in
+            error = theError
+            result = theResult
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertNil(error)
+        XCTAssertEqual(result?.toString(), "nimbus")
+    }
+
     let fixtureScript = """
     function testFunction() { return true; };
+    function testFunctionWithArgs(...args) {
+      return Array.prototype.slice.apply(args);
+    };
+    class MyObject {
+      getName() { return "nimbus"; }
+    };
+    testObject = new MyObject();
     """
 }
