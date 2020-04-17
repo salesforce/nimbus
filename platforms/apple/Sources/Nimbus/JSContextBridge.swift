@@ -8,6 +8,11 @@
 import Foundation
 import JavaScriptCore
 
+enum JSContextBridgeError: Error {
+    case invalidContext
+    case invalidFunction
+}
+
 public class JSContextBridge {
 
     public init() {
@@ -33,6 +38,46 @@ public class JSContextBridge {
             let connection = JSContextConnection(from: context, as: plugin.namespace)
             plugin.bind(to: connection)
         }
+    }
+
+    public func invoke(
+        _ identifierSegments: [String],
+        with args: [Encodable],
+        callback: @escaping (Error?, JSValue?) -> Void
+    ) {
+        guard let context = context else {
+            callback(JSContextBridgeError.invalidContext, nil)
+            return
+        }
+
+        var functionValue: JSValue? = context.globalObject
+        for segment in identifierSegments {
+            functionValue = functionValue?.objectForKeyedSubscript(segment)
+        }
+
+        if let function = functionValue, function.isUndefined == true || functionValue == nil {
+            callback(JSContextBridgeError.invalidFunction, nil)
+            return
+        }
+
+        do {
+            let jsArgs = try args.map { arg -> JSValue in
+                return try arg.toJSValue(context: context)
+            }
+            let result = functionValue?.call(withArguments: jsArgs)
+            callback(nil, result)
+        } catch {
+            callback(error, nil)
+        }
+    }
+
+    public func invoke(
+        _ identifierPath: String,
+        with args: Encodable...,
+        callback: @escaping (Error?, JSValue?) -> Void
+    ) {
+        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
+        invoke(identifierSegments, with: args, callback: callback)
     }
 
     var plugins: [Plugin]

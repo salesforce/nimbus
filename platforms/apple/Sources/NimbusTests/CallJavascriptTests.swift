@@ -5,6 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
 import WebKit
 import XCTest
 
@@ -136,4 +137,33 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         wait(for: [expect], timeout: 5)
         XCTAssertEqual(resultValue, .some("nimbus"))
     }
+}
+
+class CallJSContextTests: XCTestCase {
+    var context: JSContext = JSContext()
+    var bridge: JSContextBridge = JSContextBridge()
+
+    override func setUp() {
+        context = JSContext()
+        bridge = JSContextBridge()
+        bridge.attach(to: context)
+        context.evaluateScript(fixtureScript)
+    }
+
+    func testCallFunction() throws {
+        let expect = expectation(description: "test call function")
+        var resultValue: Bool?
+        bridge.invoke("testFunction") { (_, result) in
+            if let result = result, result.isBoolean {
+                resultValue = result.toBool()
+            }
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertEqual(resultValue, true)
+    }
+
+    let fixtureScript = """
+    function testFunction() { return true; };
+    """
 }
