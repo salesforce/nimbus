@@ -18,9 +18,10 @@ public class WebViewConnection: Connection {
     /**
      Create a connection from the web view to an object.
      */
-    public init(from webView: WKWebView, as namespace: String) {
+    public init(from webView: WKWebView, bridge: Bridge, as namespace: String) {
         self.webView = webView
         self.namespace = namespace
+        self.bridge = bridge
         let messageHandler = ConnectionMessageHandler(connection: self)
         webView.configuration.userContentController.add(messageHandler, name: namespace)
     }
@@ -75,7 +76,7 @@ public class WebViewConnection: Connection {
     }
 
     public func invoke<R>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
-
+        bridge?.invoke(identifierPath, with: args, callback: callback)
     }
 
     /**
@@ -137,5 +138,6 @@ public class WebViewConnection: Connection {
 
     private let namespace: String
     private weak var webView: WKWebView?
+    private weak var bridge: Bridge?
     private var bindings: [String: Callable] = [:]
 }

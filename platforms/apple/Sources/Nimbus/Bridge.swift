@@ -27,7 +27,7 @@ public class Bridge: NSObject {
         #endif
 
         for plugin in plugins {
-            let connection = WebViewConnection(from: webView, as: plugin.namespace)
+            let connection = WebViewConnection(from: webView, bridge: self, as: plugin.namespace)
             plugin.bind(to: connection)
         }
     }
@@ -124,6 +124,15 @@ public class Bridge: NSObject {
     public func invoke<R>(
         _ identifierPath: String,
         with args: Encodable...,
+        callback: @escaping (Error?, R?) -> Void
+    ) {
+        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
+        invoke(identifierSegments, with: args, callback: callback)
+    }
+
+    func invoke<R>(
+        _ identifierPath: String,
+        with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
