@@ -75,8 +75,9 @@ public class WebViewConnection: Connection {
         webView?.configuration.userContentController.addUserScript(script)
     }
 
-    public func invoke<R>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
-        bridge?.invoke(identifierPath, with: args, callback: callback)
+    public func invoke<R: Decodable>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
+        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
+        bridge?.invoke(identifierSegments, with: args, callback: callback)
     }
 
     /**

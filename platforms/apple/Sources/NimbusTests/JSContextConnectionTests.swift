@@ -8,6 +8,8 @@ import XCTest
 @testable import Nimbus
 import JavaScriptCore
 
+// swiftlint:disable type_body_length
+
 class JSContextConnectionTests: XCTestCase {
     var context: JSContext = JSContext()
     var bridge: JSContextBridge = JSContextBridge()
@@ -32,8 +34,10 @@ class JSContextConnectionTests: XCTestCase {
     class ConnectionTestPlugin: Plugin {
         var receivedInt: Int?
         var receivedStruct: TestStruct?
+        var connection: Connection?
 
         func bind<C>(to connection: C) where C: Connection {
+            self.connection = connection
             connection.bind(self.anInt, as: "anInt")
             connection.bind(self.arrayOfInts, as: "arrayOfInts")
             connection.bind(self.aStruct, as: "aStruct")
@@ -72,6 +76,27 @@ class JSContextConnectionTests: XCTestCase {
             receivedInt = number
             let thing = TestStruct(foo: "structparam", bar: 15)
             completion(thing)
+        }
+
+        func callWith(first: Int, second: Int, callback: @escaping ([Int]) -> Void) {
+            guard let connection = connection else {
+                XCTFail("nil connection")
+                return
+            }
+
+            connection.invoke("testFunctionWithArgs", with: first, second) { (_, result: [Int]?) in
+                callback(result!)
+            }
+        }
+
+        func callStruct(foo: String, bar: Int, callback: @escaping (TestStruct) -> Void) {
+            guard let connection = connection else {
+                XCTFail("nil connection")
+                return
+            }
+            connection.invoke("testStruct", with: foo, bar) { (_, result: TestStruct?) in
+                callback(result!)
+            }
         }
     }
 
@@ -247,6 +272,40 @@ class JSContextConnectionTests: XCTestCase {
         XCTAssertEqual(objectResult?.isFunction(), false)
         XCTAssertEqual(arrayResult?.isFunction(), false)
         XCTAssertEqual(functionResult?.isFunction(), true)
+    }
+
+    func testCallJSWithParams() throws {
+        bridge.attach(to: context)
+        let expect = expectation(description: "call js")
+        let fixtureScript = """
+        function testFunctionWithArgs(...args) {
+          return Array.prototype.slice.apply(args);
+        };
+        """
+        context.evaluateScript(fixtureScript)
+        testPlugin.callWith(first: 41, second: 42) { result in
+            XCTAssertEqual(result[0], 41)
+            XCTAssertEqual(result[1], 42)
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+    }
+
+    func testCallJSWithStruct() throws {
+        bridge.attach(to: context)
+        let expect = expectation(description: "call js")
+        let fixtureScript = """
+        function testStruct(foo, bar) {
+          return { "foo": foo, "bar": bar };
+        };
+        """
+        context.evaluateScript(fixtureScript)
+        testPlugin.callStruct(foo: "blah", bar: 15) { result in
+            XCTAssertEqual(result.foo, "blah")
+            XCTAssertEqual(result.bar, 15)
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
     }
 }
 

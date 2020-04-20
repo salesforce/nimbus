@@ -130,15 +130,6 @@ public class Bridge: NSObject {
         invoke(identifierSegments, with: args, callback: callback)
     }
 
-    func invoke<R>(
-        _ identifierPath: String,
-        with args: [Encodable],
-        callback: @escaping (Error?, R?) -> Void
-    ) {
-        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
-        invoke(identifierSegments, with: args, callback: callback)
-    }
-
     var plugins: [Plugin] = []
     private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
     typealias PromiseCallback = (Error?, Any?) -> Void

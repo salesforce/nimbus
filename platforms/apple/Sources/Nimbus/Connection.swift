@@ -6,7 +6,7 @@
 //
 
 public protocol Connection: class, Binder {
-    func invoke<R>(
+    func invoke<R: Decodable>(
         _ identifierPath: String,
         with args: Encodable...,
         callback: @escaping (Error?, R?) -> Void

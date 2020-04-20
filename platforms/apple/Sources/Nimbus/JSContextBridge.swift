@@ -36,7 +36,7 @@ public class JSContextBridge {
         """
         context.evaluateScript(nimbusDeclaration)
         for plugin in plugins {
-            let connection = JSContextConnection(from: context, as: plugin.namespace)
+            let connection = JSContextConnection(from: context, bridge: self, as: plugin.namespace)
             plugin.bind(to: connection)
         }
     }
