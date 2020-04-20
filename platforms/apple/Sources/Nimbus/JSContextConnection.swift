@@ -26,7 +26,6 @@ public class JSContextConnection: Connection {
         guard let context = self.context else {
             return
         }
-        bindings[name] = callable
         let binding: @convention(block) () -> Any? = {
             let args: [Any] = JSContext.currentArguments() ?? []
             let mappedArgs = args.map { arg -> Any in
@@ -59,7 +58,6 @@ public class JSContextConnection: Connection {
 
     private let namespace: String
     private weak var context: JSContext?
-    private var bindings: [String: Callable] = [:]
     private let promiseGlobal: JSValue?
     private let connectionValue: JSValue?
 }

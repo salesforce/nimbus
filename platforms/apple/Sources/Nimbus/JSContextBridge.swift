@@ -11,6 +11,7 @@ import JavaScriptCore
 enum JSContextBridgeError: Error {
     case invalidContext
     case invalidFunction
+    case promiseRejected
 }
 
 public class JSContextBridge {
@@ -50,6 +51,7 @@ public class JSContextBridge {
             return
         }
 
+        let promiseGlobal = context.globalObject.objectForKeyedSubscript("Promise")
         var functionValue: JSValue? = context.globalObject
         for segment in identifierSegments {
             functionValue = functionValue?.objectForKeyedSubscript(segment)
@@ -65,7 +67,25 @@ public class JSContextBridge {
                 return try arg.toJSValue(context: context)
             }
             let result = functionValue?.call(withArguments: jsArgs)
-            callback(nil, result)
+            let resolveArgs: [Any] = result != nil ? [result!] : []
+            let reject: @convention(block) (JSValue) -> Void = { _ in
+                let error = JSContextBridgeError.promiseRejected
+                callback(error, nil)
+            }
+
+            let resolve: @convention(block) (JSValue) -> Void = { result in
+                callback(nil, result)
+            }
+            var callbacks: [JSValue] = []
+            if let jsResolve = JSValue(object: resolve, in: context) {
+                callbacks.append(jsResolve)
+            }
+            if let jsReject = JSValue(object: reject, in: context) {
+                callbacks.append(jsReject)
+            }
+
+            let promise = promiseGlobal?.invokeMethod("resolve", withArguments: resolveArgs)
+            promise?.invokeMethod("then", withArguments: callbacks)
         } catch {
             callback(error, nil)
         }

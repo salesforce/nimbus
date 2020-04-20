@@ -5,6 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
 import WebKit
 import XCTest
 
@@ -161,4 +162,68 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         XCTAssertNil(rejectedError)
         XCTAssertNil(resolvedValue)
     }
+}
+
+class JSContextInvocationTests: XCTestCase {
+    var context: JSContext = JSContext()
+    var bridge: JSContextBridge = JSContextBridge()
+
+    override func setUp() {
+        context = JSContext()
+        context.evaluateScript(fixtureScript)
+        bridge = JSContextBridge()
+        bridge.attach(to: context)
+    }
+
+    func testInvokePromiseResolved() throws {
+        let expect = expectation(description: "promise resolved")
+        var result: JSValue?
+        var error: Error?
+
+        bridge.invoke("promiseFunc") { (theError, theResult) in
+            error = theError
+            result = theResult
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertNil(error)
+        XCTAssertEqual(result?.toInt32(), 42)
+    }
+
+    func testInvokePromiseRejected() throws {
+        let expect = expectation(description: "reject promise")
+        var result: JSValue?
+        var error: Error?
+
+        bridge.invoke("promiseFuncReject") { (theError, theResult) in
+            error = theError
+            result = theResult
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertNotNil(error)
+        XCTAssertNil(result)
+    }
+
+    func testInvokePromiseResolvingToVoid() throws {
+        let expect = expectation(description: "resolve to void")
+        var result: JSValue?
+        var error: Error?
+
+        bridge.invoke("resolveToVoid") { (theError, theResult) in
+            error = theError
+            result = theResult
+            expect.fulfill()
+        }
+        wait(for: [expect], timeout: 5)
+        XCTAssertNil(error)
+        XCTAssertNotNil(result)
+        XCTAssertTrue(result?.isUndefined ?? false)
+    }
+
+    let fixtureScript = """
+    function promiseFunc() { return Promise.resolve(42); };
+    function promiseFuncReject() { return Promise.reject(new Error("epic fail")); };
+    function resolveToVoid() { return Promise.resolve(); }
+    """
 }
