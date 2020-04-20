@@ -74,6 +74,10 @@ public class WebViewConnection: Connection {
         webView?.configuration.userContentController.addUserScript(script)
     }
 
+    public func invoke<R>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
+
+    }
+
     /**
      Called by the ConnectionMessageHandler when JS in the webview invokes a function of a native extension..
      */

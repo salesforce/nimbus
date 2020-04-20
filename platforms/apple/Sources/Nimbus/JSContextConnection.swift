@@ -53,6 +53,10 @@ public class JSContextConnection: Connection {
         connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
+    public func invoke<R>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
+
+    }
+
     private let namespace: String
     private weak var context: JSContext?
     private var bindings: [String: Callable] = [:]
