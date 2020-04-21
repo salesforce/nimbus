@@ -18,7 +18,7 @@ public class WebViewConnection: Connection {
     /**
      Create a connection from the web view to an object.
      */
-    public init(from webView: WKWebView, bridge: Bridge, as namespace: String) {
+    public init(from webView: WKWebView, bridge: JSInvokable, as namespace: String) {
         self.webView = webView
         self.namespace = namespace
         self.bridge = bridge
@@ -80,8 +80,8 @@ public class WebViewConnection: Connection {
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
-        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
-        bridge?.invoke(identifierSegments, with: args, callback: callback)
+//        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
+        bridge?.invoke(identifierPath, with: args, callback: callback)
     }
 
     /**
@@ -143,6 +143,6 @@ public class WebViewConnection: Connection {
 
     private let namespace: String
     private weak var webView: WKWebView?
-    private weak var bridge: Bridge?
+    private var bridge: JSInvokable?
     private var bindings: [String: Callable] = [:]
 }

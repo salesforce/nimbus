@@ -64,7 +64,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke("promiseFunc") { (error, result: Int?) in
+        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -90,7 +90,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke("promiseFunc") { (error, result: Int?) in
+        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -122,7 +122,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke("promiseFunc") { (error, result: Int?) in
+        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -150,7 +150,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Void?
-        bridge.invoke("promiseFunc") { (error, result: Void?) in
+        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Void?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()

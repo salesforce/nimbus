@@ -8,7 +8,7 @@
 import Foundation
 import WebKit
 
-public class Bridge: NSObject {
+public class Bridge: NSObject, JSInvokable {
     public func addPlugin<T: Plugin>(_ plugin: T) {
         plugins.append(plugin)
     }
@@ -36,7 +36,7 @@ public class Bridge: NSObject {
      Invokes a Promise-returning Javascript function and call the specified
      promiseCompletion when that Promise resolves or rejects.
      */
-    func invoke<R>( // swiftlint:disable:this function_body_length
+    func invokeSegments<R>( // swiftlint:disable:this function_body_length
         _ identifierSegments: [String],
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
@@ -121,13 +121,13 @@ public class Bridge: NSObject {
      Invokes a Promise-returning Javascript function and call the specified
      promiseCompletion when that Promise resolves or rejects.
      */
-    public func invoke<R>(
+    public func invoke<R: Decodable>(
         _ identifierPath: String,
-        with args: Encodable...,
+        with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
-        invoke(identifierSegments, with: args, callback: callback)
+        invokeSegments(identifierSegments, with: args, callback: callback)
     }
 
     var plugins: [Plugin] = []
