@@ -84,7 +84,7 @@ class JSContextConnectionTests: XCTestCase {
                 return
             }
 
-            connection.invoke("testFunctionWithArgs", with: first, second) { (_, result: [Int]?) in
+            connection.invoke("testFunctionWithArgs", with: [first, second]) { (_, result: [Int]?) in
                 callback(result!)
             }
         }
@@ -94,7 +94,7 @@ class JSContextConnectionTests: XCTestCase {
                 XCTFail("nil connection")
                 return
             }
-            connection.invoke("testStruct", with: foo, bar) { (_, result: TestStruct?) in
+            connection.invoke("testStruct", with: [foo, bar]) { (_, result: TestStruct?) in
                 callback(result!)
             }
         }

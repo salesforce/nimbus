@@ -53,7 +53,11 @@ public class JSContextConnection: Connection {
         connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
-    public func invoke<R: Decodable>(_ identifierPath: String, with args: Encodable..., callback: @escaping (Error?, R?) -> Void) {
+    public func invoke<R: Decodable>(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?, R?) -> Void
+    ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
         bridge?.invoke(identifierSegments, with: args) { (error, resultValue) in
             if let jsResult = resultValue, let result = decodeJSValue(jsResult, destinationType: R.self) {

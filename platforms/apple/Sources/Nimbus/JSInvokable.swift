@@ -5,6 +5,10 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-public protocol Connection: class, Binder, JSInvokable {
-
+public protocol JSInvokable {
+    func invoke<R: Decodable>(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?, R?) -> Void
+    )
 }
