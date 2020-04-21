@@ -64,7 +64,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -90,7 +90,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -122,7 +122,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -150,7 +150,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Void?
-        bridge.invokeSegments(["promiseFunc"], with: []) { (error, result: Void?) in
+        bridge.invoke(["promiseFunc"], with: []) { (error, result: Void?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -180,7 +180,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invokeSegments(["promiseFunc"]) { (theError, theResult: JSValue?) in
+        bridge.invoke(["promiseFunc"]) { (theError, theResult: JSValue?) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -195,7 +195,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invokeSegments(["promiseFuncReject"]) { (theError, theResult) in
+        bridge.invoke(["promiseFuncReject"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -210,7 +210,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invokeSegments(["resolveToVoid"]) { (theError, theResult) in
+        bridge.invoke(["resolveToVoid"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()

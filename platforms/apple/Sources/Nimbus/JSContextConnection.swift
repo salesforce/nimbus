@@ -9,7 +9,7 @@ import JavaScriptCore
 
 public class JSContextConnection: Connection {
 
-    init(from context: JSContext, bridge: JSInvokable, as namespace: String) {
+    init(from context: JSContext, bridge: JSEvaluating, as namespace: String) {
         self.context = context
         self.bridge = bridge
         self.namespace = namespace
@@ -53,17 +53,17 @@ public class JSContextConnection: Connection {
         connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
-    public func invoke<R: Decodable>(
+    public func evaluate<R: Decodable>(
         _ identifierPath: String,
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
-        bridge?.invoke(identifierPath, with: args, callback: callback)
+        bridge?.evaluate(identifierPath, with: args, callback: callback)
     }
 
     private let namespace: String
     private weak var context: JSContext?
-    private var bridge: JSInvokable?
+    private var bridge: JSEvaluating?
     private let promiseGlobal: JSValue?
     private let connectionValue: JSValue?
 }

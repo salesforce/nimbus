@@ -14,7 +14,7 @@ enum JSContextBridgeError: Error {
     case promiseRejected
 }
 
-public class JSContextBridge: JSInvokable {
+public class JSContextBridge: JSEvaluating {
 
     public init() {
         self.plugins = []
@@ -41,7 +41,7 @@ public class JSContextBridge: JSInvokable {
         }
     }
 
-    public func invokeSegments(
+    public func invoke(
         _ identifierSegments: [String],
         with args: [Encodable] = [],
         callback: @escaping (Error?, JSValue?) -> Void
@@ -91,13 +91,13 @@ public class JSContextBridge: JSInvokable {
         }
     }
 
-    public func invoke<R: Decodable>(
+    public func evaluate<R: Decodable>(
         _ identifierPath: String,
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
-        invokeSegments(identifierSegments, with: args) { (error, resultValue: JSValue?) in
+        invoke(identifierSegments, with: args) { (error, resultValue: JSValue?) in
             if let jsResult = resultValue, let result = decodeJSValue(jsResult, destinationType: R.self) {
                 callback(nil, result)
             } else {
