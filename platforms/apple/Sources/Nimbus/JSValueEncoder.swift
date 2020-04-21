@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 // swiftlint:disable file_length
@@ -33,14 +34,14 @@ struct JSValueEncoderStorage {
     }
 
     mutating func push(container: __owned Any) {
-        self.jsValueContainers.append(JSValue(object: container, in: self.context))
+        jsValueContainers.append(JSValue(object: container, in: context))
     }
 
     mutating func pushUnKeyedContainer() throws -> JSValue {
         guard let jsArray = JSValue(newArrayIn: self.context) else {
             throw JSValueEncoderError.invalidContext
         }
-        self.jsValueContainers.append(jsArray)
+        jsValueContainers.append(jsArray)
         return jsArray
     }
 
@@ -48,13 +49,13 @@ struct JSValueEncoderStorage {
         guard let jsDictionary = JSValue(newObjectIn: self.context) else {
             throw JSValueEncoderError.invalidContext
         }
-        self.jsValueContainers.append(jsDictionary)
+        jsValueContainers.append(jsDictionary)
         return jsDictionary
     }
 
     mutating func popContainer() -> JSValue {
-        precondition(!self.jsValueContainers.isEmpty, "Empty container stack.")
-        return self.jsValueContainers.popLast()!
+        precondition(!jsValueContainers.isEmpty, "Empty container stack.")
+        return jsValueContainers.popLast()!
     }
 }
 
@@ -66,7 +67,7 @@ class JSValueEncoderContainer: Encoder {
 
     init(context: JSContext) {
         self.context = context
-        self.storage = JSValueEncoderStorage(context: context)
+        storage = JSValueEncoderStorage(context: context)
     }
 
     func resolvedValue() -> JSValue {
@@ -169,7 +170,7 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
     }
 
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
-        self.encoder.codingPath.append(key)
+        encoder.codingPath.append(key)
         defer { self.encoder.codingPath.removeLast() }
         let depth = encoder.storage.count
         do {
@@ -201,10 +202,10 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
             self.container?.append(dictionary, for: containerKey)
         }
 
-        self.codingPath.append(key)
+        codingPath.append(key)
         defer { self.codingPath.removeLast() }
 
-        let container = JSValueKeyedEncodingContainer<NestedKey>(encoder: self.encoder, container: dictionary, codingPath: self.codingPath)
+        let container = JSValueKeyedEncodingContainer<NestedKey>(encoder: encoder, container: dictionary, codingPath: codingPath)
         return KeyedEncodingContainer(container)
     }
 
@@ -219,12 +220,12 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
             array = existingContainer
         } else {
             array = JSValue(newArrayIn: encoder.context)
-            self.container?.append(array, for: containerKey)
+            container?.append(array, for: containerKey)
         }
 
-        self.codingPath.append(key)
+        codingPath.append(key)
         defer { self.codingPath.removeLast() }
-        return JSValueUnkeyedEncodingContainer(encoder: self.encoder, container: array, codingPath: self.codingPath)
+        return JSValueUnkeyedEncodingContainer(encoder: encoder, container: array, codingPath: codingPath)
     }
 
     func superEncoder() -> Encoder {
@@ -236,7 +237,6 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
     }
 
     typealias Key = K
-
 }
 
 private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
@@ -309,7 +309,7 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        self.encoder.codingPath.append(JSValueKey(index: self.count))
+        encoder.codingPath.append(JSValueKey(index: count))
         defer { self.encoder.codingPath.removeLast() }
         container?.append(value)
     }
@@ -323,7 +323,7 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        self.codingPath.append(JSValueKey(index: self.count))
+        codingPath.append(JSValueKey(index: count))
         defer { self.codingPath.removeLast() }
 
         let dictionary = JSValue(newObjectIn: encoder.context)
@@ -336,12 +336,12 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        self.codingPath.append(JSValueKey(index: self.count))
+        codingPath.append(JSValueKey(index: count))
         defer { self.codingPath.removeLast() }
 
         let array = JSValue(newArrayIn: encoder.context)
         if let array = array {
-            self.container?.append(array)
+            container?.append(array)
         }
         return JSValueUnkeyedEncodingContainer(encoder: encoder, container: array, codingPath: codingPath)
     }
@@ -415,7 +415,6 @@ extension JSValueEncoderContainer: SingleValueEncodingContainer {
     func encode<T>(_ value: T) throws where T: Encodable {
         storage.push(container: value)
     }
-
 }
 
 private struct JSValueKey: CodingKey {
@@ -424,11 +423,11 @@ private struct JSValueKey: CodingKey {
 
     public init?(stringValue: String) {
         self.stringValue = stringValue
-        self.intValue = nil
+        intValue = nil
     }
 
     public init?(intValue: Int) {
-        self.stringValue = "\(intValue)"
+        stringValue = "\(intValue)"
         self.intValue = intValue
     }
 
@@ -438,8 +437,8 @@ private struct JSValueKey: CodingKey {
     }
 
     init(index: Int) {
-        self.stringValue = "Index \(index)"
-        self.intValue = index
+        stringValue = "Index \(index)"
+        intValue = index
     }
 
     static let `super` = JSValueKey(stringValue: "super")!
@@ -447,7 +446,7 @@ private struct JSValueKey: CodingKey {
 
 extension JSValue {
     func push(_ values: [Any]) {
-        self.invokeMethod("push", withArguments: values)
+        invokeMethod("push", withArguments: values)
     }
 
     func append(_ value: Any) {
@@ -458,7 +457,7 @@ extension JSValue {
 
     func append(_ value: Any, for key: String) {
         if let value = JSValue(object: value, in: context) {
-            self.setObject(value, forKeyedSubscript: key)
+            setObject(value, forKeyedSubscript: key)
         }
     }
 }

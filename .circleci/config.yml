@@ -132,6 +132,18 @@ jobs:
           command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusApp -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.4,platform=iOS Simulator,name=iPhone 7'
 
       - run:
+          name: SwiftFormat
+          working_directory: platforms/apple
+          when: always
+          command: ./Pods/SwiftFormat/CommandLineTool/swiftformat --lint .
+
+      - run:
+          name: SwiftLint
+          working_directory: platforms/apple
+          when: always
+          command: ./Pods/SwiftLint/swiftlint lint --path Sources
+
+      - run:
           name: Build NimbusJS
           command: |
             npm install

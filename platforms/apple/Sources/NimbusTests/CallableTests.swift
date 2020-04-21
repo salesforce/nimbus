@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 // swiftlint:disable line_length
@@ -93,7 +94,6 @@ class CallableTests: XCTestCase {
         XCTAssertNotNil(arrayResult)
         XCTAssertTrue(testable.called)
         if let args = arrayResult {
-
             XCTAssertEqual(args.count, 0)
         } else {
             XCTFail("result wasn't an array")
@@ -199,7 +199,6 @@ class CallableTests: XCTestCase {
 }
 
 class Testable {
-
     static let decodableJSON = """
         {
             "name": "TheName",

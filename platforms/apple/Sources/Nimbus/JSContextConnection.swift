@@ -2,25 +2,25 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import JavaScriptCore
 
 public class JSContextConnection: Connection, CallableBinder {
-
     init(from context: JSContext, bridge: JSEvaluating, as namespace: String) {
         self.context = context
         self.bridge = bridge
         self.namespace = namespace
-        self.promiseGlobal = context.objectForKeyedSubscript("Promise")
+        promiseGlobal = context.objectForKeyedSubscript("Promise")
         let plugins = context.objectForKeyedSubscript("__nimbus")?.objectForKeyedSubscript("plugins")
         var connection = plugins?.objectForKeyedSubscript(namespace)
         if connection?.isUndefined == true {
-            connection = JSValue.init(newObjectIn: context)
+            connection = JSValue(newObjectIn: context)
             plugins?.setObject(connection, forKeyedSubscript: namespace)
         }
-        self.connectionValue = connection
+        connectionValue = connection
     }
 
     public func bind(_ callable: Callable, as name: String) {
@@ -76,7 +76,7 @@ extension Encodable {
 
 extension JSValue {
     func isFunction() -> Bool {
-        let functionType = self.context.globalObject.objectForKeyedSubscript("Function")
-        return self.isInstance(of: functionType)
+        let functionType = context.globalObject.objectForKeyedSubscript("Function")
+        return isInstance(of: functionType)
     }
 }

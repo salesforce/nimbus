@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Foundation
@@ -15,9 +16,8 @@ enum JSContextBridgeError: Error {
 }
 
 public class JSContextBridge: JSEvaluating {
-
     public init() {
-        self.plugins = []
+        plugins = []
     }
 
     public func addPlugin<T: Plugin>(_ plugin: T) {
@@ -64,7 +64,7 @@ public class JSContextBridge: JSEvaluating {
 
         do {
             let jsArgs = try args.map { arg -> JSValue in
-                return try arg.toJSValue(context: context)
+                try arg.toJSValue(context: context)
             }
             let result = functionValue?.call(withArguments: jsArgs)
             let resolveArgs: [Any] = result != nil ? [result!] : []

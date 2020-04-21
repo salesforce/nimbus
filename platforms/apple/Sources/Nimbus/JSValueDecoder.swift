@@ -2,14 +2,15 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import JavaScriptCore
 
 public class JSValueDecoder {
     public func decode<T>(_ type: T.Type = T.self, from value: JSValue) throws -> T
-    where T: Decodable {
+        where T: Decodable {
         let decoder = JSValueContainer(value: value)
         return try decoder.decode(type)
     }
@@ -162,7 +163,7 @@ extension JSArrayValueContainer: UnkeyedDecodingContainer {
     mutating func decodeNil() throws -> Bool {
         try guardNotAtEnd(JSValue.self)
         if array.atIndex(currentIndex).isNull {
-            self.currentIndex += 1
+            currentIndex += 1
             return true
         }
         return false

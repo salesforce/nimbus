@@ -2,20 +2,20 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 /**
-`CallableBinder` is an extension to `Binder` that provides default
-implementations of all `bind` overloads based around the use of the
-`Callable` implementations to wrap function arguments.
+ `CallableBinder` is an extension to `Binder` that provides default
+ implementations of all `bind` overloads based around the use of the
+ `Callable` implementations to wrap function arguments.
  */
 protocol CallableBinder: Binder {
     func bind(_ callable: Callable, as name: String)
 }
 
 extension CallableBinder {
-
     public func bind(
         _ function: @escaping () throws -> Void,
         as name: String
@@ -241,5 +241,4 @@ extension CallableBinder {
         let callable = make_callable(wrappedFunction)
         bind(callable, as: name)
     }
-
 }

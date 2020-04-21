@@ -2,12 +2,13 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
 import XCTest
 @testable import Nimbus
-import JavaScriptCore
 
 class JSValueDecoderTests: XCTestCase {
     var context: JSContext!
@@ -47,5 +48,4 @@ class JSValueDecoderTests: XCTestCase {
         let foo: String
         let bar: Int
     }
-
 }

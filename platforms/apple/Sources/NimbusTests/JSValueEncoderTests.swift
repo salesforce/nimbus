@@ -2,12 +2,13 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
 import XCTest
 @testable import Nimbus
-import JavaScriptCore
 
 class JSValueEncoderTests: XCTestCase {
     var context: JSContext = JSContext()
@@ -235,5 +236,4 @@ class JSValueEncoderTests: XCTestCase {
         """
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
-
 }

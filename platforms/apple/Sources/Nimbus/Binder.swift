@@ -1,14 +1,14 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Foundation
 
 public protocol Binder {
-
     /**
      Bind the specified function to this connection.
      */
@@ -184,5 +184,4 @@ public protocol Binder {
         _ function: @escaping (A0, A1, A2, A3, @escaping (CB0, CB1) -> Void) throws -> Void,
         as name: String
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable
-
 }

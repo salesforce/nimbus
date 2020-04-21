@@ -1,31 +1,11 @@
---allman false
---binarygrouping none
---closingparen same-line
---commas always
---comments ignore
---decimalgrouping none
---elseposition same-line
 --empty void
 --exclude Pods
+--disable unusedArguments
 --exponentcase lowercase
---exponentgrouping disabled
---fractiongrouping disabled
---header ignore
---hexgrouping none
---hexliteralcase uppercase
---ifdef indent
---importgrouping alphabetized
+--header \nCopyright (c) 2020, Salesforce.com, inc.\nAll rights reserved.\nSPDX-License-Identifier: BSD-3-Clause\nFor full license text, see the LICENSE file in the repo\nroot or https://opensource.org/licenses/BSD-3-Clause\n
+--importgrouping testable-bottom
 --indent 4
---indentcase false
---linebreaks lf
---octalgrouping none
---operatorfunc spaced
---patternlet inline
 --ranges no-space
---self remove
 --selfrequired
---semicolons inline
---stripunusedargs closure-only
---trimwhitespace always
---wraparguments after-first
+--wraparguments before-first
 --wrapcollections before-first

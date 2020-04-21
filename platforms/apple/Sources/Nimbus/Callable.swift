@@ -1,9 +1,12 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
+
+// swiftlint:disable large_tuple
 
 import JavaScriptCore
 
@@ -37,12 +40,13 @@ struct Callable0<R>: Callable {
     }
 
     func call(args: [Any]) throws -> Any {
-        if args.count != 0 {
+        if !args.isEmpty {
             throw ParameterError.argumentCount(expected: 0, actual: args.count)
         }
         return try function()
     }
 }
+
 /**
  A `Callable` wrapper for unary functions
  */
@@ -65,6 +69,7 @@ struct Callable1<R, A0>: Callable {
         throw ParameterError.conversion
     }
 }
+
 /**
  A `Callable` wrapper for binary functions
  */
@@ -89,6 +94,7 @@ struct Callable2<R, A0, A1>: Callable {
         throw ParameterError.conversion
     }
 }
+
 /**
  A `Callable` wrapper for ternary functions
  */
@@ -115,6 +121,7 @@ struct Callable3<R, A0, A1, A2>: Callable {
         throw ParameterError.conversion
     }
 }
+
 /**
  A `Callable` wrapper for quaternary functions
  */
@@ -143,6 +150,7 @@ struct Callable4<R, A0, A1, A2, A3>: Callable {
         throw ParameterError.conversion
     }
 }
+
 /**
  A `Callable` wrapper for quinary functions
  */
@@ -184,7 +192,7 @@ func make_callable<R>(_ function: @escaping (()) throws -> R) -> Callable {
 /**
  Create a `Callable` from the unary function.
  */
-func make_callable<R, A0>(_ function: @escaping ((A0)) throws -> R) -> Callable {
+func make_callable<R, A0>(_ function: @escaping (A0) throws -> R) -> Callable {
     return Callable1(function)
 }
 

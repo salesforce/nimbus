@@ -2,15 +2,15 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import WebKit
 import XCTest
 @testable import NimbusJS
-import WebKit
 
 class NimbusJSTests: XCTestCase {
-
     func testInjectingJS() {
         let webView = WKWebView()
         let testBundle = Bundle(for: type(of: self))
@@ -25,5 +25,4 @@ class NimbusJSTests: XCTestCase {
         let testBundle = Bundle(for: type(of: self))
         XCTAssertThrowsError(try webView.injectNimbusJavascript(scriptName: "nonexistentscript", bundle: testBundle))
     }
-
 }

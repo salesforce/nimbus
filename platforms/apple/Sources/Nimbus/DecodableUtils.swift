@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Foundation
@@ -19,7 +20,7 @@ private extension Decodable {
 }
 
 func decodeJSON<A>(_ data: Data, destinationType: A.Type) -> A? {
-    guard let codableType = A.self as? Decodable.Type  else {
+    guard let codableType = A.self as? Decodable.Type else {
         return nil
     }
     var returnValue: A?

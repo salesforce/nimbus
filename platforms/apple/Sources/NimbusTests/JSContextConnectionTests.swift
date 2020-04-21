@@ -1,12 +1,14 @@
+//
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+import JavaScriptCore
 import XCTest
 @testable import Nimbus
-import JavaScriptCore
 
 // swiftlint:disable type_body_length
 
@@ -26,7 +28,7 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func beginPluginTest() {
-        let current = expectation(description: self.name)
+        let current = expectation(description: name)
         expectationPlugin.currentExpectation = current
         bridge.attach(to: context)
     }
@@ -38,13 +40,13 @@ class JSContextConnectionTests: XCTestCase {
 
         func bind<C>(to connection: C) where C: Connection {
             self.connection = connection
-            connection.bind(self.anInt, as: "anInt")
-            connection.bind(self.arrayOfInts, as: "arrayOfInts")
-            connection.bind(self.aStruct, as: "aStruct")
-            connection.bind(self.intParameter, as: "intParameter")
-            connection.bind(self.structParameter, as: "structParameter")
-            connection.bind(self.callbackParameter, as: "callbackParameter")
-            connection.bind(self.callCallbackStructParameter, as: "callCallbackStructParameter")
+            connection.bind(anInt, as: "anInt")
+            connection.bind(arrayOfInts, as: "arrayOfInts")
+            connection.bind(aStruct, as: "aStruct")
+            connection.bind(intParameter, as: "intParameter")
+            connection.bind(structParameter, as: "structParameter")
+            connection.bind(callbackParameter, as: "callbackParameter")
+            connection.bind(callCallbackStructParameter, as: "callCallbackStructParameter")
         }
 
         func anInt() -> Int {
@@ -314,8 +316,8 @@ class ExpectationPlugin: Plugin {
     var passed = false
 
     func bind<C>(to connection: C) where C: Connection {
-        connection.bind(self.fail, as: "fail")
-        connection.bind(self.pass, as: "pass")
+        connection.bind(fail, as: "fail")
+        connection.bind(pass, as: "pass")
     }
 
     func fail() {

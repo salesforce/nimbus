@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Nimbus
@@ -27,6 +28,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             self.failures = failures
             expectation.fulfill()
         }
+
         func onTestFail(testTitle: String, errMessage: String) {
             NSLog("[\(testTitle)] failed: \(errMessage)")
         }
@@ -39,7 +41,6 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
                 webView.broadcastMessage(name: name)
             }
         }
-
     }
 
     var webView: WKWebView!
@@ -90,15 +91,15 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         loadWebViewAndWait()
 
         webView.evaluateJavaScript("""
-            const titleFor = x => x.parent ? `${titleFor(x.parent)} ${x.title}` : x.title
-            mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
-                 .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
-            true;
-            """) { _, error in
+        const titleFor = x => x.parent ? `${titleFor(x.parent)} ${x.title}` : x.title
+        mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
+             .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
+        true;
+        """) { _, error in
 
-                if let error = error {
-                    XCTFail(error.localizedDescription)
-                }
+            if let error = error {
+                XCTFail(error.localizedDescription)
+            }
         }
 
         wait(for: [testBridge.expectation], timeout: 30)
@@ -111,18 +112,22 @@ public class CallbackTestPlugin {
         let mochaMessage = MochaTests.MochaMessage()
         completion(mochaMessage)
     }
+
     func callbackWithTwoParams(completion: @escaping (MochaTests.MochaMessage, MochaTests.MochaMessage) -> Swift.Void) {
         var mochaMessage = MochaTests.MochaMessage()
         mochaMessage.intField = 6
         mochaMessage.stringField = "int param is 6"
         completion(MochaTests.MochaMessage(), mochaMessage)
     }
+
     func callbackWithSinglePrimitiveParam(completion: @escaping (Int) -> Swift.Void) {
         completion(777)
     }
+
     func callbackWithTwoPrimitiveParams(completion: @escaping (Int, Int) -> Swift.Void) {
         completion(777, 888)
     }
+
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
@@ -134,10 +139,10 @@ extension CallbackTestPlugin: Plugin {
     }
 
     public func bind<C>(to connection: C) where C: Connection {
-        connection.bind(self.callbackWithSingleParam, as: "callbackWithSingleParam")
-        connection.bind(self.callbackWithTwoParams, as: "callbackWithTwoParams")
-        connection.bind(self.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
-        connection.bind(self.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
-        connection.bind(self.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(callbackWithSingleParam, as: "callbackWithSingleParam")
+        connection.bind(callbackWithTwoParams, as: "callbackWithTwoParams")
+        connection.bind(callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
+        connection.bind(callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
+        connection.bind(callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
     }
 }

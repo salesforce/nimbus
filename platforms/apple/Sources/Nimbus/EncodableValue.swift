@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Foundation
@@ -27,7 +28,7 @@ public enum EncodableValue: Encodable {
         switch self {
         case .void:
             try container.encodeNil(forKey: .v)
-        case .value(let value):
+        case let .value(value):
             let superContainer = container.superEncoder(forKey: .v)
             try value.encode(to: superContainer)
         }

@@ -2,14 +2,14 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import XCTest
 @testable import Nimbus
 
 class DecodableUtilsTests: XCTestCase {
-
     func testDecodableSucceeds() {
         guard let data = successJSON.data(using: .utf8) else {
             XCTFail("couldn't make data from JSON")
@@ -62,5 +62,4 @@ class DecodableUtilsTests: XCTestCase {
         "blah": "blah"
     }
     """
-
 }

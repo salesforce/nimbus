@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import JavaScriptCore
@@ -99,7 +100,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         var result: String?
         bridge.invoke(
             ["testFunctionWithArgs"],
-           with: [true, 42, optional, "hello\nworld", UserDefinedType()]
+            with: [true, 42, optional, "hello\nworld", UserDefinedType()]
         ) { (_, callResult: Any?) in
             if let callResult = callResult as? String {
                 result = callResult
@@ -153,7 +154,7 @@ class CallJSContextTests: XCTestCase {
     func testCallFunction() throws {
         let expect = expectation(description: "test call function")
         var resultValue: Bool?
-        bridge.invoke(["testFunction"]) { (_, result) in
+        bridge.invoke(["testFunction"]) { _, result in
             if let result = result, result.isBoolean {
                 resultValue = result.toBool()
             }
@@ -167,7 +168,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "non existent function")
         var result: JSValue?
         var error: Error?
-        bridge.invoke(["somethingthatdoesntexist"]) { (theError, theResult) in
+        bridge.invoke(["somethingthatdoesntexist"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()
@@ -181,7 +182,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "multiple arguments")
         var result: JSValue?
         var error: Error?
-        bridge.invoke(["testFunctionWithArgs"], with: [5, "athing", 15]) { (theError, theResult) in
+        bridge.invoke(["testFunctionWithArgs"], with: [5, "athing", 15]) { theError, theResult in
             result = theResult
             error = theError
             expect.fulfill()
@@ -199,7 +200,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "call function on object")
         var error: Error?
         var result: JSValue?
-        bridge.invoke(["testObject", "getName"]) { (theError, theResult) in
+        bridge.invoke(["testObject", "getName"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()

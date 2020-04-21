@@ -2,7 +2,8 @@
 // Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import WebKit
@@ -20,7 +21,7 @@ public extension WKWebView {
             bundlesToSearch = Bundle.allFrameworks
         }
         let foundPath = bundlesToSearch.compactMap { mapBundle in
-            return mapBundle.path(forResource: scriptName, ofType: "js")
+            mapBundle.path(forResource: scriptName, ofType: "js")
         }.first
         guard let sourcePath = foundPath else {
             throw NimbusJSError.sourceNotFound
@@ -28,6 +29,6 @@ public extension WKWebView {
 
         let source = try String(contentsOfFile: sourcePath)
         let userScript = WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: true)
-        self.configuration.userContentController.addUserScript(userScript)
+        configuration.userContentController.addUserScript(userScript)
     }
 }

@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
-// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import Foundation
@@ -145,10 +146,10 @@ extension Bridge: WKScriptMessageHandler {
         switch method {
         case "resolvePromise":
             guard let promiseId = body["promiseId"] as? String else {
-                    return
+                return
             }
             var callback: PromiseCallback?
-            self.promisesQueue.sync {
+            promisesQueue.sync {
                 callback = self.promises.removeValue(forKey: promiseId)
             }
             callback?(nil, body["value"])
@@ -156,17 +157,17 @@ extension Bridge: WKScriptMessageHandler {
         case "rejectPromise":
             guard let promiseId = body["promiseId"] as? String,
                 let value = body["value"] as? String else {
-                    return
+                return
             }
             var callback: PromiseCallback?
-            self.promisesQueue.sync {
+            promisesQueue.sync {
                 callback = self.promises.removeValue(forKey: promiseId)
             }
             callback?(PromiseError.message(value), nil)
 
         case "pageUnloaded":
             var callbacks: [String: PromiseCallback] = [:]
-            self.promisesQueue.sync {
+            promisesQueue.sync {
                 callbacks = self.promises
                 self.promises = [:]
             }
