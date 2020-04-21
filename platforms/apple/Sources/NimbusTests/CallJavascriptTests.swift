@@ -153,7 +153,7 @@ class CallJSContextTests: XCTestCase {
     func testCallFunction() throws {
         let expect = expectation(description: "test call function")
         var resultValue: Bool?
-        bridge.invoke("testFunction") { (_, result) in
+        bridge.invokeSegments(["testFunction"]) { (_, result) in
             if let result = result, result.isBoolean {
                 resultValue = result.toBool()
             }
@@ -167,7 +167,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "non existent function")
         var result: JSValue?
         var error: Error?
-        bridge.invoke("somethingthatdoesntexist") { (theError, theResult) in
+        bridge.invokeSegments(["somethingthatdoesntexist"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -181,7 +181,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "multiple arguments")
         var result: JSValue?
         var error: Error?
-        bridge.invoke("testFunctionWithArgs", with: 5, "athing", 15) { (theError, theResult) in
+        bridge.invokeSegments(["testFunctionWithArgs"], with: [5, "athing", 15]) { (theError, theResult) in
             result = theResult
             error = theError
             expect.fulfill()
@@ -199,7 +199,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "call function on object")
         var error: Error?
         var result: JSValue?
-        bridge.invoke("testObject.getName") { (theError, theResult) in
+        bridge.invokeSegments(["testObject", "getName"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()

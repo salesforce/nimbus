@@ -180,7 +180,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke("promiseFunc") { (theError, theResult) in
+        bridge.invokeSegments(["promiseFunc"]) { (theError, theResult: JSValue?) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -195,7 +195,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke("promiseFuncReject") { (theError, theResult) in
+        bridge.invokeSegments(["promiseFuncReject"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -210,7 +210,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke("resolveToVoid") { (theError, theResult) in
+        bridge.invokeSegments(["resolveToVoid"]) { (theError, theResult) in
             error = theError
             result = theResult
             expect.fulfill()
