@@ -651,7 +651,7 @@ class BindTarget {
     }
 }
 
-class TestBinder: Binder {
+class TestBinder: CallableBinder {
     typealias Target = BindTarget
     let target = BindTarget()
 

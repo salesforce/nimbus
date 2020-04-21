@@ -37,6 +37,7 @@
 		2970E45C224F0A0F008DC004 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2970E499224F0D46008DC004 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2970E498224F0D46008DC004 /* WebKit.framework */; };
 		298503D9228DEAAC00C1071E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298503D8228DEAAC00C1071E /* Binder.swift */; };
+		29941782244F8D50000AC209 /* CallableBinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29941781244F8D50000AC209 /* CallableBinder.swift */; };
 		29DA183E220E32E600D02CDA /* CallJavascriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2944335F2200FE3400E6D084 /* CallJavascriptTests.swift */; };
 		29F3839C234BC61000BF854B /* ParameterErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F3839B234BC61000BF854B /* ParameterErrorTests.swift */; };
 		29F8D60F223AF857005C5AC1 /* DeviceInfoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F8D60E223AF857005C5AC1 /* DeviceInfoPlugin.swift */; };
@@ -198,6 +199,7 @@
 		2970E451224F0A06008DC004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2970E498224F0D46008DC004 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		298503D8228DEAAC00C1071E /* Binder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
+		29941781244F8D50000AC209 /* CallableBinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallableBinder.swift; sourceTree = "<group>"; };
 		29F3839B234BC61000BF854B /* ParameterErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterErrorTests.swift; sourceTree = "<group>"; };
 		29F8D60E223AF857005C5AC1 /* DeviceInfoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoPlugin.swift; sourceTree = "<group>"; };
 		63718927281C4CF800BD8064 /* Pods-Nimbus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nimbus.debug.xcconfig"; path = "Target Support Files/Pods-Nimbus/Pods-Nimbus.debug.xcconfig"; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 				298503D8228DEAAC00C1071E /* Binder.swift */,
 				291A85FC21E5302C00510832 /* Bridge.swift */,
 				294433452200FA3700E6D084 /* Callable.swift */,
+				29941781244F8D50000AC209 /* CallableBinder.swift */,
 				294433422200FA3700E6D084 /* Callback.swift */,
 				294433462200FA3700E6D084 /* Connection.swift */,
 				CC251495240D6764001E8D8C /* DecodableUtils.swift */,
@@ -951,6 +954,7 @@
 				CC216514243C00AE000DC5D3 /* JSValueDecoder.swift in Sources */,
 				294433472200FA3700E6D084 /* Callback.swift in Sources */,
 				2944334A2200FA3700E6D084 /* Callable.swift in Sources */,
+				29941782244F8D50000AC209 /* CallableBinder.swift in Sources */,
 				29264F5E24197E4F00D68664 /* Plugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

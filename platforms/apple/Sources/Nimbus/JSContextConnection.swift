@@ -7,7 +7,7 @@
 
 import JavaScriptCore
 
-public class JSContextConnection: Connection {
+public class JSContextConnection: Connection, CallableBinder {
 
     init(from context: JSContext, as namespace: String) {
         self.context = context

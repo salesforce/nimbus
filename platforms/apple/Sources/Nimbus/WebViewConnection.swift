@@ -13,7 +13,7 @@ import WebKit
  Each connection can bind multiple functions and expose them under
  a single namespace in JavaScript.
  */
-public class WebViewConnection: Connection {
+public class WebViewConnection: Connection, CallableBinder {
 
     /**
      Create a connection from the web view to an object.
