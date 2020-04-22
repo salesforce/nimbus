@@ -52,6 +52,7 @@ bintray {
     def versionFile = file('../../../lerna.json')
     def parsedVersion = new JsonSlurper().parseText(versionFile.text)
     def versionToPublish = parsedVersion.version.toString()
+    project.version = versionToPublish
     user = project.findProperty('bintrayUser') ?: System.getenv('BINTRAY_USER')
     key = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
     configurations = ['archives']
