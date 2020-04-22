@@ -9,7 +9,7 @@
 import Foundation
 import WebKit
 
-public class Bridge: NSObject, JSEvaluating {
+public class WebViewBridge: NSObject, JSEvaluating {
     public func addPlugin<T: Plugin>(_ plugin: T) {
         plugins.append(plugin)
     }
@@ -138,7 +138,7 @@ public class Bridge: NSObject, JSEvaluating {
     weak var webView: WKWebView?
 }
 
-extension Bridge: WKScriptMessageHandler {
+extension WebViewBridge: WKScriptMessageHandler {
     public func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any] else { return }
         guard let method = body["method"] as? String else { return }

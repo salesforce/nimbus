@@ -79,13 +79,13 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
     func testExecuteMochaTests() {
         let testBridge = MochaTestBridge(webView: webView)
-        let connection = WebViewConnection(from: webView, bridge: Bridge(), as: "mochaTestBridge")
+        let connection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: "mochaTestBridge")
         connection.bind(testBridge.testsCompleted, as: "testsCompleted")
         connection.bind(testBridge.ready, as: "ready")
         connection.bind(testBridge.sendMessage, as: "sendMessage")
         connection.bind(testBridge.onTestFail, as: "onTestFail")
         let callbackTestPlugin = CallbackTestPlugin()
-        let callbackConnection = WebViewConnection(from: webView, bridge: Bridge(), as: callbackTestPlugin.namespace)
+        let callbackConnection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: callbackTestPlugin.namespace)
         callbackTestPlugin.bind(to: callbackConnection)
 
         loadWebViewAndWait()

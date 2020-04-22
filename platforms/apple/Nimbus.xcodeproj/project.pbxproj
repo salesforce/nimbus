@@ -15,7 +15,7 @@
 		291A860721E530BC00510832 /* Nimbus.h in Headers */ = {isa = PBXBuildFile; fileRef = 291A860521E530BC00510832 /* Nimbus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		291A860A21E530BC00510832 /* Nimbus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; };
 		291A860B21E530BC00510832 /* Nimbus.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		291A861021E531B200510832 /* Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* Bridge.swift */; };
+		291A861021E531B200510832 /* WebViewBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A85FC21E5302C00510832 /* WebViewBridge.swift */; };
 		2922900F241165570014B95A /* InvocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922900E241165570014B95A /* InvocationTests.swift */; };
 		29245EE2220CE13000F9EEAF /* MochaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245EE1220CE13000F9EEAF /* MochaTests.swift */; };
 		29245EE6220CE18100F9EEAF /* test-www in Resources */ = {isa = PBXBuildFile; fileRef = 29245EE5220CE18100F9EEAF /* test-www */; };
@@ -165,7 +165,7 @@
 		291A85EF21E52D4000510832 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		291A85F221E52D4000510832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		291A85F421E52D4000510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		291A85FC21E5302C00510832 /* Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridge.swift; sourceTree = "<group>"; };
+		291A85FC21E5302C00510832 /* WebViewBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewBridge.swift; sourceTree = "<group>"; };
 		291A860321E530BC00510832 /* Nimbus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nimbus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		291A860521E530BC00510832 /* Nimbus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Nimbus.h; sourceTree = "<group>"; };
 		291A860621E530BC00510832 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -360,7 +360,6 @@
 				291A860621E530BC00510832 /* Info.plist */,
 				291A860521E530BC00510832 /* Nimbus.h */,
 				298503D8228DEAAC00C1071E /* Binder.swift */,
-				291A85FC21E5302C00510832 /* Bridge.swift */,
 				294433452200FA3700E6D084 /* Callable.swift */,
 				29941781244F8D50000AC209 /* CallableBinder.swift */,
 				294433422200FA3700E6D084 /* Callback.swift */,
@@ -374,6 +373,7 @@
 				CC216513243C00AE000DC5D3 /* JSValueDecoder.swift */,
 				CCDEEEAA2440C164009ADEBC /* JSValueEncoder.swift */,
 				29264F5D24197E4F00D68664 /* Plugin.swift */,
+				291A85FC21E5302C00510832 /* WebViewBridge.swift */,
 				CC430D902433C39800CA12A0 /* WebViewConnection.swift */,
 				294433432200FA3700E6D084 /* WebView+Nimbus.swift */,
 			);
@@ -947,7 +947,7 @@
 				298503D9228DEAAC00C1071E /* Binder.swift in Sources */,
 				CC6358EC244F808700A9AB39 /* JSEvaluating.swift in Sources */,
 				CC430D922433C56000CA12A0 /* WebViewConnection.swift in Sources */,
-				291A861021E531B200510832 /* Bridge.swift in Sources */,
+				291A861021E531B200510832 /* WebViewBridge.swift in Sources */,
 				CC430D952433C8EF00CA12A0 /* JSContextConnection.swift in Sources */,
 				294433482200FA3700E6D084 /* WebView+Nimbus.swift in Sources */,
 				CC64246924479C0400604279 /* JSValueCallback.swift in Sources */,

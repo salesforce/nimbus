@@ -20,11 +20,11 @@ class UserDefinedType: Encodable {
 class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
-    var bridge: Bridge!
+    var bridge: WebViewBridge!
 
     override func setUp() {
         webView = WKWebView()
-        bridge = Bridge()
+        bridge = WebViewBridge()
         bridge.attach(to: webView)
         webView.navigationDelegate = self
     }
