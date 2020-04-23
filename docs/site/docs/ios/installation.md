@@ -39,7 +39,7 @@ import Nimbus
 3. Initialize the Nimbus Bridge and attach it to your `WebView`:
 
 ```swift
-let bridge = NimbusBridge()
+let bridge = WebViewBridge()
 bridge.addPlugin(DeviceInfoPlugin())
 bridge.attach(to: webView)
 webView.load(URLRequest(url: appURL))

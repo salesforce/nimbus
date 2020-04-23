@@ -6,27 +6,17 @@ layout: docs
 
 Plugins are how native functionality is exposed to hybrid features. Typically, plugins are small and have a single responsibility. Plugins are intended to be composable and you should keep this in mind while building your own plugins.
 
-Making a plugin means building a class in Swift that conforms to the `Nimbus.Plugin` protocol. Any conforming types must be of a class type in order to implement the protocol. Your plugin should import `WebKit` and `Nimbus`.
+Making a plugin means building a class in Swift that conforms to the `Plugin` protocol. Any conforming types must be of a class type in order to implement the protocol. Your plugin should import `WebKit` and `NimbusBridge`.
 
 ---
 
-In the `bind(to:bridge:)` implementation, you should call `addConnection` on `WKWebView` which is made available from an extension in the `Nimbus` framework.
+In the `bind(to:)` implementation, you should call `bind` on `Connection` for each function you want to be bound to the web view.
 
 ```swift
-let connection = webView.addConnection(to: self, as: "dharmaPlugin")
+connection.bind(self.theNumbers, as: "theNumbers")
 ```
 
-The first parameter to `addConnection` specifies which instance the connection is mapped to. The second parameter specifies what the name this connection will be available as in the web view. This will be the object your javascript code will call functions on to access functionality exposed by this plugin.
-
----
-
-Then call `bind` on the resulting connection for each function you want to be bound to the web view.
-
-```swift
-connection.bind(DharmaPlugin.theNumbers, as: "theNumbers")
-```
-
-The first parameter is the method you want to bind, and the second parameter is the name you want the method bound to. This will be the function name your javascript code will call to invoke this method.
+The first parameter is the function you want to bind, and the second parameter is the name you want the method bound to. This will be the function name your javascript code will call to invoke this method.
 
 ---
 
@@ -59,33 +49,51 @@ The native plugin and example javascript calling that plugin are included in the
 ```swift
 import Foundation
 import WebKit
-import Nimbus
+import NimbusBridge
+import JavaScriptCore
+
+struct DharmaMessage: Encodable {
+    var stringField = "This is a string"
+    var intField = 42
+}
 
 class DharmaPlugin {
     func theNumbers() -> [Int] {
         return [4, 8, 15, 16, 23, 42]
     }
 
-    func checkBoat(boatToCheck: String, callback: @escaping (_ boatName: String) -> Void) {
-        boatCheck(boatToCheck: boatToCheck) { boatName in
-            callback(boatName)
+    func checkBoat(boatToCheck: String, callback: @escaping (_ boatName: String, _ numberParam: Int) -> Void) {
+        boatCheck(boatToCheck: boatToCheck) { boatName, number, arrayOfNumbers  in
+            callback(boatName, number)
         }
+    }
+
+    func callbackWithSingleParam(completion: @escaping (DharmaMessage) -> Void) {
+        completion(DharmaMessage())
     }
 }
 
 extension DharmaPlugin: Plugin {
-    func bind(to webView: WKWebView, bridge: Bridge) {
-        let connection = webView.addConnection(to: self, as: "dharmaPlugin")
-        connection.bind(DharmaPlugin.theNumbers, as: "theNumbers")
-        connection.bind(DharmaPlugin.checkBoat, as: "checkBoat")
+    func bindToJSContext(context: JSContext) {
+        // do nothing
+    }
+
+    var namespace: String {
+        return "dharmaPlugin"
+    }
+
+    func bind<C>(to connection: C) where C : Connection {
+        connection.bind(self.theNumbers, as: "theNumbers")
+        connection.bind(self.checkBoat, as: "checkBoat")
+        connection.bind(self.callbackWithSingleParam, as: "callbackWithSingleParam")
     }
 }
 
 extension DharmaPlugin {
-    func boatCheck(boatToCheck: String, _ completion: @escaping (_ boatName: String) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
+    func boatCheck(boatToCheck: String, _ completion: @escaping (_ boatName: String, _ numberParam: Int, _ arrayParam: [Int]) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
             let result = boatToCheck == "Penny" ? "Penny's" : "Not Penny's"
-            completion(result)
+            completion(result, 1, [2, 3, 4])
         }
     }
 }
@@ -102,26 +110,26 @@ extension DharmaPlugin {
 <body>
     <script>
         function callNumbers() {
-            if (typeof dharmaPlugin !== "undefined") {
-                dharmaPlugin.theNumbers().then(function(theNumbers) {
-                    alert("numbers: " + theNumbers);
-                });
+            if (typeof __nimbus.plugins.dharmaPlugin !== 'undefined') {
+                __nimbus.plugins.dharmaPlugin.theNumbers().then(function (theNumbers){
+                                            alert("numbers: " + theNumbers);
+                                            });
             }
         }
         function checkPennys() {
-            if (typeof dharmaPlugin !== "undefined") {
-                dharmaPlugin.checkBoat("Penny", function(boatName) {
-                    alert(boatName + " boat");
-                });
-            }
+            if (typeof __nimbus.plugins.dharmaPlugin !== 'undefined') {
+                __nimbus.plugins.dharmaPlugin.checkBoat("Penny", function (boatName) {
+                                alert(boatName + " boat");
+                                });
+                }
         }
         function checkJacks() {
-            if (typeof dharmaPlugin !== "undefined") {
-                dharmaPlugin.checkBoat("Jack", function(boatName) {
+            if (typeof __nimbus.plugins.dharmaPlugin !== 'undefined') {
+                __nimbus.plugins.dharmaPlugin.checkBoat("Jack", function (boatName) {
                     alert(boatName + " boat");
                 });
             }
-        }
+        }   
     </script>
     <h1>Here is the page</h1>
     <button class="big" onclick="callNumbers()">Numbers</button>

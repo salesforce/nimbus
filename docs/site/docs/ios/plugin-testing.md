@@ -39,7 +39,7 @@ class DharmaPluginTests: NimbusPluginTestsBase {
         let jsExpectation = expectation(description: "js")
         testBridge.currentExpectation = jsExpectation
         let js = """
-                dharmaPlugin.theNumbers().then(function(result) {
+                __nimbus.plugins.dharmaPlugin.theNumbers().then(function(result) {
                         testBridge.receiveResult(result);
                     });
                 """
@@ -68,7 +68,7 @@ class NimbusTestBridge: Plugin {
 
     func bindToWebView(webView: WKWebView) {
         let testConnection = webView.addConnection(to: self, as: "testBridge")
-        testConnection.bind(NimbusTestBridge.receiveResult, as: "receiveResult")
+        testConnection.bind(self.receiveResult, as: "receiveResult")
     }
 }
 ```
@@ -77,13 +77,13 @@ Combine that with the following implementation of `NimbusPluginTestsBase` which 
 
 ```swift
 class NimbusPluginTestsBase: XCTestCase, WKNavigationDelegate {
-    var nimbus = NimbusBridge()
+    var nimbus = WebViewBridge()
     var testBridge = NimbusTestBridge()
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
 
     override func setUp() {
-        nimbus = NimbusBridge()
+        nimbus = WebViewBridge()
         testBridge = NimbusTestBridge()
         nimbus.addPlugin(testBridge)
         webView = WKWebView()
@@ -103,8 +103,8 @@ class NimbusPluginTestsBase: XCTestCase, WKNavigationDelegate {
 
         if let nimbusScript = try? String(contentsOfFile: nimbusPath) {
             let userScript = WKUserScript(source: nimbusScript, injectionTime: .atDocumentStart, forMainFrameOnly: true)
-            webView.configuration.userContentController.addUserScript(userScript)
             nimbus.attach(to: webView)
+            webView.configuration.userContentController.addUserScript(userScript)
         } else {
             XCTFail("unable to make nimbus js string")
         }
