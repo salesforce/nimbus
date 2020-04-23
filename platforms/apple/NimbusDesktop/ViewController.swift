@@ -31,5 +31,5 @@ class ViewController: NSViewController {
     }
 
     lazy var webView = WKWebView(frame: .zero)
-    let bridge = Bridge()
+    let bridge = WebViewBridge()
 }
