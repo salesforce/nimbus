@@ -10,7 +10,7 @@ import Foundation
 import JavaScriptCore
 
 /**
- 
+
  */
 enum JSValueCallbackError: Error {
     case invalidContext
@@ -20,7 +20,7 @@ enum JSValueCallbackError: Error {
 /**
  `JSValueCallback` is a native proxy to a javascript function that
  is used for passing callbacks across the bridge.
-*/
+ */
 class JSValueCallback: Callable {
     init(callback: JSValue) {
         self.callback = callback
