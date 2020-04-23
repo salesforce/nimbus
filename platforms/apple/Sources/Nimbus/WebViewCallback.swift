@@ -12,7 +12,7 @@ import WebKit
  `Callback` is a native proxy to a javascript function that
  is used for passing callbacks across the bridge.
  */
-class Callback: Callable {
+class WebViewCallback: Callable {
     init(webView: WKWebView, callbackId: String) {
         self.webView = webView
         self.callbackId = callbackId

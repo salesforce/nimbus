@@ -94,7 +94,7 @@ public class WebViewConnection: Connection, CallableBinder {
                     switch arg {
                     case let dict as NSDictionary:
                         if let callbackId = dict["callbackId"] as? String {
-                            return Callback(webView: webView!, callbackId: callbackId)
+                            return WebViewCallback(webView: webView!, callbackId: callbackId)
                         } else {
                             print("non-callback dictionary")
                         }

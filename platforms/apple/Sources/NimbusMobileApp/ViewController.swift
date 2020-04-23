@@ -39,6 +39,6 @@ class ViewController: UIViewController {
 
     lazy var webView = WKWebView(frame: .zero)
     lazy var context = JSContext()
-    let bridge = Bridge()
+    let bridge = WebViewBridge()
     let jsBridge = JSContextBridge()
 }
