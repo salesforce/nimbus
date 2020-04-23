@@ -10,7 +10,13 @@
 
 import JavaScriptCore
 
+/**
+ An `Encoder` class for encoding `Encodable` types to `JSValue` instances.
+ */
 class JSValueEncoder {
+    /**
+     Attempt to encode the given object to a `JSValue`.
+     */
     public func encode<T>(_ value: T, context: JSContext) throws -> JSValue where T: Encodable {
         let encoder = JSValueEncoderContainer(context: context)
         try value.encode(to: encoder)

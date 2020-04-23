@@ -8,7 +8,15 @@
 
 import JavaScriptCore
 
+/**
+ A `JSContextConnection` links a `JSContext` to native functions.
+
+ Each connection can bind multiple functions and expose them under a single namespace in JavaScript.
+ */
 public class JSContextConnection: Connection, CallableBinder {
+    /**
+     Create a connection from the `JSContext` as the namespace.
+     */
     init(from context: JSContext, bridge: JSEvaluating, as namespace: String) {
         self.context = context
         self.bridge = bridge
@@ -23,6 +31,11 @@ public class JSContextConnection: Connection, CallableBinder {
         connectionValue = connection
     }
 
+    /**
+     An implementation of the `Binder` protocol.
+
+     Bind the callable in the namespace as the name.
+     */
     public func bind(_ callable: Callable, as name: String) {
         guard let context = self.context else {
             return
@@ -53,6 +66,9 @@ public class JSContextConnection: Connection, CallableBinder {
         connectionValue?.setObject(binding, forKeyedSubscript: name)
     }
 
+    /**
+     An implementation of the `JSEvaluating` protocol.
+     */
     public func evaluate<R: Decodable>(
         _ identifierPath: String,
         with args: [Encodable],

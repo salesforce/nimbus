@@ -13,16 +13,21 @@ public protocol Plugin: class {
     var namespace: String { get }
 
     /**
-     Bind this plugin to the specified web view and Nimbus bridge.
+     Bind this plugin to the specified connection.
 
      Plugins can implement the bind method to add connections and expose methods
-     to the web view, make additional configuration changes to the web view, or
-     call additional methods on the nimbus bridge prior to the web app being loaded.
+     to a web view or `JSContext`.
      */
     func bind<C>(to connection: C) where C: Connection
 }
 
+/**
+ A default implementation of the `Plugin` protocol.
+ */
 public extension Plugin {
+    /**
+     By default, types conforming to `Plugin` provide the string equivalent of the class name as the namespace. Override this in a `Plugin` conforming type to provide a different value.
+     */
     var namespace: String {
         let currentType = type(of: self)
         return String(describing: currentType)

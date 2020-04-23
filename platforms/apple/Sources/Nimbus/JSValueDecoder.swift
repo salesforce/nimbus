@@ -8,7 +8,13 @@
 
 import JavaScriptCore
 
-public class JSValueDecoder {
+/**
+ A `Decoder` class for converting from `JSValue` to a `Decodable` type.
+ */
+class JSValueDecoder {
+    /**
+     Attempt to decode the value to an instace of the given type.
+     */
     public func decode<T>(_ type: T.Type = T.self, from value: JSValue) throws -> T
         where T: Decodable {
         let decoder = JSValueContainer(value: value)

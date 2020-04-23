@@ -9,21 +9,48 @@
 import Foundation
 import JavaScriptCore
 
+/**
+ A `JSContextBridgeError` describes why a bridge function failed.
+ */
 enum JSContextBridgeError: Error {
+    /**
+     There was no `JSContext` instance available to perform the given operation with.
+     */
     case invalidContext
+    /**
+     The javascript function attempting to be called did not exist or was not a function.
+     */
     case invalidFunction
+    /**
+     The promise returned by the javascript function being called ended in a rejected state.
+     */
     case promiseRejected
 }
 
+/**
+ A `JSContextBridge` links native functions to a `JSContext` instance.
+
+ Plugins attached to this instance can interact with javascript executing in the attached `JSContext`.
+ */
 public class JSContextBridge: JSEvaluating {
     public init() {
         plugins = []
     }
 
+    /**
+     Add the plugin to this `JSContextBridge` instance.
+
+     This plugin will be bound to the `JSContext` when one is attached.
+     */
     public func addPlugin<T: Plugin>(_ plugin: T) {
         plugins.append(plugin)
     }
 
+    /**
+     Attach this instance to the given `JSContext`.
+
+     All plugins added to this `JSContextBridge` will be bound to the `JSContext`. If this `JSContextBridge` has already been attached to a `JSContext`, this function does nothing.
+     */
     public func attach(to context: JSContext) {
         guard self.context == nil else {
             return
@@ -41,7 +68,7 @@ public class JSContextBridge: JSEvaluating {
         }
     }
 
-    public func invoke(
+    func invoke(
         _ identifierSegments: [String],
         with args: [Encodable] = [],
         callback: @escaping (Error?, JSValue?) -> Void
@@ -91,6 +118,11 @@ public class JSContextBridge: JSEvaluating {
         }
     }
 
+    /**
+     The implementation of the `JSEvaluating` protocol.
+
+     The function described by the identifierPath is called with the given arguments and the result is passed to the given callback.
+     */
     public func evaluate<R: Decodable>(
         _ identifierPath: String,
         with args: [Encodable],

@@ -9,7 +9,7 @@
 import WebKit
 
 /**
- A `Connection` links a web view to native functions.
+ A `WebViewConnection` links a web view to native functions.
 
  Each connection can bind multiple functions and expose them under
  a single namespace in JavaScript.

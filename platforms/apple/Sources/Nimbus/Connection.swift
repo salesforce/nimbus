@@ -6,4 +6,7 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+/**
+ A `Connection` links native function to a javascript execution environment.
+ */
 public protocol Connection: class, Binder, JSEvaluating {}
