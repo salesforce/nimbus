@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 apply plugin: 'com.jfrog.bintray'
 
 // Android projects need enhanced maven plugin
@@ -8,8 +10,10 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
     apply plugin: 'maven'
 }
 
-
-version = VERSION
+def versionFile = file('../../../lerna.json')
+def parsedVersion = new JsonSlurper().parseText(versionFile.text)
+def versionToPublish = parsedVersion.version.toString()
+version = versionToPublish
 group = GROUP
 
 install {
@@ -51,6 +55,7 @@ bintray {
     key = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
     configurations = ['archives']
     publish = true
+    dryRun = false
     pkg {
         name = project.name
         repo = BINTRAY_REPO
