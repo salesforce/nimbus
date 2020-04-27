@@ -9,10 +9,10 @@
 import WebKit
 
 /**
- `Callback` is a native proxy to a javascript function that
+ `WebViewCallback` is a native proxy to a javascript function that
  is used for passing callbacks across the bridge.
  */
-class WebViewCallback: Callable {
+class WebViewCallback {
     init(webView: WKWebView, callbackId: String) {
         self.webView = webView
         self.callbackId = callbackId
@@ -29,19 +29,9 @@ class WebViewCallback: Callable {
         }
     }
 
-    func call(args: [Any]) throws -> Any {
-        let jsonEncoder = JSONEncoder()
-        let jsonArgs = try args.map { arg -> String in
-            if let encodable = arg as? Encodable {
-                let jsonData = try jsonEncoder.encode(EncodableValue.value(encodable))
-                let jsonString = String(data: jsonData, encoding: .utf8)!
-                return jsonString
-            } else {
-                // Parameters passed to callback are implied that they
-                // conform to Encodable protocol.
-                // If for some reason any elements don't throw parameter error.
-                throw ParameterError.conversion
-            }
+    func call(args: [Any]) throws {
+        guard let jsonArgs = args as? [String] else {
+            throw ParameterError.conversion
         }
         let formattedJsonArgs = String(format: "[%@]", jsonArgs.joined(separator: ","))
 
@@ -49,14 +39,7 @@ class WebViewCallback: Callable {
             self.webView?.evaluateJavaScript("""
             {
                 var jsonArgs = \(formattedJsonArgs);
-                var mappedJsonArgs = jsonArgs.map(element => {
-                  if (element.hasOwnProperty('v')) {
-                    return element.v;
-                  } else {
-                    return element;
-                  }
-                });
-                __nimbus.callCallback('\(self.callbackId)', ...mappedJsonArgs);
+                __nimbus.callCallback('\(self.callbackId)', ...jsonArgs);
             }
             null;
             """)

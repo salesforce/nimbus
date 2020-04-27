@@ -130,7 +130,9 @@ public class JSContextBridge: JSEvaluating {
     ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
         invoke(identifierSegments, with: args) { (error, resultValue: JSValue?) in
-            if let jsResult = resultValue, let result = decodeJSValue(jsResult, destinationType: R.self) {
+            if
+                let jsResult = resultValue,
+                let result = try? JSValueDecoder().decode(R.self, from: jsResult) {
                 callback(nil, result)
             } else {
                 callback(error, nil)

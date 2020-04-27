@@ -114,19 +114,7 @@ let cloneArguments = (args: any[]): any[] => {
     if (typeof args[i] === "function") {
       const callbackId = uuidv4();
       uuidsToCallbacks[callbackId] = args[i];
-      // TODO: this should generalize better, perhaps with an explicit platform
-      // check?
-      if (
-        typeof _nimbus !== "undefined" &&
-        _nimbus.makeCallback !== undefined
-      ) {
-        // TODO: Android passes only the callbackId string, whereas iOS passes an
-        // object with the callbackId property. These need to be merged and handled
-        // the same way to eliminate extraneous code paths
-        clonedArgs.push(callbackId);
-      } else {
-        clonedArgs.push({ callbackId });
-      }
+      clonedArgs.push(callbackId);
     } else if (typeof args[i] === "object") {
       clonedArgs.push(JSON.stringify(args[i]));
     } else {

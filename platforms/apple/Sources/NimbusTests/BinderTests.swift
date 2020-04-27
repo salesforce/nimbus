@@ -16,53 +16,75 @@ import XCTest
 class BinderTests: XCTestCase {
     let binder = TestBinder()
 
+    func testTooFewArgsError() {
+        binder.bind(binder.target.ternaryWithReturn, as: "")
+        XCTAssertThrowsError(try binder.callable([1, 2])) { error in
+            guard let paramError = error as? ParameterError else {
+                return XCTFail("Expected argument count error, not \(error)")
+            }
+            XCTAssertEqual(paramError, .argumentCount(expected: 3, actual: 2))
+        }
+        XCTAssertFalse(binder.target.called)
+    }
+
+    func testTooManyArgsError() {
+        binder.bind(binder.target.nullaryNoReturn, as: "")
+        XCTAssertThrowsError(try binder.callable([1, 2, 3, 4, 5])) { error in
+            guard let paramError = error as? ParameterError else {
+                return XCTFail("Expected argument count error, not \(error)")
+            }
+            XCTAssertEqual(paramError, .argumentCount(expected: 0, actual: 5))
+        }
+        XCTAssertFalse(binder.target.called)
+    }
+
     func testBindNullaryNoReturn() {
         binder.bind(binder.target.nullaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [])
+        _ = try? binder.callable([])
         XCTAssert(binder.target.called)
     }
 
     func testBindNullaryNoReturnThrows() {
         binder.bind(binder.target.nullaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssertThrowsError(try binder.callable([]))
         XCTAssert(binder.target.called)
     }
 
     func testBindNullaryWithReturn() {
         binder.bind(binder.target.nullaryWithReturn, as: "")
-        let value = try? binder.callable?.call(args: []) as? String
+        let value = try? binder.callable([]) as? String
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some("value"))
     }
 
     func testBindNullaryWithReturnThrows() {
         binder.bind(binder.target.nullaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: []))
+        XCTAssertThrowsError(try binder.callable([]))
         XCTAssert(binder.target.called)
     }
 
     func testBindUnaryNoReturn() {
         binder.bind(binder.target.unaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [42])
+        _ = try? binder.callable([42])
         XCTAssert(binder.target.called)
     }
 
     func testBindUnaryNoReturnThrows() {
         binder.bind(binder.target.unaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42]))
+        XCTAssertThrowsError(try binder.callable([42]))
         XCTAssert(binder.target.called)
     }
 
     func testBindUnaryWithReturn() throws {
         binder.bind(binder.target.unaryWithReturn, as: "")
-        let value = try binder.callable?.call(args: [42]) as? Int
+        let value = try binder.callable([42]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(42))
     }
 
     func testBindUnaryWithReturnThrows() throws {
         binder.bind(binder.target.unaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42]))
+        XCTAssertThrowsError(try binder.callable([42]))
         XCTAssert(binder.target.called)
     }
 
@@ -74,7 +96,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [make_callable(callback)])
+        _ = try? binder.callable([callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
@@ -86,7 +108,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -99,7 +121,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [make_callable(callback)])
+        _ = try? binder.callable([callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(79))
@@ -111,33 +133,33 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
 
     func testBindBinaryNoReturn() {
         binder.bind(binder.target.binaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [42, 37])
+        _ = try? binder.callable([42, 37])
         XCTAssert(binder.target.called)
     }
 
     func testBindBinaryNoReturnThrows() {
         binder.bind(binder.target.binaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37]))
+        XCTAssertThrowsError(try binder.callable([42, 37]))
         XCTAssert(binder.target.called)
     }
 
     func testBindBinaryWithReturn() throws {
         binder.bind(binder.target.binaryWithReturn, as: "")
-        let value = try binder.callable?.call(args: [42, 37]) as? Int
+        let value = try binder.callable([42, 37]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(79))
     }
 
     func testBindBinaryWithReturnThrows() throws {
         binder.bind(binder.target.binaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37]))
+        XCTAssertThrowsError(try binder.callable([42, 37]))
         XCTAssert(binder.target.called)
     }
 
@@ -149,7 +171,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        _ = try? binder.callable([42, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
@@ -161,7 +183,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -174,7 +196,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        _ = try? binder.callable([42, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(79))
@@ -186,33 +208,33 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
 
     func testBindTernaryNoReturn() {
         binder.bind(binder.target.ternaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [42, 37, 13])
+        _ = try? binder.callable([42, 37, 13])
         XCTAssert(binder.target.called)
     }
 
     func testBindTernaryNoReturnThrows() {
         binder.bind(binder.target.ternaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13]))
         XCTAssert(binder.target.called)
     }
 
     func testBindTernaryWithReturn() throws {
         binder.bind(binder.target.ternaryWithReturn, as: "")
-        let value = try binder.callable?.call(args: [42, 37, 13]) as? Int
+        let value = try binder.callable([42, 37, 13]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(92))
     }
 
     func testBindTernaryWithReturnThrows() throws {
         binder.bind(binder.target.ternaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13]))
         XCTAssert(binder.target.called)
     }
 
@@ -224,7 +246,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        _ = try? binder.callable([42, 37, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(79))
@@ -236,7 +258,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -249,7 +271,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        _ = try? binder.callable([42, 37, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(79))
@@ -261,33 +283,33 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
 
     func testBindQuaternaryNoReturn() {
         binder.bind(binder.target.quaternaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [42, 37, 13, 7])
+        _ = try? binder.callable([42, 37, 13, 7])
         XCTAssert(binder.target.called)
     }
 
     func testBindQuaternaryNoReturnThrows() {
         binder.bind(binder.target.quaternaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7]))
         XCTAssert(binder.target.called)
     }
 
     func testBindQuaternaryWithReturn() throws {
         binder.bind(binder.target.quaternaryWithReturn, as: "")
-        let value = try binder.callable?.call(args: [42, 37, 13, 7]) as? Int
+        let value = try binder.callable([42, 37, 13, 7]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(99))
     }
 
     func testBindQuaternaryWithReturnThrows() throws {
         binder.bind(binder.target.quaternaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7]))
         XCTAssert(binder.target.called)
     }
 
@@ -299,7 +321,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        _ = try? binder.callable([42, 37, 13, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(92))
@@ -311,7 +333,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -324,7 +346,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        _ = try? binder.callable([42, 37, 13, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(92))
@@ -336,33 +358,33 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
 
     func testBindQuinaryNoReturn() {
         binder.bind(binder.target.quinaryNoReturn, as: "")
-        _ = try? binder.callable?.call(args: [42, 37, 13, 7, 1])
+        _ = try? binder.callable([42, 37, 13, 7, 1])
         XCTAssert(binder.target.called)
     }
 
     func testBindQuinaryNoReturnThrows() {
         binder.bind(binder.target.quinaryNoReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7, 1]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7, 1]))
         XCTAssert(binder.target.called)
     }
 
     func testBindQuinaryWithReturn() throws {
         binder.bind(binder.target.quinaryWithReturn, as: "")
-        let value = try binder.callable?.call(args: [42, 37, 13, 7, 1]) as? Int
+        let value = try binder.callable([42, 37, 13, 7, 1]) as? Int
         XCTAssert(binder.target.called)
         XCTAssertEqual(value, .some(100))
     }
 
     func testBindQuinaryWithReturnThrows() throws {
         binder.bind(binder.target.quinaryWithReturnThrows, as: "")
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7, 1]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7, 1]))
         XCTAssert(binder.target.called)
     }
 
@@ -374,7 +396,7 @@ class BinderTests: XCTestCase {
             result = value
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        _ = try? binder.callable([42, 37, 13, 7, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(99))
@@ -386,7 +408,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.UnaryCallback = { value in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -399,7 +421,7 @@ class BinderTests: XCTestCase {
             result = value1 + value2
             expecter.fulfill()
         }
-        _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        _ = try? binder.callable([42, 37, 13, 7, callback])
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(99))
@@ -411,7 +433,7 @@ class BinderTests: XCTestCase {
         let callback: BindTarget.BinaryCallback = { value1, value2 in
             expecter.fulfill()
         }
-        XCTAssertThrowsError(try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]))
+        XCTAssertThrowsError(try binder.callable([42, 37, 13, 7, callback]))
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
     }
@@ -658,9 +680,40 @@ class TestBinder: CallableBinder {
 
     init() {}
 
-    func bind(_ callable: Callable, as name: String) {
+    func bindCallable(_ name: String, to callable: @escaping Callable) {
         self.callable = callable
     }
 
-    public var callable: Callable?
+    func decode<T: Decodable>(_ value: Any?, as type: T.Type) -> Result<T, Error> {
+        switch value {
+        case let result as T:
+            return .success(result)
+        default:
+            return .failure(DecodeError())
+        }
+    }
+
+    func encode<T: Encodable>(_ value: T) -> Result<Any?, Error> {
+        return .success(value)
+    }
+
+    func callback<T: Encodable>(from value: Any?, taking argType: T.Type) -> Result<(T) -> Void, Error> {
+        switch value {
+        case let fn as (T) -> Void:
+            return .success(fn)
+        default:
+            return .failure(DecodeError())
+        }
+    }
+
+    func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
+        switch value {
+        case let fn as (T, U) -> Void:
+            return .success(fn)
+        default:
+            return .failure(DecodeError())
+        }
+    }
+
+    public var callable: Callable!
 }

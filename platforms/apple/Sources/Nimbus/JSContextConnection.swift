@@ -36,34 +36,71 @@ public class JSContextConnection: Connection, CallableBinder {
 
      Bind the callable in the namespace as the name.
      */
-    public func bind(_ callable: Callable, as name: String) {
-        guard let context = self.context else {
-            return
-        }
+    func bindCallable(_ name: String, to callable: @escaping Callable) {
         let binding: @convention(block) () -> Any? = {
             let args: [Any] = JSContext.currentArguments() ?? []
-            let mappedArgs = args.map { arg -> Any in
-                if let jsArg = arg as? JSValue, jsArg.isFunction() {
-                    return JSValueCallback(callback: jsArg)
-                }
-                return arg
-            }
             do {
                 var resultArguments: [Any] = []
-                let rawResult = try callable.call(args: mappedArgs)
-                if type(of: rawResult) as? Encodable.Type != nil {
-                    let encodableResult = rawResult as! Encodable // swiftlint:disable:this force_cast
-                    resultArguments.append(try encodableResult.toJSValue(context: context))
-                } else if type(of: rawResult) != Void.self {
+                let rawResult = try callable(args)
+                switch rawResult {
+                case let value as JSValue:
+                    resultArguments = [value]
+                case is Void:
+                    break
+                default:
                     throw ParameterError.conversion
                 }
                 return self.promiseGlobal?.invokeMethod("resolve", withArguments: resultArguments)
             } catch {
+                // TODO: pass the error
                 return self.promiseGlobal?.invokeMethod("reject", withArguments: [])
             }
         }
 
         connectionValue?.setObject(binding, forKeyedSubscript: name)
+    }
+
+    func decode<T: Decodable>(_ value: Any?, as type: T.Type) -> Result<T, Error> {
+        guard let value = value as? JSValue else {
+            return .failure(DecodeError())
+        }
+        return Result {
+            try JSValueDecoder().decode(type, from: value)
+        }
+    }
+
+    func encode<T: Encodable>(_ value: T) -> Result<Any?, Error> {
+        guard let context = self.context else {
+            return .failure(EncodeError())
+        }
+        return Result {
+            try JSValueEncoder().encode(value, context: context)
+        }
+    }
+
+    func callback<T: Encodable>(from value: Any?, taking argType: T.Type) -> Result<(T) -> Void, Error> {
+        guard let callbackFunction = value as? JSValue else {
+            return .failure(DecodeError())
+        }
+        let callback = JSValueCallback(callback: callbackFunction)
+        return .success({ [weak self] (value: T) in
+            guard let self = self else { return } // TODO: throw
+            guard let result = try? self.encode(value).get() as Any else { return }
+            try? callback.call(args: [result])
+        })
+    }
+
+    func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
+        guard let callbackFunction = value as? JSValue else {
+            return .failure(DecodeError())
+        }
+        let callback = JSValueCallback(callback: callbackFunction)
+        return .success({ [weak self] (arg0: T, arg1: U) in
+            guard let self = self else { return } // TODO: throw
+            guard let result0 = try? self.encode(arg0).get() as Any else { return }
+            guard let result1 = try? self.encode(arg1).get() as Any else { return }
+            try? callback.call(args: [result0, result1])
+        })
     }
 
     /**
