@@ -7,8 +7,10 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.DOUBLE
 import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MAP
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.SHORT
@@ -43,9 +45,14 @@ fun TypeName.toKotlinTypeName(nullable: Boolean = false): TypeName {
                 "Double" -> DOUBLE
                 else -> this
             }
+            "java.util" -> when (simpleName) {
+                "List" -> LIST
+                "Map" -> MAP
+                else -> this
+            }
             else -> this
         }
-        is ParameterizedTypeName -> rawType.parameterizedBy(typeArguments.map { it.toKotlinTypeName() })
+        is ParameterizedTypeName -> (rawType.toKotlinTypeName(nullable) as ClassName).parameterizedBy(typeArguments.map { it.toKotlinTypeName() })
         is LambdaTypeName -> LambdaTypeName.get(
             receiver?.toKotlinTypeName(),
             parameters.map { it.toBuilder(type = it.type.toKotlinTypeName()).build() },
@@ -122,3 +129,19 @@ fun KmTypeProjection?.isNullable(): Boolean = this?.type.isNullable()
  * Convenience function to toggle the nullability of a [TypeName]
  */
 fun TypeName.nullable(nullable: Boolean) = copy(nullable = nullable)
+
+/**
+ * Convenience function to get the type arguments for a [TypeMirror]
+ */
+fun TypeMirror.typeArguments(): List<TypeName> = asKotlinTypeName().typeArguments()
+
+/**
+ * Convenience function to get the type arguments for a [TypeName].
+ */
+fun TypeName.typeArguments(): List<TypeName> {
+    return if (this is ParameterizedTypeName) {
+        typeArguments
+    } else {
+        emptyList()
+    }
+}

@@ -3,20 +3,14 @@ package com.salesforce.nimbus.compiler
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.PluginOptions
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import kotlinx.metadata.KmFunction
-import kotlinx.metadata.KmType
-import kotlinx.metadata.KmValueParameter
 import kotlinx.metadata.jvm.KotlinClassHeader
 import kotlinx.metadata.jvm.KotlinClassMetadata
 import kotlinx.serialization.Serializable
@@ -29,10 +23,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
-import javax.lang.model.element.VariableElement
-import javax.lang.model.type.DeclaredType
-import javax.lang.model.type.TypeKind
-import javax.lang.model.type.WildcardType
+import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
@@ -45,6 +36,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     private lateinit var messager: Messager
     private lateinit var types: Types
+    private var serializableElements: Set<Element> = emptySet()
 
     /**
      * The [ClassName] of the javascript engine that the Binder class will target
@@ -55,11 +47,6 @@ abstract class BinderGenerator : AbstractProcessor() {
      * The [ClassName] of the serialized output type the javascript engine expects
      */
     abstract val serializedOutputType: ClassName
-
-    /**
-     * The [ClassName] of the annotation for which each bound method will be annotated with
-     */
-    abstract val functionAnnotationClassName: ClassName?
 
     override fun init(processingEnvironment: ProcessingEnvironment) {
         super.init(processingEnvironment)
@@ -77,7 +64,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             val pluginElements = env.getElementsAnnotatedWith(PluginOptions::class.java)
 
             // get all serializable elements
-            val serializableElements = env.getElementsAnnotatedWith(Serializable::class.java)
+            serializableElements = env.getElementsAnnotatedWith(Serializable::class.java)
 
             // find any duplicate plugin names
             val duplicates =
@@ -166,6 +153,13 @@ abstract class BinderGenerator : AbstractProcessor() {
         val runtimeClassName =
             ClassName(nimbusPackage, "Runtime").parameterizedBy(javascriptEngine, serializedOutputType)
 
+        // get all methods annotated with BoundMethod
+        val boundMethodElements = pluginElement.enclosedElements
+            .filter {
+                it.kind == ElementKind.METHOD && it.getAnnotation(BoundMethod::class.java) != null
+            }
+            .map { it as ExecutableElement }
+
         // the binder needs to capture the bound target to pass through calls to it
         val type = TypeSpec.classBuilder(binderTypeName)
 
@@ -218,6 +212,9 @@ abstract class BinderGenerator : AbstractProcessor() {
                     .build()
             )
 
+            // allow subclasses to process properties
+            .also(::processClassProperties)
+
             // add a getter for the plugin (implement Binder.getPlugin())
             .addFunction(
                 FunSpec.builder("getPlugin")
@@ -243,6 +240,9 @@ abstract class BinderGenerator : AbstractProcessor() {
                     .addModifiers(KModifier.OVERRIDE)
                     .addParameter("runtime", runtimeClassName)
                     .addStatement("this.%N = %N", "runtime", "runtime")
+
+                    // allow subclasses to process bind function
+                    .also { processBindFunction(boundMethodElements, it) }
                     .build()
             )
 
@@ -256,14 +256,8 @@ abstract class BinderGenerator : AbstractProcessor() {
                     .build()
             )
 
-        // get all methods annotated with BoundMethod
-        val boundMethodElements = pluginElement.enclosedElements.filter {
-            it.kind == ElementKind.METHOD && it.getAnnotation(BoundMethod::class.java) != null
-        }
-
         // loop through each bound function to generate a binder function
         boundMethodElements
-            .map { it as ExecutableElement }
 
             // process the function to create a FunSpec
             .map { functionElement ->
@@ -280,539 +274,59 @@ abstract class BinderGenerator : AbstractProcessor() {
         return type.build()
     }
 
-    private fun processFunctionElement(
+    protected open fun processClassProperties(builder: TypeSpec.Builder) {
+        /* leave for subclasses to override */
+    }
+
+    protected open fun processBindFunction(boundMethodElements: List<ExecutableElement>, builder: FunSpec.Builder) {
+        /* leave for subclasses to override */
+    }
+
+    abstract fun processFunctionElement(
         functionElement: ExecutableElement,
         serializableElements: Set<Element>,
         kotlinFunction: KmFunction?
-    ): FunSpec {
-        val functionName = functionElement.simpleName.toString()
+    ): FunSpec
 
-        // try to find the fun from the kotlin class metadata to see if the
-        // return type is nullable
-        val kotlinReturnType = kotlinFunction?.returnType
-
-        // create the binder function
-        val funSpec = FunSpec.builder(functionName).apply {
-
-            // annotate the function if necessary
-            functionAnnotationClassName?.let { annotationClassName ->
-                addAnnotation(annotationClassName)
-            }
-        }
-
-        val funArgs = mutableListOf<String>()
-        functionElement.parameters.forEachIndexed { argIndex, parameter ->
-
-            // try to get the value parameter from the kotlin class metadata
-            // to determine if it is nullable
-            val kotlinParameter = kotlinFunction?.valueParameters?.get(argIndex)
-
-            // check if param needs conversion
-            when (parameter.asType().kind) {
-                TypeKind.BOOLEAN,
-                TypeKind.INT,
-                TypeKind.DOUBLE,
-                TypeKind.FLOAT,
-                TypeKind.LONG -> {
-                    processPrimitiveParameter(parameter, kotlinParameter, funSpec)
-                }
-                TypeKind.DECLARED -> {
-                    val declaredType = parameter.asType() as DeclaredType
-                    val parameterType = declaredType.toString()
-
-                    when {
-
-                        // map a java or kotlin string to a kotlin string
-                        parameterType in listOf("java.lang.String", "kotlin.String") -> {
-                            processStringParameter(parameter, kotlinParameter, funSpec)
-                        }
-                        parameterType.startsWith("kotlin.jvm.functions.Function") -> {
-                            val functionParameterReturnType = declaredType.typeArguments.last()
-
-                            // throw a compiler error if the callback does not return void
-                            if ((functionParameterReturnType.asKotlinTypeName() as ClassName).simpleName != "Unit") {
-                                error(
-                                    functionElement,
-                                    "Only a Unit (Void) return type in callbacks is supported."
-                                )
-                            } else {
-                                processFunctionParameter(
-                                    declaredType,
-                                    serializableElements,
-                                    parameter,
-                                    kotlinParameter,
-                                    funSpec
-                                )
-                            }
-                        }
-                        parameterType.startsWith("java.util.ArrayList") -> {
-                            processArrayListParameter(
-                                declaredType,
-                                parameter,
-                                kotlinParameter,
-                                funSpec
-                            )
-                        }
-                        parameterType.startsWith("java.util.HashMap") -> {
-                            processHashMapParameter(
-                                declaredType,
-                                parameter,
-                                kotlinParameter,
-                                funSpec
-                            )
-                        }
-                        else -> {
-                            processOtherDeclaredParameter(
-                                declaredType,
-                                serializableElements,
-                                parameter,
-                                kotlinParameter,
-                                funSpec
-                            )
-                        }
-                    }
-                }
-
-                // unsupported kind
-                else -> {
-                    error(
-                        functionElement,
-                        "${parameter.asKotlinTypeName()} is an unsupported parameter type."
-                    )
-                }
-            }
-
-            // add parameter to list of function args for later
-            funArgs.add(parameter.getName())
-        }
-
-        // JSON Encode the return value if necessary
-        val argsString = funArgs.joinToString(", ")
-        val returnType = functionElement.returnType
-        when (returnType.kind) {
-            TypeKind.VOID -> {
-                processVoidReturnType(functionElement, argsString, kotlinReturnType, funSpec)
-            }
-            TypeKind.DECLARED -> {
-                when {
-                    returnType.toString() in listOf("java.lang.String", "kotlin.String") -> {
-                        processStringReturnType(
-                            functionElement,
-                            argsString,
-                            kotlinReturnType,
-                            funSpec
-                        )
-                    }
-                    else -> {
-                        processOtherDeclaredReturnType(
-                            functionElement,
-                            serializableElements,
-                            argsString,
-                            kotlinReturnType,
-                            funSpec
-                        )
-                    }
-                }
-            }
-            else -> {
-                // TODO: we should whitelist types we know work rather than just hoping for the best
-                funSpec.addStatement(
-                    "return target.%N($argsString)",
-                    functionElement.simpleName.toString()
-                )
-            }
-        }
-
-        return funSpec.build()
-    }
-
-    protected open fun processPrimitiveParameter(
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-        funSpec.addParameter(
-            parameter.getName(),
-            parameter.asKotlinTypeName(nullable = kotlinParameter.isNullable())
-        )
-    }
-
-    protected open fun processStringParameter(
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-        funSpec.addParameter(
-            parameter.getName(),
-            String::class.asClassName().copy(nullable = kotlinParameter.isNullable())
-        )
-    }
-
-    protected open fun processFunctionParameter(
-        declaredType: DeclaredType,
-        serializableElements: Set<Element>,
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-
-        // try to get the parameter type from the kotlin class
-        // metadata to determine if it is nullable
-        val kotlinParameterType = kotlinParameter?.type
-
-        // add a String parameter <parameter>Id
-        funSpec.addParameter(
-            "${parameter.getName()}Id",
-            String::class
-        )
-
-        // create the callback function body
-        val invoke = CodeBlock.builder()
-        val argBlock = CodeBlock.builder()
-            .add(
-                "val args = arrayOf<%T>(\n",
-                ClassName(
-                    nimbusPackage,
-                    "JavascriptSerializable"
-                ).parameterizedBy(serializedOutputType).nullable(true)
-            )
-            .indent()
-            .add(
-                "%T(%NId),\n",
-                ClassName(
-                    nimbusPackage,
-                    "PrimitiveJSONSerializable"
-                ),
-                parameter.simpleName
-            )
-
-        // loop through each argument (except for last)
-        // and add to the array created above
-        declaredType.typeArguments.dropLast(1).forEachIndexed { index, parameterType ->
-
-            // try to get the type from the kotlin class metadata
-            // to determine if it is nullable
-            val kotlinType = kotlinParameterType?.arguments?.get(index)
-            val kotlinTypeNullable = kotlinType.isNullable()
-
-            // function to wrap a value in a PrimitiveJSONSerializable if needed
-            val wrapValueInPrimitiveJSONSerializable = {
-                argBlock.add(
-                    if (kotlinTypeNullable) {
-                        "arg$index?.let { %T(arg$index) }"
-                    } else {
-                        "%T(arg$index)"
-                    },
-                    ClassName(
-                        nimbusPackage,
-                        "PrimitiveJSONSerializable"
-                    )
-                )
-            }
-
-            if (parameterType.kind == TypeKind.WILDCARD) {
-                val wild = parameterType as WildcardType
-                val supertypes =
-                    processingEnv.typeUtils.directSupertypes(
-                        wild.superBound
-                    )
-
-                when {
-
-                    // if the parameter implements JSONSerializable we are good
-                    supertypes.any { it.toString() == "$nimbusPackage.JSONSerializable" } -> {
-                        argBlock.add("arg$index")
-                    }
-
-                    // if the parameter is serializable then wrap it in a KotlinJSONSerializable
-                    serializableElements.map { it.asRawTypeName() }.any {
-                        it == parameterType.superBound.asRawTypeName(
-                            kotlinTypeNullable
-                        )
-                    } -> {
-                        argBlock.add(
-                            if (kotlinTypeNullable) {
-                                "arg$index?.let { %T(arg$index, %T.serializer()) }"
-                            } else {
-                                "%T(arg$index, %T.serializer())"
-                            },
-                            ClassName(
-                                nimbusPackage,
-                                "KotlinJSONSerializable"
-                            ),
-                            parameterType.superBound.asRawTypeName()
-                        )
-                    }
-                    else -> {
-
-                        // if it does not then we nee to wrap it in a PrimitiveJSONSerializable
-                        wrapValueInPrimitiveJSONSerializable()
-                    }
-                }
-            } else {
-                wrapValueInPrimitiveJSONSerializable()
-            }
-
-            // add another element to the array
-            if (index < declaredType.typeArguments.size - 2) {
-                argBlock.add(",")
-            }
-
-            argBlock.add("\n")
-        }
-
-        // finish (close) the array
-        argBlock.unindent().add(")\n")
-
-        // add the arg block to the invoke function
-        invoke.add(argBlock.build())
-
-        // add a statement to invoke runtime
-        invoke.add(
-            CodeBlock.builder()
-                .addStatement(
-                    "runtime?.invoke(%S, %N, null)",
-                    "__nimbus.callCallback",
-                    "args"
-                )
-                .build()
-        )
-
-        // get the type args for the lambda function
-        val lambdaTypeArgs =
-            declaredType.typeArguments.mapIndexed { index, type ->
-                val kotlinType = kotlinParameterType?.arguments?.get(index)
-                val typeIsNullable = kotlinType.isNullable()
-                if (type.kind == TypeKind.WILDCARD) {
-                    val wild = type as WildcardType
-                    wild.superBound.asKotlinTypeName(nullable = typeIsNullable)
-                } else {
-                    type.asKotlinTypeName(nullable = typeIsNullable)
-                }
-            }
-
-        val lambdaType = LambdaTypeName.get(
-            null,
-            parameters = *lambdaTypeArgs.dropLast(1).toTypedArray(),
-            returnType = lambdaTypeArgs.last()
-        )
-        val lambda = CodeBlock.builder()
-            .add(
-                "val %N: %T = { ${declaredType.typeArguments.dropLast(
-                    1
-                ).mapIndexed { index, _ -> "arg$index" }.joinToString(
-                    separator = ", "
-                )} ->",
-                parameter.simpleName,
-                lambdaType
-            )
-            .add("\n")
-            .indent()
-            .add("%L", invoke.build())
-            .unindent()
-            .add("}")
-            .add("\n")
-
-        funSpec.addCode(lambda.build())
-    }
-
-    protected open fun processArrayListParameter(
-        declaredType: DeclaredType,
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-        val parameterNullable = kotlinParameter?.type?.arguments?.firstOrNull().isNullable()
-        funSpec.addParameter(
-            parameter.simpleName.toString() + "String",
-            String::class
-        )
-        funSpec.addStatement(
-            "val %N = %T<%T>(%NString)",
-            parameter.simpleName,
-            ClassName(nimbusPackage, "arrayFromJSON"),
-            declaredType.typeArguments.first().asKotlinTypeName(nullable = parameterNullable),
-            parameter.simpleName
-        )
-    }
-
-    protected open fun processHashMapParameter(
-        declaredType: DeclaredType,
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-        val firstParameterNullable = kotlinParameter?.type?.arguments?.get(0).isNullable()
-        val secondParameterNullable = kotlinParameter?.type?.arguments?.get(1).isNullable()
-        funSpec.addParameter(
-            parameter.simpleName.toString() + "String",
-            String::class
-        )
-        funSpec.addStatement(
-            "val %N = %T<%T, %T>(%NString)",
-            parameter.simpleName,
-            ClassName(nimbusPackage, "hashMapFromJSON"),
-            declaredType.typeArguments[0].asKotlinTypeName(nullable = firstParameterNullable),
-            declaredType.typeArguments[1].asKotlinTypeName(nullable = secondParameterNullable),
-            parameter.simpleName
-        )
-    }
-
-    protected open fun processOtherDeclaredParameter(
-        declaredType: DeclaredType,
-        serializableElements: Set<Element>,
-        parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
-        funSpec: FunSpec.Builder
-    ) {
-        val supertypes =
-            processingEnv.typeUtils.directSupertypes(declaredType)
-
-        when {
-            supertypes.any { it.toString() == "$nimbusPackage.JSONSerializable" } -> {
-                val companion = processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
-                val hasFromJson = companion?.enclosedElements?.any { it.getName() == "fromJSON" } ?: false
-
-                // convert from json if there is a fromJSON function
-                if (hasFromJson) {
-                    funSpec.addParameter(
-                        "${parameter.getName()}String",
-                        String::class
-                    )
-                    funSpec.addStatement(
-                        "val %N = %T.fromJSON(%NString)",
-                        parameter.simpleName,
-                        parameter.asKotlinTypeName(),
-                        parameter.simpleName
-                    )
-                } else {
-                    error(
-                        parameter,
-                        "Class for parameter ${parameter.simpleName} must have a static fromJSON function."
-                    )
-                }
-            }
-            serializableElements.map { it.asRawTypeName() }.any {
-                it == declaredType.asRawTypeName()
-            } -> {
-                funSpec.addParameter(
-                    "${parameter.getName()}String",
-                    String::class
-                )
-                funSpec.addStatement(
-                    "val %N = %T(%T.Stable).parse(%T.serializer(), %NString)",
-                    parameter.simpleName,
-                    ClassName("kotlinx.serialization.json", "Json"),
-                    ClassName("kotlinx.serialization.json", "JsonConfiguration"),
-                    parameter.asKotlinTypeName(),
-                    parameter.simpleName
-                )
-            }
-        }
-    }
-
-    protected open fun processVoidReturnType(
-        functionElement: ExecutableElement,
-        argsString: String,
-        kotlinReturnType: KmType?,
-        funSpec: FunSpec.Builder
-    ) {
-        funSpec.apply {
-            addStatement(
-                "target.%N($argsString)",
-                functionElement.simpleName.toString()
-            )
-            returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
-        }
-    }
-
-    protected open fun processStringReturnType(
-        functionElement: ExecutableElement,
-        argsString: String,
-        kotlinReturnType: KmType?,
-        funSpec: FunSpec.Builder
-    ) {
-        funSpec.apply {
-            addStatement(
-                "return %T.quote(target.%N($argsString))",
-                ClassName("org.json", "JSONObject"),
-                functionElement.simpleName.toString()
-            )
-            returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
-        }
-    }
-
-    protected open fun processOtherDeclaredReturnType(
-        functionElement: ExecutableElement,
-        serializableElements: Set<Element>,
-        argsString: String,
-        kotlinReturnType: KmType?,
-        funSpec: FunSpec.Builder
-    ) {
-        val supertypes =
-            processingEnv.typeUtils.directSupertypes(functionElement.returnType)
-
-        when {
-
-            // if the parameter implements JSONSerializable we are good
-            supertypes.any { it.toString() == "$nimbusPackage.JSONSerializable" } -> {
-
-                // stringify the return value
-                funSpec.apply {
-                    addStatement(
-                        "val json = target.%N($argsString).stringify()",
-                        functionElement.getName()
-                    )
-                    addStatement("return json")
-                    returns(String::class)
-                }
-            }
-            serializableElements.map { it.asRawTypeName() }.any {
-                it == functionElement.returnType.asRawTypeName()
-            } -> {
-                funSpec.apply {
-                    addStatement(
-                        "val json = %T(%T.Stable).stringify(%T.serializer(), target.%N($argsString))",
-                        ClassName("kotlinx.serialization.json", "Json"),
-                        ClassName("kotlinx.serialization.json", "JsonConfiguration"),
-                        functionElement.returnType,
-                        functionElement.getName()
-                    )
-                    addStatement("return json")
-                    returns(String::class)
-                }
-            }
-            else -> {
-
-                // TODO: should we even allow this? what should the behavior be?
-                // Map to nullable parameters if necessary
-                if (functionElement.returnType.asTypeName() is ParameterizedTypeName) {
-                    val parameterizedReturnType =
-                        functionElement.returnType.asKotlinTypeName() as ParameterizedTypeName
-                    val returnType =
-                        parameterizedReturnType.rawType.parameterizedBy(
-                            parameterizedReturnType.typeArguments.mapIndexed { index, type ->
-                                val nullable = kotlinReturnType?.arguments?.get(index).isNullable()
-                                type.toKotlinTypeName(nullable = nullable)
-                            }
-                        )
-                    funSpec.returns(returnType)
-                } else {
-                    funSpec.returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
-                }
-                funSpec.addStatement(
-                    "return target.%N($argsString)",
-                    functionElement.simpleName.toString()
-                )
-            }
-        }
-    }
-
-    private fun error(element: Element, message: String) {
+    protected fun error(element: Element, message: String) {
         messager.printMessage(
             Diagnostic.Kind.ERROR,
             message,
             element
         )
+    }
+
+    protected fun TypeMirror.isStringType(): Boolean {
+        return toString() in listOf("java.lang.String", "kotlin.String")
+    }
+
+    protected fun TypeMirror.isListType(): Boolean {
+        return toString().startsWith("java.util.List") ||
+            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
+            .any { it.startsWith("java.util.List") }
+    }
+
+    protected fun TypeMirror.isMapType(): Boolean {
+        return toString().startsWith("java.util.Map") ||
+            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
+                .any { it.startsWith("java.util.Map") }
+    }
+
+    protected fun TypeMirror.isJSONSerializableType(): Boolean {
+        return toString().startsWith("$nimbusPackage.JSONSerializable") ||
+            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
+                .any { it.startsWith("$nimbusPackage.JSONSerializable") }
+    }
+
+    protected fun TypeMirror.isKotlinSerializableType(): Boolean {
+        return serializableElements.map { it.asRawTypeName() }.any { it == asRawTypeName() }
+    }
+
+    protected fun TypeMirror.isFunctionType(): Boolean {
+        return toString().startsWith("kotlin.jvm.functions.Function")
+    }
+
+    protected fun TypeMirror.isUnitType(): Boolean {
+        return (asKotlinTypeName() as ClassName).simpleName == "Unit"
     }
 }
