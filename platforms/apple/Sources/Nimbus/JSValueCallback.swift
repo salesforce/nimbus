@@ -10,10 +10,16 @@ import Foundation
 import JavaScriptCore
 
 /**
-
+ An error describing a failure in a `JSValueCallback`
  */
 enum JSValueCallbackError: Error {
+    /**
+     The context attached to the callback `JSValue` function was nil
+     */
     case invalidContext
+    /**
+     Invoking the `JSValue` returned nil, indicating the javascript object was not a valid function
+     */
     case invalidCallback
 }
 
