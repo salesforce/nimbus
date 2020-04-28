@@ -179,7 +179,6 @@ class V8ObjectDecoder(
         index: Int,
         deserializer: DeserializationStrategy<T?>
     ): T? {
-        currentNode.deferredKey = descriptor.getElementName(index)
         return decodeNullableSerializableValue(deserializer)
     }
 
@@ -188,7 +187,6 @@ class V8ObjectDecoder(
         index: Int,
         deserializer: DeserializationStrategy<T>
     ): T {
-        currentNode.deferredKey = descriptor.getElementName(index)
         return decodeSerializableValue(deserializer)
     }
 
@@ -236,8 +234,8 @@ class V8ObjectDecoder(
         }
 
         open fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-            val key = descriptor.getElementName(position++)
-            return if (key in v8Object) {
+            deferredKey = descriptor.getElementName(position++)
+            return if (deferredKey in v8Object) {
                 position - 1 // index
             } else {
                 CompositeDecoder.UNKNOWN_NAME
@@ -270,8 +268,7 @@ class V8ObjectDecoder(
             InputNode(v8Array.keys.size, v8Array)
 
         class MapInputNode(
-            val v8Array: V8Array,
-            var currentKey: String? = null
+            val v8Array: V8Array
         ) : InputNode(v8Array.keys.size * 2, v8Array) {
 
             override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
@@ -279,20 +276,33 @@ class V8ObjectDecoder(
                 return position - 1 // index
             }
 
+            @Suppress("UNCHECKED_CAST")
             override fun <T : Any> handleValue(kClass: KClass<T>): T? {
-                @Suppress("UNCHECKED_CAST")
-                return when (kClass) {
-                    String::class -> {
-                        val pos = position - 1
+                val pos = position - 1
+                val key = deferredKey
 
-                        // if divisible by two this is the key
-                        return if (pos.rem(2) == 0) {
-                            v8Array.keys[pos / 2].also { currentKey = it }
-                        } else {
-                            v8Array.getString(currentKey)
+                // if divisible by two this is the key
+                return when {
+                    pos.rem(2) == 0 -> {
+                        v8Array.keys[pos / 2].also { deferredKey = it } as T
+                    }
+                    key != null -> {
+                        when (kClass) {
+                            Byte::class -> v8Object.getInteger(key).toByte()
+                            Short::class -> v8Object.getInteger(key).toShort()
+                            Char::class -> v8Object.getInteger(key).toChar()
+                            Int::class -> v8Object.getInteger(key)
+                            Long::class -> v8Object.getDouble(key).toLong()
+                            Float::class -> v8Object.getDouble(key).toFloat()
+                            Double::class -> v8Object.getDouble(key)
+                            String::class -> v8Object.getString(key)
+                            Boolean::class -> v8Object.getBoolean(key)
+                            Enum::class -> v8Object.getString(key)
+                            else -> throw invalidValueTypeDecodingException(kClass)
                         } as T
                     }
-                    else -> super.handleValue(kClass)
+                    else -> throw V8DecodingException("Unexpected state, key is null while " +
+                        "decoding value of class type ${kClass.simpleName}")
                 }
             }
         }

@@ -186,13 +186,13 @@ class V8BinderGenerator : BinderGenerator() {
                         }
                         declaredType.isListType() -> processListParameter(declaredType, parameter, kotlinParameter, parameterIndex)
                         declaredType.isMapType() -> {
-                            val parameterValueType = declaredType.typeArguments[1]
+                            val parameterKeyType = declaredType.typeArguments[0]
 
                             // Currently only string key types are supported
-                            if (!parameterValueType.isStringType()) {
+                            if (!parameterKeyType.isStringType()) {
                                 error(
                                     functionElement,
-                                    "${parameterValueType.asKotlinTypeName()} is an unsupported " +
+                                    "${parameterKeyType.asKotlinTypeName()} is an unsupported " +
                                         "value type for Map. Currently only String is supported."
                                 )
                                 return@forEachIndexed

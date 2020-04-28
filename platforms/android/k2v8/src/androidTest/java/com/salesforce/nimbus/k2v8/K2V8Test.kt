@@ -569,7 +569,7 @@ class K2V8Test {
     }
 
     @Test
-    fun stringKeyedMapFromV8() {
+    fun stringKeyedMapFromV8() = v8.scope {
         forAll(100, Gen.map(Gen.string(), Gen.string())) { map ->
             val array = map.toV8Array(v8)
             with(k2V8.fromV8(MapSerializer(String.serializer(), String.serializer()), array)) {
@@ -579,7 +579,87 @@ class K2V8Test {
     }
 
     @Test
-    fun enumKeyedMapToV8() {
+    fun stringKeyedIntValueMapToV8() = v8.scope {
+        forAll(100, Gen.map(Gen.string(), Gen.int())) { map ->
+            with(
+                k2V8.toV8(
+                    MapSerializer(String.serializer(), Int.serializer()),
+                    map
+                ) as V8Array
+            ) {
+                map.valueForKey { getInteger(it) }
+            }
+        }
+    }
+
+    @Test
+    fun stringKeyedIntValueMapFromV8() = v8.scope {
+        forAll(100, Gen.map(Gen.string(), Gen.int())) { map ->
+            val array = map.toV8Array(v8)
+            with(k2V8.fromV8(MapSerializer(String.serializer(), Int.serializer()), array)) {
+                map.valueForKey { get(it) }
+            }
+        }
+    }
+
+    @Test
+    fun stringKeyedDoubleValueMapToV8() = v8.scope {
+        forAll(100, Gen.map(Gen.string(), Gen.double())) { map ->
+            with(
+                k2V8.toV8(
+                    MapSerializer(String.serializer(), Double.serializer()),
+                    map
+                ) as V8Array
+            ) {
+                map.valueForKey { getDouble(it) }
+            }
+        }
+    }
+
+    @Test
+    fun stringKeyedDoubleValueMapFromV8() = v8.scope {
+        forAll(100, Gen.map(Gen.string(), Gen.double())) { map ->
+            val array = map.toV8Array(v8)
+            with(k2V8.fromV8(MapSerializer(String.serializer(), Double.serializer()), array)) {
+                map.valueForKey { get(it) }
+            }
+        }
+    }
+
+    @Test
+    fun stringKeyedSerializableValueMapToV8() = v8.scope {
+        forAll(5, Gen.map(Gen.string(), Gen.string())) { stringMap ->
+            val map = stringMap.mapValues { (_, value) ->
+                NestedObject(value) }
+            with(
+                k2V8.toV8(
+                    MapSerializer(String.serializer(), NestedObject.serializer()),
+                    map
+                ) as V8Array
+            ) {
+                map.valueForKey {
+                    NestedObject(getObject(it).getString("value"))
+                }
+            }
+        }
+    }
+
+    @Test
+    fun stringKeyedSerializableValueMapFromV8() = v8.scope {
+        forAll(100, Gen.map(Gen.string(), Gen.string())) { map ->
+            val array = map.mapValues { (_, value) ->
+                V8Object(v8).also {
+                    it.add("value", value)
+                }
+            }.toV8Array(v8)
+            with(k2V8.fromV8(MapSerializer(String.serializer(), NestedObject.serializer()), array)) {
+                map.valueForKey { get(it)!!.value }
+            }
+        }
+    }
+
+    @Test
+    fun enumKeyedMapToV8() = v8.scope {
         forAll(100, Gen.map(Gen.enum<Enum>(), Gen.string())) { map ->
             with(
                 k2V8.toV8(
@@ -593,7 +673,7 @@ class K2V8Test {
     }
 
     @Test
-    fun enumKeyedMapFromV8() {
+    fun enumKeyedMapFromV8() = v8.scope {
         forAll(100, Gen.map(Gen.enum<Enum>(), Gen.string())) { map ->
             val array = V8Array(v8).apply {
                 map.entries.onEach { (key, value) -> add(key.name, value) }

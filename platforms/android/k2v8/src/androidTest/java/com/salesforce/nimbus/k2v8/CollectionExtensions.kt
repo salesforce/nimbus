@@ -9,9 +9,9 @@ internal fun <T, R> List<T>.valueAtIndex(transformValue: (T) -> R, valueForIndex
 }
 
 internal fun <K, V> Map<K, V>.valueForKey(valueForKey: (K) -> V): Boolean {
-    return entries.all { entry -> entry.value == valueForKey(entry.key) }
+    return entries.all { (key, value) -> value == valueForKey(key) }
 }
 
 internal fun <K, V, R> Map<K, V>.valueForKey(transformKey: (K) -> R, valueForKey: (R) -> V): Boolean {
-    return entries.all { entry -> entry.value == valueForKey(transformKey(entry.key)) }
+    return entries.all { (key, value) -> value == valueForKey(transformKey(key)) }
 }

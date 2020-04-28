@@ -105,6 +105,15 @@ class V8Tests {
             return mapOf("key1" to 1.0, "key2" to 2.0, "key3" to 3.0)
         }
 
+        @BoundMethod
+        fun returnsStringSerializableMap(): Map<String, SerializableClass> {
+            return mapOf(
+                "key1" to SerializableClass("1", 1, 1.0),
+                "key2" to SerializableClass("2", 2, 2.0),
+                "key3" to SerializableClass("3", 3, 3.0)
+            )
+        }
+
         // region parameters
 
         @BoundMethod
@@ -149,6 +158,11 @@ class V8Tests {
 
         @BoundMethod
         fun stringStringMapParamReturnsJoinedString(param: Map<String, String>): String {
+            return param.map { "${it.key}, ${it.value}" }.joinToString(separator = ", ")
+        }
+
+        @BoundMethod
+        fun stringSerializableMapParamReturnsJoinedString(param: Map<String, SerializableClass>): String {
             return param.map { "${it.key}, ${it.value}" }.joinToString(separator = ", ")
         }
 
@@ -238,6 +252,17 @@ class V8Tests {
                     "1.0" to 1.0,
                     "2.0" to 2.0,
                     "3.0" to 3.0
+                )
+            )
+        }
+
+        @BoundMethod
+        fun stringSerializableMapCallback(callback: (Map<String, SerializableClass>) -> Unit) {
+            callback(
+                mapOf(
+                    "1" to SerializableClass("1", 1, 1.0),
+                    "2" to SerializableClass("2", 2, 2.0),
+                    "3" to SerializableClass("3", 3, 3.0)
                 )
             )
         }
@@ -484,6 +509,30 @@ class V8Tests {
         assertThat(expectation.passed).isTrue()
     }
 
+    @Test
+    fun returnsStringSerializableMap() = v8.scope {
+        val testScript = """
+            function checkResult(result) {
+                if (result['key1'].string !== '1' ||
+                    result['key1'].integer !== 1 ||
+                    result['key1'].double !== 1.0 ||
+                    result['key2'].string !== '2' ||
+                    result['key2'].integer !== 2 ||
+                    result['key2'].double !== 2.0 ||
+                    result['key3'].string !== '3' ||
+                    result['key3'].integer !== 3 ||
+                    result['key3'].double !== 3.0) {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+            }
+            __nimbus.plugins.test.returnsStringSerializableMap().then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
     // region non-callback parameter types
 
     @Test
@@ -654,6 +703,38 @@ class V8Tests {
             map['key2'] = 'value2';
             map['key3'] = 'value3';
             __nimbus.plugins.test.stringStringMapParamReturnsJoinedString(map).then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
+    @Test
+    fun stringSerializableMapParamReturnsJoinedString() = v8.scope {
+        val testScript = """
+            function checkResult(result) {
+                if (result !== 'key1, string1, 1, 1.0, key2, string2, 2, 2.0, key3, string3, 3, 3.0') {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+            }
+            let map = [];
+            map['key1'] = {
+                string: "string1",
+                integer: 1,
+                double: 1.0
+            };
+            map['key2'] = {
+                string: "string2",
+                integer: 2,
+                double: 2.0
+            };
+            map['key3'] = {
+                string: "string3",
+                integer: 3,
+                double: 3.0
+            };
+            __nimbus.plugins.test.stringSerializableMapParamReturnsJoinedString(map).then(checkResult);
         """.trimIndent()
         v8.executeScript(testScript)
         assertThat(expectation.passed).isTrue()
@@ -910,6 +991,33 @@ class V8Tests {
                 return;
             }
             __nimbus.plugins.test.stringDoubleMapCallback(callbackResult).then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
+    @Test
+    fun stringSerializableMapCallback() = v8.scope {
+        val testScript = """
+            function checkResult() {
+            }
+            function callbackResult(result) {
+                if (result['1'].string !== '1' ||
+                    result['1'].integer !== 1 ||
+                    result['1'].double !== 1.0 ||
+                    result['2'].string !== '2' ||
+                    result['2'].integer !== 2 ||
+                    result['2'].double !== 2.0 ||
+                    result['3'].string !== '3' ||
+                    result['3'].integer !== 3 ||
+                    result['3'].double !== 3.0) {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+                return;
+            }
+            __nimbus.plugins.test.stringSerializableMapCallback(callbackResult).then(checkResult);
         """.trimIndent()
         v8.executeScript(testScript)
         assertThat(expectation.passed).isTrue()
