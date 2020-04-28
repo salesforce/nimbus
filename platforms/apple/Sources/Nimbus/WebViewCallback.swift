@@ -35,14 +35,29 @@ class WebViewCallback {
         }
         let formattedJsonArgs = String(format: "[%@]", jsonArgs.joined(separator: ","))
 
-        DispatchQueue.main.async {
-            self.webView?.evaluateJavaScript("""
+        let script: String
+        if #available(iOS 13, macOS 10.15, *) {
+            script = """
             {
                 var jsonArgs = \(formattedJsonArgs);
                 __nimbus.callCallback('\(self.callbackId)', ...jsonArgs);
             }
             null;
-            """)
+            """
+        } else {
+            // on iOS 12 and below, args are wrapped in an `EncodableValue`, so
+            // peek through and get the actual values out of it
+            script = """
+            {
+                var jsonArgs = \(formattedJsonArgs);
+                jsonArgs = jsonArgs.map(v => v.v);
+                __nimbus.callCallback('\(self.callbackId)', ...jsonArgs);
+            }
+            null;
+            """
+        }
+        DispatchQueue.main.async {
+            self.webView?.evaluateJavaScript(script)
         }
         return ()
     }

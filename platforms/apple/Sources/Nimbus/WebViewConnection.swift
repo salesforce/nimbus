@@ -92,9 +92,19 @@ public class WebViewConnection: Connection, CallableBinder {
     }
 
     func encode<T: Encodable>(_ value: T) -> Result<Any?, Error> {
-        Result {
-            let data = try JSONEncoder().encode(value)
-            return String(data: data, encoding: .utf8)
+        if #available(iOS 13, macOS 10.15, *) {
+            // iOS 13+ and macOS 10.15+ handle encoding non-container values at the top-level
+            return Result {
+                let data = try JSONEncoder().encode(value)
+                return String(data: data, encoding: .utf8)
+            }
+        } else {
+            // on iOS 12 and below, we need to wrap the encodable to ensure the top-level is a container
+            let encodableValue: EncodableValue = .value(value)
+            return Result {
+                let data = try JSONEncoder().encode(encodableValue)
+                return String(data: data, encoding: .utf8)
+            }
         }
     }
 
@@ -152,16 +162,30 @@ public class WebViewConnection: Connection, CallableBinder {
     }
 
     private func resolvePromise(promiseId: String, result: Any?) throws {
-        let resultString: String
-        switch result {
-        case is Void:
-            resultString = "undefined"
-        case let value as String:
-            resultString = value
-        default:
-            throw ParameterError.conversion
+        if #available(iOS 13, macOS 10.15, *) {
+            let resultString: String
+            switch result {
+            case is Void:
+                resultString = "undefined"
+            case let value as String:
+                resultString = value
+            default:
+                throw ParameterError.conversion
+            }
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', \(resultString));")
+        } else {
+            // on iOS 12 and below, the string will be an encoded `EncodableValue` so peek through and get just the value
+            let resultString: String
+            switch result {
+            case is Void:
+                resultString = "{v: undefined}"
+            case let value as String:
+                resultString = value
+            default:
+                throw ParameterError.conversion
+            }
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', \(resultString).v);")
         }
-        webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', \(resultString));")
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
