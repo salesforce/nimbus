@@ -25,5 +25,9 @@
         "rollup-plugin-serve": "^0.6.0",
         "rollup-plugin-typescript2": "^0.21.2",
         "typescript": "^3.3.3"
+    },
+    "mocha": {
+        "ui": "bdd",
+        "reporter": "json"
     }
 }

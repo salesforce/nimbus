@@ -32,6 +32,11 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         loadingExpectation = expectation(description: "web view loaded")
         loadingExpectation?.assertForOverFulfill = false
 
+        if let path = Bundle(for: MochaTests.self).url(forResource: "nimbus", withExtension: "js", subdirectory: "iife"),
+            let nimbus = try? String(contentsOf: path) {
+            let userScript = WKUserScript(source: nimbus, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+            webView.configuration.userContentController.addUserScript(userScript)
+        }
         if let url = Bundle(for: InvocationTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
         } else {

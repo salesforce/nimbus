@@ -37,6 +37,7 @@ describe("Callbacks with", () => {
   it("single user defined data type is called", (done) => {
     __nimbus.plugins.callbackTestPlugin.callbackWithSingleParam(
       (param0: MochaMessage) => {
+        console.log("here is a message");
         expect(param0).to.deep.equal({
           intField: 42,
           stringField: "This is a string",
