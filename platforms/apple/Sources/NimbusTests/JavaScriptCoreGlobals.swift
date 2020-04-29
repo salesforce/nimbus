@@ -11,6 +11,8 @@ import Foundation
 
 class JavaScriptCoreGlobalsProvider {
     let context: JSContext
+//    let timeoutQueue: DispatchQueue
+    var callbacks: [String: JSValue] = [:]
 
     init(context: JSContext) {
         self.context = context
@@ -34,14 +36,29 @@ class JavaScriptCoreGlobalsProvider {
 
             let milliseconds = timeout.toInt32()
             let dispatchTime = DispatchTimeInterval.milliseconds(Int(milliseconds))
+            let newUUID = UUID().uuidString
+            self.callbacks[newUUID] = function
             DispatchQueue.main.asyncAfter(deadline: .now() + dispatchTime) {
-                function.call(withArguments: additionalArguments)
+                if let functionToCall = self.callbacks[newUUID], function == functionToCall {
+                    function.call(withArguments: additionalArguments)
+                    self.callbacks[newUUID] = nil
+                }
             }
 
-            return nil
+            return newUUID
         }
         context.setObject(timeout, forKeyedSubscript: "setTimeout" as NSString)
 
-        //TODO: Setup setInterval, clearTimeout, and clearInterval
+        let clearTimeout: @convention(block) () -> Any? = {
+            let args: [Any] = JSContext.currentArguments() ?? []
+            guard let timeoutId = args[0] as? JSValue, timeoutId.isString, let uuid = timeoutId.toString() else {
+                return nil
+            }
+            self.callbacks[uuid] = nil
+            return nil
+        }
+        context.setObject(clearTimeout, forKeyedSubscript: "clearTimeout" as NSString)
+
+        //TODO: Setup setInterval, and clearInterval
     }
 }

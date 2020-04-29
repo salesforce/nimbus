@@ -197,8 +197,7 @@ public class JSContextMochaTests: XCTestCase {
 
         let evalResult = context.evaluateScript(testScript)
 
-        let pause = XCTestExpectation(description: "pause")
-        wait(for: [testBridge.expectation, pause], timeout: 700)
+        wait(for: [testBridge.expectation], timeout: 700)
         XCTAssertNotNil(evalResult, "test script failed to execute")
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
