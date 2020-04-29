@@ -46,7 +46,8 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
 
         let setup = expectation(description: "setup")
         let script = """
-        function promiseFunc() { return Promise.resolve(42); }
+        function promiseFunc(val) { return Promise.resolve(val); }
+        window.someNamespace = { promiseFunc }
         """
         webView.evaluateJavaScript(script) { _, _ in
             setup.fulfill()
@@ -56,7 +57,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke("promiseFunc") { (error, result: Int?) in
+        bridge.invoke("someNamespace.promiseFunc", with: 42) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
