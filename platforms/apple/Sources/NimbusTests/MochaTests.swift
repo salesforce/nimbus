@@ -97,6 +97,9 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         let callbackTestPlugin = CallbackTestPlugin()
         let callbackConnection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: callbackTestPlugin.namespace)
         callbackTestPlugin.bind(to: callbackConnection)
+        let apiTestPlugin = JSAPITestPlugin()
+        let apiTestConnection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: apiTestPlugin.namespace)
+        apiTestPlugin.bind(to: apiTestConnection)
 
         loadWebViewAndWait()
 
@@ -199,6 +202,9 @@ public class JSContextMochaTests: XCTestCase {
         let callbackTestPlugin = CallbackTestPlugin()
         let callbackConnection = JSContextConnection(from: context, bridge: JSContextBridge(), as: callbackTestPlugin.namespace)
         callbackTestPlugin.bind(to: callbackConnection)
+        let apiTestPlugin = JSAPITestPlugin()
+        let apiTestConnection = JSContextConnection(from: context, bridge: JSContextBridge(), as: apiTestPlugin.namespace)
+        apiTestPlugin.bind(to: apiTestConnection)
 
         loadContext()
 
@@ -259,5 +265,19 @@ extension CallbackTestPlugin: Plugin {
         connection.bind(callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+    }
+}
+
+class JSAPITestPlugin: Plugin {
+    func nullaryResolvingToInt() -> Int {
+        return 5
+    }
+
+    var namespace: String {
+        return "jsapiTestPlugin"
+    }
+
+    func bind<C>(to connection: C) where C: Connection {
+        connection.bind(self.nullaryResolvingToInt, as: "nullaryResolvingToInt")
     }
 }
