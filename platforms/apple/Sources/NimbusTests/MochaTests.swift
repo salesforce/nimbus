@@ -273,11 +273,48 @@ class JSAPITestPlugin: Plugin {
         return 5
     }
 
+    func nullaryResolvingToIntArray() -> [Int] {
+        return [1, 2, 3]
+    }
+
+    func nullaryResolvingToObject() -> JSAPITestStruct {
+        return JSAPITestStruct()
+    }
+
+    func unaryResolvingToVoid(param: Int) {
+        XCTAssertEqual(param, 5)
+    }
+
+    func unaryObjectResolvingToVoid(param: JSAPITestStruct) {
+        XCTAssertEqual(param, JSAPITestStruct())
+    }
+
+    func binaryResolvingToIntCallback(param: Int, completion: (Int) -> Void) {
+        XCTAssertEqual(param, 5)
+        completion(5)
+    }
+
+    func binaryResolvingToObjectCallback(param: Int, completion: (JSAPITestStruct) -> Void) {
+        XCTAssertEqual(param, 5)
+        completion(JSAPITestStruct())
+    }
+
     var namespace: String {
         return "jsapiTestPlugin"
     }
 
     func bind<C>(to connection: C) where C: Connection {
         connection.bind(self.nullaryResolvingToInt, as: "nullaryResolvingToInt")
+        connection.bind(self.nullaryResolvingToIntArray, as: "nullaryResolvingToIntArray")
+        connection.bind(self.nullaryResolvingToObject, as: "nullaryResolvingToObject")
+        connection.bind(self.unaryResolvingToVoid, as: "unaryResolvingToVoid")
+        connection.bind(self.unaryObjectResolvingToVoid, as: "unaryObjectResolvingToVoid")
+        connection.bind(self.binaryResolvingToIntCallback, as: "binaryResolvingToIntCallback")
+        connection.bind(self.binaryResolvingToObjectCallback, as: "binaryResolvingToObjectCallback")
+    }
+
+    struct JSAPITestStruct: Codable, Equatable {
+        let intField = 42
+        let stringField = "JSAPITEST"
     }
 }
