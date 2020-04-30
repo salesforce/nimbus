@@ -35,7 +35,7 @@ android {
 
     sourceSets {
         androidTest {
-            assets.srcDirs = ['../../../packages/test-www/dist']
+            assets.srcDirs = ['../../../packages/test-www/dist', '../../../packages/nimbus-bridge/dist/iife']
         }
     }
 

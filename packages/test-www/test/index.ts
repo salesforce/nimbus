@@ -21,6 +21,6 @@ if (callbackTestPlugin !== undefined) {
     new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-// window.onload = () => {
-//   __nimbus.plugins.mochaTestBridge.ready();
-// };
+window.onload = () => {
+  __nimbus.plugins.mochaTestBridge.ready();
+};
