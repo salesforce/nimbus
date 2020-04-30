@@ -6,8 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import JavaScriptCore
 import Foundation
+import JavaScriptCore
 
 class JavaScriptCoreGlobalsProvider {
     let context: JSContext
@@ -58,6 +58,6 @@ class JavaScriptCoreGlobalsProvider {
         }
         context.setObject(clearTimeout, forKeyedSubscript: "clearTimeout" as NSString)
 
-        //TODO: Setup setInterval, and clearInterval
+        // TODO: Setup setInterval, and clearInterval
     }
 }

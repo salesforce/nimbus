@@ -7,12 +7,11 @@
 //
 
 import JavaScriptCore
-@testable import Nimbus
 import WebKit
 import XCTest
+@testable import Nimbus
 
 class MochaTests: XCTestCase, WKNavigationDelegate {
-
     class MochaTestBridge {
         init(webView: WKWebView) {
             self.webView = webView
@@ -120,7 +119,7 @@ public class JSContextMochaTests: XCTestCase {
 
         init(context: JSContext) {
             self.context = context
-            self.globals = JavaScriptCoreGlobalsProvider(context: context)
+            globals = JavaScriptCoreGlobalsProvider(context: context)
             let nimbusDeclaration = """
             __nimbus = {"plugins": {}};
             true;
