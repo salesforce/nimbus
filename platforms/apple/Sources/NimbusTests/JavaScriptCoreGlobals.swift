@@ -1,9 +1,9 @@
 //
-//  JavaScriptCoreGlobals.swift
-//  NimbusTests
-//
-//  Created by Paul Tiarks on 4/29/20.
-//  Copyright © 2020 Salesforce.com, inc. All rights reserved.
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
 import JavaScriptCore
@@ -11,7 +11,6 @@ import Foundation
 
 class JavaScriptCoreGlobalsProvider {
     let context: JSContext
-//    let timeoutQueue: DispatchQueue
     var callbacks: [String: JSValue] = [:]
 
     init(context: JSContext) {
