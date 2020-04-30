@@ -52,8 +52,7 @@ public class JSContextConnection: Connection, CallableBinder {
                 }
                 return self.promiseGlobal?.invokeMethod("resolve", withArguments: resultArguments)
             } catch {
-                // TODO: pass the error
-                return self.promiseGlobal?.invokeMethod("reject", withArguments: [])
+                return self.promiseGlobal?.invokeMethod("reject", withArguments: [error.localizedDescription])
             }
         }
 
@@ -84,7 +83,7 @@ public class JSContextConnection: Connection, CallableBinder {
         }
         let callback = JSValueCallback(callback: callbackFunction)
         return .success({ [weak self] (value: T) in
-            guard let self = self else { return } // TODO: throw
+            guard let self = self else { return }
             guard let result = try? self.encode(value).get() as Any else { return }
             try? callback.call(args: [result])
         })
@@ -96,7 +95,7 @@ public class JSContextConnection: Connection, CallableBinder {
         }
         let callback = JSValueCallback(callback: callbackFunction)
         return .success({ [weak self] (arg0: T, arg1: U) in
-            guard let self = self else { return } // TODO: throw
+            guard let self = self else { return }
             guard let result0 = try? self.encode(arg0).get() as Any else { return }
             guard let result1 = try? self.encode(arg1).get() as Any else { return }
             try? callback.call(args: [result0, result1])

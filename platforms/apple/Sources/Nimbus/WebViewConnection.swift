@@ -117,7 +117,7 @@ public class WebViewConnection: Connection, CallableBinder {
         }
         let callback = WebViewCallback(webView: webView, callbackId: callbackId)
         return .success({ [weak self] (value: T) in
-            guard let self = self else { return } // TODO: throw
+            guard let self = self else { return }
             guard let result = try? self.encode(value).get() as Any else { return }
             _ = try? callback.call(args: [result])
         })
@@ -132,7 +132,7 @@ public class WebViewConnection: Connection, CallableBinder {
         }
         let callback = WebViewCallback(webView: webView, callbackId: callbackId)
         return .success({ [weak self] (value0: T, value1: U) in
-            guard let self = self else { return } // TODO: throw
+            guard let self = self else { return }
             guard let result0 = try? self.encode(value0).get() as Any else { return }
             guard let result1 = try? self.encode(value1).get() as Any else { return }
             _ = try? callback.call(args: [result0, result1])
