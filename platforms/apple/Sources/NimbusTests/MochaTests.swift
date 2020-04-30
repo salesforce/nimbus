@@ -60,7 +60,16 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             let nimbus = try? String(contentsOf: path) {
             let userScript = WKUserScript(source: nimbus, injectionTime: .atDocumentStart, forMainFrameOnly: true)
             webView.configuration.userContentController.addUserScript(userScript)
+        } else {
+            // when running from swiftpm, look for the file relative to the source root
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/nimbus-bridge/dist/iife/nimbus.js", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
+                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+                webView.configuration.userContentController.addUserScript(userScript)
+            }
         }
+
         if let url = Bundle(for: MochaTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
         } else {
@@ -155,11 +164,17 @@ public class JSContextMochaTests: XCTestCase {
         context = JSContext()
     }
 
-    func evalScript(name: String, ext: String, subdirectory: String, context: JSContext) {
-        if let path = Bundle(for: JSContextMochaTests.self).url(forResource: name, withExtension: ext, subdirectory: subdirectory),
+    func evalScript(name: String, ext: String, context: JSContext) {
+        if let path = Bundle(for: JSContextMochaTests.self).url(forResource: name, withExtension: ext, subdirectory: "test-www"),
             let script = try? String(contentsOf: path) {
-            NSLog("eval-ing \(name).\(ext) from \(subdirectory) into context")
+            NSLog("eval-ing \(name).\(ext) from test-www into context")
             context.evaluateScript(script)
+        } else {
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/test-www/dist/test-www/\(name).\(ext)", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
+                context.evaluateScript(script)
+            }
         }
     }
 
@@ -168,10 +183,10 @@ public class JSContextMochaTests: XCTestCase {
         let global = context.globalObject
         context.setObject(global, forKeyedSubscript: "global" as NSString)
         context.evaluateScript("global.location = { \"search\": \"\" };")
-        evalScript(name: "mocha", ext: "js", subdirectory: "test-www", context: context)
+        evalScript(name: "mocha", ext: "js", context: context)
         context.evaluateScript("mocha.reporter('json'); mocha.setup('bdd');")
-        evalScript(name: "chai", ext: "js", subdirectory: "test-www", context: context)
-        evalScript(name: "bundle", ext: "js", subdirectory: "test-www", context: context)
+        evalScript(name: "chai", ext: "js", context: context)
+        evalScript(name: "bundle", ext: "js", context: context)
     }
 
     func testExecuteMochaTests() {
@@ -196,7 +211,7 @@ public class JSContextMochaTests: XCTestCase {
 
         let evalResult = context.evaluateScript(testScript)
 
-        wait(for: [testBridge.expectation], timeout: 700)
+        wait(for: [testBridge.expectation], timeout: 30)
         XCTAssertNotNil(evalResult, "test script failed to execute")
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
