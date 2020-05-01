@@ -92,17 +92,19 @@ class MochaTests {
             MochaTestBridge(
                 webView
             )
+        val jsAPITest = JSAPITestPlugin()
 
         val bridge = WebViewBridge()
 
         runOnUiThread {
             bridge.add(CallbackTestPluginWebViewBinder(CallbackTestPlugin()))
             bridge.add(MochaTestBridgeWebViewBinder(testBridge))
+            bridge.add(JSAPITestPluginWebViewBinder(jsAPITest))
             bridge.attach(webView)
             webView.loadUrl("file:///android_asset/test-www/index.html")
         }
 
-        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
+        assertTrue(testBridge.readyLatch.await(30, TimeUnit.SECONDS))
 
         runOnUiThread {
             webView.evaluateJavascript("""
@@ -113,7 +115,7 @@ class MochaTests {
             """.trimIndent()) {}
         }
 
-        assertTrue(testBridge.completionLatch.await(5, TimeUnit.SECONDS))
+        assertTrue(testBridge.completionLatch.await(30, TimeUnit.SECONDS))
 
         assertEquals(0, testBridge.failures)
     }
@@ -213,5 +215,64 @@ class MochaTests {
         }
 
         assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
+    }
+}
+
+data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: Int = 42) : JSONSerializable {
+    override fun stringify(): String {
+        val jsonObject = JSONObject()
+        jsonObject.put("stringField", stringField)
+        jsonObject.put("intField", intField)
+        return jsonObject.toString()
+    }
+
+    companion object {
+        fun fromJSON(jsonString: String): JSAPITestStruct {
+            val json = JSONObject(jsonString)
+            val intField = json.getInt("intField")
+            val stringField = json.getString("stringField")
+            return JSAPITestStruct(stringField, intField)
+        }
+    }
+}
+
+@PluginOptions(name = "jsapiTestPlugin")
+class JSAPITestPlugin : Plugin {
+
+    @BoundMethod
+    fun nullaryResolvingToInt(): Int {
+        return 5
+    }
+
+    @BoundMethod
+    fun nullaryResolvingToIntArray(): ArrayList<Int> {
+        return arrayListOf(1, 2, 3)
+    }
+
+    @BoundMethod
+    fun nullaryResolvingToObject(): JSAPITestStruct {
+        return JSAPITestStruct()
+    }
+
+    @BoundMethod
+    fun unaryResolvingToVoid(param: Int) {
+        assertEquals(param, 5)
+    }
+
+    @BoundMethod
+    fun unaryObjectResolvingToVoid(param: JSAPITestStruct) {
+        assertEquals(param, JSAPITestStruct())
+    }
+
+    @BoundMethod
+    fun binaryResolvingToIntCallback(param0: Int, param1: (result: Int) -> Unit) {
+        assertEquals(param0, 5)
+        param1(5)
+    }
+
+    @BoundMethod
+    fun binaryResolvingToObjectCallback(param0: Int, param1: (result: JSAPITestStruct) -> Unit) {
+        assertEquals(param0, 5)
+        param1(JSAPITestStruct())
     }
 }
