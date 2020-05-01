@@ -56,6 +56,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     kaptAndroidTest project(":compiler-v8")
+
+    testImplementation "io.mockk:mockk:1.9.3.kotlin12"
+    testImplementation 'com.google.truth:truth:1.0.1'
+    kaptTest project(":compiler-v8")
 }
 
 task sourcesJar(type: Jar) {

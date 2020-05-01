@@ -32,16 +32,16 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         bridgeV8 = javascriptEngine
 
         // create the __nimbus bridge
-        nimbusBridge = V8Object(javascriptEngine)
+        nimbusBridge = javascriptEngine.createObject()
 
             // add _nimbus.plugins
-            .add(NIMBUS_PLUGINS, V8Object(javascriptEngine))
+            .add(NIMBUS_PLUGINS, javascriptEngine.createObject())
 
         // add to the bridge v8 engine
         javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
 
         // create an internal nimbus to resolve promises
-        internalNimbusBridge = V8Object(javascriptEngine)
+        internalNimbusBridge = javascriptEngine.createObject()
             .registerVoidCallback("resolvePromise") { parameters ->
                 promises.remove(parameters.getString(0))?.invoke(null, parameters.get(1))
             }

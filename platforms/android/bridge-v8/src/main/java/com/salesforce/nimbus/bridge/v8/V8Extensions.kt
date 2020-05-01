@@ -46,3 +46,8 @@ fun V8.rejectPromise(error: String): V8Object {
         V8Array(this).push(error)
     )
 }
+
+/**
+ * Helper function to create a [V8Object] which aids in testability.
+ */
+fun V8.createObject() = V8Object(this)
