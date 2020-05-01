@@ -26,8 +26,6 @@ android {
 
 dependencies {
     implementation project(':bridge-webview')
-    implementation project(':bridge-v8')
-    implementation "com.eclipsesource.j2v8:j2v8:6.1.0@aar"
     kapt project(":compiler-webview")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

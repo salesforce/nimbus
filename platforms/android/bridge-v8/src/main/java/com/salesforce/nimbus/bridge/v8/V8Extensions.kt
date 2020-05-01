@@ -13,6 +13,12 @@ fun V8Object.registerJavaCallback(methodName: String, javaCallback: (V8Array) ->
     registerJavaMethod(JavaCallback { _, parameters -> javaCallback(parameters) }, methodName)
 
 /**
+ * Cleans up the [V8Object.registerJavaMethod] function a bit to move the method to first parameter.
+ */
+fun V8Object.registerVoidCallback(methodName: String, voidCallback: (V8Array) -> Unit): V8Object =
+    registerJavaMethod({ _, parameters -> voidCallback(parameters) }, methodName)
+
+/**
  * Returns the global Promise object.
  */
 fun V8.promiseGlobal(): V8Object = getObject("Promise")

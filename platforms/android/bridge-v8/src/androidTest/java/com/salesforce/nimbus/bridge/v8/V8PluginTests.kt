@@ -23,8 +23,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Tests the plugin integration with the [V8Bridge].
+ */
 @RunWith(AndroidJUnit4::class)
-class V8Tests {
+class V8PluginTests {
 
     private lateinit var v8: V8
     private lateinit var expectation: ExpectationPlugin
@@ -1129,18 +1132,4 @@ class V8Tests {
 
     // endregion
 
-    @PluginOptions("expect")
-    class ExpectationPlugin : Plugin {
-        var passed = false
-
-        @BoundMethod
-        fun pass() {
-            passed = true
-        }
-
-        @BoundMethod
-        fun fail() {
-            passed = false
-        }
-    }
 }

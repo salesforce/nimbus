@@ -17,7 +17,7 @@ interface Plugin {
      * Customize the [JavascriptEngine] prior to the plugin being initialized. Do not add any javascript
      * interfaces to the [JavascriptEngine] here. They will be added by the [Bridge].
      */
-    fun <JavascriptEngine, SerializedOutputType> customize(runtime: Runtime<JavascriptEngine, SerializedOutputType>) {
+    fun <JavascriptEngine, EncodedType> customize(runtime: Runtime<JavascriptEngine, EncodedType>) {
         /* default empty implementation so simple plugins don't need to override */
     }
 
@@ -25,7 +25,7 @@ interface Plugin {
      * Do any cleanup of the [JavascriptEngine] necessary for this plugin. Do not remove any javascript
      * interfaces from the [JavascriptEngine] here. They will be removed by the [Bridge].
      */
-    fun <JavascriptEngine, SerializedOutputType> cleanup(runtime: Runtime<JavascriptEngine, SerializedOutputType>) {
+    fun <JavascriptEngine, EncodedType> cleanup(runtime: Runtime<JavascriptEngine, EncodedType>) {
         /* default empty implementation so simple plugins don't need to override */
     }
 }

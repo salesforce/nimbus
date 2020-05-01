@@ -21,7 +21,6 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 private const val BRIDGE_NAME = "_nimbus"
-private typealias Promise = ((String?, Any?) -> Unit)
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 class WebViewBridge : Bridge<WebView, String>,
@@ -29,7 +28,7 @@ class WebViewBridge : Bridge<WebView, String>,
 
     private var bridgeWebView: WebView? = null
     private val binders = mutableListOf<Binder<WebView, String>>()
-    private val promises: ConcurrentHashMap<String, Promise> = ConcurrentHashMap()
+    private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
     override fun add(vararg binder: Binder<WebView, String>) {
         binders.addAll(binder)
@@ -70,7 +69,7 @@ class WebViewBridge : Bridge<WebView, String>,
     private fun invokeInternal(
         identifierSegments: Array<String>,
         args: Array<JavascriptSerializable<String>?> = emptyArray(),
-        callback: Promise?
+        callback: ((String?, Any?) -> Unit)?
     ) {
         val promiseId = UUID.randomUUID().toString()
         callback?.let { promises[promiseId] = it }

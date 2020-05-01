@@ -10,9 +10,9 @@ package com.salesforce.nimbus
 /**
  * Binder interface for the generated [Plugin] binder class. [JavascriptEngine] represents the
  * class which is capable of executing javascript, such as an Android WebView or V8.
- * [SerializedOutputType] represents the serialized type the [JavascriptEngine] expects.
+ * [EncodedType] represents the encoded type the [JavascriptEngine] expects.
  */
-interface Binder<JavascriptEngine, SerializedOutputType> {
+interface Binder<JavascriptEngine, EncodedType> {
 
     /**
      * Returns the [Plugin] that this binder is bound to.
@@ -27,10 +27,10 @@ interface Binder<JavascriptEngine, SerializedOutputType> {
     /**
      * Binds to the [Runtime].
      */
-    fun bind(runtime: Runtime<JavascriptEngine, SerializedOutputType>)
+    fun bind(runtime: Runtime<JavascriptEngine, EncodedType>)
 
     /**
      * Unbinds from the [Runtime].
      */
-    fun unbind(runtime: Runtime<JavascriptEngine, SerializedOutputType>)
+    fun unbind(runtime: Runtime<JavascriptEngine, EncodedType>)
 }
