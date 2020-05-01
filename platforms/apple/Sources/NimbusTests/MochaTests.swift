@@ -304,13 +304,13 @@ class JSAPITestPlugin: Plugin {
     }
 
     func bind<C>(to connection: C) where C: Connection {
-        connection.bind(self.nullaryResolvingToInt, as: "nullaryResolvingToInt")
-        connection.bind(self.nullaryResolvingToIntArray, as: "nullaryResolvingToIntArray")
-        connection.bind(self.nullaryResolvingToObject, as: "nullaryResolvingToObject")
-        connection.bind(self.unaryResolvingToVoid, as: "unaryResolvingToVoid")
-        connection.bind(self.unaryObjectResolvingToVoid, as: "unaryObjectResolvingToVoid")
-        connection.bind(self.binaryResolvingToIntCallback, as: "binaryResolvingToIntCallback")
-        connection.bind(self.binaryResolvingToObjectCallback, as: "binaryResolvingToObjectCallback")
+        connection.bind(nullaryResolvingToInt, as: "nullaryResolvingToInt")
+        connection.bind(nullaryResolvingToIntArray, as: "nullaryResolvingToIntArray")
+        connection.bind(nullaryResolvingToObject, as: "nullaryResolvingToObject")
+        connection.bind(unaryResolvingToVoid, as: "unaryResolvingToVoid")
+        connection.bind(unaryObjectResolvingToVoid, as: "unaryObjectResolvingToVoid")
+        connection.bind(binaryResolvingToIntCallback, as: "binaryResolvingToIntCallback")
+        connection.bind(binaryResolvingToObjectCallback, as: "binaryResolvingToObjectCallback")
     }
 
     struct JSAPITestStruct: Codable, Equatable {
