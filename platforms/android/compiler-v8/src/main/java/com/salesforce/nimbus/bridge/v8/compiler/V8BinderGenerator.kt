@@ -52,15 +52,25 @@ class V8BinderGenerator : BinderGenerator() {
     override fun processClassProperties(builder: TypeSpec.Builder) {
 
         // add k2v8 property so we can serialize to/from v8
-        builder.addProperty(
-            PropertySpec.builder(
-                "k2v8",
-                k2V8ClassName.copy(nullable = true),
-                KModifier.PRIVATE
+        builder.addProperties(
+            listOf(
+                PropertySpec.builder(
+                    "k2v8",
+                    k2V8ClassName.copy(nullable = true),
+                    KModifier.PRIVATE
+                )
+                    .mutable()
+                    .initializer("null")
+                    .build(),
+                PropertySpec.builder(
+                    "pluginBridge",
+                    v8ObjectClassName.copy(nullable = true),
+                    KModifier.PRIVATE
+                )
+                    .mutable()
+                    .initializer("null")
+                    .build()
             )
-                .mutable()
-                .initializer("null")
-                .build()
         )
     }
 
@@ -93,7 +103,7 @@ class V8BinderGenerator : BinderGenerator() {
 
             // create our plugin bridge and add our callback methods
             .beginControlFlow(
-                "val pluginBridge = %T(v8).apply {",
+                "pluginBridge = %T(v8).apply {",
                 v8ObjectClassName
             )
 
@@ -112,10 +122,20 @@ class V8BinderGenerator : BinderGenerator() {
 
             // add the plugin to the nimbus plugins
             .addStatement("plugins.add(\"\$pluginName\", pluginBridge)")
+
+            // need to close the nimbus object
+            .addStatement("nimbus.close()")
+
+            // need to close the plugins object
+            .addStatement("plugins.close()")
             .endControlFlow()
 
         // add code block to the bind function
         builder.addCode(codeBlock.build())
+    }
+
+    override fun processUnbindFunction(builder: FunSpec.Builder) {
+        builder.addStatement("pluginBridge?.close()")
     }
 
     override fun processFunctionElement(
@@ -401,7 +421,7 @@ class V8BinderGenerator : BinderGenerator() {
                 v8FunctionClassName
             )
             .addStatement(
-                "callback.call(v8, params.%T(v8))",
+                "callback.use { it.call(v8, params.%T(v8)) }",
                 ClassName(k2v8Package, "toV8Array")
             )
 

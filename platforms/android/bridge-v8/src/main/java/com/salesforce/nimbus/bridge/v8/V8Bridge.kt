@@ -10,6 +10,7 @@ import com.salesforce.nimbus.NIMBUS_BRIDGE
 import com.salesforce.nimbus.NIMBUS_PLUGINS
 import com.salesforce.nimbus.Runtime
 import com.salesforce.nimbus.k2v8.toV8Array
+import java.io.Closeable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -21,6 +22,7 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         private set
     private val binders = mutableListOf<Binder<V8, V8Object>>()
     private var nimbusBridge: V8Object? = null
+    private var nimbusPlugins: V8Object? = null
     private var internalNimbusBridge: V8Object? = null
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
@@ -35,7 +37,10 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         nimbusBridge = javascriptEngine.createObject()
 
             // add _nimbus.plugins
-            .add(NIMBUS_PLUGINS, javascriptEngine.createObject())
+            .add(
+                NIMBUS_PLUGINS,
+                javascriptEngine.createObject().also { nimbusPlugins = it }
+            )
 
         // add to the bridge v8 engine
         javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
@@ -43,7 +48,9 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         // create an internal nimbus to resolve promises
         internalNimbusBridge = javascriptEngine.createObject()
             .registerVoidCallback("resolvePromise") { parameters ->
-                promises.remove(parameters.getString(0))?.invoke(null, parameters.get(1))
+                val result = parameters.get(1)
+                promises.remove(parameters.getString(0))?.invoke(null, result)
+                (result as Closeable?)?.close()
             }
             .registerVoidCallback("rejectPromise") { parameters ->
                 promises.remove(parameters.getString(0))?.invoke(parameters.getString(1), null)
@@ -57,13 +64,11 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
     }
 
     override fun detach() {
-        bridgeV8?.let { v8 ->
-            cleanup(binders)
-            nimbusBridge?.close()
-            internalNimbusBridge?.close()
-            v8.close()
-            bridgeV8 = null
-        }
+        cleanup(binders)
+        nimbusBridge?.close()
+        nimbusPlugins?.close()
+        internalNimbusBridge?.close()
+        bridgeV8 = null
     }
 
     override fun getJavascriptEngine(): V8? {
@@ -86,14 +91,15 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         val v8 = bridgeV8 ?: return
 
         // encode parameters and add to v8
-        v8.add("parameters", args.map {
+        val parameters = args.map {
             when (it) {
                 is PrimitiveV8Encodable -> {
                     it.encode().let { encoded -> (encoded as V8Array?)?.get(0) ?: encoded }
                 }
                 else -> it?.encode()
             }
-        }.toV8Array(v8))
+        }.toV8Array(v8)
+        parameters.use { v8.add("parameters", it) }
 
         val promiseId = UUID.randomUUID().toString()
         callback?.let { promises[promiseId] = it }

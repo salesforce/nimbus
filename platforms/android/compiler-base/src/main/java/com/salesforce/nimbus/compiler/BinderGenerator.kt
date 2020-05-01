@@ -252,6 +252,9 @@ abstract class BinderGenerator : AbstractProcessor() {
                 FunSpec.builder("unbind")
                     .addModifiers(KModifier.OVERRIDE)
                     .addParameter("runtime", runtimeClassName)
+
+                    // allow subclasses to process unbind function
+                    .also { processUnbindFunction(it) }
                     .addStatement("this.%N = null", "runtime")
                     .build()
             )
@@ -279,6 +282,10 @@ abstract class BinderGenerator : AbstractProcessor() {
     }
 
     protected open fun processBindFunction(boundMethodElements: List<ExecutableElement>, builder: FunSpec.Builder) {
+        /* leave for subclasses to override */
+    }
+
+    protected open fun processUnbindFunction(builder: FunSpec.Builder) {
         /* leave for subclasses to override */
     }
 

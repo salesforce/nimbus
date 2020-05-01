@@ -43,22 +43,22 @@ dependencies {
     api project(":k2v8")
     kapt project(":compiler-v8")
 
-    implementation "com.eclipsesource.j2v8:j2v8:6.1.0@aar"
+    implementation "com.eclipsesource.j2v8:j2v8:$j2v8_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'com.google.truth:truth:1.0.1'
-    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    androidTestImplementation 'androidx.test:rules:1.1.0', {
+    androidTestImplementation "androidx.test.ext:junit:$androidx_test_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test:rules:$androidx_test_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestImplementation "com.google.truth:truth:$google_truth_version"
+    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
     kaptAndroidTest project(":compiler-v8")
 
-    testImplementation "io.mockk:mockk:1.9.3.kotlin12"
-    testImplementation 'com.google.truth:truth:1.0.1'
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "com.google.truth:truth:$google_truth_version"
     kaptTest project(":compiler-v8")
 }
 

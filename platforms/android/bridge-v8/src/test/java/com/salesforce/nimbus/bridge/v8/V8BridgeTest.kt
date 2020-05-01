@@ -109,15 +109,22 @@ class V8BridgeTest {
         // capture the nimbusBridge object
         val nimbusBridgeSlot = slot<V8Object>()
         verify { mockV8.add(NIMBUS_BRIDGE, capture(nimbusBridgeSlot)) }
+        val nimbusBridge = nimbusBridgeSlot.captured
+
+        // capture the nimbusPlugins object
+        val nimbusPluginsSlot = slot<V8Object>()
+        verify { nimbusBridge.add(NIMBUS_PLUGINS, capture(nimbusPluginsSlot)) }
+        val nimbusPlugins = nimbusPluginsSlot.captured
 
         // capture the internalNimbusBridge object
         val internalNimbusBridgeSlot = slot<V8Object>()
         verify { mockV8.add(INTERNAL_NIMBUS_BRIDGE, capture(internalNimbusBridgeSlot)) }
+        val internalNimbusBridge = internalNimbusBridgeSlot.captured
 
         v8Bridge.detach()
-        verify { nimbusBridgeSlot.captured.close() }
-        verify { internalNimbusBridgeSlot.captured.close() }
-        verify { mockV8.close() }
+        verify { nimbusBridge.close() }
+        verify { nimbusPlugins.close() }
+        verify { internalNimbusBridge.close() }
     }
 }
 
