@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.webkit.WebView
 import com.salesforce.nimbus.BoundMethod
-import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.Runtime
@@ -14,8 +14,7 @@ import org.json.JSONObject
 @PluginOptions(name = "DeviceInfoPlugin")
 class DeviceInfoPlugin(context: Context) : Plugin {
 
-    class DeviceInfo(val appVersion: String) :
-        JSONSerializable {
+    class DeviceInfo(val appVersion: String) : JSONEncodable {
         val platform: String = "Android"
         val platformVersion: String = android.os.Build.VERSION.RELEASE
         val manufacturer: String = android.os.Build.MANUFACTURER

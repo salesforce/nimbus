@@ -180,13 +180,13 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
             if (a == Double.POSITIVE_INFINITY || a == Double.NEGATIVE_INFINITY || a.equals(Double.NaN as Number)) {
                 var sameExceptionMessage = false
                 try {
-                    a.toJSONSerializable()
+                    a.toJSONEncodable()
                 } catch (e: Exception) {
                     sameExceptionMessage = e.message.equals("Double value should be finite.")
                 }
                 sameExceptionMessage
             } else {
-                val jsonString = a.toJSONSerializable().stringify()
+                val jsonString = a.toJSONEncodable().stringify()
                 val jsonObject = JSONObject(jsonString)
                 val value = jsonObject.get("")
                 if (a == value) {
@@ -205,7 +205,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testIntToJSON() {
         forAll(Gen.int()) { a ->
-            val jsonString = a.toJSONSerializable().stringify()
+            val jsonString = a.toJSONEncodable().stringify()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -215,7 +215,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testBooleanToJSON() {
         forAll(Gen.bool()) { a ->
-            val jsonString = a.toJSONSerializable().stringify()
+            val jsonString = a.toJSONEncodable().stringify()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -225,7 +225,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testLongToJSON() {
         forAll(Gen.long()) { a ->
-            val jsonString = a.toJSONSerializable().stringify()
+            val jsonString = a.toJSONEncodable().stringify()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -235,7 +235,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testStringToJSON() {
         forAll(Gen.string()) { a ->
-            val jsonString = a.toJSONSerializable().stringify()
+            val jsonString = a.toJSONEncodable().stringify()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value

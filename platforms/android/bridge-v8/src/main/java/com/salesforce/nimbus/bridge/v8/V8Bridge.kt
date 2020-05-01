@@ -4,7 +4,7 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
-import com.salesforce.nimbus.JavascriptSerializable
+import com.salesforce.nimbus.JSEncodable
 import com.salesforce.nimbus.NIMBUS_BRIDGE
 import com.salesforce.nimbus.NIMBUS_PLUGINS
 import com.salesforce.nimbus.Runtime
@@ -51,7 +51,6 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         // add the internal bridge to the v8 engine
         javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, internalNimbusBridge)
 
-
         // initialize plugins
         initialize(binders)
     }
@@ -72,7 +71,7 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
     override fun invoke(
         functionName: String,
-        args: Array<JavascriptSerializable<V8Object>?>,
+        args: Array<JSEncodable<V8Object>?>,
         callback: ((String?, Any?) -> Unit)?
     ) {
         invokeInternal(functionName.split('.').toTypedArray(), args, callback)
@@ -80,13 +79,13 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
     private fun invokeInternal(
         identifierSegments: Array<String>,
-        args: Array<JavascriptSerializable<V8Object>?> = emptyArray(),
+        args: Array<JSEncodable<V8Object>?> = emptyArray(),
         callback: ((String?, Any?) -> Unit)?
     ) {
         val v8 = bridgeV8 ?: return
 
         // encode parameters and add to v8
-        v8.add("parameters", args.mapNotNull { it?.serialize() }.toV8Array(v8))
+        v8.add("parameters", args.mapNotNull { it?.encode() }.toV8Array(v8))
 
         val promiseId = UUID.randomUUID().toString()
         callback?.let { promises[promiseId] = it }

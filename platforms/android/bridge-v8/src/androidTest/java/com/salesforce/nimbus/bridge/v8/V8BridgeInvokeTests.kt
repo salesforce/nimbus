@@ -26,7 +26,6 @@ class V8BridgeInvokeTests {
         function objectFunc() { return { someString: "Some string", someInt: 5 } };
         function promiseFuncReject() { return Promise.reject("epic fail"); };
         function resolveToVoid() { return Promise.resolve(); }
-        function intAddOneFunc(int) { return int + 1; };
     """.trimIndent()
 
     @Serializable
@@ -76,12 +75,6 @@ class V8BridgeInvokeTests {
                     countDown()
                 }
             }
-        }
-    }
-
-    fun testInvokeWithIntParameterResolvedWithInt() {
-        v8.scope {
-
         }
     }
 

@@ -13,10 +13,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import androidx.test.rule.ActivityTestRule
 import com.salesforce.nimbus.BoundMethod
-import com.salesforce.nimbus.JSONSerializable
+import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
-import com.salesforce.nimbus.toJSONSerializable
+import com.salesforce.nimbus.toJSONEncodable
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 class MochaTests {
 
-    data class MochaMessage(val stringField: String = "This is a string", val intField: Int = 42) : JSONSerializable {
+    data class MochaMessage(val stringField: String = "This is a string", val intField: Int = 42) : JSONEncodable {
         override fun stringify(): String {
             val jsonObject = JSONObject()
             jsonObject.put("stringField", stringField)
@@ -70,7 +70,7 @@ class MochaTests {
         @BoundMethod
         fun sendMessage(name: String, includeParam: Boolean) {
             webView.post {
-                var arg: JSONSerializable? = null
+                var arg: JSONEncodable? = null
                 if (includeParam) {
                     arg = MochaMessage()
                 }
@@ -138,7 +138,7 @@ class MochaTests {
         runOnUiThread {
             bridge.invoke(
                 "__nimbus.plugins.callbackTestPlugin.addOne",
-                args = arrayOf(5.toJSONSerializable())
+                args = arrayOf(5.toJSONEncodable())
             ) { err, result ->
                 assertNull(err)
                 assertEquals(6, result)
@@ -169,7 +169,7 @@ class MochaTests {
         runOnUiThread {
             bridge.invoke(
                 "__nimbus.plugins.callbackTestPlugin.failWith",
-                arrayOf("epic fail".toJSONSerializable())
+                arrayOf("epic fail".toJSONEncodable())
             ) { err, result ->
                 assertEquals("epic fail", err)
                 assertNull(result)
@@ -200,7 +200,7 @@ class MochaTests {
         runOnUiThread {
             bridge.invoke(
                 "__nimbus.plugins.callbackTestPlugin.wait",
-                arrayOf(60000.toJSONSerializable())
+                arrayOf(60000.toJSONEncodable())
             ) { err, _ ->
                 assertEquals("ERROR_PAGE_UNLOADED", err)
                 completionLatch.countDown()

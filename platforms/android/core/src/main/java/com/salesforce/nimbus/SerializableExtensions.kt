@@ -14,8 +14,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
 
-class PrimitiveJSONSerializable(val value: Any) :
-    JSONSerializable {
+class PrimitiveJSONEncodable(val value: Any) : JSONEncodable {
     private val stringifiedValue: String
 
     init {
@@ -30,10 +29,10 @@ class PrimitiveJSONSerializable(val value: Any) :
 }
 
 /**
- * A [JSONSerializable] wrapper around an object that is [Serializable] and serialized using a
+ * A [JSONEncodable] wrapper around an object that is [Serializable] and serialized using a
  * [KSerializer]
  */
-class KotlinJSONSerializable<T>(private val value: T, private val serializer: KSerializer<T>) : JSONSerializable {
+class KotlinJSONEncodable<T>(private val value: T, private val serializer: KSerializer<T>) : JSONEncodable {
     override fun stringify(): String {
         return Json(JsonConfiguration.Stable).stringify(serializer, value)
     }
@@ -66,28 +65,28 @@ inline fun <reified V> arrayFromJSON(jsonString: String): ArrayList<V> {
 }
 
 // Some helpers for primitive types
-fun String.toJSONSerializable(): JSONSerializable {
-    return PrimitiveJSONSerializable(this)
+fun String.toJSONEncodable(): JSONEncodable {
+    return PrimitiveJSONEncodable(this)
 }
 
-fun Boolean.toJSONSerializable(): JSONSerializable {
-    return PrimitiveJSONSerializable(this)
+fun Boolean.toJSONEncodable(): JSONEncodable {
+    return PrimitiveJSONEncodable(this)
 }
 
-fun Int.toJSONSerializable(): JSONSerializable {
-    return PrimitiveJSONSerializable(this)
+fun Int.toJSONEncodable(): JSONEncodable {
+    return PrimitiveJSONEncodable(this)
 }
 
-fun Long.toJSONSerializable(): JSONSerializable {
-    return PrimitiveJSONSerializable(this)
+fun Long.toJSONEncodable(): JSONEncodable {
+    return PrimitiveJSONEncodable(this)
 }
 
-fun Double.toJSONSerializable(): JSONSerializable {
+fun Double.toJSONEncodable(): JSONEncodable {
     // Comparing NaN requires a different way
     // https://stackoverflow.com/questions/37884133/comparing-nan-in-kotlin
     if (this == Double.NEGATIVE_INFINITY || this == Double.POSITIVE_INFINITY || this.equals(Double.NaN as Number)) {
         throw IllegalArgumentException("Double value should be finite.")
     } else {
-        return PrimitiveJSONSerializable(this)
+        return PrimitiveJSONEncodable(this)
     }
 }

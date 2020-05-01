@@ -8,7 +8,7 @@
 package com.salesforce.nimbus.bridge.webview
 
 import android.webkit.WebView
-import com.salesforce.nimbus.JavascriptSerializable
+import com.salesforce.nimbus.JSEncodable
 
 /**
  * Asynchronously broadcast a message to subscribers listening on Javascript side.  Message can be
@@ -20,11 +20,11 @@ import com.salesforce.nimbus.JavascriptSerializable
  * @param completionHandler A block to invoke when script evaluation completes or fails. You do not
  *                          have to pass a closure if you are not interested in getting the callback.
  */
-fun WebView.broadcastMessage(name: String, arg: JavascriptSerializable<String>? = null, completionHandler: ((result: Int) -> Unit)? = null) {
+fun WebView.broadcastMessage(name: String, arg: JSEncodable<String>? = null, completionHandler: ((result: Int) -> Unit)? = null) {
     val scriptTemplate: String = if (arg != null) {
         """
             try {
-                var value = ${arg.serialize()};
+                var value = ${arg.encode()};
                 __nimbus.broadcastMessage('$name', value);
             } catch(e) {
                 console.log('Error parsing JSON during a call to broadcastMessage:' + e.toString());

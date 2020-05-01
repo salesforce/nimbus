@@ -106,7 +106,6 @@ class WebViewBinderGenerator : BinderGenerator() {
                         else -> processOtherDeclaredParameter(
                             declaredType,
                             parameter,
-                            kotlinParameter,
                             funSpec
                         )
                     }
@@ -202,7 +201,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 "val args = arrayOf<%T>(",
                 ClassName(
                     nimbusPackage,
-                    "JavascriptSerializable"
+                    "JSEncodable"
                 ).parameterizedBy(serializedOutputType).nullable(true)
             )
             .indent()
@@ -210,7 +209,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 "%T(%NId),\n",
                 ClassName(
                     nimbusPackage,
-                    "PrimitiveJSONSerializable"
+                    "PrimitiveJSONEncodable"
                 ),
                 parameter.simpleName
             )
@@ -224,8 +223,8 @@ class WebViewBinderGenerator : BinderGenerator() {
             val kotlinType = kotlinParameterType?.arguments?.get(index)
             val kotlinTypeNullable = kotlinType.isNullable()
 
-            // function to wrap a value in a PrimitiveJSONSerializable if needed
-            val wrapValueInPrimitiveJSONSerializable = {
+            // function to wrap a value in a PrimitiveJSONEncodable if needed
+            val wrapValueInPrimitiveJSONEncodable = {
                 argBlock.add(
                     if (kotlinTypeNullable) {
                         "arg$index?.let { %T(arg$index) }"
@@ -234,20 +233,20 @@ class WebViewBinderGenerator : BinderGenerator() {
                     },
                     ClassName(
                         nimbusPackage,
-                        "PrimitiveJSONSerializable"
+                        "PrimitiveJSONEncodable"
                     )
                 )
             }
 
             if (functionParameterType.kind == TypeKind.WILDCARD) {
                 val wildcardParameterType = (functionParameterType as WildcardType).superBound
-                // if it does not then we nee to wrap it in a PrimitiveJSONSerializable
+                // if it does not then we nee to wrap it in a PrimitiveJSONEncodable
                 when {
 
                     // if the parameter implements JSONSerializable we are good
-                    wildcardParameterType.isJSONSerializableType() -> argBlock.add("arg$index")
+                    wildcardParameterType.isJSONEncodableType() -> argBlock.add("arg$index")
 
-                    // if the parameter is serializable then wrap it in a KotlinJSONSerializable
+                    // if the parameter is serializable then wrap it in a KotlinJSONEncodable
                     wildcardParameterType.isKotlinSerializableType() -> argBlock.add(
                         if (kotlinTypeNullable) {
                             "arg$index?.let { %T(arg$index, %T.serializer()) }"
@@ -256,14 +255,14 @@ class WebViewBinderGenerator : BinderGenerator() {
                         },
                         ClassName(
                             nimbusPackage,
-                            "KotlinJSONSerializable"
+                            "KotlinJSONEncodable"
                         ),
                         functionParameterType.superBound.asRawTypeName()
                     )
-                    else -> wrapValueInPrimitiveJSONSerializable()
+                    else -> wrapValueInPrimitiveJSONEncodable()
                 }
             } else {
-                wrapValueInPrimitiveJSONSerializable()
+                wrapValueInPrimitiveJSONEncodable()
             }
 
             // add another element to the array
@@ -371,11 +370,10 @@ class WebViewBinderGenerator : BinderGenerator() {
     private fun processOtherDeclaredParameter(
         declaredType: DeclaredType,
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         funSpec: FunSpec.Builder
     ) {
         when {
-            declaredType.isJSONSerializableType() -> {
+            declaredType.isJSONEncodableType() -> {
                 val companion = processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
                 val hasFromJson = companion?.enclosedElements?.any { it.getName() == "fromJSON" } ?: false
 
@@ -456,7 +454,7 @@ class WebViewBinderGenerator : BinderGenerator() {
         when {
 
             // if the parameter implements JSONSerializable we are good
-            functionReturnType.isJSONSerializableType() -> {
+            functionReturnType.isJSONEncodableType() -> {
 
                 // stringify the return value
                 funSpec.apply {

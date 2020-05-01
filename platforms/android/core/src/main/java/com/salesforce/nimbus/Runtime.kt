@@ -25,7 +25,7 @@ interface Runtime<JavascriptEngine, EncodedType> {
      */
     fun invoke(
         functionName: String,
-        args: Array<JavascriptSerializable<EncodedType>?> = emptyArray(),
+        args: Array<JSEncodable<EncodedType>?> = emptyArray(),
         callback: ((String?, Any?) -> Unit)?
     )
 }
@@ -35,7 +35,7 @@ interface Runtime<JavascriptEngine, EncodedType> {
  */
 inline fun <DecodedType : Any, JavascriptEngine, reified EncodedType> Runtime<JavascriptEngine, EncodedType>.invoke(
     functionName: String,
-    args: Array<JavascriptSerializable<EncodedType>?>,
+    args: Array<JSEncodable<EncodedType>?>,
     kSerializer: KSerializer<DecodedType>,
     crossinline callback: (String?, DecodedType?) -> Unit
 ) {

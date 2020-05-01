@@ -312,10 +312,10 @@ abstract class BinderGenerator : AbstractProcessor() {
                 .any { it.startsWith("java.util.Map") }
     }
 
-    protected fun TypeMirror.isJSONSerializableType(): Boolean {
-        return toString().startsWith("$nimbusPackage.JSONSerializable") ||
+    protected fun TypeMirror.isJSONEncodableType(): Boolean {
+        return toString().startsWith("$nimbusPackage.JSONEncodable") ||
             processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-                .any { it.startsWith("$nimbusPackage.JSONSerializable") }
+                .any { it.startsWith("$nimbusPackage.JSONEncodable") }
     }
 
     protected fun TypeMirror.isKotlinSerializableType(): Boolean {
