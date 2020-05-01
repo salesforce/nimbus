@@ -51,6 +51,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
+    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
     androidTestImplementation 'androidx.test:rules:1.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     }

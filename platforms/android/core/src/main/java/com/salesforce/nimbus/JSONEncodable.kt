@@ -7,7 +7,4 @@
 
 package com.salesforce.nimbus
 
-interface JSONEncodable : JSEncodable<String> {
-    fun stringify(): String
-    override fun encode() = stringify()
-}
+interface JSONEncodable : JSEncodable<String>

@@ -1,6 +1,7 @@
 package com.salesforce.nimbus.bridge.v8
 
 import com.eclipsesource.v8.V8
+import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
@@ -85,7 +86,14 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
         val v8 = bridgeV8 ?: return
 
         // encode parameters and add to v8
-        v8.add("parameters", args.mapNotNull { it?.encode() }.toV8Array(v8))
+        v8.add("parameters", args.map {
+            when (it) {
+                is PrimitiveV8Encodable -> {
+                    it.encode().let { encoded -> (encoded as V8Array?)?.get(0) ?: encoded }
+                }
+                else -> it?.encode()
+            }
+        }.toV8Array(v8))
 
         val promiseId = UUID.randomUUID().toString()
         callback?.let { promises[promiseId] = it }

@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import com.salesforce.nimbus.invoke
 import com.salesforce.nimbus.k2v8.scope
 import kotlinx.serialization.Serializable
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +27,7 @@ class V8BridgeInvokeTests {
         function objectFunc() { return { someString: "Some string", someInt: 5 } };
         function promiseFuncReject() { return Promise.reject("epic fail"); };
         function resolveToVoid() { return Promise.resolve(); }
+        function intAddOneFunc(int) { return int + 1; };
     """.trimIndent()
 
     @Serializable
@@ -36,6 +38,12 @@ class V8BridgeInvokeTests {
         v8 = V8.createV8Runtime()
         v8.executeScript(fixtureScript)
         bridge = V8Bridge().apply { attach(v8) }
+    }
+
+    @After
+    fun tearDown() {
+        bridge.detach()
+        v8.close()
     }
 
     @Test
@@ -72,6 +80,19 @@ class V8BridgeInvokeTests {
                     assertThat(error).isNull()
                     assertThat(result).isNotNull()
                     assertThat(result).isEqualTo(SomeClass("Some string", 5))
+                    countDown()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testInvokeWithIntParameterResolvedWithInt() {
+        v8.scope {
+            withinLatch {
+                bridge.invoke("intAddOneFunc", arrayOf(1.toV8Encodable(v8))) { error, result ->
+                    assertThat(error).isNull()
+                    assertThat(result).isEqualTo(2)
                     countDown()
                 }
             }

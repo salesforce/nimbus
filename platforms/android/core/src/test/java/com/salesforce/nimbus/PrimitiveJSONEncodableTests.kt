@@ -14,7 +14,7 @@ import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
 import org.json.JSONObject
 
-class PrimitiveExtensionsTests : AnnotationSpec() {
+class PrimitiveJSONEncodableTests : AnnotationSpec() {
 
     @Test
     fun testArrayFromJSON_String() {
@@ -186,7 +186,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
                 }
                 sameExceptionMessage
             } else {
-                val jsonString = a.toJSONEncodable().stringify()
+                val jsonString = a.toJSONEncodable().encode()
                 val jsonObject = JSONObject(jsonString)
                 val value = jsonObject.get("")
                 if (a == value) {
@@ -205,7 +205,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testIntToJSON() {
         forAll(Gen.int()) { a ->
-            val jsonString = a.toJSONEncodable().stringify()
+            val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -215,7 +215,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testBooleanToJSON() {
         forAll(Gen.bool()) { a ->
-            val jsonString = a.toJSONEncodable().stringify()
+            val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -225,7 +225,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testLongToJSON() {
         forAll(Gen.long()) { a ->
-            val jsonString = a.toJSONEncodable().stringify()
+            val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value
@@ -235,7 +235,7 @@ class PrimitiveExtensionsTests : AnnotationSpec() {
     @Test
     fun testStringToJSON() {
         forAll(Gen.string()) { a ->
-            val jsonString = a.toJSONEncodable().stringify()
+            val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
             a == value

@@ -18,6 +18,7 @@ import com.salesforce.nimbus.k2v8.scope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -310,6 +311,12 @@ class V8PluginTests {
             add(TestPluginV8Binder(TestPlugin()))
             attach(v8)
         }
+    }
+
+    @After
+    fun tearDown() {
+        bridge.detach()
+        v8.close()
     }
 
     // region non-void return types

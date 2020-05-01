@@ -23,7 +23,7 @@ class PrimitiveJSONEncodable(val value: Any) : JSONEncodable {
         stringifiedValue = jsonObject.toString()
     }
 
-    override fun stringify(): String {
+    override fun encode(): String {
         return stringifiedValue
     }
 }
@@ -33,7 +33,7 @@ class PrimitiveJSONEncodable(val value: Any) : JSONEncodable {
  * [KSerializer]
  */
 class KotlinJSONEncodable<T>(private val value: T, private val serializer: KSerializer<T>) : JSONEncodable {
-    override fun stringify(): String {
+    override fun encode(): String {
         return Json(JsonConfiguration.Stable).stringify(serializer, value)
     }
 }

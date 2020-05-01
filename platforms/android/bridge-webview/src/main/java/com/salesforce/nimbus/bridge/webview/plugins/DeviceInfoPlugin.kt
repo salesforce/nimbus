@@ -20,7 +20,7 @@ class DeviceInfoPlugin(context: Context) : Plugin {
         val manufacturer: String = android.os.Build.MANUFACTURER
         val model: String = android.os.Build.MODEL
 
-        override fun stringify(): String {
+        override fun encode(): String {
             val jsonObject = JSONObject()
             jsonObject.put("platform", platform)
             jsonObject.put("platformVersion", platformVersion)

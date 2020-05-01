@@ -459,7 +459,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 // stringify the return value
                 funSpec.apply {
                     addStatement(
-                        "val json = target.%N($argsString).stringify()",
+                        "val json = target.%N($argsString).encode()",
                         functionElement.getName()
                     )
                     addStatement("return json")

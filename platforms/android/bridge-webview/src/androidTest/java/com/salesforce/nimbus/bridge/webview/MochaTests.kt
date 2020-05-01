@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 class MochaTests {
 
     data class MochaMessage(val stringField: String = "This is a string", val intField: Int = 42) : JSONEncodable {
-        override fun stringify(): String {
+        override fun encode(): String {
             val jsonObject = JSONObject()
             jsonObject.put("stringField", stringField)
             jsonObject.put("intField", intField)

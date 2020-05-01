@@ -46,7 +46,7 @@ class V8ObjectEncoder(
                 )
             } else {
                 OutputNode.MapOutputNode(
-                    V8Array(v8)
+                    V8Object(v8)
                 )
             }
             StructureKind.OBJECT -> OutputNode.UndefinedOutputNode()
@@ -256,7 +256,7 @@ class V8ObjectEncoder(
             }
         }
 
-        class MapOutputNode(v8Array: V8Array) : OutputNode(v8Array) {
+        class MapOutputNode(v8Object: V8Object) : OutputNode(v8Object) {
 
             enum class State {
                 KEY,

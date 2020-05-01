@@ -46,13 +46,14 @@ class V8ObjectDecoder(
                     if (key == null) value else currentNode.v8Object.getObject(key)
                 )
             }
-            is StructureKind.LIST, StructureKind.MAP -> {
+            is StructureKind.LIST -> {
                 val v8Array = (if (key == null) value else currentNode.v8Object.get(key)) as V8Array
-                if (descriptor.kind == StructureKind.LIST) {
-                    InputNode.ListInputNode(v8Array)
-                } else {
-                    InputNode.MapInputNode(v8Array)
-                }
+                InputNode.ListInputNode(v8Array)
+            }
+            StructureKind.MAP -> {
+                val v8Object =
+                    (if (key == null) value else currentNode.v8Object.get(key)) as V8Object
+                InputNode.MapInputNode(v8Object)
             }
             is StructureKind.OBJECT -> InputNode.UndefinedInputNode(
                 currentNode.v8Object.getObject(key)
@@ -268,8 +269,8 @@ class V8ObjectDecoder(
             InputNode(v8Array.keys.size, v8Array)
 
         class MapInputNode(
-            val v8Array: V8Array
-        ) : InputNode(v8Array.keys.size * 2, v8Array) {
+            obj: V8Object
+        ) : InputNode(obj.keys.size * 2, obj) {
 
             override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
                 position++
@@ -284,7 +285,7 @@ class V8ObjectDecoder(
                 // if divisible by two this is the key
                 return when {
                     pos.rem(2) == 0 -> {
-                        v8Array.keys[pos / 2].also { deferredKey = it } as T
+                        v8Object.keys[pos / 2].also { deferredKey = it } as T
                     }
                     key != null -> {
                         when (kClass) {
@@ -301,8 +302,10 @@ class V8ObjectDecoder(
                             else -> throw invalidValueTypeDecodingException(kClass)
                         } as T
                     }
-                    else -> throw V8DecodingException("Unexpected state, key is null while " +
-                        "decoding value of class type ${kClass.simpleName}")
+                    else -> throw V8DecodingException(
+                        "Unexpected state, key is null while " +
+                            "decoding value of class type ${kClass.simpleName}"
+                    )
                 }
             }
         }
