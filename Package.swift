@@ -23,5 +23,5 @@ let package = Package(
             dependencies: ["Nimbus"],
             path: "platforms/apple/Sources/NimbusTests"),
     ],
-    swiftLanguageVersions: [.v4_2]
+    swiftLanguageVersions: [.v5]
 )
