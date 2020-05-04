@@ -1,12 +1,5 @@
-package com.salesforce.nimbus.bridge.v8.compiler
+package com.salesforce.nimbus.compiler
 
-import com.salesforce.nimbus.compiler.BinderGenerator
-import com.salesforce.nimbus.compiler.asKotlinTypeName
-import com.salesforce.nimbus.compiler.asRawTypeName
-import com.salesforce.nimbus.compiler.getName
-import com.salesforce.nimbus.compiler.isNullable
-import com.salesforce.nimbus.compiler.nimbusPackage
-import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -16,23 +9,30 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmValueParameter
+import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.WildcardType
+import javax.lang.model.util.Types
 
 private const val v8Package = "com.eclipsesource.v8"
 private const val k2v8Package = "$nimbusPackage.k2v8"
 private const val nimbusV8Package = "$nimbusPackage.bridge.v8"
 
-class V8BinderGenerator : BinderGenerator() {
-    override val javascriptEngine = ClassName(v8Package, "V8")
-    override val serializedOutputType = ClassName(v8Package, "V8Object")
+/**
+ * A [BinderGenerator] which generates Binder classes for the V8Bridge.
+ */
+class V8BinderGenerator : BinderGenerator {
+    override val javascriptEngineClassName: ClassName = ClassName(v8Package, "V8")
+    override val encodedType: ClassName = ClassName(v8Package, "V8Object")
+    override val bridgeClassName: ClassName = ClassName(nimbusV8Package, "V8Bridge")
+    override var messager: Messager? = null
 
-    private val v8ClassName = javascriptEngine
-    private val v8ObjectClassName = serializedOutputType
+    private val v8ClassName = javascriptEngineClassName
+    private val v8ObjectClassName = encodedType
     private val v8ArrayClassName = ClassName(v8Package, "V8Array")
     private val v8FunctionClassName = ClassName(v8Package, "V8Function")
     private val k2V8ClassName = ClassName(k2v8Package, "K2V8")
@@ -139,6 +139,7 @@ class V8BinderGenerator : BinderGenerator() {
     }
 
     override fun processFunctionElement(
+        types: Types,
         functionElement: ExecutableElement,
         serializableElements: Set<Element>,
         kotlinFunction: KmFunction?
@@ -174,19 +175,26 @@ class V8BinderGenerator : BinderGenerator() {
                 TypeKind.INT,
                 TypeKind.DOUBLE,
                 TypeKind.FLOAT,
-                TypeKind.LONG -> processPrimitiveParameter(parameter, kotlinParameter, parameterIndex)
+                TypeKind.LONG -> processPrimitiveParameter(parameter, parameterIndex)
                 TypeKind.DECLARED -> {
                     val declaredType = parameter.asType() as DeclaredType
                     when {
-                        declaredType.isStringType() -> processStringParameter(parameter, kotlinParameter, parameterIndex)
-                        declaredType.isKotlinSerializableType() -> processSerializableParameter(parameter, kotlinParameter, parameterIndex, declaredType)
+                        declaredType.isStringType() -> processStringParameter(
+                            parameter,
+                            parameterIndex
+                        )
+                        declaredType.isKotlinSerializableType(serializableElements) -> processSerializableParameter(
+                            parameter,
+                            parameterIndex,
+                            declaredType
+                        )
                         declaredType.isFunctionType() -> {
                             val functionParameterReturnType = declaredType.typeArguments.last()
                             when {
 
                                 // throw a compiler error if the callback does not return void
                                 !functionParameterReturnType.isUnitType() -> {
-                                    error(
+                                    messager?.error(
                                         functionElement,
                                         "Only a Unit (Void) return type in callbacks is supported."
                                     )
@@ -195,22 +203,22 @@ class V8BinderGenerator : BinderGenerator() {
 
                                 // throw a compiler error if the function does not return void
                                 !functionReturnType.isUnitType() -> {
-                                    error(
+                                    messager?.error(
                                         functionElement,
                                         "Functions with a callback only support a Unit (Void) return type."
                                     )
                                     return@forEachIndexed
                                 }
-                                else -> processFunctionParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                                else -> processFunctionParameter(types, declaredType, parameter, kotlinParameter, serializableElements, parameterIndex)
                             }
                         }
-                        declaredType.isListType() -> processListParameter(declaredType, parameter, kotlinParameter, parameterIndex)
-                        declaredType.isMapType() -> {
+                        declaredType.isListType(types) -> processListParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                        declaredType.isMapType(types) -> {
                             val parameterKeyType = declaredType.typeArguments[0]
 
                             // Currently only string key types are supported
                             if (!parameterKeyType.isStringType()) {
-                                error(
+                                messager?.error(
                                     functionElement,
                                     "${parameterKeyType.asKotlinTypeName()} is an unsupported " +
                                         "value type for Map. Currently only String is supported."
@@ -219,7 +227,7 @@ class V8BinderGenerator : BinderGenerator() {
                             } else processMapParameter(declaredType, parameter, kotlinParameter, parameterIndex)
                         }
                         else -> {
-                            error(
+                            messager?.error(
                                 functionElement,
                                 "${parameter.asKotlinTypeName()} is an unsupported parameter type."
                             )
@@ -230,7 +238,7 @@ class V8BinderGenerator : BinderGenerator() {
 
                 // unsupported kind
                 else -> {
-                    error(
+                    messager?.error(
                         functionElement,
                         "${parameter.asKotlinTypeName()} is an unsupported parameter type."
                     )
@@ -264,7 +272,7 @@ class V8BinderGenerator : BinderGenerator() {
             )
 
         // process the result (may need to serialize)
-        funBody.add(processResult(functionElement))
+        funBody.add(processResult(functionElement, types, serializableElements))
 
         // close out the try {} catch and reject the promise if we encounter an exception
         funBody
@@ -286,7 +294,6 @@ class V8BinderGenerator : BinderGenerator() {
 
     private fun processPrimitiveParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int
     ): CodeBlock {
         val declaration = "val ${parameter.getName()}"
@@ -298,7 +305,7 @@ class V8BinderGenerator : BinderGenerator() {
             TypeKind.LONG -> CodeBlock.of("$declaration = parameters.getInteger($parameterIndex).toLong()")
             // TODO support rest of primitive types
             else -> {
-                error(
+                messager?.error(
                     parameter,
                     "${parameter.asKotlinTypeName()} is an unsupported parameter type."
                 )
@@ -309,7 +316,6 @@ class V8BinderGenerator : BinderGenerator() {
 
     private fun processStringParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int
     ): CodeBlock {
         return CodeBlock.of("val ${parameter.getName()} = parameters.getString($parameterIndex)")
@@ -317,7 +323,6 @@ class V8BinderGenerator : BinderGenerator() {
 
     private fun processSerializableParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int,
         declaredType: DeclaredType
     ): CodeBlock {
@@ -329,9 +334,11 @@ class V8BinderGenerator : BinderGenerator() {
     }
 
     private fun processFunctionParameter(
+        types: Types,
         declaredType: DeclaredType,
         parameter: VariableElement,
         kotlinParameter: KmValueParameter?,
+        serializableElements: Set<Element>,
         parameterIndex: Int
     ): CodeBlock {
 
@@ -358,7 +365,7 @@ class V8BinderGenerator : BinderGenerator() {
                     TypeKind.WILDCARD -> {
                         val wildcardParameterType = (functionParameterType as WildcardType).superBound
                         when {
-                            wildcardParameterType.isKotlinSerializableType() -> {
+                            wildcardParameterType.isKotlinSerializableType(serializableElements) -> {
                                 val statement =
                                     "k2v8!!.toV8(%T.%T(), p$index)"
                                 argBlock.add(
@@ -369,7 +376,7 @@ class V8BinderGenerator : BinderGenerator() {
                                     serializerFunctionName
                                 )
                             }
-                            wildcardParameterType.isListType() -> {
+                            wildcardParameterType.isListType(types) -> {
                                 val listValueType = wildcardParameterType.typeArguments().first()
                                 val statement =
                                     "k2v8!!.toV8(%T(%T.%T()), p$index)"
@@ -382,7 +389,7 @@ class V8BinderGenerator : BinderGenerator() {
                                     serializerFunctionName
                                 )
                             }
-                            wildcardParameterType.isMapType() -> {
+                            wildcardParameterType.isMapType(types) -> {
                                 val mapTypeArguments = wildcardParameterType.typeArguments()
                                 val mapKeyType = mapTypeArguments[0]
                                 val mapValueType = mapTypeArguments[1]
@@ -494,18 +501,20 @@ class V8BinderGenerator : BinderGenerator() {
     }
 
     private fun processResult(
-        functionElement: ExecutableElement
+        functionElement: ExecutableElement,
+        types: Types,
+        serializableElements: Set<Element>
     ): CodeBlock {
         return when (val returnType = functionElement.returnType) {
             is DeclaredType -> {
                 when {
                     returnType.isStringType() -> CodeBlock.of("result")
-                    returnType.isKotlinSerializableType() -> CodeBlock.of(
+                    returnType.isKotlinSerializableType(serializableElements) -> CodeBlock.of(
                         "k2v8!!.toV8(%T.%T(), result)",
                         returnType,
                         serializerFunctionName
                     )
-                    returnType.isListType() -> {
+                    returnType.isListType(types) -> {
                         val parameterType = returnType.typeArguments.first().asKotlinTypeName()
                         CodeBlock.of(
                             "k2v8!!.toV8(%T(%T.%T()), result)",
@@ -514,7 +523,7 @@ class V8BinderGenerator : BinderGenerator() {
                             serializerFunctionName
                         )
                     }
-                    returnType.isMapType() -> {
+                    returnType.isMapType(types) -> {
                         val keyParameterType = returnType.typeArguments[0].asKotlinTypeName()
                         val valueParameterType = returnType.typeArguments[1].asKotlinTypeName()
                         CodeBlock.of(
@@ -527,7 +536,7 @@ class V8BinderGenerator : BinderGenerator() {
                         )
                     }
                     else -> {
-                        error(
+                        messager?.error(
                             functionElement,
                             "${returnType.asKotlinTypeName()} is an unsupported return type."
                         )

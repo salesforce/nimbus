@@ -22,6 +22,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

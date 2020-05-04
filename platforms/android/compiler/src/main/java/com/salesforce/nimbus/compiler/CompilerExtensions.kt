@@ -23,8 +23,11 @@ import kotlinx.metadata.Flag
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmTypeProjection
 import kotlinx.metadata.KmValueParameter
+import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.type.TypeMirror
+import javax.lang.model.util.Types
+import javax.tools.Diagnostic
 
 /**
  * Converts a Java [TypeName] to a Kotlin [TypeName]
@@ -144,4 +147,46 @@ fun TypeName.typeArguments(): List<TypeName> {
     } else {
         emptyList()
     }
+}
+
+fun TypeMirror.isStringType(): Boolean {
+    return toString() in listOf("java.lang.String", "kotlin.String")
+}
+
+fun TypeMirror.isListType(types: Types): Boolean {
+    return toString().startsWith("java.util.List") ||
+        types.directSupertypes(this).map { it.toString() }
+            .any { it.startsWith("java.util.List") }
+}
+
+fun TypeMirror.isMapType(types: Types): Boolean {
+    return toString().startsWith("java.util.Map") ||
+        types.directSupertypes(this).map { it.toString() }
+            .any { it.startsWith("java.util.Map") }
+}
+
+fun TypeMirror.isJSONEncodableType(types: Types): Boolean {
+    return toString().startsWith("$nimbusPackage.JSONEncodable") ||
+        types.directSupertypes(this).map { it.toString() }
+            .any { it.startsWith("$nimbusPackage.JSONEncodable") }
+}
+
+fun TypeMirror.isKotlinSerializableType(serializableElements: Collection<Element>): Boolean {
+    return serializableElements.map { it.asRawTypeName() }.any { it == asRawTypeName() }
+}
+
+fun TypeMirror.isFunctionType(): Boolean {
+    return toString().startsWith("kotlin.jvm.functions.Function")
+}
+
+fun TypeMirror.isUnitType(): Boolean {
+    return (asKotlinTypeName() as ClassName).simpleName == "Unit"
+}
+
+fun Messager.error(element: Element, message: String) {
+    printMessage(
+        Diagnostic.Kind.ERROR,
+        message,
+        element
+    )
 }

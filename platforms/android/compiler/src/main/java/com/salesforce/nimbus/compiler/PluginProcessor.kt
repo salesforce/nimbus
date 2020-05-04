@@ -10,7 +10,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import kotlinx.metadata.KmFunction
 import kotlinx.metadata.jvm.KotlinClassHeader
 import kotlinx.metadata.jvm.KotlinClassMetadata
 import kotlinx.serialization.Serializable
@@ -23,7 +22,6 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
-import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
@@ -32,21 +30,12 @@ const val nimbusPackage = "com.salesforce.nimbus"
 /**
  * Base class to generate plugin Binder classes from classes which are annotated with [PluginOptions]
  */
-abstract class BinderGenerator : AbstractProcessor() {
+class PluginProcessor : AbstractProcessor() {
 
     private lateinit var messager: Messager
     private lateinit var types: Types
     private var serializableElements: Set<Element> = emptySet()
-
-    /**
-     * The [ClassName] of the javascript engine that the Binder class will target
-     */
-    abstract val javascriptEngine: ClassName
-
-    /**
-     * The [ClassName] of the serialized output type the javascript engine expects
-     */
-    abstract val serializedOutputType: ClassName
+    private val binderGenerators = listOf(WebViewBinderGenerator(), V8BinderGenerator())
 
     override fun init(processingEnvironment: ProcessingEnvironment) {
         super.init(processingEnvironment)
@@ -74,7 +63,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             // if we have any duplicate plugin names then give an error
             if (duplicates.isNotEmpty()) {
                 val name = duplicates.first()
-                error(
+                messager.error(
                     pluginElements.first { it.getAnnotation(PluginOptions::class.java).name == name },
                     "A ${PluginOptions::class.java.simpleName} with name $name already exists."
                 )
@@ -85,24 +74,35 @@ abstract class BinderGenerator : AbstractProcessor() {
 
                     // make sure it implements `Plugin`
                     if (types.directSupertypes(pluginElement.asType()).map { it.toString() }.none { it == "$nimbusPackage.Plugin" }) {
-                        error(
+                        messager.error(
                             pluginElement,
                             "${PluginOptions::class.java.simpleName} class must extend $nimbusPackage.Plugin."
                         )
                     } else {
+                        binderGenerators.forEach { binderGenerator ->
+                            try {
 
-                        // process each plugin element to create a type spec
-                        val typeSpec = processPluginElement(pluginElement, serializableElements)
+                                // Try to get the class for the bridge. This will throw an exception
+                                // if the class doesn't exist in the classpath which means we won't
+                                // generate a binder for that bridge
+                                Class.forName(binderGenerator.bridgeClassName.canonicalName)
 
-                        // create the binder class for the plugin
-                        FileSpec.builder(
-                            processingEnv.elementUtils.getPackageOf(pluginElement).qualifiedName.toString(),
-                            typeSpec.name!!
-                        )
-                            .addType(typeSpec)
-                            .indent("    ")
-                            .build()
-                            .writeTo(processingEnv.filer)
+                                // process each plugin element to create a type spec
+                                val typeSpec = processPluginElement(binderGenerator, pluginElement, serializableElements)
+
+                                // create the binder class for the plugin
+                                FileSpec.builder(
+                                    processingEnv.elementUtils.getPackageOf(pluginElement).qualifiedName.toString(),
+                                    typeSpec.name!!
+                                )
+                                    .addType(typeSpec)
+                                    .indent("    ")
+                                    .build()
+                                    .writeTo(processingEnv.filer)
+                            } catch (exception: ClassNotFoundException) {
+                                // ignore
+                            }
+                        }
                     }
                 }
             }
@@ -125,9 +125,11 @@ abstract class BinderGenerator : AbstractProcessor() {
         return SourceVersion.latestSupported()
     }
 
-    private fun processPluginElement(pluginElement: Element, serializableElements: Set<Element>): TypeSpec {
+    private fun processPluginElement(binderGenerator: BinderGenerator, pluginElement: Element, serializableElements: Set<Element>): TypeSpec {
 
         // the binder class name will be <PluginClass><JavascriptEngine>Binder, such as DeviceInfoPluginWebViewBinder
+        val javascriptEngine = binderGenerator.javascriptEngineClassName
+        val encodedType = binderGenerator.encodedType
         val binderTypeName = "${pluginElement.getName()}${javascriptEngine.simpleName}Binder"
         val pluginName = pluginElement.getAnnotation(PluginOptions::class.java).name
         val pluginTypeName = pluginElement.asKotlinTypeName()
@@ -151,7 +153,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
         val stringClassName = String::class.asClassName()
         val runtimeClassName =
-            ClassName(nimbusPackage, "Runtime").parameterizedBy(javascriptEngine, serializedOutputType)
+            ClassName(nimbusPackage, "Runtime").parameterizedBy(javascriptEngine, encodedType)
 
         // get all methods annotated with BoundMethod
         val boundMethodElements = pluginElement.enclosedElements
@@ -165,7 +167,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // the Binder implements Binder<JavascriptEngine>
             .addSuperinterface(
-                ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
+                ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, encodedType)
             )
             .addModifiers(KModifier.PUBLIC)
 
@@ -213,7 +215,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             )
 
             // allow subclasses to process properties
-            .also(::processClassProperties)
+            .also(binderGenerator::processClassProperties)
 
             // add a getter for the plugin (implement Binder.getPlugin())
             .addFunction(
@@ -242,7 +244,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                     .addStatement("this.%N = %N", "runtime", "runtime")
 
                     // allow subclasses to process bind function
-                    .also { processBindFunction(boundMethodElements, it) }
+                    .also { binderGenerator.processBindFunction(boundMethodElements, it) }
                     .build()
             )
 
@@ -254,7 +256,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                     .addParameter("runtime", runtimeClassName)
 
                     // allow subclasses to process unbind function
-                    .also { processUnbindFunction(it) }
+                    .also { binderGenerator.processUnbindFunction(it) }
                     .addStatement("this.%N = null", "runtime")
                     .build()
             )
@@ -264,7 +266,8 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // process the function to create a FunSpec
             .map { functionElement ->
-                processFunctionElement(
+                binderGenerator.processFunctionElement(
+                    processingEnv.typeUtils,
                     functionElement,
                     serializableElements,
                     kotlinClass?.functions?.find { it.name == functionElement.getName() }
@@ -275,65 +278,5 @@ abstract class BinderGenerator : AbstractProcessor() {
             .forEach { funSpec -> type.addFunction(funSpec) }
 
         return type.build()
-    }
-
-    protected open fun processClassProperties(builder: TypeSpec.Builder) {
-        /* leave for subclasses to override */
-    }
-
-    protected open fun processBindFunction(boundMethodElements: List<ExecutableElement>, builder: FunSpec.Builder) {
-        /* leave for subclasses to override */
-    }
-
-    protected open fun processUnbindFunction(builder: FunSpec.Builder) {
-        /* leave for subclasses to override */
-    }
-
-    abstract fun processFunctionElement(
-        functionElement: ExecutableElement,
-        serializableElements: Set<Element>,
-        kotlinFunction: KmFunction?
-    ): FunSpec
-
-    protected fun error(element: Element, message: String) {
-        messager.printMessage(
-            Diagnostic.Kind.ERROR,
-            message,
-            element
-        )
-    }
-
-    protected fun TypeMirror.isStringType(): Boolean {
-        return toString() in listOf("java.lang.String", "kotlin.String")
-    }
-
-    protected fun TypeMirror.isListType(): Boolean {
-        return toString().startsWith("java.util.List") ||
-            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-            .any { it.startsWith("java.util.List") }
-    }
-
-    protected fun TypeMirror.isMapType(): Boolean {
-        return toString().startsWith("java.util.Map") ||
-            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-                .any { it.startsWith("java.util.Map") }
-    }
-
-    protected fun TypeMirror.isJSONEncodableType(): Boolean {
-        return toString().startsWith("$nimbusPackage.JSONEncodable") ||
-            processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-                .any { it.startsWith("$nimbusPackage.JSONEncodable") }
-    }
-
-    protected fun TypeMirror.isKotlinSerializableType(): Boolean {
-        return serializableElements.map { it.asRawTypeName() }.any { it == asRawTypeName() }
-    }
-
-    protected fun TypeMirror.isFunctionType(): Boolean {
-        return toString().startsWith("kotlin.jvm.functions.Function")
-    }
-
-    protected fun TypeMirror.isUnitType(): Boolean {
-        return (asKotlinTypeName() as ClassName).simpleName == "Unit"
     }
 }

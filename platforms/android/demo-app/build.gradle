@@ -26,7 +26,7 @@ android {
 
 dependencies {
     implementation project(':bridge-webview')
-    kapt project(":compiler-webview")
+    kapt project(":compiler")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

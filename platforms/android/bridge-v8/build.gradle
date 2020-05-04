@@ -41,7 +41,7 @@ dependencies {
     api project(":annotations")
     api project(":core")
     api project(":k2v8")
-    kapt project(":compiler-v8")
+    kapt project(":compiler")
 
     implementation "com.eclipsesource.j2v8:j2v8:$j2v8_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
@@ -55,11 +55,11 @@ dependencies {
     }
     androidTestImplementation "com.google.truth:truth:$google_truth_version"
     androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    kaptAndroidTest project(":compiler-v8")
+    kaptAndroidTest project(":compiler")
 
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation "com.google.truth:truth:$google_truth_version"
-    kaptTest project(":compiler-v8")
+    kaptTest project(":compiler")
 }
 
 task sourcesJar(type: Jar) {

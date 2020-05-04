@@ -1,13 +1,5 @@
-package com.salesforce.nimbus.bridge.webview.compiler
+package com.salesforce.nimbus.compiler
 
-import com.salesforce.nimbus.compiler.BinderGenerator
-import com.salesforce.nimbus.compiler.asKotlinTypeName
-import com.salesforce.nimbus.compiler.asRawTypeName
-import com.salesforce.nimbus.compiler.getName
-import com.salesforce.nimbus.compiler.isNullable
-import com.salesforce.nimbus.compiler.nimbusPackage
-import com.salesforce.nimbus.compiler.nullable
-import com.salesforce.nimbus.compiler.toKotlinTypeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -19,18 +11,26 @@ import com.squareup.kotlinpoet.asTypeName
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmValueParameter
+import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.WildcardType
+import javax.lang.model.util.Types
 
-class WebViewBinderGenerator : BinderGenerator() {
-    override val javascriptEngine = ClassName("android.webkit", "WebView")
-    override val serializedOutputType = ClassName("kotlin", "String")
+/**
+ * A [BinderGenerator] which generates Binder classes for the WebViewBridge.
+ */
+class WebViewBinderGenerator : BinderGenerator {
+    override val javascriptEngineClassName: ClassName = ClassName("android.webkit", "WebView")
+    override val encodedType: ClassName = ClassName("kotlin", "String")
+    override val bridgeClassName: ClassName = ClassName("$nimbusPackage.bridge.webview", "WebViewBridge")
+    override var messager: Messager? = null
 
     override fun processFunctionElement(
+        types: Types,
         functionElement: ExecutableElement,
         serializableElements: Set<Element>,
         kotlinFunction: KmFunction?
@@ -73,46 +73,50 @@ class WebViewBinderGenerator : BinderGenerator() {
                             when {
 
                                 // throw a compiler error if the callback does not return void
-                                !functionParameterReturnType.isUnitType() -> error(
+                                !functionParameterReturnType.isUnitType() -> messager?.error(
                                     functionElement,
                                     "Only a Unit (Void) return type in callbacks is supported."
                                 )
 
                                 // throw a compiler error if the function does not return void
-                                !functionReturnType.isUnitType() -> error(
+                                !functionReturnType.isUnitType() -> messager?.error(
                                     functionElement,
                                     "Functions with a callback only support a Unit (Void) return type."
                                 )
                                 else -> processFunctionParameter(
+                                    types,
                                     declaredType,
                                     parameter,
                                     kotlinParameter,
+                                    serializableElements,
                                     funSpec
                                 )
                             }
                         }
-                        declaredType.isListType() -> processListParameter(
+                        declaredType.isListType(types) -> processListParameter(
                             declaredType,
                             parameter,
                             kotlinParameter,
                             funSpec
                         )
-                        declaredType.isMapType() -> processMapParameter(
+                        declaredType.isMapType(types) -> processMapParameter(
                             declaredType,
                             parameter,
                             kotlinParameter,
                             funSpec
                         )
                         else -> processOtherDeclaredParameter(
+                            types,
                             declaredType,
                             parameter,
+                            serializableElements,
                             funSpec
                         )
                     }
                 }
 
                 // unsupported kind
-                else -> error(
+                else -> messager?.error(
                     functionElement,
                     "${parameter.asKotlinTypeName()} is an unsupported parameter type."
                 )
@@ -136,9 +140,11 @@ class WebViewBinderGenerator : BinderGenerator() {
                         funSpec
                     )
                     else -> processOtherDeclaredReturnType(
+                        types,
                         functionElement,
                         argsString,
                         kotlinReturnType,
+                        serializableElements,
                         funSpec
                     )
                 }
@@ -178,9 +184,11 @@ class WebViewBinderGenerator : BinderGenerator() {
     }
 
     private fun processFunctionParameter(
+        types: Types,
         declaredType: DeclaredType,
         parameter: VariableElement,
         kotlinParameter: KmValueParameter?,
+        serializableElements: Collection<Element>,
         funSpec: FunSpec.Builder
     ) {
 
@@ -202,7 +210,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 ClassName(
                     nimbusPackage,
                     "JSEncodable"
-                ).parameterizedBy(serializedOutputType).nullable(true)
+                ).parameterizedBy(encodedType).nullable(true)
             )
             .indent()
             .add(
@@ -244,10 +252,10 @@ class WebViewBinderGenerator : BinderGenerator() {
                 when {
 
                     // if the parameter implements JSONSerializable we are good
-                    wildcardParameterType.isJSONEncodableType() -> argBlock.add("arg$index")
+                    wildcardParameterType.isJSONEncodableType(types) -> argBlock.add("arg$index")
 
                     // if the parameter is serializable then wrap it in a KotlinJSONEncodable
-                    wildcardParameterType.isKotlinSerializableType() -> argBlock.add(
+                    wildcardParameterType.isKotlinSerializableType(serializableElements) -> argBlock.add(
                         if (kotlinTypeNullable) {
                             "arg$index?.let { %T(arg$index, %T.serializer()) }"
                         } else {
@@ -368,13 +376,15 @@ class WebViewBinderGenerator : BinderGenerator() {
     }
 
     private fun processOtherDeclaredParameter(
+        types: Types,
         declaredType: DeclaredType,
         parameter: VariableElement,
+        serializableElements: Collection<Element>,
         funSpec: FunSpec.Builder
     ) {
         when {
-            declaredType.isJSONEncodableType() -> {
-                val companion = processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
+            declaredType.isJSONEncodableType(types) -> {
+                val companion = types.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
                 val hasFromJson = companion?.enclosedElements?.any { it.getName() == "fromJSON" } ?: false
 
                 // convert from json if there is a fromJSON function
@@ -390,13 +400,13 @@ class WebViewBinderGenerator : BinderGenerator() {
                         parameter.simpleName
                     )
                 } else {
-                    error(
+                    messager?.error(
                         parameter,
                         "Class for parameter ${parameter.simpleName} must have a static fromJSON function."
                     )
                 }
             }
-            declaredType.isKotlinSerializableType() -> {
+            declaredType.isKotlinSerializableType(serializableElements) -> {
                 funSpec.addParameter(
                     "${parameter.getName()}String",
                     String::class
@@ -445,16 +455,18 @@ class WebViewBinderGenerator : BinderGenerator() {
     }
 
     private fun processOtherDeclaredReturnType(
+        types: Types,
         functionElement: ExecutableElement,
         argsString: String,
         kotlinReturnType: KmType?,
+        serializableElements: Collection<Element>,
         funSpec: FunSpec.Builder
     ) {
         val functionReturnType = functionElement.returnType
         when {
 
             // if the parameter implements JSONSerializable we are good
-            functionReturnType.isJSONEncodableType() -> {
+            functionReturnType.isJSONEncodableType(types) -> {
 
                 // stringify the return value
                 funSpec.apply {
@@ -466,7 +478,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                     returns(String::class)
                 }
             }
-            functionReturnType.isKotlinSerializableType() -> {
+            functionReturnType.isKotlinSerializableType(serializableElements) -> {
                 funSpec.apply {
                     addStatement(
                         "val json = %T(%T.Stable).stringify(%T.serializer(), target.%N($argsString))",
