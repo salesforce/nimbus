@@ -218,8 +218,8 @@ class MochaTests {
     }
 }
 
-data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: Int = 42) : JSONSerializable {
-    override fun stringify(): String {
+data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: Int = 42) : JSONEncodable {
+    override fun encode(): String {
         val jsonObject = JSONObject()
         jsonObject.put("stringField", stringField)
         jsonObject.put("intField", intField)
