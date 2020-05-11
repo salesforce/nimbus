@@ -12,9 +12,166 @@ import io.kotlintest.properties.forAll
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
+import org.json.JSONArray
 import org.json.JSONObject
 
 class PrimitiveJSONEncodableTests : AnnotationSpec() {
+
+    @Test
+    fun testListFromJSON_String() {
+        forAll(Gen.string(), Gen.string(), Gen.string()) { value1, value2, value3 ->
+            val json = """
+            [
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                ${JSONObject.quote(value3)}
+            ]
+            """.trimIndent()
+
+            val array =
+                listFromJSON<String>(json)
+            value1 == array[0] &&
+            value2 == array[1] &&
+            value3 == array[2]
+        }
+    }
+
+    @Test
+    fun testListFromJSON_Int() {
+        forAll(Gen.int(), Gen.int(), Gen.int()) { value1, value2, value3 ->
+            val json = """
+            [
+                $value1,
+                $value2,
+                $value3
+            ]
+            """.trimIndent()
+
+            val array =
+                listFromJSON<Int>(json)
+            value1 == array[0] &&
+            value2 == array[1] &&
+            value3 == array[2]
+        }
+    }
+
+    @Test
+    fun testListFromJSON_Any() {
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+            val json = """
+            [
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                $value3
+            ]
+            """.trimIndent()
+
+            val array =
+                listFromJSON<Any>(json)
+            value1 == array[0] as String &&
+            value2 == array[1] as String &&
+            value3 == array[2] as Int
+        }
+    }
+
+    @Test
+    fun testListFromJSON_String_throws() {
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+            val json = """
+            [
+                ${JSONObject.quote(value1)},
+                ${JSONObject.quote(value2)},
+                $value3
+            ]
+            """.trimIndent()
+
+            shouldThrow<IllegalArgumentException> {
+                listFromJSON<String>(json)
+            }
+
+            true
+        }
+    }
+
+    @Test
+    fun testMapFromJSON_String_String() {
+        forAll(Gen.string(), Gen.string(), Gen.string()) { value1, value2, value3 ->
+
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": ${JSONObject.quote(value3)}
+            }
+            """.trimIndent()
+
+            val map =
+                mapFromJSON<String, String>(json)
+            value1 == map["key1"] &&
+            value2 == map["key2"] &&
+            value3 == map["key3"]
+        }
+    }
+
+    @Test
+    fun testMapFromJSON_String_Int() {
+        forAll(Gen.int(), Gen.int(), Gen.int()) { value1, value2, value3 ->
+
+            val json = """
+            {
+                "key1": $value1,
+                "key2": $value2,
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            val map =
+                mapFromJSON<String, Int>(json)
+            value1 == map["key1"] as Int &&
+            value2 == map["key2"] as Int &&
+            value3 == map["key3"] as Int
+        }
+    }
+
+    @Test
+    fun testMapFromJSON_String_Any() {
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            val map =
+                mapFromJSON<String, Any>(json)
+            value1 == map["key1"] as String &&
+            value2 == map["key2"] as String &&
+            value3 == map["key3"] as Int
+        }
+    }
+
+    @Test
+    fun testMapFromJSON_String_String_throws() {
+        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+
+            val json = """
+            {
+                "key1": ${JSONObject.quote(value1)},
+                "key2": ${JSONObject.quote(value2)},
+                "key3": $value3
+            }
+            """.trimIndent()
+
+            shouldThrow<IllegalArgumentException> {
+                mapFromJSON<String, String>(json)
+            }
+
+            true
+        }
+    }
 
     @Test
     fun testArrayFromJSON_String() {
@@ -30,8 +187,8 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             val array =
                 arrayFromJSON<String>(json)
             value1 == array[0] &&
-            value2 == array[1] &&
-            value3 == array[2]
+                value2 == array[1] &&
+                value3 == array[2]
         }
     }
 
@@ -49,8 +206,8 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             val array =
                 arrayFromJSON<Int>(json)
             value1 == array[0] &&
-            value2 == array[1] &&
-            value3 == array[2]
+                value2 == array[1] &&
+                value3 == array[2]
         }
     }
 
@@ -68,8 +225,8 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             val array =
                 arrayFromJSON<Any>(json)
             value1 == array[0] as String &&
-            value2 == array[1] as String &&
-            value3 == array[2] as Int
+                value2 == array[1] as String &&
+                value3 == array[2] as Int
         }
     }
 
@@ -93,82 +250,56 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
     }
 
     @Test
-    fun testHashMapFromJSON_String_String() {
-        forAll(Gen.string(), Gen.string(), Gen.string()) { value1, value2, value3 ->
-
-            val json = """
-            {
-                "key1": ${JSONObject.quote(value1)},
-                "key2": ${JSONObject.quote(value2)},
-                "key3": ${JSONObject.quote(value3)}
-            }
-            """.trimIndent()
-
-            val map =
-                hashMapFromJSON<String, String>(json)
-            value1 == map["key1"] &&
-            value2 == map["key2"] &&
-            value3 == map["key3"]
+    fun testIntListToJsonEncodable() {
+        forAll(Gen.list(Gen.int())) { a ->
+            val jsonString = a.toJSONEncodable().encode()
+            val jsonArray = JSONArray(jsonString)
+            a.indices.all { i -> a[i] == jsonArray[i] }
         }
     }
 
     @Test
-    fun testHashMapFromJSON_String_Int() {
-        forAll(Gen.int(), Gen.int(), Gen.int()) { value1, value2, value3 ->
-
-            val json = """
-            {
-                "key1": $value1,
-                "key2": $value2,
-                "key3": $value3
-            }
-            """.trimIndent()
-
-            val map =
-                hashMapFromJSON<String, Int>(json)
-            value1 == map["key1"] as Int &&
-            value2 == map["key2"] as Int &&
-            value3 == map["key3"] as Int
+    fun testJSONEncodableListToJSONEncodable() {
+        forAll(Gen.list(Gen.string())) { a ->
+            val jsonString = a.map { it.toJSONEncodable() }.toJSONEncodable().encode()
+            val jsonArray = JSONArray(jsonString)
+            a.indices.all { i -> a[i] == JSONObject(jsonArray[i] as String).get("") }
         }
     }
 
     @Test
-    fun testHashMapFromJSON_String_Any() {
-        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
-
-            val json = """
-            {
-                "key1": ${JSONObject.quote(value1)},
-                "key2": ${JSONObject.quote(value2)},
-                "key3": $value3
-            }
-            """.trimIndent()
-
-            val map =
-                hashMapFromJSON<String, Any>(json)
-            value1 == map["key1"] as String &&
-            value2 == map["key2"] as String &&
-            value3 == map["key3"] as Int
+    fun testStringStringMapToJSONEncodable() {
+        forAll(Gen.map(Gen.string(), Gen.string())) { a ->
+            val jsonString = a.toJSONEncodable().encode()
+            val jsonObject = JSONObject(jsonString)
+            a.entries.all { (key, value) -> value == jsonObject[key] }
         }
     }
 
     @Test
-    fun testHashMapFromJSON_String_String_throws() {
-        forAll(Gen.string(), Gen.string(), Gen.int()) { value1, value2, value3 ->
+    fun testStringJSONEncodableMapToJSONEncodable() {
+        forAll(Gen.map(Gen.string(), Gen.string())) { a ->
+            val jsonString = a.mapValues { it.value.toJSONEncodable() }.toJSONEncodable().encode()
+            val jsonObject = JSONObject(jsonString)
+            a.entries.all { (key, value) -> value == JSONObject(jsonObject[key] as String).get("") }
+        }
+    }
 
-            val json = """
-            {
-                "key1": ${JSONObject.quote(value1)},
-                "key2": ${JSONObject.quote(value2)},
-                "key3": $value3
-            }
-            """.trimIndent()
+    @Test
+    fun testIntArrayToJSONEncodable() {
+        forAll(Gen.list(Gen.int())) { a ->
+            val jsonString = a.toTypedArray().toJSONEncodable().encode()
+            val jsonArray = JSONArray(jsonString)
+            a.indices.all { i -> a[i] == jsonArray[i] }
+        }
+    }
 
-            shouldThrow<IllegalArgumentException> {
-                hashMapFromJSON<String, String>(json)
-            }
-
-            true
+    @Test
+    fun testJSONEncodableArrayToJSONEncodable() {
+        forAll(Gen.list(Gen.string())) { a ->
+            val jsonString = a.map { it.toJSONEncodable() }.toTypedArray().toJSONEncodable().encode()
+            val jsonArray = JSONArray(jsonString)
+            a.indices.all { i -> a[i] == JSONObject(jsonArray[i] as String).get("") }
         }
     }
 

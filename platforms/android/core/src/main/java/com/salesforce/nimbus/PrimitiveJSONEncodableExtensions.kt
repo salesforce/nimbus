@@ -38,7 +38,10 @@ class KotlinJSONEncodable<T>(private val value: T, private val serializer: KSeri
     }
 }
 
-inline fun <reified K, reified V> hashMapFromJSON(jsonString: String): HashMap<K, V> {
+/**
+ * Creates a [Map] from a JSON string.
+ */
+inline fun <reified K, reified V> mapFromJSON(jsonString: String): Map<K, V> {
     val json = JSONObject(jsonString)
     val result = HashMap<K, V>()
     json.keys().forEach { key ->
@@ -51,7 +54,10 @@ inline fun <reified K, reified V> hashMapFromJSON(jsonString: String): HashMap<K
     return result
 }
 
-inline fun <reified V> arrayFromJSON(jsonString: String): ArrayList<V> {
+/**
+ * Creates a [List] from a JSON string.
+ */
+inline fun <reified V> listFromJSON(jsonString: String): List<V> {
     val json = JSONArray(jsonString)
     val result = ArrayList<V>()
     for (i in 0 until json.length()) {
@@ -62,6 +68,77 @@ inline fun <reified V> arrayFromJSON(jsonString: String): ArrayList<V> {
         result.add(value as V)
     }
     return result
+}
+
+/**
+ * Creates an [Array] from a JSON string.
+ */
+inline fun <reified V> arrayFromJSON(jsonString: String): Array<V> {
+    val json = JSONArray(jsonString)
+    return Array(json.length()) { index ->
+        val value = json[index]
+        if (value !is V) {
+            throw java.lang.IllegalArgumentException("Unexpected value type")
+        }
+        value
+    }
+}
+
+/**
+ * Converts a [V] typed [List] to a [JSONEncodable].
+ */
+fun <V> List<V>.toJSONEncodable(): JSONEncodable {
+    return object : JSONEncodable {
+        override fun encode(): String {
+            return JSONArray().apply {
+                forEach {
+                    if (it is JSONEncodable) {
+                        put(it.encode())
+                    } else {
+                        put(it)
+                    }
+                }
+            }.toString()
+        }
+    }
+}
+
+/**
+ * Converts a [String][V] typed [Map] to a [JSONEncodable].
+ */
+fun <V> Map<String, V>.toJSONEncodable(): JSONEncodable {
+    return object : JSONEncodable {
+        override fun encode(): String {
+            return JSONObject().apply {
+                forEach { (key, value) ->
+                    if (value is JSONEncodable) {
+                        put(key, value.encode())
+                    } else {
+                        put(key, value)
+                    }
+                }
+            }.toString()
+        }
+    }
+}
+
+/**
+ * Converts a [V] typed [Array] to a [JSONEncodable].
+ */
+fun <V> Array<V>.toJSONEncodable(): JSONEncodable {
+    return object : JSONEncodable {
+        override fun encode(): String {
+            return JSONArray().apply {
+                forEach {
+                    if (it is JSONEncodable) {
+                        put(it.encode())
+                    } else {
+                        put(it)
+                    }
+                }
+            }.toString()
+        }
+    }
 }
 
 // Some helpers for primitive types
