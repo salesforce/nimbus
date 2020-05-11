@@ -73,6 +73,7 @@ inline fun <reified V> listFromJSON(jsonString: String): List<V> {
 /**
  * Creates an [Array] from a JSON string.
  */
+@Suppress("USELESS_CAST")
 inline fun <reified V> arrayFromJSON(jsonString: String): Array<V> {
     val json = JSONArray(jsonString)
     return Array(json.length()) { index ->
@@ -80,7 +81,7 @@ inline fun <reified V> arrayFromJSON(jsonString: String): Array<V> {
         if (value !is V) {
             throw java.lang.IllegalArgumentException("Unexpected value type")
         }
-        value
+        value as V
     }
 }
 
