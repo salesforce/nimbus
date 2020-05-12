@@ -3,7 +3,7 @@ package com.salesforce.nimbus.bridge.v8
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
-import com.salesforce.nimbus.k2v8.scope
+import com.salesforce.k2v8.scope
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import org.junit.After

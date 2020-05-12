@@ -3,8 +3,8 @@ package com.salesforce.nimbus
 import android.webkit.WebView
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
-import com.salesforce.nimbus.k2v8.Configuration
-import com.salesforce.nimbus.k2v8.K2V8
+import com.salesforce.k2v8.Configuration
+import com.salesforce.k2v8.K2V8
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration

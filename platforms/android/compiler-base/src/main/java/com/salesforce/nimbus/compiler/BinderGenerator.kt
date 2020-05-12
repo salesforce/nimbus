@@ -27,7 +27,8 @@ import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
-const val nimbusPackage = "com.salesforce.nimbus"
+const val salesforceNamespace = "com.salesforce"
+const val nimbusPackage = "$salesforceNamespace.nimbus"
 
 /**
  * Base class to generate plugin Binder classes from classes which are annotated with [PluginOptions]

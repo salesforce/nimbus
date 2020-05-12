@@ -4,7 +4,7 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import com.salesforce.nimbus.k2v8.toV8Array
+import com.salesforce.k2v8.toV8Array
 
 /**
  * Cleans up the [V8Object.registerJavaMethod] function a bit to move the method to first parameter.

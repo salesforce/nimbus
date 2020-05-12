@@ -11,10 +11,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
-import com.salesforce.nimbus.k2v8.scope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration

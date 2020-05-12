@@ -40,7 +40,7 @@ android {
 dependencies {
     api project(":annotations")
     api project(":core")
-    api project(":k2v8")
+    api ("com.salesforce.k2v8:k2v8:$k2v8_version")
     kapt project(":compiler-v8")
 
     implementation "com.eclipsesource.j2v8:j2v8:$j2v8_version"

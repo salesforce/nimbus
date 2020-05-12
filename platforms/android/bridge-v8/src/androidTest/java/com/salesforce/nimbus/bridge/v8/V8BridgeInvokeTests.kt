@@ -3,8 +3,8 @@ package com.salesforce.nimbus.bridge.v8
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.invoke
-import com.salesforce.nimbus.k2v8.scope
 import kotlinx.serialization.Serializable
 import org.junit.After
 import org.junit.Before
