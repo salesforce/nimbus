@@ -32,6 +32,8 @@ fs.copySync(
 );
 const chaiPath = path.resolve(__dirname, "node_modules", "chai");
 fs.copySync(path.resolve(chaiPath, "chai.js"), path.resolve(dist, "chai.js"));
+const sharedTestsPath = path.resolve(__dirname, "test", "shared-tests.js")
+fs.copySync(path.resolve(sharedTestsPath), path.resolve(dist, "shared-tests.js"))
 
 export default {
   input: "test/index.ts",

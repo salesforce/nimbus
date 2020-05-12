@@ -45,11 +45,15 @@ inline fun <reified K, reified V> mapFromJSON(jsonString: String): Map<K, V> {
     val json = JSONObject(jsonString)
     val result = HashMap<K, V>()
     json.keys().forEach { key ->
-        val value = json[key]
-        if (value !is V) {
-            throw IllegalArgumentException("Unexpected value type")
+        val value = when (V::class) {
+            Int::class -> json.getInt(key)
+            Double::class -> json.getDouble(key)
+            Boolean::class -> json.getBoolean(key)
+            Long::class -> json.getLong(key)
+            String::class -> json.getString(key)
+            else -> json.get(key)
         }
-        result[key as K] = json[key] as V
+        result[key as K] = value as V
     }
     return result
 }
@@ -61,9 +65,13 @@ inline fun <reified V> listFromJSON(jsonString: String): List<V> {
     val json = JSONArray(jsonString)
     val result = ArrayList<V>()
     for (i in 0 until json.length()) {
-        val value = json[i]
-        if (value !is V) {
-            throw java.lang.IllegalArgumentException("Unexpected value type")
+        val value = when (V::class) {
+            Int::class -> json.getInt(i)
+            Double::class -> json.getDouble(i)
+            Boolean::class -> json.getBoolean(i)
+            Long::class -> json.getLong(i)
+            String::class -> json.getString(i)
+            else -> json.get(i)
         }
         result.add(value as V)
     }
@@ -76,10 +84,14 @@ inline fun <reified V> listFromJSON(jsonString: String): List<V> {
 @Suppress("USELESS_CAST")
 inline fun <reified V> arrayFromJSON(jsonString: String): Array<V> {
     val json = JSONArray(jsonString)
-    return Array(json.length()) { index ->
-        val value = json[index]
-        if (value !is V) {
-            throw java.lang.IllegalArgumentException("Unexpected value type")
+    return Array(json.length()) { i ->
+        val value = when (V::class) {
+            Int::class -> json.getInt(i)
+            Double::class -> json.getDouble(i)
+            Boolean::class -> json.getBoolean(i)
+            Long::class -> json.getLong(i)
+            String::class -> json.getString(i)
+            else -> json.get(i)
         }
         value as V
     }

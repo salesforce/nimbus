@@ -13,6 +13,7 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 class PrimitiveJSONEncodableTests : AnnotationSpec() {
@@ -85,7 +86,7 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             ]
             """.trimIndent()
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrow<JSONException> {
                 listFromJSON<String>(json)
             }
 
@@ -165,7 +166,7 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             }
             """.trimIndent()
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrow<JSONException> {
                 mapFromJSON<String, String>(json)
             }
 
@@ -241,7 +242,7 @@ class PrimitiveJSONEncodableTests : AnnotationSpec() {
             ]
             """.trimIndent()
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrow<JSONException> {
                 arrayFromJSON<String>(json)
             }
 

@@ -16,6 +16,7 @@ import com.salesforce.nimbus.JSEncodable
 import com.salesforce.nimbus.PrimitiveJSONEncodable
 import com.salesforce.nimbus.Runtime
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -82,9 +83,16 @@ class WebViewBridge : Bridge<WebView, String>,
             val asPrimitive = jsonSerializable as? PrimitiveJSONEncodable
             if (asPrimitive != null) {
                 jsonArray.put(asPrimitive.value)
+            } else if (jsonSerializable == null) {
+                jsonArray.put(JSONObject.NULL)
             } else {
-                jsonArray.put(if (jsonSerializable == null) JSONObject.NULL
-                else JSONObject(jsonSerializable.encode()))
+                val encoded = jsonSerializable.encode()
+                val arg = try {
+                    JSONArray(encoded)
+                } catch (e: JSONException) {
+                    JSONObject(encoded)
+                }
+                jsonArray.put(arg)
             }
         }
         val jsonString = jsonArray.toString()

@@ -210,12 +210,30 @@ jobs:
             sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
       - run:
-          name: Test with Firebase Test Lab
+          name: WebView Bridge Tests with Firebase Test Lab
           working_directory: platforms/android
           command: |
             sudo gcloud firebase test android run \
               --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
               --test bridge-webview/build/outputs/apk/androidTest/debug/bridge-webview-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
+
+      - run:
+          name: V8 Bridge Tests with Firebase Test Lab
+          working_directory: platforms/android
+          command: |
+            sudo gcloud firebase test android run \
+              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
+              --test bridge-v8/build/outputs/apk/androidTest/debug/bridge-v8-debug-androidTest.apk \
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
+
+      - run:
+          name: Shared Tests with Firebase Test Lab
+          working_directory: platforms/android
+          command: |
+            sudo gcloud firebase test android run \
+              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
+              --test shared-tests/build/outputs/apk/androidTest/debug/shared-tests-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
 
       - run:
@@ -232,8 +250,22 @@ jobs:
           path: platforms/android/bridge-webview/build/reports
           destination: reports
 
+      - store_artifacts:
+          path: platforms/android/bridge-v8/build/reports
+          destination: reports
+
+      - store_artifacts:
+          path: platforms/android/shared-tests/build/reports
+          destination: reports
+
       - store_test_results:
           path: platforms/android/bridge-webview/build/test-results
+
+      - store_test_results:
+          path: platforms/android/bridge-v8/build/test-results
+
+      - store_test_results:
+          path: platforms/android/shared-tests/build/test-results
 
       - run:
           name: Codecov Android
@@ -245,8 +277,11 @@ jobs:
           root: .
           paths:
             - platforms/android/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
             - platforms/android/bridge-webview/build/dokka
+            - platforms/android/bridge-v8/build/dokka
             - platforms/android/core/build/dokka
+            - platforms/android/k2v8/build/dokka
 
   build-and-test-ts:
     docker:
@@ -290,7 +325,7 @@ jobs:
       - run:
           name: Upload Android coverage
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -F Android
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -f ./workspace/platforms/android/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -F Android
 
   upload-android-release:
     docker:
@@ -324,7 +359,9 @@ jobs:
           command: |
             mkdir -p docs/dist/docs/api
             mv doc-build/platforms/android/bridge-webview/build/dokka docs/dist/docs/api/android
+            mv doc-build/platforms/android/bridge-v8/build/dokka docs/dist/docs/api/android
             mv doc-build/platforms/android/core/build/dokka docs/dist/docs/api/android
+            mv doc-build/platforms/android/k2v8/build/dokka docs/dist/docs/api/android
             mv doc-build/platforms/apple/.build/docs docs/dist/docs/api/apple
             mv doc-build/packages/nimbus-bridge/dist/typedoc docs/dist/docs/api/ts
       - persist_to_workspace:
