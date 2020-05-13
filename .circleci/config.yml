@@ -184,8 +184,13 @@ jobs:
     docker:
       - image: circleci/android:api-29-node
 
+    resource_class: medium+
+
     environment:
-      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+
+      # Configure the JVM and Gradle to avoid OOM errors
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
 
     steps:
       - checkout
@@ -197,8 +202,7 @@ jobs:
       - run:
           name: Build Android
           working_directory: platforms/android
-          command: |
-            ./gradlew -PpreDexEnable=false assembleAndroidTest
+          command: ./gradlew -PpreDexEnable=false assembleDebug assembleAndroidTest
 
       - run:
           name: Test Android
