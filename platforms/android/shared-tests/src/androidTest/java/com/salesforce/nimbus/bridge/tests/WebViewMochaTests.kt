@@ -5,7 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-package com.salesforce.nimbus.bridge.webview
+package com.salesforce.nimbus.bridge.tests
 
 import android.util.Log
 import android.webkit.WebView
@@ -16,6 +16,8 @@ import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.bridge.webview.broadcastMessage
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -95,7 +97,11 @@ class WebViewMochaTests {
         val bridge = WebViewBridge()
 
         runOnUiThread {
-            bridge.add(CallbackTestPluginWebViewBinder(CallbackTestPlugin()))
+            bridge.add(
+                CallbackTestPluginWebViewBinder(
+                    CallbackTestPlugin()
+                )
+            )
             bridge.add(MochaTestBridgeWebViewBinder(testBridge))
             bridge.add(JSAPITestPluginWebViewBinder(jsAPITest))
             bridge.attach(webView)
@@ -119,23 +125,8 @@ class WebViewMochaTests {
     }
 }
 
-data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: Int = 42) : JSONEncodable {
-    override fun encode(): String {
-        val jsonObject = JSONObject()
-        jsonObject.put("stringField", stringField)
-        jsonObject.put("intField", intField)
-        return jsonObject.toString()
-    }
-
-    companion object {
-        fun decode(jsonString: String): JSAPITestStruct {
-            val json = JSONObject(jsonString)
-            val intField = json.getInt("intField")
-            val stringField = json.getString("stringField")
-            return JSAPITestStruct(stringField, intField)
-        }
-    }
-}
+@Serializable
+data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: Int = 42)
 
 @PluginOptions(name = "jsapiTestPlugin")
 class JSAPITestPlugin : Plugin {
