@@ -6,6 +6,7 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiT
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.toJSONEncodable
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,6 +46,66 @@ class WebViewPluginTests {
             bridge.detach()
         }
     }
+
+    // region invoke
+
+    @Test
+    fun testExecutePromiseResolved() {
+        expectPlugin.testReady.withTimeoutInSeconds(30) {
+            withinLatch {
+                runOnUiThread {
+                    bridge.invoke(
+                        "__nimbus.plugins.testPlugin.addOne",
+                        arrayOf(5.toJSONEncodable())
+                    ) { err, result ->
+                        assertThat(err).isNull()
+                        assertThat(result).isEqualTo(6)
+                        countDown()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testExecutePromiseRejected() {
+        expectPlugin.testReady.withTimeoutInSeconds(30) {
+            withinLatch {
+                runOnUiThread {
+                    bridge.invoke(
+                        "__nimbus.plugins.testPlugin.failWith",
+                        arrayOf("epic fail".toJSONEncodable())
+                    ) { err, result ->
+                        assertThat(err).isEqualTo("epic fail")
+                        assertThat(result).isNull()
+                        countDown()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testPromiseRejectedOnRefresh() {
+        expectPlugin.testReady.withTimeoutInSeconds(30) {
+            withinLatch {
+                runOnUiThread {
+                    bridge.invoke(
+                        "__nimbus.plugins.testPlugin.wait",
+                        arrayOf(60000.toJSONEncodable())
+                    ) { err, _ ->
+                        assertThat(err).isEqualTo("ERROR_PAGE_UNLOADED")
+                        countDown()
+                    }
+
+                    // Destroy the existing web page & JS context
+                    webView.loadUrl("file:///android_asset/test-www/index.html")
+                }
+            }
+        }
+    }
+
+    // endregion
 
     // region nullary parameters
 
@@ -274,9 +335,10 @@ class WebViewPluginTests {
     // endregion
 
     private fun executeTest(script: String) {
-        assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
-        runOnUiThread { webView.evaluateJavascript(script) {} }
-        assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
-        assertThat(expectPlugin.passed).isTrue()
+        expectPlugin.testReady.withTimeoutInSeconds(30) {
+            runOnUiThread { webView.evaluateJavascript(script) {} }
+            assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+            assertThat(expectPlugin.passed).isTrue()
+        }
     }
 }

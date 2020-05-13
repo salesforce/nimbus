@@ -16,11 +16,9 @@ import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
-import com.salesforce.nimbus.toJSONEncodable
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -118,103 +116,6 @@ class MochaTests {
         assertTrue(testBridge.completionLatch.await(30, TimeUnit.SECONDS))
 
         assertEquals(0, testBridge.failures)
-    }
-
-    @Test
-    fun testExecutePromiseResolved() {
-        val webView = activityRule.activity.webView
-        val testBridge = MochaTestBridge(webView)
-
-        val bridge = WebViewBridge()
-        val callbackTestBinder = CallbackTestPluginWebViewBinder(CallbackTestPlugin())
-
-        runOnUiThread {
-            bridge.add(callbackTestBinder)
-            bridge.add(MochaTestBridgeWebViewBinder(testBridge))
-            bridge.attach(webView)
-            webView.loadUrl("file:///android_asset/test-www/index.html")
-        }
-
-        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
-        val completionLatch = CountDownLatch(1)
-        runOnUiThread {
-            bridge.invoke(
-                "__nimbus.plugins.callbackTestPlugin.addOne",
-                args = arrayOf(5.toJSONEncodable())
-            ) { err, result ->
-                assertNull(err)
-                assertEquals(6, result)
-                completionLatch.countDown()
-            }
-        }
-
-        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
-    }
-
-    @Test
-    fun testExecutePromiseRejected() {
-        val webView = activityRule.activity.webView
-        val testBridge = MochaTestBridge(webView)
-
-        val bridge = WebViewBridge()
-        val callbackTestBinder = CallbackTestPluginWebViewBinder(CallbackTestPlugin())
-
-        runOnUiThread {
-            bridge.add(MochaTestBridgeWebViewBinder(testBridge))
-            bridge.add(callbackTestBinder)
-            bridge.attach(webView)
-            webView.loadUrl("file:///android_asset/test-www/index.html")
-        }
-
-        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
-        val completionLatch = CountDownLatch(1)
-        runOnUiThread {
-            bridge.invoke(
-                "__nimbus.plugins.callbackTestPlugin.failWith",
-                arrayOf("epic fail".toJSONEncodable())
-            ) { err, result ->
-                assertEquals("epic fail", err)
-                assertNull(result)
-                completionLatch.countDown()
-            }
-        }
-
-        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
-    }
-
-    @Test
-    fun testPromiseRejectedOnRefresh() {
-        val webView = activityRule.activity.webView
-        val testBridge = MochaTestBridge(webView)
-
-        val bridge = WebViewBridge()
-        val callbackTestBinder = CallbackTestPluginWebViewBinder(CallbackTestPlugin())
-
-        runOnUiThread {
-            bridge.add(MochaTestBridgeWebViewBinder(testBridge))
-            bridge.add(callbackTestBinder)
-            bridge.attach(webView)
-            webView.loadUrl("file:///android_asset/test-www/index.html")
-        }
-
-        assertTrue(testBridge.readyLatch.await(5, TimeUnit.SECONDS))
-        val completionLatch = CountDownLatch(1)
-        runOnUiThread {
-            bridge.invoke(
-                "__nimbus.plugins.callbackTestPlugin.wait",
-                arrayOf(60000.toJSONEncodable())
-            ) { err, _ ->
-                assertEquals("ERROR_PAGE_UNLOADED", err)
-                completionLatch.countDown()
-            }
-        }
-
-        runOnUiThread {
-            // Destroy the existing web page & JS context
-            webView.loadUrl("file:///android_asset/test-www/index.html")
-        }
-
-        assertTrue(completionLatch.await(5, TimeUnit.SECONDS))
     }
 }
 

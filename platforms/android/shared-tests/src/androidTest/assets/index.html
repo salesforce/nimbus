@@ -9,7 +9,11 @@
 </head>
 <body>
 <script src="file:///android_asset/nimbus.js"></script>
-<script src="file:///android_asset/webview-init.js"></script>
+<script>
+    window.onload = () => {
+        __nimbus.plugins.expectPlugin.ready();
+    };
+</script>
 <script src="file:///android_asset/test-www/shared-tests.js"></script>
 </body>
 </html>

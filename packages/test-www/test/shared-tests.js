@@ -1,3 +1,10 @@
+let testPlugin = __nimbus.plugins.testPlugin;
+if (testPlugin !== undefined) {
+  testPlugin.addOne = (x) => Promise.resolve(x + 1);
+  testPlugin.failWith = (message) => Promise.reject(message);
+  testPlugin.wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 // region nullary parameters
 
 function verifyNullaryResolvingToInt() {

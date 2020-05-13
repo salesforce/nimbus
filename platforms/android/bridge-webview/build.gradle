@@ -33,12 +33,6 @@ android {
         }
     }
 
-    sourceSets {
-        androidTest {
-            assets.srcDirs = ['../../../packages/test-www/dist', '../../../packages/nimbus-bridge/dist/iife']
-        }
-    }
-
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -63,20 +57,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     kaptAndroidTest project(":compiler-webview")
-}
-
-/*
- * Compile the test web app prior to assembling the androidTest app
- */
-task buildTestWebApp(type: Exec) {
-    workingDir '../../..'
-    commandLine 'npm', 'install'
-}
-
-tasks.whenTaskAdded { task ->
-    if (task.name ==~ "assemble.*AndroidTest") {
-        task.dependsOn buildTestWebApp
-    }
 }
 
 task sourcesJar(type: Jar) {
