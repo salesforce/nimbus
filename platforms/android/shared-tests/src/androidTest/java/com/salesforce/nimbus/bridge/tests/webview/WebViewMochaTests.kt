@@ -5,7 +5,7 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-package com.salesforce.nimbus.bridge.tests
+package com.salesforce.nimbus.bridge.tests.webview
 
 import android.util.Log
 import android.webkit.WebView
@@ -16,6 +16,9 @@ import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import com.salesforce.nimbus.bridge.tests.CallbackTestPlugin
+import com.salesforce.nimbus.bridge.tests.CallbackTestPluginWebViewBinder
+import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
 import com.salesforce.nimbus.bridge.webview.broadcastMessage
 import kotlinx.serialization.Serializable

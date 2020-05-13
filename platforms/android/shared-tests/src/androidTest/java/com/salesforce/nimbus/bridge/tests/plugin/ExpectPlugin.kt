@@ -1,4 +1,4 @@
-package com.salesforce.nimbus.bridge.tests
+package com.salesforce.nimbus.bridge.tests.plugin
 
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin

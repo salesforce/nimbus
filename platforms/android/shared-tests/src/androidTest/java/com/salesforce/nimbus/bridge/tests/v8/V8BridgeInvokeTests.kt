@@ -1,8 +1,9 @@
-package com.salesforce.nimbus.bridge.tests
+package com.salesforce.nimbus.bridge.tests.v8
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
+import com.salesforce.nimbus.bridge.tests.withinLatch
 import com.salesforce.nimbus.bridge.v8.V8Bridge
 import com.salesforce.nimbus.bridge.v8.toV8Encodable
 import com.salesforce.nimbus.invoke
@@ -76,7 +77,11 @@ class V8BridgeInvokeTests {
     fun testInvokePromiseResolvedWithObject() {
         v8.scope {
             withinLatch {
-                bridge.invoke("objectFunc", emptyArray(), SomeClass.serializer()) { error, result ->
+                bridge.invoke(
+                    "objectFunc",
+                    emptyArray(),
+                    SomeClass.serializer()
+                ) { error, result ->
                     assertThat(error).isNull()
                     assertThat(result).isNotNull()
                     assertThat(result).isEqualTo(

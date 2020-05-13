@@ -1,12 +1,18 @@
-package com.salesforce.nimbus.bridge.tests
+package com.salesforce.nimbus.bridge.tests.v8
 
-import android.webkit.WebView
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import androidx.test.rule.ActivityTestRule
+import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
-import com.salesforce.nimbus.bridge.webview.WebViewBridge
-import com.salesforce.nimbus.toJSONEncodable
+import com.salesforce.nimbus.bridge.tests.WebViewActivity
+import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.ExpectPluginV8Binder
+import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.TestPluginV8Binder
+import com.salesforce.nimbus.bridge.v8.V8Bridge
+import com.salesforce.nimbus.k2v8.scope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -15,10 +21,10 @@ import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
-class WebViewPluginTests {
+class V8PluginTests {
 
-    private lateinit var webView: WebView
-    private lateinit var bridge: WebViewBridge
+    private lateinit var v8: V8
+    private lateinit var bridge: V8Bridge
     private lateinit var expectPlugin: ExpectPlugin
 
     @Rule
@@ -28,84 +34,24 @@ class WebViewPluginTests {
 
     @Before
     fun setUp() {
-        webView = activityRule.activity.webView
+        v8 = V8.createV8Runtime()
         expectPlugin = ExpectPlugin()
-        runOnUiThread {
-            bridge = WebViewBridge().apply {
-                add(ExpectPluginWebViewBinder(expectPlugin))
-                add(TestPluginWebViewBinder(TestPlugin()))
-                attach(webView)
-                webView.loadUrl("file:///android_asset/test-www/shared-tests.html")
-            }
+        bridge = V8Bridge().apply {
+            add(ExpectPluginV8Binder(expectPlugin))
+            add(TestPluginV8Binder(TestPlugin()))
+            attach(v8)
+        }
+        v8.scope {
+            v8.executeScript("shared-tests".js)
+            v8.executeScript("__nimbus.plugins.expectPlugin.ready();")
         }
     }
 
     @After
     fun tearDown() {
-        runOnUiThread {
-            bridge.detach()
-        }
+        bridge.detach()
+        v8.close()
     }
-
-    // region invoke
-
-    @Test
-    fun testExecutePromiseResolved() {
-        expectPlugin.testReady.withTimeoutInSeconds(30) {
-            withinLatch {
-                runOnUiThread {
-                    bridge.invoke(
-                        "__nimbus.plugins.testPlugin.addOne",
-                        arrayOf(5.toJSONEncodable())
-                    ) { err, result ->
-                        assertThat(err).isNull()
-                        assertThat(result).isEqualTo(6)
-                        countDown()
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun testExecutePromiseRejected() {
-        expectPlugin.testReady.withTimeoutInSeconds(30) {
-            withinLatch {
-                runOnUiThread {
-                    bridge.invoke(
-                        "__nimbus.plugins.testPlugin.failWith",
-                        arrayOf("epic fail".toJSONEncodable())
-                    ) { err, result ->
-                        assertThat(err).isEqualTo("epic fail")
-                        assertThat(result).isNull()
-                        countDown()
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun testPromiseRejectedOnRefresh() {
-        expectPlugin.testReady.withTimeoutInSeconds(30) {
-            withinLatch {
-                runOnUiThread {
-                    bridge.invoke(
-                        "__nimbus.plugins.testPlugin.wait",
-                        arrayOf(60000.toJSONEncodable())
-                    ) { err, _ ->
-                        assertThat(err).isEqualTo("ERROR_PAGE_UNLOADED")
-                        countDown()
-                    }
-
-                    // Destroy the existing web page & JS context
-                    webView.loadUrl("file:///android_asset/test-www/index.html")
-                }
-            }
-        }
-    }
-
-    // endregion
 
     // region nullary parameters
 
@@ -334,11 +280,14 @@ class WebViewPluginTests {
 
     // endregion
 
-    private fun executeTest(script: String) {
-        expectPlugin.testReady.withTimeoutInSeconds(30) {
-            runOnUiThread { webView.evaluateJavascript(script) {} }
-            assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
-            assertThat(expectPlugin.passed).isTrue()
-        }
+    private fun executeTest(function: String) {
+        assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
+        v8.scope { v8.executeScript(function) }
+        assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+        assertThat(expectPlugin.passed).isTrue()
     }
 }
+
+private val String.js
+    get() = ApplicationProvider.getApplicationContext<Application>()
+        .resources.assets.open("test-www/$this.js").bufferedReader().use { it.readText() }

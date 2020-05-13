@@ -3,20 +3,21 @@ package com.salesforce.nimbus.bridge.tests
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import com.salesforce.nimbus.bridge.tests.webview.WebViewMochaTests
 import org.json.JSONArray
 import org.json.JSONObject
 
 @PluginOptions(name = "callbackTestPlugin")
 class CallbackTestPlugin : Plugin {
     @BoundMethod
-    fun callbackWithSingleParam(arg: (param0: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage) -> Unit) {
-        arg(com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage())
+    fun callbackWithSingleParam(arg: (param0: WebViewMochaTests.MochaMessage) -> Unit) {
+        arg(WebViewMochaTests.MochaMessage())
     }
 
     @BoundMethod
-    fun callbackWithTwoParams(arg: (param0: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage, param1: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage) -> Unit) {
-        val mochaMessage = com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage("int param is 6", 6)
-        arg(com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage(), mochaMessage)
+    fun callbackWithTwoParams(arg: (param0: WebViewMochaTests.MochaMessage, param1: WebViewMochaTests.MochaMessage) -> Unit) {
+        val mochaMessage = WebViewMochaTests.MochaMessage("int param is 6", 6)
+        arg(WebViewMochaTests.MochaMessage(), mochaMessage)
     }
 
     @BoundMethod
@@ -30,8 +31,8 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.SerializableMochaMessage) -> Unit) {
-        arg(777, com.salesforce.nimbus.bridge.tests.WebViewMochaTests.SerializableMochaMessage())
+    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: WebViewMochaTests.SerializableMochaMessage) -> Unit) {
+        arg(777, WebViewMochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod
@@ -50,9 +51,9 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithArrayAndUddtParams(arg: (param0: JSONArray, param1: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage) -> Unit) {
+    fun callbackWithArrayAndUddtParams(arg: (param0: JSONArray, param1: WebViewMochaTests.MochaMessage) -> Unit) {
         val ja = JSONArray(listOf("one", "two", "three"))
-        arg(ja, com.salesforce.nimbus.bridge.tests.WebViewMochaTests.MochaMessage())
+        arg(ja, WebViewMochaTests.MochaMessage())
     }
 
     @BoundMethod
@@ -73,12 +74,12 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: com.salesforce.nimbus.bridge.tests.WebViewMochaTests.SerializableMochaMessage) -> Unit) {
+    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: WebViewMochaTests.SerializableMochaMessage) -> Unit) {
         val jo = JSONObject()
         jo.put("one", 1)
         jo.put("two", 2)
         jo.put("three", 3)
-        arg(jo, com.salesforce.nimbus.bridge.tests.WebViewMochaTests.SerializableMochaMessage())
+        arg(jo, WebViewMochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod
