@@ -335,6 +335,7 @@ jobs:
           name: Assemble Doc Fragments
           command: |
             mkdir -p docs/dist/docs/api
+            mkdir -p docs/dist/docs/api/android
             mv doc-build/platforms/android/bridge-webview/build/dokka docs/dist/docs/api/android/bridge-webview
             mv doc-build/platforms/android/bridge-v8/build/dokka docs/dist/docs/api/android/bridge-v8
             mv doc-build/platforms/android/core/build/dokka docs/dist/docs/api/android/core
