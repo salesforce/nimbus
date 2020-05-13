@@ -45,7 +45,7 @@ android {
 
 dependencies {
     androidTestImplementation project(":annotations")
-    androidTestImplementation project(":k2v8")
+    androidTestImplementation "com.salesforce.k2v8:k2v8:$k2v8_version"
     androidTestImplementation project(":bridge-v8")
     androidTestImplementation project(":bridge-webview")
     androidTestImplementation "com.eclipsesource.j2v8:j2v8:$j2v8_version"

@@ -6,13 +6,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPluginV8Binder
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
 import com.salesforce.nimbus.bridge.tests.plugin.TestPluginV8Binder
 import com.salesforce.nimbus.bridge.v8.V8Bridge
-import com.salesforce.nimbus.k2v8.scope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
