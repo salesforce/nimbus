@@ -198,7 +198,7 @@ jobs:
           name: Build Android
           working_directory: platforms/android
           command: |
-            ./gradlew -PpreDexEnable=false assembleDebug assembleAndroidTest
+            ./gradlew -PpreDexEnable=false assembleAndroidTest
 
       - run:
           name: Test Android
