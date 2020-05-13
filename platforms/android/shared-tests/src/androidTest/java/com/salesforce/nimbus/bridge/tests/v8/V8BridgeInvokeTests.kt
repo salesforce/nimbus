@@ -6,8 +6,8 @@ import com.google.common.truth.Truth.assertThat
 import com.salesforce.nimbus.bridge.tests.withinLatch
 import com.salesforce.nimbus.bridge.v8.V8Bridge
 import com.salesforce.nimbus.bridge.v8.toV8Encodable
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.invoke
-import com.salesforce.nimbus.k2v8.scope
 import kotlinx.serialization.Serializable
 import org.junit.After
 import org.junit.Before

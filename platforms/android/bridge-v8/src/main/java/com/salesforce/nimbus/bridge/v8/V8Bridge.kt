@@ -3,13 +3,13 @@ package com.salesforce.nimbus.bridge.v8
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.salesforce.k2v8.toV8Array
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
 import com.salesforce.nimbus.JSEncodable
 import com.salesforce.nimbus.NIMBUS_BRIDGE
 import com.salesforce.nimbus.NIMBUS_PLUGINS
 import com.salesforce.nimbus.Runtime
-import com.salesforce.nimbus.k2v8.toV8Array
 import java.io.Closeable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap

@@ -6,6 +6,7 @@ import com.salesforce.nimbus.compiler.asRawTypeName
 import com.salesforce.nimbus.compiler.getName
 import com.salesforce.nimbus.compiler.isNullable
 import com.salesforce.nimbus.compiler.nimbusPackage
+import com.salesforce.nimbus.compiler.salesforceNamespace
 import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -25,7 +26,7 @@ import javax.lang.model.type.TypeKind
 import javax.lang.model.type.WildcardType
 
 private const val v8Package = "com.eclipsesource.v8"
-private const val k2v8Package = "$nimbusPackage.k2v8"
+private const val k2v8Package = "$salesforceNamespace.k2v8"
 private const val nimbusV8Package = "$nimbusPackage.bridge.v8"
 
 class V8BinderGenerator : BinderGenerator() {
