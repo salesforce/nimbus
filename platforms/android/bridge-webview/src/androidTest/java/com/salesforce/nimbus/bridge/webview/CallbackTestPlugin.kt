@@ -9,14 +9,14 @@ import org.json.JSONObject
 @PluginOptions(name = "callbackTestPlugin")
 class CallbackTestPlugin : Plugin {
     @BoundMethod
-    fun callbackWithSingleParam(arg: (param0: MochaTests.MochaMessage) -> Unit) {
-        arg(MochaTests.MochaMessage())
+    fun callbackWithSingleParam(arg: (param0: WebViewMochaTests.MochaMessage) -> Unit) {
+        arg(WebViewMochaTests.MochaMessage())
     }
 
     @BoundMethod
-    fun callbackWithTwoParams(arg: (param0: MochaTests.MochaMessage, param1: MochaTests.MochaMessage) -> Unit) {
-        val mochaMessage = MochaTests.MochaMessage("int param is 6", 6)
-        arg(MochaTests.MochaMessage(), mochaMessage)
+    fun callbackWithTwoParams(arg: (param0: WebViewMochaTests.MochaMessage, param1: WebViewMochaTests.MochaMessage) -> Unit) {
+        val mochaMessage = WebViewMochaTests.MochaMessage("int param is 6", 6)
+        arg(WebViewMochaTests.MochaMessage(), mochaMessage)
     }
 
     @BoundMethod
@@ -30,8 +30,8 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: MochaTests.SerializableMochaMessage) -> Unit) {
-        arg(777, MochaTests.SerializableMochaMessage())
+    fun callbackWithPrimitiveAndUddtParams(arg: (param0: Int, param1: WebViewMochaTests.SerializableMochaMessage) -> Unit) {
+        arg(777, WebViewMochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod
@@ -50,9 +50,9 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithArrayAndUddtParams(arg: (param0: JSONArray, param1: MochaTests.MochaMessage) -> Unit) {
+    fun callbackWithArrayAndUddtParams(arg: (param0: JSONArray, param1: WebViewMochaTests.MochaMessage) -> Unit) {
         val ja = JSONArray(listOf("one", "two", "three"))
-        arg(ja, MochaTests.MochaMessage())
+        arg(ja, WebViewMochaTests.MochaMessage())
     }
 
     @BoundMethod
@@ -73,12 +73,12 @@ class CallbackTestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: MochaTests.SerializableMochaMessage) -> Unit) {
+    fun callbackWithDictionaryAndUddtParams(arg: (param0: JSONObject, param1: WebViewMochaTests.SerializableMochaMessage) -> Unit) {
         val jo = JSONObject()
         jo.put("one", 1)
         jo.put("two", 2)
         jo.put("three", 3)
-        arg(jo, MochaTests.SerializableMochaMessage())
+        arg(jo, WebViewMochaTests.SerializableMochaMessage())
     }
 
     @BoundMethod

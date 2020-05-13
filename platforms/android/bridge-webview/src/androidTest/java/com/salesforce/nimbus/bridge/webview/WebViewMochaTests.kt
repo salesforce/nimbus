@@ -27,7 +27,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
-class MochaTests {
+class WebViewMochaTests {
 
     data class MochaMessage(val stringField: String = "This is a string", val intField: Int = 42) : JSONEncodable {
         override fun encode(): String {
