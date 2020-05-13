@@ -14,4 +14,3 @@ fun CountDownLatch.withTimeoutInSeconds(timeoutInSeconds: Long, block: () -> Uni
     Truth.assertThat(await(timeoutInSeconds, TimeUnit.SECONDS)).isTrue()
     block()
 }
-
