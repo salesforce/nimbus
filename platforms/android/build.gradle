@@ -17,6 +17,7 @@ buildscript {
         google()
         jcenter()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -28,12 +29,32 @@ buildscript {
     }
 }
 
+project.ext {
+    if (project.hasProperty('preDexEnable')) {
+        project.ext.preDexLibs = project.properties['preDexEnable'] == 'true'
+    } else {
+        project.ext.preDexLibs = true // pre dexing should be true by default
+    }
+
+    println('PREDEX ' + (project.ext.preDexLibs ? 'ENABLED' : 'DISABLED')) // goes to build log or console output
+}
+
 allprojects {
     repositories {
         google()
         jcenter()
         maven {
             url "https://dl.bintray.com/salesforce-mobile/android"
+        }
+    }
+}
+
+subprojects {
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
         }
     }
 }
