@@ -35,7 +35,7 @@ class WebViewPluginTests {
                 add(ExpectPluginWebViewBinder(expectPlugin))
                 add(TestPluginWebViewBinder(TestPlugin()))
                 attach(webView)
-                webView.loadUrl("file:///android_asset/index.html")
+                webView.loadUrl("file:///android_asset/test-www/shared-tests.html")
             }
         }
     }
