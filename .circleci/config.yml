@@ -210,25 +210,7 @@ jobs:
             sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 
       - run:
-          name: WebView Bridge Tests with Firebase Test Lab
-          working_directory: platforms/android
-          command: |
-            sudo gcloud firebase test android run \
-              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
-              --test bridge-webview/build/outputs/apk/androidTest/debug/bridge-webview-debug-androidTest.apk \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
-
-      - run:
-          name: V8 Bridge Tests with Firebase Test Lab
-          working_directory: platforms/android
-          command: |
-            sudo gcloud firebase test android run \
-              --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
-              --test bridge-v8/build/outputs/apk/androidTest/debug/bridge-v8-debug-androidTest.apk \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
-
-      - run:
-          name: Shared Tests with Firebase Test Lab
+          name: Instrumentation Tests with Firebase Test Lab
           working_directory: platforms/android
           command: |
             sudo gcloud firebase test android run \
@@ -247,14 +229,6 @@ jobs:
           command: ./gradlew dokka
 
       - store_artifacts:
-          path: platforms/android/bridge-webview/build/reports
-          destination: reports
-
-      - store_artifacts:
-          path: platforms/android/bridge-v8/build/reports
-          destination: reports
-
-      - store_artifacts:
           path: platforms/android/shared-tests/build/reports
           destination: reports
 
@@ -263,9 +237,6 @@ jobs:
 
       - store_test_results:
           path: platforms/android/bridge-v8/build/test-results
-
-      - store_test_results:
-          path: platforms/android/shared-tests/build/test-results
 
       - run:
           name: Codecov Android
