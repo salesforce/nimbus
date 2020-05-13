@@ -227,7 +227,7 @@ data class JSAPITestStruct(var stringField: String = "JSAPITEST", var intField: 
     }
 
     companion object {
-        fun fromJSON(jsonString: String): JSAPITestStruct {
+        fun decode(jsonString: String): JSAPITestStruct {
             val json = JSONObject(jsonString)
             val intField = json.getInt("intField")
             val stringField = json.getString("stringField")

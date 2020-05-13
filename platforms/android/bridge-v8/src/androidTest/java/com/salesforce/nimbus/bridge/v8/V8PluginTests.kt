@@ -95,6 +95,11 @@ class V8PluginTests {
         }
 
         @BoundMethod
+        fun returnsIntArray(): Array<Int> {
+            return arrayOf(1, 2, 3)
+        }
+
+        @BoundMethod
         fun returnsStringStringMap(): Map<String, String> {
             return mapOf("key1" to "value1", "key2" to "value2", "key3" to "value3")
         }
@@ -157,6 +162,11 @@ class V8PluginTests {
 
         @BoundMethod
         fun serializableListParamReturnsJoinedString(param: List<SerializableClass>): String {
+            return param.joinToString(separator = ", ")
+        }
+
+        @BoundMethod
+        fun intArrayParamReturnsJoinedString(param: Array<Int>): String {
             return param.joinToString(separator = ", ")
         }
 
@@ -225,6 +235,11 @@ class V8PluginTests {
                     SerializableClass("3", 3, 3.0)
                 )
             )
+        }
+
+        @BoundMethod
+        fun intArrayCallback(callback: (Array<Int>) -> Unit) {
+            callback(arrayOf(1, 2, 3))
         }
 
         @BoundMethod
@@ -391,7 +406,7 @@ class V8PluginTests {
     fun returnsIntList() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result[0] !== 1 || 
+                if (result[0] !== 1 ||
                     result[1] !== 2 ||
                     result[2] !== 3) {
                     __nimbus.plugins.expect.fail();
@@ -409,7 +424,7 @@ class V8PluginTests {
     fun returnsDoubleList() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result[0] !== 4.0 || 
+                if (result[0] !== 4.0 ||
                     result[1] !== 5.0 ||
                     result[2] !== 6.0) {
                     __nimbus.plugins.expect.fail();
@@ -427,7 +442,7 @@ class V8PluginTests {
     fun returnsStringList() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result[0] !== '1' || 
+                if (result[0] !== '1' ||
                     result[1] !== '2' ||
                     result[2] !== '3') {
                     __nimbus.plugins.expect.fail();
@@ -466,10 +481,28 @@ class V8PluginTests {
     }
 
     @Test
+    fun returnsIntArray() = v8.scope {
+        val testScript = """
+            function checkResult(result) {
+                if (result[0] !== 1 ||
+                    result[1] !== 2 ||
+                    result[2] !== 3) {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+            }
+            __nimbus.plugins.test.returnsIntArray().then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
+    @Test
     fun returnsStringStringMap() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result['key1'] !== 'value1' || 
+                if (result['key1'] !== 'value1' ||
                     result['key2'] !== 'value2' ||
                     result['key3'] !== 'value3') {
                     __nimbus.plugins.expect.fail();
@@ -487,7 +520,7 @@ class V8PluginTests {
     fun returnsStringIntMap() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result['key1'] !== 1 || 
+                if (result['key1'] !== 1 ||
                     result['key2'] !== 2 ||
                     result['key3'] !== 3) {
                     __nimbus.plugins.expect.fail();
@@ -505,7 +538,7 @@ class V8PluginTests {
     fun returnsStringDoubleMap() = v8.scope {
         val testScript = """
             function checkResult(result) {
-                if (result['key1'] !== 1.0 || 
+                if (result['key1'] !== 1.0 ||
                     result['key2'] !== 2.0 ||
                     result['key3'] !== 3.0) {
                     __nimbus.plugins.expect.fail();
@@ -693,6 +726,22 @@ class V8PluginTests {
                 }
             ];
             __nimbus.plugins.test.serializableListParamReturnsJoinedString(param).then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
+    @Test
+    fun intArrayParamReturnsJoinedString() = v8.scope {
+        val testScript = """
+            function checkResult(result) {
+                if (result !== '4, 5, 6') {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+            }
+            __nimbus.plugins.test.intArrayParamReturnsJoinedString([4, 5, 6]).then(checkResult);
         """.trimIndent()
         v8.executeScript(testScript)
         assertThat(expectation.passed).isTrue()
@@ -938,6 +987,27 @@ class V8PluginTests {
                 return;
             }
             __nimbus.plugins.test.serializableListCallback(callbackResult).then(checkResult);
+        """.trimIndent()
+        v8.executeScript(testScript)
+        assertThat(expectation.passed).isTrue()
+    }
+
+    @Test
+    fun intArrayCallback() = v8.scope {
+        val testScript = """
+            function checkResult() {
+            }
+            function callbackResult(result) {
+                if (result[0] !== 1 ||
+                    result[1] !== 2 ||
+                    result[2] !== 3) {
+                    __nimbus.plugins.expect.fail();
+                    return;
+                }
+                __nimbus.plugins.expect.pass();
+                return;
+            }
+            __nimbus.plugins.test.intArrayCallback(callbackResult).then(checkResult);
         """.trimIndent()
         v8.executeScript(testScript)
         assertThat(expectation.passed).isTrue()

@@ -20,6 +20,7 @@ import kotlinx.metadata.KmValueParameter
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.VariableElement
+import javax.lang.model.type.ArrayType
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.WildcardType
@@ -37,18 +38,6 @@ class V8BinderGenerator : BinderGenerator() {
     private val v8ArrayClassName = ClassName(v8Package, "V8Array")
     private val v8FunctionClassName = ClassName(v8Package, "V8Function")
     private val k2V8ClassName = ClassName(k2v8Package, "K2V8")
-    private val serializerFunctionName = ClassName(
-        "kotlinx.serialization.builtins",
-        "serializer"
-    )
-    private val mapSerializerClassName = ClassName(
-        "kotlinx.serialization.builtins",
-        "MapSerializer"
-    )
-    private val listSerializerClassName = ClassName(
-        "kotlinx.serialization.builtins",
-        "ListSerializer"
-    )
 
     override fun processClassProperties(builder: TypeSpec.Builder) {
 
@@ -175,12 +164,17 @@ class V8BinderGenerator : BinderGenerator() {
                 TypeKind.INT,
                 TypeKind.DOUBLE,
                 TypeKind.FLOAT,
-                TypeKind.LONG -> processPrimitiveParameter(parameter, kotlinParameter, parameterIndex)
+                TypeKind.LONG -> processPrimitiveParameter(parameter, parameterIndex)
+                TypeKind.ARRAY -> processArrayParameter(parameter, parameterIndex)
                 TypeKind.DECLARED -> {
                     val declaredType = parameter.asType() as DeclaredType
                     when {
-                        declaredType.isStringType() -> processStringParameter(parameter, kotlinParameter, parameterIndex)
-                        declaredType.isKotlinSerializableType() -> processSerializableParameter(parameter, kotlinParameter, parameterIndex, declaredType)
+                        declaredType.isStringType() -> processStringParameter(parameter, parameterIndex)
+                        declaredType.isKotlinSerializableType() -> processSerializableParameter(
+                            parameter,
+                            parameterIndex,
+                            declaredType
+                        )
                         declaredType.isFunctionType() -> {
                             val functionParameterReturnType = declaredType.typeArguments.last()
                             when {
@@ -287,7 +281,6 @@ class V8BinderGenerator : BinderGenerator() {
 
     private fun processPrimitiveParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int
     ): CodeBlock {
         val declaration = "val ${parameter.getName()}"
@@ -308,9 +301,20 @@ class V8BinderGenerator : BinderGenerator() {
         }
     }
 
+    private fun processArrayParameter(
+        parameter: VariableElement,
+        parameterIndex: Int
+    ): CodeBlock {
+        return CodeBlock.of(
+            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
+            arraySerializerClassName,
+            parameter.asType().typeArguments().first(),
+            serializerFunctionName
+        )
+    }
+
     private fun processStringParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int
     ): CodeBlock {
         return CodeBlock.of("val ${parameter.getName()} = parameters.getString($parameterIndex)")
@@ -318,7 +322,6 @@ class V8BinderGenerator : BinderGenerator() {
 
     private fun processSerializableParameter(
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int,
         declaredType: DeclaredType
     ): CodeBlock {
@@ -397,6 +400,19 @@ class V8BinderGenerator : BinderGenerator() {
                                     mapKeyType,
                                     serializerFunctionName,
                                     mapValueType,
+                                    serializerFunctionName
+                                )
+                            }
+                            wildcardParameterType.isArrayType() -> {
+                                val arrayType = wildcardParameterType.typeArguments().first()
+                                val statement =
+                                    "k2v8!!.toV8(%T(%T.%T()), p$index)"
+                                argBlock.add(
+                                    if (kotlinTypeNullable) {
+                                        "p$index?.let { $statement }"
+                                    } else statement,
+                                    arraySerializerClassName,
+                                    arrayType,
                                     serializerFunctionName
                                 )
                             }
@@ -535,6 +551,15 @@ class V8BinderGenerator : BinderGenerator() {
                         throw IllegalArgumentException()
                     }
                 }
+            }
+            is ArrayType -> {
+                val arrayType = returnType.typeArguments().first()
+                CodeBlock.of(
+                    "k2v8!!.toV8(%T(%T.%T()), result)",
+                    arraySerializerClassName,
+                    arrayType,
+                    serializerFunctionName
+                )
             }
 
             // if a primitive type just return the result

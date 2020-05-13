@@ -8,6 +8,7 @@ import com.salesforce.nimbus.compiler.isNullable
 import com.salesforce.nimbus.compiler.nimbusPackage
 import com.salesforce.nimbus.compiler.nullable
 import com.salesforce.nimbus.compiler.toKotlinTypeName
+import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -29,6 +30,15 @@ import javax.lang.model.type.WildcardType
 class WebViewBinderGenerator : BinderGenerator() {
     override val javascriptEngine = ClassName("android.webkit", "WebView")
     override val serializedOutputType = ClassName("kotlin", "String")
+
+    private val jsonSerializationClassName = ClassName("kotlinx.serialization.json", "Json")
+    private val jsonSerializationConfigurationClassName = ClassName("kotlinx.serialization.json", "JsonConfiguration")
+
+    private val jsonObjectClassName = ClassName("org.json", "JSONObject")
+    private val jsonArrayClassName = ClassName("org.json", "JSONArray")
+
+    private val toJSONEncodableFunctionName = ClassName(nimbusPackage, "toJSONEncodable")
+    private val kotlinJSONEncodableClassName = ClassName(nimbusPackage, "KotlinJSONEncodable")
 
     override fun processFunctionElement(
         functionElement: ExecutableElement,
@@ -63,6 +73,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 TypeKind.DOUBLE,
                 TypeKind.FLOAT,
                 TypeKind.LONG -> processPrimitiveParameter(parameter, kotlinParameter, funSpec)
+                TypeKind.ARRAY -> processArrayParameter(parameter, kotlinParameter, funSpec)
                 // TODO support rest of primitive types
                 TypeKind.DECLARED -> {
                     val declaredType = parameter.asType() as DeclaredType
@@ -129,10 +140,32 @@ class WebViewBinderGenerator : BinderGenerator() {
             TypeKind.VOID -> processVoidReturnType(functionElement, argsString, kotlinReturnType, funSpec)
             TypeKind.DECLARED -> {
                 when {
-                    returnType.toString() in listOf("java.lang.String", "kotlin.String") -> processStringReturnType(
+                    returnType.isStringType() -> processStringReturnType(
                         functionElement,
                         argsString,
                         kotlinReturnType,
+                        funSpec
+                    )
+                    returnType.isListType() -> processListReturnType(
+                        functionElement,
+                        returnType as DeclaredType,
+                        argsString,
+                        funSpec
+                    )
+                    returnType.isMapType() -> processMapReturnType(
+                        functionElement,
+                        returnType as DeclaredType,
+                        argsString,
+                        funSpec
+                    )
+                    returnType.isJSONEncodableType() -> processJSONEncodableReturnType(
+                        functionElement,
+                        argsString,
+                        funSpec
+                    )
+                    returnType.isKotlinSerializableType() -> processKotlinSerializableReturnType(
+                        functionElement,
+                        argsString,
                         funSpec
                     )
                     else -> processOtherDeclaredReturnType(
@@ -143,6 +176,11 @@ class WebViewBinderGenerator : BinderGenerator() {
                     )
                 }
             }
+            TypeKind.ARRAY -> processArrayReturnType(
+                functionElement,
+                argsString,
+                funSpec
+            )
             else -> {
                 // TODO: we should whitelist types we know work rather than just hoping for the best
                 funSpec.addStatement(
@@ -163,6 +201,25 @@ class WebViewBinderGenerator : BinderGenerator() {
         funSpec.addParameter(
             parameter.getName(),
             parameter.asKotlinTypeName(nullable = kotlinParameter.isNullable())
+        )
+    }
+
+    private fun processArrayParameter(
+        parameter: VariableElement,
+        kotlinParameter: KmValueParameter?,
+        funSpec: FunSpec.Builder
+    ) {
+        val parameterNullable = kotlinParameter?.type?.arguments?.firstOrNull().isNullable()
+        funSpec.addParameter(
+            parameter.simpleName.toString() + "String",
+            String::class
+        )
+        funSpec.addStatement(
+            "val %N = %T<%T>(%NString)",
+            parameter.simpleName,
+            ClassName(nimbusPackage, "arrayFromJSON"),
+            parameter.asType().typeArguments().first().toKotlinTypeName(parameterNullable),
+            parameter.simpleName
         )
     }
 
@@ -253,12 +310,79 @@ class WebViewBinderGenerator : BinderGenerator() {
                         } else {
                             "%T(arg$index, %T.serializer())"
                         },
-                        ClassName(
-                            nimbusPackage,
-                            "KotlinJSONEncodable"
-                        ),
+                        kotlinJSONEncodableClassName,
                         functionParameterType.superBound.asRawTypeName()
                     )
+
+                    wildcardParameterType.isArrayType() -> {
+                        val arrayType = wildcardParameterType.typeArguments().first()
+                        when {
+                            arrayType.isKotlinSerializableType() -> {
+                                argBlock.add(
+                                    "%T(arg$index, %T(%T.serializer()))",
+                                    kotlinJSONEncodableClassName,
+                                    arraySerializerClassName,
+                                    arrayType
+                                )
+                            }
+                            else -> {
+                                argBlock.add(
+                                    "arg$index.%T()",
+                                    toJSONEncodableFunctionName
+                                )
+                            }
+                        }
+                    }
+
+                    wildcardParameterType.isListType() -> {
+                        val listValueType = (wildcardParameterType as DeclaredType).typeArguments.first()
+                        when {
+                            listValueType.isKotlinSerializableType() -> {
+                                argBlock.add(
+                                    "%T(arg$index, %T(%T.serializer()))",
+                                    kotlinJSONEncodableClassName,
+                                    listSerializerClassName,
+                                    listValueType.asKotlinTypeName()
+                                )
+                            }
+                            else -> {
+                                argBlock.add(
+                                    "arg$index.%T()",
+                                    toJSONEncodableFunctionName
+                                )
+                            }
+                        }
+                    }
+
+                    wildcardParameterType.isMapType() -> {
+                        val mapTypeArguments = (wildcardParameterType as DeclaredType).typeArguments
+                        val mapKeyType = mapTypeArguments[0]
+                        val mapValueType = mapTypeArguments[1]
+
+                        // we only allow string key types
+                        if (!mapKeyType.isStringType()) {
+                            error(parameter, "$mapKeyType is an invalid map key type. Only String is supported.")
+                            return
+                        }
+
+                        when {
+                            mapValueType.isKotlinSerializableType() -> {
+                                argBlock.add(
+                                    "%T(arg$index, %T(%T.serializer(), %T.serializer()))",
+                                    kotlinJSONEncodableClassName,
+                                    mapSerializerClassName,
+                                    String::class,
+                                    mapValueType.asKotlinTypeName()
+                                )
+                            }
+                            else -> {
+                                argBlock.add(
+                                    "arg$index.%T()",
+                                    toJSONEncodableFunctionName
+                                )
+                            }
+                        }
+                    }
                     else -> wrapValueInPrimitiveJSONEncodable()
                 }
             } else {
@@ -329,19 +453,35 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinParameter: KmValueParameter?,
         funSpec: FunSpec.Builder
     ) {
-        // TODO handle @Serializable
         val parameterNullable = kotlinParameter?.type?.arguments?.firstOrNull().isNullable()
-        funSpec.addParameter(
-            parameter.simpleName.toString() + "String",
-            String::class
-        )
-        funSpec.addStatement(
-            "val %N = %T<%T>(%NString)",
-            parameter.simpleName,
-            ClassName(nimbusPackage, "arrayFromJSON"),
-            declaredType.typeArguments.first().asKotlinTypeName(nullable = parameterNullable),
-            parameter.simpleName
-        )
+        val listType = declaredType.typeArguments.first()
+        if (listType.isKotlinSerializableType()) {
+            funSpec.addParameter(
+                parameter.simpleName.toString() + "String",
+                String::class
+            )
+            funSpec.addStatement(
+                "val %N = %T(%T.Stable).parse(%T(%T.serializer()), %NString)",
+                parameter.simpleName,
+                jsonSerializationClassName,
+                jsonSerializationConfigurationClassName,
+                listSerializerClassName,
+                listType.asKotlinTypeName(),
+                parameter.simpleName
+            )
+        } else {
+            funSpec.addParameter(
+                parameter.simpleName.toString() + "String",
+                String::class
+            )
+            funSpec.addStatement(
+                "val %N = %T<%T>(%NString)",
+                parameter.simpleName,
+                ClassName(nimbusPackage, "listFromJSON"),
+                listType.asKotlinTypeName(nullable = parameterNullable),
+                parameter.simpleName
+            )
+        }
     }
 
     private fun processMapParameter(
@@ -350,21 +490,46 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinParameter: KmValueParameter?,
         funSpec: FunSpec.Builder
     ) {
-        // TODO handle @Serializable
-        val firstParameterNullable = kotlinParameter?.type?.arguments?.get(0).isNullable()
-        val secondParameterNullable = kotlinParameter?.type?.arguments?.get(1).isNullable()
-        funSpec.addParameter(
-            parameter.simpleName.toString() + "String",
-            String::class
-        )
-        funSpec.addStatement(
-            "val %N = %T<%T, %T>(%NString)",
-            parameter.simpleName,
-            ClassName(nimbusPackage, "hashMapFromJSON"),
-            declaredType.typeArguments[0].asKotlinTypeName(nullable = firstParameterNullable),
-            declaredType.typeArguments[1].asKotlinTypeName(nullable = secondParameterNullable),
-            parameter.simpleName
-        )
+        val keyParameterType = declaredType.typeArguments[0]
+        val valueParameterType = declaredType.typeArguments[1]
+
+        // we only support string keys in maps
+        if (!keyParameterType.isStringType()) {
+            error(parameter, "$keyParameterType is an invalid map key type. Only String is supported.")
+            return
+        }
+
+        if (valueParameterType.isKotlinSerializableType()) {
+            funSpec.addParameter(
+                parameter.simpleName.toString() + "String",
+                String::class
+            )
+            funSpec.addStatement(
+                "val %N = %T(%T.Stable).parse(%T(%T.serializer(), %T.serializer()), %NString)",
+                parameter.simpleName,
+                jsonSerializationClassName,
+                jsonSerializationConfigurationClassName,
+                mapSerializerClassName,
+                String::class,
+                valueParameterType.asKotlinTypeName(),
+                parameter.simpleName
+            )
+        } else {
+            val keyParameterNullable = kotlinParameter?.type?.arguments?.get(0).isNullable()
+            val valueParameterNullable = kotlinParameter?.type?.arguments?.get(1).isNullable()
+            funSpec.addParameter(
+                parameter.simpleName.toString() + "String",
+                String::class
+            )
+            funSpec.addStatement(
+                "val %N = %T<%T, %T>(%NString)",
+                parameter.simpleName,
+                ClassName(nimbusPackage, "mapFromJSON"),
+                keyParameterType.asKotlinTypeName(nullable = keyParameterNullable),
+                valueParameterType.asKotlinTypeName(nullable = valueParameterNullable),
+                parameter.simpleName
+            )
+        }
     }
 
     private fun processOtherDeclaredParameter(
@@ -374,17 +539,18 @@ class WebViewBinderGenerator : BinderGenerator() {
     ) {
         when {
             declaredType.isJSONEncodableType() -> {
-                val companion = processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
-                val hasFromJson = companion?.enclosedElements?.any { it.getName() == "fromJSON" } ?: false
+                val companion =
+                    processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
+                val hasDecode = companion?.enclosedElements?.any { it.getName() == "decode" } ?: false
 
-                // convert from json if there is a fromJSON function
-                if (hasFromJson) {
+                // convert from json if there is a decode function
+                if (hasDecode) {
                     funSpec.addParameter(
                         "${parameter.getName()}String",
                         String::class
                     )
                     funSpec.addStatement(
-                        "val %N = %T.fromJSON(%NString)",
+                        "val %N = %T.decode(%NString)",
                         parameter.simpleName,
                         parameter.asKotlinTypeName(),
                         parameter.simpleName
@@ -392,7 +558,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 } else {
                     error(
                         parameter,
-                        "Class for parameter ${parameter.simpleName} must have a static fromJSON function."
+                        "Class for parameter ${parameter.simpleName} must have a static decode() function."
                     )
                 }
             }
@@ -404,8 +570,8 @@ class WebViewBinderGenerator : BinderGenerator() {
                 funSpec.addStatement(
                     "val %N = %T(%T.Stable).parse(%T.serializer(), %NString)",
                     parameter.simpleName,
-                    ClassName("kotlinx.serialization.json", "Json"),
-                    ClassName("kotlinx.serialization.json", "JsonConfiguration"),
+                    jsonSerializationClassName,
+                    jsonSerializationConfigurationClassName,
                     parameter.asKotlinTypeName(),
                     parameter.simpleName
                 )
@@ -437,10 +603,175 @@ class WebViewBinderGenerator : BinderGenerator() {
         funSpec.apply {
             addStatement(
                 "return %T.quote(target.%N($argsString))",
-                ClassName("org.json", "JSONObject"),
+                jsonObjectClassName,
                 functionElement.simpleName.toString()
             )
             returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
+        }
+    }
+
+    private fun processListReturnType(
+        functionElement: ExecutableElement,
+        returnType: DeclaredType,
+        argsString: String,
+        funSpec: FunSpec.Builder
+    ) {
+        val parameterType = returnType.typeArguments.first()
+        when {
+            parameterType.isKotlinSerializableType() -> {
+                funSpec.apply {
+                    addStatement(
+                        "val json = %T(%T.Stable).stringify(%T(%T.%T()), target.%N($argsString))",
+                        jsonSerializationClassName,
+                        jsonSerializationConfigurationClassName,
+                        listSerializerClassName,
+                        parameterType.asKotlinTypeName(),
+                        serializerFunctionName,
+                        functionElement.getName()
+                    )
+                    addStatement("return json")
+                    returns(String::class)
+                }
+            }
+            else -> {
+                funSpec.apply {
+                    addCode(
+                        CodeBlock.Builder().apply {
+                            addStatement(
+                                "val json = target.%N($argsString).%T().encode()",
+                                functionElement.getName(),
+                                toJSONEncodableFunctionName
+                            )
+                            addStatement("return json")
+                            returns(String::class)
+                        }.build()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun processArrayReturnType(
+        functionElement: ExecutableElement,
+        argsString: String,
+        funSpec: FunSpec.Builder
+    ) {
+        val arrayType = functionElement.returnType.typeArguments().first()
+        when {
+            arrayType.isKotlinSerializableType() -> {
+                funSpec.apply {
+                    addStatement(
+                        "val json = %T(%T.Stable).stringify(%T(%T.%T()), target.%N($argsString))",
+                        jsonSerializationClassName,
+                        jsonSerializationConfigurationClassName,
+                        arraySerializerClassName,
+                        arrayType,
+                        serializerFunctionName,
+                        functionElement.getName()
+                    )
+                    addStatement("return json")
+                    returns(String::class)
+                }
+            }
+            else -> {
+                funSpec.apply {
+                    addCode(
+                        CodeBlock.Builder().apply {
+                            addStatement(
+                                "val json = target.%N($argsString).%T().encode()",
+                                functionElement.getName(),
+                                toJSONEncodableFunctionName
+                            )
+                            addStatement("return json")
+                            returns(String::class)
+                        }.build()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun processMapReturnType(
+        functionElement: ExecutableElement,
+        returnType: DeclaredType,
+        argsString: String,
+        funSpec: FunSpec.Builder
+    ) {
+        val keyParameterType = returnType.typeArguments[0]
+        val valueParameterType = returnType.typeArguments[1]
+
+        // we only allow string key types
+        if (!keyParameterType.isStringType()) {
+            error(functionElement, "$keyParameterType is an invalid map key type. Only String is supported.")
+            return
+        }
+
+        when {
+            valueParameterType.isKotlinSerializableType() -> {
+                funSpec.apply {
+                    addStatement(
+                        "val json = %T(%T.Stable).stringify(%T(%T.%T(), %T.%T()), target.%N($argsString))",
+                        jsonSerializationClassName,
+                        jsonSerializationConfigurationClassName,
+                        mapSerializerClassName,
+                        keyParameterType.asKotlinTypeName(),
+                        serializerFunctionName,
+                        valueParameterType.asKotlinTypeName(),
+                        serializerFunctionName,
+                        functionElement.getName()
+                    )
+                    addStatement("return json")
+                    returns(String::class)
+                }
+            }
+            else -> {
+                funSpec.apply {
+                    addCode(
+                        CodeBlock.Builder().apply {
+                            addStatement(
+                                "val json = target.%N($argsString).%T().encode()",
+                                functionElement.getName(),
+                                toJSONEncodableFunctionName
+                            )
+                            addStatement("return json")
+                            returns(String::class)
+                        }.build()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun processJSONEncodableReturnType(
+        functionElement: ExecutableElement,
+        argsString: String,
+        funSpec: FunSpec.Builder
+    ) {
+        funSpec.apply {
+            addStatement(
+                "val json = target.%N($argsString).encode()",
+                functionElement.getName()
+            )
+            addStatement("return json")
+            returns(String::class)
+        }
+    }
+
+    private fun processKotlinSerializableReturnType(
+        functionElement: ExecutableElement,
+        argsString: String,
+        funSpec: FunSpec.Builder
+    ) {
+        funSpec.apply {
+            addStatement(
+                "val json = %T(%T.Stable).stringify(%T.serializer(), target.%N($argsString))",
+                jsonSerializationClassName,
+                jsonSerializationConfigurationClassName,
+                functionElement.returnType,
+                functionElement.getName()
+            )
+            addStatement("return json")
+            returns(String::class)
         }
     }
 
@@ -450,58 +781,26 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinReturnType: KmType?,
         funSpec: FunSpec.Builder
     ) {
-        val functionReturnType = functionElement.returnType
-        when {
 
-            // if the parameter implements JSONSerializable we are good
-            functionReturnType.isJSONEncodableType() -> {
-
-                // stringify the return value
-                funSpec.apply {
-                    addStatement(
-                        "val json = target.%N($argsString).encode()",
-                        functionElement.getName()
-                    )
-                    addStatement("return json")
-                    returns(String::class)
-                }
-            }
-            functionReturnType.isKotlinSerializableType() -> {
-                funSpec.apply {
-                    addStatement(
-                        "val json = %T(%T.Stable).stringify(%T.serializer(), target.%N($argsString))",
-                        ClassName("kotlinx.serialization.json", "Json"),
-                        ClassName("kotlinx.serialization.json", "JsonConfiguration"),
-                        functionElement.returnType,
-                        functionElement.getName()
-                    )
-                    addStatement("return json")
-                    returns(String::class)
-                }
-            }
-            else -> {
-
-                // TODO: should we even allow this? what should the behavior be?
-                // Map to nullable parameters if necessary
-                if (functionElement.returnType.asTypeName() is ParameterizedTypeName) {
-                    val parameterizedReturnType =
-                        functionElement.returnType.asKotlinTypeName() as ParameterizedTypeName
-                    val returnType =
-                        parameterizedReturnType.rawType.parameterizedBy(
-                            parameterizedReturnType.typeArguments.mapIndexed { index, type ->
-                                val nullable = kotlinReturnType?.arguments?.get(index).isNullable()
-                                type.toKotlinTypeName(nullable = nullable)
-                            }
-                        )
-                    funSpec.returns(returnType)
-                } else {
-                    funSpec.returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
-                }
-                funSpec.addStatement(
-                    "return target.%N($argsString)",
-                    functionElement.simpleName.toString()
+        // TODO: should we even allow this? what should the behavior be?
+        // Map to nullable parameters if necessary
+        if (functionElement.returnType.asTypeName() is ParameterizedTypeName) {
+            val parameterizedReturnType =
+                functionElement.returnType.asKotlinTypeName() as ParameterizedTypeName
+            val returnType =
+                parameterizedReturnType.rawType.parameterizedBy(
+                    parameterizedReturnType.typeArguments.mapIndexed { index, type ->
+                        val nullable = kotlinReturnType?.arguments?.get(index).isNullable()
+                        type.toKotlinTypeName(nullable = nullable)
+                    }
                 )
-            }
+            funSpec.returns(returnType)
+        } else {
+            funSpec.returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
         }
+        funSpec.addStatement(
+            "return target.%N($argsString)",
+            functionElement.simpleName.toString()
+        )
     }
 }

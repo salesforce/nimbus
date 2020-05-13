@@ -8,6 +8,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import kotlinx.metadata.KmFunction
@@ -23,6 +24,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
@@ -38,6 +40,22 @@ abstract class BinderGenerator : AbstractProcessor() {
     private lateinit var messager: Messager
     private lateinit var types: Types
     private var serializableElements: Set<Element> = emptySet()
+    protected val serializerFunctionName = ClassName(
+        "kotlinx.serialization.builtins",
+        "serializer"
+    )
+    protected val mapSerializerClassName = ClassName(
+        "kotlinx.serialization.builtins",
+        "MapSerializer"
+    )
+    protected val listSerializerClassName = ClassName(
+        "kotlinx.serialization.builtins",
+        "ListSerializer"
+    )
+    protected val arraySerializerClassName = ClassName(
+        "kotlinx.serialization.builtins",
+        "ArraySerializer"
+    )
 
     /**
      * The [ClassName] of the javascript engine that the Binder class will target
@@ -111,7 +129,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             messager.printMessage(Diagnostic.Kind.ERROR, e.message)
         }
 
-        return true
+        return false
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
@@ -326,6 +344,10 @@ abstract class BinderGenerator : AbstractProcessor() {
                 .any { it.startsWith("$nimbusPackage.JSONEncodable") }
     }
 
+    protected fun TypeName.isKotlinSerializableType(): Boolean {
+        return serializableElements.map { it.asRawTypeName() }.any { it == this }
+    }
+
     protected fun TypeMirror.isKotlinSerializableType(): Boolean {
         return serializableElements.map { it.asRawTypeName() }.any { it == asRawTypeName() }
     }
@@ -336,5 +358,9 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     protected fun TypeMirror.isUnitType(): Boolean {
         return (asKotlinTypeName() as ClassName).simpleName == "Unit"
+    }
+
+    protected fun TypeMirror.isArrayType(): Boolean {
+        return kind == TypeKind.ARRAY
     }
 }
