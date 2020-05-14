@@ -4,6 +4,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -37,13 +38,16 @@ android {
 }
 
 dependencies {
-    implementation project(":annotations")
+    compileOnly project(":core")
+    compileOnly project(":annotations")
+    compileOnly project(":bridge-webview")
+    compileOnly project(":bridge-v8")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compileOnly "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
     compileOnly "com.eclipsesource.j2v8:j2v8:$j2v8_version"
     compileOnly "com.salesforce.k2v8:k2v8:$k2v8_version"
-    testImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    testImplementation "org.json:json:$json_version"
+    kapt project(":compiler-webview")
+    kapt project(":compiler-v8")
 }
 
 task sourcesJar(type: Jar) {
