@@ -18,50 +18,12 @@ const val INTERNAL_NIMBUS_BRIDGE = "_nimbus"
 
 class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
-    var bridgeV8: V8? = null
-        private set
-    private val binders = mutableListOf<Binder<V8, V8Object>>()
+    private var bridgeV8: V8? = null
+    internal val binders = mutableListOf<Binder<V8, V8Object>>()
     private var nimbusBridge: V8Object? = null
     private var nimbusPlugins: V8Object? = null
     private var internalNimbusBridge: V8Object? = null
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
-
-    override fun add(vararg binder: Binder<V8, V8Object>) {
-        binders.addAll(binder)
-    }
-
-    override fun attach(javascriptEngine: V8) {
-        bridgeV8 = javascriptEngine
-
-        // create the __nimbus bridge
-        nimbusBridge = javascriptEngine.createObject()
-
-            // add _nimbus.plugins
-            .add(
-                NIMBUS_PLUGINS,
-                javascriptEngine.createObject().also { nimbusPlugins = it }
-            )
-
-        // add to the bridge v8 engine
-        javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
-
-        // create an internal nimbus to resolve promises
-        internalNimbusBridge = javascriptEngine.createObject()
-            .registerVoidCallback("resolvePromise") { parameters ->
-                val result = parameters.get(1)
-                promises.remove(parameters.getString(0))?.invoke(null, result)
-                (result as Closeable?)?.close()
-            }
-            .registerVoidCallback("rejectPromise") { parameters ->
-                promises.remove(parameters.getString(0))?.invoke(parameters.getString(1), null)
-            }
-
-        // add the internal bridge to the v8 engine
-        javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, internalNimbusBridge)
-
-        // initialize plugins
-        initialize(binders)
-    }
 
     override fun detach() {
         cleanup(binders)
@@ -109,7 +71,7 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
         // create our script to invoke the function and resolve the promise
         val script = """
-                let idSegments = $idSegments;                  
+                let idSegments = $idSegments;
                 let promise = undefined;
                 try {
                     let fn = idSegments.reduce((state, key) => {
@@ -128,6 +90,39 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
         // execute the script
         v8.executeScript(script)
+    }
+
+    private fun attachInternal(javascriptEngine: V8) {
+        bridgeV8 = javascriptEngine
+
+        // create the __nimbus bridge
+        nimbusBridge = javascriptEngine.createObject()
+
+            // add _nimbus.plugins
+            .add(
+                NIMBUS_PLUGINS,
+                javascriptEngine.createObject().also { nimbusPlugins = it }
+            )
+
+        // add to the bridge v8 engine
+        javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
+
+        // create an internal nimbus to resolve promises
+        internalNimbusBridge = javascriptEngine.createObject()
+            .registerVoidCallback("resolvePromise") { parameters ->
+                val result = parameters.get(1)
+                promises.remove(parameters.getString(0))?.invoke(null, result)
+                (result as Closeable?)?.close()
+            }
+            .registerVoidCallback("rejectPromise") { parameters ->
+                promises.remove(parameters.getString(0))?.invoke(parameters.getString(1), null)
+            }
+
+        // add the internal bridge to the v8 engine
+        javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, internalNimbusBridge)
+
+        // initialize plugins
+        initialize(binders)
     }
 
     private fun initialize(binders: Collection<Binder<V8, V8Object>>) {
@@ -155,5 +150,17 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
     protected fun finalize() {
         promises.values.forEach { it.invoke("Canceled", null) }
         promises.clear()
+    }
+
+    /**
+     * Builder class to create instances of [V8Bridge] and attach to a [V8] runtime.
+     */
+    class Builder : Bridge.Builder<V8, V8Object, V8Bridge>() {
+        override fun attach(javascriptEngine: V8): V8Bridge {
+            return V8Bridge().apply {
+                binders.addAll(builderBinders)
+                attachInternal(javascriptEngine)
+            }
+        }
     }
 }

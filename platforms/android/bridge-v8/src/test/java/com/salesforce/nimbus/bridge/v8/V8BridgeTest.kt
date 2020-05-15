@@ -47,13 +47,14 @@ class V8BridgeTest {
             every { add(any(), any<V8Object>()) } returns this
         }
 
-        v8Bridge = V8Bridge()
-        v8Bridge.add(mockPlugin1V8Binder, mockPlugin2V8Binder)
+        v8Bridge = V8Bridge.Builder()
+            .bind(mockPlugin1V8Binder)
+            .bind(mockPlugin2V8Binder)
+            .attach(mockV8)
     }
 
     @Test
     fun attachAddsNimbusBridgeObject() {
-        v8Bridge.attach(mockV8)
         slot<V8Object>().let {
 
             // verify bridge object is added
@@ -67,7 +68,6 @@ class V8BridgeTest {
 
     @Test
     fun attachAddsInternalNimbusBridgeObject() {
-        v8Bridge.attach(mockV8)
         slot<V8Object>().let {
 
             // verify internal bridge object is added
@@ -82,21 +82,18 @@ class V8BridgeTest {
 
     @Test
     fun attachAllowsPluginsToCustomize() {
-        v8Bridge.attach(mockV8)
         verify { mockPlugin1.customize(v8Bridge) }
         verify { mockPlugin2.customize(v8Bridge) }
     }
 
     @Test
     fun attachBindsToBinders() {
-        v8Bridge.attach(mockV8)
         verify { mockPlugin1V8Binder.bind(v8Bridge) }
         verify { mockPlugin2V8Binder.bind(v8Bridge) }
     }
 
     @Test
     fun detachCleansUpPlugins() {
-        v8Bridge.attach(mockV8)
         v8Bridge.detach()
         verify { mockPlugin1.cleanup(v8Bridge) }
         verify { mockPlugin2.cleanup(v8Bridge) }
@@ -104,7 +101,6 @@ class V8BridgeTest {
 
     @Test
     fun detachClosesObjects() {
-        v8Bridge.attach(mockV8)
 
         // capture the nimbusBridge object
         val nimbusBridgeSlot = slot<V8Object>()

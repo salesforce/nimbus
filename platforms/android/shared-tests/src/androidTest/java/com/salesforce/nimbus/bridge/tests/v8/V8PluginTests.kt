@@ -9,10 +9,10 @@ import com.google.common.truth.Truth.assertThat
 import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
-import com.salesforce.nimbus.bridge.tests.plugin.ExpectPluginV8Binder
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
-import com.salesforce.nimbus.bridge.tests.plugin.TestPluginV8Binder
+import com.salesforce.nimbus.bridge.tests.plugin.v8Binder
 import com.salesforce.nimbus.bridge.v8.V8Bridge
+import com.salesforce.nimbus.bridge.v8.bridge
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,10 +36,9 @@ class V8PluginTests {
     fun setUp() {
         v8 = V8.createV8Runtime()
         expectPlugin = ExpectPlugin()
-        bridge = V8Bridge().apply {
-            add(ExpectPluginV8Binder(expectPlugin))
-            add(TestPluginV8Binder(TestPlugin()))
-            attach(v8)
+        bridge = v8.bridge {
+            bind { expectPlugin.v8Binder() }
+            bind { TestPlugin().v8Binder() }
         }
         v8.scope {
             v8.executeScript("shared-tests".js)

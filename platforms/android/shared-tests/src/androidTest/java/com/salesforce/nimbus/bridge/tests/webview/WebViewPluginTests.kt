@@ -7,12 +7,12 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
-import com.salesforce.nimbus.bridge.tests.plugin.ExpectPluginWebViewBinder
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
-import com.salesforce.nimbus.bridge.tests.plugin.TestPluginWebViewBinder
+import com.salesforce.nimbus.bridge.tests.plugin.webViewBinder
 import com.salesforce.nimbus.bridge.tests.withTimeoutInSeconds
 import com.salesforce.nimbus.bridge.tests.withinLatch
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.toJSONEncodable
 import org.junit.After
 import org.junit.Before
@@ -38,12 +38,11 @@ class WebViewPluginTests {
         webView = activityRule.activity.webView
         expectPlugin = ExpectPlugin()
         runOnUiThread {
-            bridge = WebViewBridge().apply {
-                add(ExpectPluginWebViewBinder(expectPlugin))
-                add(TestPluginWebViewBinder(TestPlugin()))
-                attach(webView)
-                webView.loadUrl("file:///android_asset/test-www/shared-tests.html")
+            bridge = webView.bridge {
+                bind { expectPlugin.webViewBinder() }
+                bind { TestPlugin().webViewBinder() }
             }
+            webView.loadUrl("file:///android_asset/test-www/shared-tests.html")
         }
     }
 

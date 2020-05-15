@@ -3,6 +3,7 @@ package com.salesforce.nimbus.bridge.webview.compiler
 import com.salesforce.nimbus.compiler.BinderGenerator
 import com.salesforce.nimbus.compiler.asKotlinTypeName
 import com.salesforce.nimbus.compiler.asRawTypeName
+import com.salesforce.nimbus.compiler.asTypeName
 import com.salesforce.nimbus.compiler.getName
 import com.salesforce.nimbus.compiler.isNullable
 import com.salesforce.nimbus.compiler.nimbusPackage
@@ -39,6 +40,17 @@ class WebViewBinderGenerator : BinderGenerator() {
 
     private val toJSONEncodableFunctionName = ClassName(nimbusPackage, "toJSONEncodable")
     private val kotlinJSONEncodableClassName = ClassName(nimbusPackage, "KotlinJSONEncodable")
+
+    override fun createBinderExtensionFunction(pluginElement: Element, binderClassName: ClassName): FunSpec {
+        return FunSpec.builder("webViewBinder")
+            .receiver(pluginElement.asTypeName())
+            .addStatement(
+                "return %T(this)",
+                binderClassName
+            )
+            .returns(binderClassName)
+            .build()
+    }
 
     override fun processFunctionElement(
         functionElement: ExecutableElement,

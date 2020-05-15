@@ -18,10 +18,12 @@ import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.bridge.v8.V8Bridge
+import com.salesforce.nimbus.bridge.v8.bridge
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.core.plugins.DeviceInfoPlugin
-import com.salesforce.nimbus.core.plugins.DeviceInfoPluginV8Binder
-import com.salesforce.nimbus.core.plugins.DeviceInfoPluginWebViewBinder
+import com.salesforce.nimbus.core.plugins.v8Binder
+import com.salesforce.nimbus.core.plugins.webViewBinder
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,9 +41,8 @@ class MainActivity : AppCompatActivity() {
         val deviceInfoPlugin = DeviceInfoPlugin(this)
 
         // create the web view bridge
-        webViewBridge = WebViewBridge().apply {
-            add(DeviceInfoPluginWebViewBinder(deviceInfoPlugin))
-            attach(webView)
+        webViewBridge = webView.bridge {
+            bind { deviceInfoPlugin.webViewBinder() }
         }
 
         // load the demo url
@@ -50,12 +51,15 @@ class MainActivity : AppCompatActivity() {
         // create a v8 runtime
         v8 = V8.createV8Runtime()
 
+        // create some plugins for v8
+        val logPlugin = LogPlugin()
+        val toastPlugin = ToastPlugin(this)
+
         // create the v8 bridge
-        v8Bridge = V8Bridge().apply {
-            add(DeviceInfoPluginV8Binder(deviceInfoPlugin))
-            add(LogPluginV8Binder(LogPlugin()))
-            add(ToastPluginV8Binder(ToastPlugin(this@MainActivity.applicationContext)))
-            attach(v8)
+        v8Bridge = v8.bridge {
+            bind { deviceInfoPlugin.v8Binder() }
+            bind { logPlugin.v8Binder() }
+            bind { toastPlugin.v8Binder() }
         }
 
         // execute a script to get the device info plugin and then log to the console

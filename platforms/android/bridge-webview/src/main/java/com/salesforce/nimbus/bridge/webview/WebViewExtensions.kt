@@ -39,3 +39,11 @@ fun WebView.broadcastMessage(name: String, arg: JSEncodable<String>? = null, com
         }
     }
 }
+
+/**
+ * Creates a [WebViewBridge.Builder] and passes it to the [builder] function, allowing any binders to be added
+ * and then attaches to the [WebView] instance.
+ */
+fun WebView.bridge(builder: WebViewBridge.Builder.() -> Unit): WebViewBridge {
+    return WebViewBridge.Builder().apply(builder).attach(this)
+}

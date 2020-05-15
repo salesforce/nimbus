@@ -51,3 +51,11 @@ fun V8.rejectPromise(error: String): V8Object {
  * Helper function to create a [V8Object] which aids in testability.
  */
 fun V8.createObject() = V8Object(this)
+
+/**
+ * Creates a [V8Bridge.Builder] and passes it to the [builder] function, allowing any binders to be added
+ * and then attaches to the [V8Bridge] instance.
+ */
+fun V8.bridge(builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
+    return V8Bridge.Builder().apply(builder).attach(this)
+}

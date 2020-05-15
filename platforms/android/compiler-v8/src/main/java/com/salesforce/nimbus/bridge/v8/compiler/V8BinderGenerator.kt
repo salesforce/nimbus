@@ -3,6 +3,7 @@ package com.salesforce.nimbus.bridge.v8.compiler
 import com.salesforce.nimbus.compiler.BinderGenerator
 import com.salesforce.nimbus.compiler.asKotlinTypeName
 import com.salesforce.nimbus.compiler.asRawTypeName
+import com.salesforce.nimbus.compiler.asTypeName
 import com.salesforce.nimbus.compiler.getName
 import com.salesforce.nimbus.compiler.isNullable
 import com.salesforce.nimbus.compiler.nimbusPackage
@@ -126,6 +127,17 @@ class V8BinderGenerator : BinderGenerator() {
 
     override fun processUnbindFunction(builder: FunSpec.Builder) {
         builder.addStatement("pluginBridge?.close()")
+    }
+
+    override fun createBinderExtensionFunction(pluginElement: Element, binderClassName: ClassName): FunSpec {
+        return FunSpec.builder("v8Binder")
+            .receiver(pluginElement.asTypeName())
+            .addStatement(
+                "return %T(this)",
+                binderClassName
+            )
+            .returns(binderClassName)
+            .build()
     }
 
     override fun processFunctionElement(

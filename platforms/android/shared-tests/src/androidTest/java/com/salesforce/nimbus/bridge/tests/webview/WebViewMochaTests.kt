@@ -17,9 +17,9 @@ import com.salesforce.nimbus.JSONEncodable
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.bridge.tests.CallbackTestPlugin
-import com.salesforce.nimbus.bridge.tests.CallbackTestPluginWebViewBinder
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
-import com.salesforce.nimbus.bridge.webview.WebViewBridge
+import com.salesforce.nimbus.bridge.tests.webViewBinder
+import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.bridge.webview.broadcastMessage
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
@@ -97,17 +97,12 @@ class WebViewMochaTests {
             )
         val jsAPITest = JSAPITestPlugin()
 
-        val bridge = WebViewBridge()
-
         runOnUiThread {
-            bridge.add(
-                CallbackTestPluginWebViewBinder(
-                    CallbackTestPlugin()
-                )
-            )
-            bridge.add(MochaTestBridgeWebViewBinder(testBridge))
-            bridge.add(JSAPITestPluginWebViewBinder(jsAPITest))
-            bridge.attach(webView)
+            webView.bridge {
+                bind { CallbackTestPlugin().webViewBinder() }
+                bind { testBridge.webViewBinder() }
+                bind { jsAPITest.webViewBinder() }
+            }
             webView.loadUrl("file:///android_asset/test-www/index.html")
         }
 

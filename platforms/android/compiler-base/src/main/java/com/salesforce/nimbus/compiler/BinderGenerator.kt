@@ -111,14 +111,18 @@ abstract class BinderGenerator : AbstractProcessor() {
                     } else {
 
                         // process each plugin element to create a type spec
-                        val typeSpec = processPluginElement(pluginElement, serializableElements)
+                        val binderTypeSpec = processPluginElement(pluginElement, serializableElements)
+                        val binderPackage = processingEnv.elementUtils.getPackageOf(pluginElement).qualifiedName.toString()
+                        val binderName = binderTypeSpec.name!!
+                        val binderClassName = ClassName(binderPackage, binderName)
 
                         // create the binder class for the plugin
                         FileSpec.builder(
-                            processingEnv.elementUtils.getPackageOf(pluginElement).qualifiedName.toString(),
-                            typeSpec.name!!
+                            binderPackage,
+                            binderName
                         )
-                            .addType(typeSpec)
+                            .addType(binderTypeSpec)
+                            .addFunction(createBinderExtensionFunction(pluginElement, binderClassName))
                             .indent("    ")
                             .build()
                             .writeTo(processingEnv.filer)
@@ -179,13 +183,13 @@ abstract class BinderGenerator : AbstractProcessor() {
             }
             .map { it as ExecutableElement }
 
+        val binderClassName = ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
+
         // the binder needs to capture the bound target to pass through calls to it
         val type = TypeSpec.classBuilder(binderTypeName)
 
             // the Binder implements Binder<JavascriptEngine>
-            .addSuperinterface(
-                ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
-            )
+            .addSuperinterface(binderClassName)
             .addModifiers(KModifier.PUBLIC)
 
             // add the <PluginClass> as a constructor property
@@ -307,6 +311,11 @@ abstract class BinderGenerator : AbstractProcessor() {
     protected open fun processUnbindFunction(builder: FunSpec.Builder) {
         /* leave for subclasses to override */
     }
+
+    abstract fun createBinderExtensionFunction(
+        pluginElement: Element,
+        binderClassName: ClassName
+    ): FunSpec
 
     abstract fun processFunctionElement(
         functionElement: ExecutableElement,

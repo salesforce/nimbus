@@ -3,10 +3,11 @@ package com.salesforce.nimbus.bridge.tests.v8
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.withinLatch
 import com.salesforce.nimbus.bridge.v8.V8Bridge
+import com.salesforce.nimbus.bridge.v8.bridge
 import com.salesforce.nimbus.bridge.v8.toV8Encodable
-import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.invoke
 import kotlinx.serialization.Serializable
 import org.junit.After
@@ -38,7 +39,7 @@ class V8BridgeInvokeTests {
     fun setUp() {
         v8 = V8.createV8Runtime()
         v8.executeScript(fixtureScript)
-        bridge = V8Bridge().apply { attach(v8) }
+        bridge = v8.bridge()
     }
 
     @After

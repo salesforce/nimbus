@@ -31,21 +31,6 @@ class WebViewBridge : Bridge<WebView, String>,
     private val binders = mutableListOf<Binder<WebView, String>>()
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
-    override fun add(vararg binder: Binder<WebView, String>) {
-        binders.addAll(binder)
-    }
-
-    override fun attach(javascriptEngine: WebView) {
-        this.bridgeWebView = javascriptEngine
-        if (!javascriptEngine.settings.javaScriptEnabled) {
-            javascriptEngine.settings.javaScriptEnabled = true
-        }
-        javascriptEngine.addJavascriptInterface(this,
-            BRIDGE_NAME
-        )
-        initialize(javascriptEngine, binders)
-    }
-
     override fun detach() {
         bridgeWebView?.let { webView ->
             webView.removeJavascriptInterface(BRIDGE_NAME)
@@ -168,6 +153,17 @@ class WebViewBridge : Bridge<WebView, String>,
         return result.toString()
     }
 
+    private fun attachInternal(javascriptEngine: WebView) {
+        this.bridgeWebView = javascriptEngine
+        if (!javascriptEngine.settings.javaScriptEnabled) {
+            javascriptEngine.settings.javaScriptEnabled = true
+        }
+        javascriptEngine.addJavascriptInterface(this,
+            BRIDGE_NAME
+        )
+        initialize(javascriptEngine, binders)
+    }
+
     private fun initialize(webView: WebView, binders: Collection<Binder<WebView, String>>) {
         binders.forEach { binder ->
 
@@ -201,5 +197,17 @@ class WebViewBridge : Bridge<WebView, String>,
     protected fun finalize() {
         promises.values.forEach { it.invoke("Canceled", null) }
         promises.clear()
+    }
+
+    /**
+     * Builder class to create instances of [WebViewBridge] and attach to a [WebView].
+     */
+    class Builder : Bridge.Builder<WebView, String, WebViewBridge>() {
+        override fun attach(javascriptEngine: WebView): WebViewBridge {
+            return WebViewBridge().apply {
+                binders.addAll(builderBinders)
+                attachInternal(javascriptEngine)
+            }
+        }
     }
 }
