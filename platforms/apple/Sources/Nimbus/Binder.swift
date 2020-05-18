@@ -6,6 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 
 public protocol Binder {
