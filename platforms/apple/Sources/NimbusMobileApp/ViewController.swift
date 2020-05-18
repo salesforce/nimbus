@@ -18,6 +18,7 @@ class ViewController: UIViewController {
         title = "Nimbus"
         bridge.addPlugin(DeviceInfoPlugin())
         jsBridge.addPlugin(DeviceInfoPlugin())
+        jsBridge.addPlugin(ConsolePlugin())
     }
 
     override func loadView() {
@@ -34,6 +35,10 @@ class ViewController: UIViewController {
 
         if let context = self.context {
             jsBridge.attach(to: context)
+        }
+        if let demoPath = Bundle.main.path(forResource: "JSCoreDemo", ofType: "js"),
+            let demoJS = try? String(contentsOfFile: demoPath), let context = self.context {
+            context.evaluateScript(demoJS)
         }
     }
 
