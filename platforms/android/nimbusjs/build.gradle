@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
 
     def versionFile = file('../../../lerna.json')
     def parsedVersion = new groovy.json.JsonSlurper().parseText(versionFile.text)
@@ -35,12 +34,11 @@ preBuild.doFirst {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
     androidTestImplementation "androidx.test.ext:junit:$androidx_test_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
+    androidTestImplementation "com.google.truth:truth:$google_truth_version"
 }
 
 task sourcesJar(type: Jar) {

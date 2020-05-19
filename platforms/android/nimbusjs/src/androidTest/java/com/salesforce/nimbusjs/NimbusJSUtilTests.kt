@@ -2,8 +2,8 @@ package com.salesforce.nimbusjs
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import junit.framework.Assert.assertEquals
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets
 @RunWith(AndroidJUnit4::class)
 class NimbusJSUtilsTests {
 
-    lateinit var context: Context
-    lateinit var nimbusJsStringWithScriptTags: String
+    private lateinit var context: Context
+    private lateinit var nimbusJsStringWithScriptTags: String
 
     @Before
     fun setup() {
@@ -34,9 +34,9 @@ class NimbusJSUtilsTests {
         val htmlWithEmptyString = html.replace("<inject>", "")
         val input = ByteArrayInputStream(htmlWithEmptyString.toByteArray(Charsets.UTF_8))
         val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
-        var resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
+        val resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
         val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
-        assertEquals(true, resultString.equals(htmlWithNimbus))
+        assertThat(resultString).isEqualTo(htmlWithNimbus)
     }
 
     @Test
@@ -51,7 +51,7 @@ class NimbusJSUtilsTests {
         val inputStream = NimbusJSUtilities.injectedNimbusStream(input, context)
         val resultString = inputStream.bufferedReader(StandardCharsets.UTF_8).readText()
         val htmlWithNimbus = html.replace("<inject>", nimbusJsStringWithScriptTags)
-        assertEquals(true, resultString.equals(htmlWithNimbus))
+        assertThat(resultString).isEqualTo(htmlWithNimbus)
     }
 
     @Test(expected = Exception::class)
