@@ -18,7 +18,7 @@ class SharedTestsJSCore: XCTestCase {
 
     override func setUp() {
         expectPlugin = ExpectPlugin()
-        expectPlugin.currentExpectation = expectation(description: "expectPlugin")
+        expectPlugin.finishedExpectation = expectation(description: "expectPlugin")
         testPlugin = TestPlugin()
         context = JSContext()!
         bridge = JSContextBridge()

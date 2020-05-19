@@ -53,6 +53,7 @@
 		CC6358EC244F808700A9AB39 /* JSEvaluating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6358EB244F808700A9AB39 /* JSEvaluating.swift */; };
 		CC64245F244619D400604279 /* JSContextConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64245E244619D400604279 /* JSContextConnectionTests.swift */; };
 		CC64246924479C0400604279 /* JSValueCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64246824479C0400604279 /* JSValueCallback.swift */; };
+		CC7214CB2474605B00FCCC2D /* SharedTestsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */; };
 		CC8169582458BCA200E5C0FA /* iife in Resources */ = {isa = PBXBuildFile; fileRef = CC8169562458BB3900E5C0FA /* iife */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
@@ -215,6 +216,7 @@
 		CC6358EB244F808700A9AB39 /* JSEvaluating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSEvaluating.swift; sourceTree = "<group>"; };
 		CC64245E244619D400604279 /* JSContextConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnectionTests.swift; sourceTree = "<group>"; };
 		CC64246824479C0400604279 /* JSValueCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueCallback.swift; sourceTree = "<group>"; };
+		CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestsWebView.swift; sourceTree = "<group>"; };
 		CC8169562458BB3900E5C0FA /* iife */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iife; path = "../../../../packages/nimbus-bridge/dist/iife"; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				CC355C0A24367CC200E5FDEE /* PluginTests.swift */,
 				CC39528A2474269D0047BE52 /* SharedTestsJSCore.swift */,
 				CC39528C24745ED10047BE52 /* SharedTestsPlugin.swift */,
+				CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */,
 				CC43DB6F2459E3BA0038C0E6 /* JavaScriptCoreGlobals.swift */,
 			);
 			name = NimbusTests;
@@ -973,6 +976,7 @@
 				68B855F2233EE7FD00D1F243 /* BinderTests.swift in Sources */,
 				CC39528B2474269D0047BE52 /* SharedTestsJSCore.swift in Sources */,
 				CC355C0B24367CC200E5FDEE /* PluginTests.swift in Sources */,
+				CC7214CB2474605B00FCCC2D /* SharedTestsWebView.swift in Sources */,
 				CC39528D24745ED10047BE52 /* SharedTestsPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

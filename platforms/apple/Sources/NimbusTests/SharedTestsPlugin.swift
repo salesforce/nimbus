@@ -268,7 +268,8 @@ class TestPlugin: Plugin {
 }
 
 class ExpectPlugin: Plugin {
-    var currentExpectation: XCTestExpectation?
+    var readyExpectation: XCTestExpectation?
+    var finishedExpectation: XCTestExpectation?
     var isReady = false
     var isFinished = false
     var passed = false
@@ -277,8 +278,15 @@ class ExpectPlugin: Plugin {
         return "expectPlugin"
     }
 
+    func reset() {
+        self.isFinished = false
+        self.passed = false
+        finishedExpectation = nil
+    }
+
     func ready() {
         isReady = true
+        readyExpectation?.fulfill()
     }
 
     func pass() {
@@ -287,7 +295,7 @@ class ExpectPlugin: Plugin {
 
     func finished() {
         isFinished = true
-        currentExpectation?.fulfill()
+        finishedExpectation?.fulfill()
     }
 
     func bind<C>(to connection: C) where C: Connection {
