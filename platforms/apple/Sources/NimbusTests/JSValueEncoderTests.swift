@@ -90,6 +90,22 @@ class JSValueEncoderTests: XCTestCase {
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
 
+    func testDouble() throws {
+        let testValue: Double = 5.0
+        let encoded = try encoder.encode(testValue, context: context)
+        XCTAssertTrue(encoded.isNumber)
+        let assertScript = """
+        function testValue() {
+            if (valueToTest !== 5.0) {
+                return false
+            }
+            return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+
     func testString() throws {
         let testValue = "theteststring"
         let encoded = try encoder.encode(testValue, context: context)
@@ -172,10 +188,11 @@ class JSValueEncoderTests: XCTestCase {
         let foo: Int
         let bar: String
         let thing: [Int]
+        let double: Double
     }
 
     func testBasicStruct() throws {
-        let testValue = TestEncodable(foo: 2, bar: "baz", thing: [1, 2])
+        let testValue = TestEncodable(foo: 2, bar: "baz", thing: [1, 2], double: 3.0)
         let encoded = try encoder.encode(testValue, context: context)
         XCTAssertTrue(encoded.isObject)
         let assertScript = """
@@ -192,7 +209,70 @@ class JSValueEncoderTests: XCTestCase {
             if (valueToTest.thing[1] !== \(testValue.thing[1])) {
                 return false
             }
+            if (valueToTest.double !== \(testValue.double)) {
+                return false
+            }
             return true
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+
+    func testArrayOfStructs() throws { //swiftlint:disable:this function_body_length
+        let one = TestEncodable(foo: 1, bar: "blah", thing: [2], double: 2.0)
+        let two = TestEncodable(foo: 2, bar: "blar", thing: [2], double: 3.0)
+        let three = TestEncodable(foo: 3, bar: "blam", thing: [3], double: 4.0)
+        let testValue = [one, two, three]
+        let encoded = try encoder.encode(testValue, context: context)
+        XCTAssertTrue(encoded.isArray)
+        let assertScript = """
+        function testValue() {
+            var one = valueToTest[0];
+            var two = valueToTest[1];
+            var three = valueToTest[2];
+            if (valueToTest.length !== 3) {
+                return false;
+            }
+            if (one.foo !== \(one.foo)) {
+                return false;
+            }
+            if (one.bar !== "\(one.bar)") {
+                return false;
+            }
+            if (one.thing[0] !== \(one.thing[0])) {
+                return false;
+            }
+            if (one.double !== \(one.double)) {
+                return false;
+            }
+
+            if (two.foo !== \(two.foo)) {
+                return false;
+            }
+            if (two.bar !== "\(two.bar)") {
+                return false;
+            }
+            if (two.thing[0] !== \(two.thing[0])) {
+                return false;
+            }
+            if (two.double !== \(two.double)) {
+                return false;
+            }
+
+            if (three.foo !== \(three.foo)) {
+                return false;
+            }
+            if (three.bar !== "\(three.bar)") {
+                return false;
+            }
+            if (three.thing[0] !== \(three.thing[0])) {
+                return false;
+            }
+            if (three.double !== \(three.double)) {
+                return false;
+            }
+            return true;
         }
         testValue();
         """
@@ -206,7 +286,7 @@ class JSValueEncoderTests: XCTestCase {
     }
 
     func testBasicStructNested() throws {
-        let nest = TestEncodable(foo: 2, bar: "baz", thing: [1, 2])
+        let nest = TestEncodable(foo: 2, bar: "baz", thing: [1, 2], double: 3.0)
         let testValue = TestEncodableNested(foo: 19, bar: "baz", nest: nest)
         let encoded = try encoder.encode(testValue, context: context)
         XCTAssertTrue(encoded.isObject)
@@ -228,6 +308,9 @@ class JSValueEncoderTests: XCTestCase {
                 return false
             }
             if (valueToTest.nest.thing[1] !== \(testValue.nest.thing[1])) {
+                return false
+            }
+            if (valueToTest.nest.double !== \(testValue.nest.double)) {
                 return false
             }
             return true

@@ -317,7 +317,20 @@ private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     func encode<T>(_ value: T) throws where T: Encodable {
         encoder.codingPath.append(JSValueKey(index: count))
         defer { self.encoder.codingPath.removeLast() }
-        container?.append(value)
+        let depth = encoder.storage.count
+        do {
+            try value.encode(to: encoder)
+        } catch {
+            if encoder.storage.count > depth {
+                _ = encoder.storage.popContainer()
+            }
+            throw error
+        }
+        guard encoder.storage.count > depth else {
+            return
+        }
+        let containerToAppend = encoder.storage.popContainer()
+        container?.append(containerToAppend)
     }
 
     func encode(_ value: Bool) throws {
