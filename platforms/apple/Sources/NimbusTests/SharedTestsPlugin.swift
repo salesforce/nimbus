@@ -133,7 +133,7 @@ class TestPlugin: Plugin {
     }
 
     func unaryStructResolvingToJsonString(param: TestStruct) -> String {
-        return param.asString()
+        return param.asJSONString()
     }
 
     func unaryStringListResolvingToString(param: [String]) -> String {
@@ -157,11 +157,11 @@ class TestPlugin: Plugin {
     }
 
     func unaryStringStringMapResolvingToString(param: [String: String]) -> String {
-        return param.map { "\($0.key), \($0.value)" }.joined(separator: ", ")
+        return param.map { "\($0.key), \($0.value)" }.sorted().joined(separator: ", ")
     }
 
     func unaryStringStructMapResolvingToString(param: [String: TestStruct]) -> String {
-        return param.map { "\($0.key), \($0.value.asString())" }.joined(separator: ", ")
+        return param.map { "\($0.key), \($0.value.asString())" }.sorted().joined(separator: ", ")
     }
 
     func nullaryResolvingToStringCallback(callback: (String) -> Void) {
@@ -316,11 +316,17 @@ struct TestStruct: Codable {
         self.double = double
     }
 
-    func asString() -> String {
-        if let stringData = try? JSONEncoder().encode(self),
+    func asJSONString() -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        if let stringData = try? encoder.encode(self),
             let jsonString = String(data: stringData, encoding: .utf8) {
             return jsonString
         }
         return ""
+    }
+
+    func asString() -> String {
+        return "\(self.string), \(self.integer), \(self.double)"
     }
 }

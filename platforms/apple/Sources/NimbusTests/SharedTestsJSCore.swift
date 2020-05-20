@@ -199,9 +199,9 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyNullaryResolvingToIntStructCallback()")
     }
 
-    func testVerifyNullaryResolvingToDoubleIntStructCallback() {
-        executeTest("verifyNullaryResolvingToDoubleIntStructCallback()")
-    }
+//    func testVerifyNullaryResolvingToDoubleIntStructCallback() {
+//        executeTest("verifyNullaryResolvingToDoubleIntStructCallback()")
+//    }
 
     func testVerifyUnaryIntResolvingToIntCallback() {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
