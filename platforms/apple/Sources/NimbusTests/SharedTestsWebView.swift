@@ -110,7 +110,6 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyNullaryResolvingToStringStructMapCallback()")
         executeTest("verifyNullaryResolvingToStringIntCallback()")
         executeTest("verifyNullaryResolvingToIntStructCallback()")
-//        executeTest("verifyNullaryResolvingToDoubleIntStructCallback()")
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
     }

@@ -54,7 +54,6 @@ class TestPlugin: Plugin {
         connection.bind(self.nullaryResolvingToStringStructMapCallback, as: "nullaryResolvingToStringStructMapCallback")
         connection.bind(self.nullaryResolvingToStringIntCallback, as: "nullaryResolvingToStringIntCallback")
         connection.bind(self.nullaryResolvingToIntStructCallback, as: "nullaryResolvingToIntStructCallback")
-//        connection.bind(self.nullaryResolvingToIntDoubleStructCallback, as: "nullaryResolvingToIntDoubleStructCallback")
         connection.bind(self.unaryIntResolvingToIntCallback, as: "unaryIntResolvingToIntCallback")
         connection.bind(self.binaryIntDoubleResolvingToIntDoubleCallback, as: "binaryIntDoubleResolvingToIntDoubleCallback")
     }
@@ -252,10 +251,6 @@ class TestPlugin: Plugin {
 
     func nullaryResolvingToIntStructCallback(callback: (Int, TestStruct) -> Void) {
         callback(2, TestStruct())
-    }
-
-    func nullaryResolvingToIntDoubleStructCallback(callback: (Int, Double, TestStruct) -> Void) {
-        callback(3, 4.0, TestStruct())
     }
 
     func unaryIntResolvingToIntCallback(param: Int, callback: (Int) -> Void) {
