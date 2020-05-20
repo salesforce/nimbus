@@ -1,13 +1,13 @@
 //
-//  SharedTestsWebView.swift
-//  NimbusTests
-//
-//  Created by Paul Tiarks on 5/19/20.
-//  Copyright © 2020 Salesforce.com, inc. All rights reserved.
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo
+// root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import XCTest
 import WebKit
+import XCTest
 @testable import Nimbus
 
 class SharedTestsWebView: XCTestCase {
@@ -30,7 +30,7 @@ class SharedTestsWebView: XCTestCase {
         bridge.addPlugin(testPlugin)
         bridge.attach(to: webView)
 
-        //load nimbus.js
+        // load nimbus.js
         if let jsURL = Bundle(for: SharedTestsWebView.self).url(forResource: "nimbus", withExtension: "js", subdirectory: "iife"),
             let jsString = try? String(contentsOf: jsURL) {
             let userScript = WKUserScript(source: jsString, injectionTime: .atDocumentStart, forMainFrameOnly: false)
@@ -39,7 +39,7 @@ class SharedTestsWebView: XCTestCase {
             XCTFail("couldn't get nimbus js")
         }
 
-        //load shared-tests.js
+        // load shared-tests.js
         if let jsURL = Bundle(for: SharedTestsWebView.self).url(forResource: "shared-tests", withExtension: "js", subdirectory: "test-www"),
             let jsString = try? String(contentsOf: jsURL) {
             let userScript = WKUserScript(source: jsString, injectionTime: .atDocumentStart, forMainFrameOnly: false)
@@ -69,7 +69,7 @@ class SharedTestsWebView: XCTestCase {
         XCTAssertTrue(expectPlugin.passed, "Failed: \(testName)")
     }
 
-    func testAllTests() { //swiftlint:disable:this function_body_length
+    func testAllTests() { // swiftlint:disable:this function_body_length
         executeTest("verifyNullaryResolvingToInt()")
         executeTest("verifyNullaryResolvingToDouble()")
         executeTest("verifyNullaryResolvingToDouble()")

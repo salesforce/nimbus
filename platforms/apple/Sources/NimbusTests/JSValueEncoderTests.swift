@@ -219,7 +219,7 @@ class JSValueEncoderTests: XCTestCase {
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
 
-    func testArrayOfStructs() throws { //swiftlint:disable:this function_body_length
+    func testArrayOfStructs() throws { // swiftlint:disable:this function_body_length
         let one = TestEncodable(foo: 1, bar: "blah", thing: [2], double: 2.0)
         let two = TestEncodable(foo: 2, bar: "blar", thing: [2], double: 3.0)
         let three = TestEncodable(foo: 3, bar: "blam", thing: [3], double: 4.0)

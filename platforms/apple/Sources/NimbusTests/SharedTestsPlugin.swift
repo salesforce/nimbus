@@ -14,48 +14,48 @@ class TestPlugin: Plugin {
         return "testPlugin"
     }
 
-    func bind<C>(to connection: C) where C: Connection { //swiftlint:disable:this function_body_length
-        connection.bind(self.nullaryResolvingToInt, as: "nullaryResolvingToInt")
-        connection.bind(self.nullaryResolvingToDouble, as: "nullaryResolvingToDouble")
-        connection.bind(self.nullaryResolvingToString, as: "nullaryResolvingToString")
-        connection.bind(self.nullaryResolvingToStruct, as: "nullaryResolvingToStruct")
-        connection.bind(self.nullaryResolvingToIntList, as: "nullaryResolvingToIntList")
-        connection.bind(self.nullaryResolvingToDoubleList, as: "nullaryResolvingToDoubleList")
-        connection.bind(self.nullaryResolvingToStringList, as: "nullaryResolvingToStringList")
-        connection.bind(self.nullaryResolvingToStructList, as: "nullaryResolvingToStructList")
-        connection.bind(self.nullaryResolvingToIntArray, as: "nullaryResolvingToIntArray")
-        connection.bind(self.nullaryResolvingToStringStringMap, as: "nullaryResolvingToStringStringMap")
-        connection.bind(self.nullaryResolvingToStringIntMap, as: "nullaryResolvingToStringIntMap")
-        connection.bind(self.nullaryResolvingToStringDoubleMap, as: "nullaryResolvingToStringDoubleMap")
-        connection.bind(self.nullaryResolvingToStringStructMap, as: "nullaryResolvingToStringStructMap")
-        connection.bind(self.unaryIntResolvingToInt, as: "unaryIntResolvingToInt")
-        connection.bind(self.unaryDoubleResolvingToDouble, as: "unaryDoubleResolvingToDouble")
-        connection.bind(self.unaryStringResolvingToInt, as: "unaryStringResolvingToInt")
-        connection.bind(self.unaryStructResolvingToJsonString, as: "unaryStructResolvingToJsonString")
-        connection.bind(self.unaryStringListResolvingToString, as: "unaryStringListResolvingToString")
-        connection.bind(self.unaryIntListResolvingToString, as: "unaryIntListResolvingToString")
-        connection.bind(self.unaryDoubleListResolvingToString, as: "unaryDoubleListResolvingToString")
-        connection.bind(self.unaryStructListResolvingToString, as: "unaryStructListResolvingToString")
-        connection.bind(self.unaryIntArrayResolvingToString, as: "unaryIntArrayResolvingToString")
-        connection.bind(self.unaryStringStringMapResolvingToString, as: "unaryStringStringMapResolvingToString")
-        connection.bind(self.unaryStringStructMapResolvingToString, as: "unaryStringStructMapResolvingToString")
-        connection.bind(self.nullaryResolvingToStringCallback, as: "nullaryResolvingToStringCallback")
-        connection.bind(self.nullaryResolvingToIntCallback, as: "nullaryResolvingToIntCallback")
-        connection.bind(self.nullaryResolvingToDoubleCallback, as: "nullaryResolvingToDoubleCallback")
-        connection.bind(self.nullaryResolvingToStructCallback, as: "nullaryResolvingToStructCallback")
-        connection.bind(self.nullaryResolvingToStringListCallback, as: "nullaryResolvingToStringListCallback")
-        connection.bind(self.nullaryResolvingToIntListCallback, as: "nullaryResolvingToIntListCallback")
-        connection.bind(self.nullaryResolvingToDoubleListCallback, as: "nullaryResolvingToDoubleListCallback")
-        connection.bind(self.nullaryResolvingToStructListCallback, as: "nullaryResolvingToStructListCallback")
-        connection.bind(self.nullaryResolvingToIntArrayCallback, as: "nullaryResolvingToIntArrayCallback")
-        connection.bind(self.nullaryResolvingToStringStringMapCallback, as: "nullaryResolvingToStringStringMapCallback")
-        connection.bind(self.nullaryResolvingToStringIntMapCallback, as: "nullaryResolvingToStringIntMapCallback")
-        connection.bind(self.nullaryResolvingToStringDoubleMapCallback, as: "nullaryResolvingToStringDoubleMapCallback")
-        connection.bind(self.nullaryResolvingToStringStructMapCallback, as: "nullaryResolvingToStringStructMapCallback")
-        connection.bind(self.nullaryResolvingToStringIntCallback, as: "nullaryResolvingToStringIntCallback")
-        connection.bind(self.nullaryResolvingToIntStructCallback, as: "nullaryResolvingToIntStructCallback")
-        connection.bind(self.unaryIntResolvingToIntCallback, as: "unaryIntResolvingToIntCallback")
-        connection.bind(self.binaryIntDoubleResolvingToIntDoubleCallback, as: "binaryIntDoubleResolvingToIntDoubleCallback")
+    func bind<C>(to connection: C) where C: Connection { // swiftlint:disable:this function_body_length
+        connection.bind(nullaryResolvingToInt, as: "nullaryResolvingToInt")
+        connection.bind(nullaryResolvingToDouble, as: "nullaryResolvingToDouble")
+        connection.bind(nullaryResolvingToString, as: "nullaryResolvingToString")
+        connection.bind(nullaryResolvingToStruct, as: "nullaryResolvingToStruct")
+        connection.bind(nullaryResolvingToIntList, as: "nullaryResolvingToIntList")
+        connection.bind(nullaryResolvingToDoubleList, as: "nullaryResolvingToDoubleList")
+        connection.bind(nullaryResolvingToStringList, as: "nullaryResolvingToStringList")
+        connection.bind(nullaryResolvingToStructList, as: "nullaryResolvingToStructList")
+        connection.bind(nullaryResolvingToIntArray, as: "nullaryResolvingToIntArray")
+        connection.bind(nullaryResolvingToStringStringMap, as: "nullaryResolvingToStringStringMap")
+        connection.bind(nullaryResolvingToStringIntMap, as: "nullaryResolvingToStringIntMap")
+        connection.bind(nullaryResolvingToStringDoubleMap, as: "nullaryResolvingToStringDoubleMap")
+        connection.bind(nullaryResolvingToStringStructMap, as: "nullaryResolvingToStringStructMap")
+        connection.bind(unaryIntResolvingToInt, as: "unaryIntResolvingToInt")
+        connection.bind(unaryDoubleResolvingToDouble, as: "unaryDoubleResolvingToDouble")
+        connection.bind(unaryStringResolvingToInt, as: "unaryStringResolvingToInt")
+        connection.bind(unaryStructResolvingToJsonString, as: "unaryStructResolvingToJsonString")
+        connection.bind(unaryStringListResolvingToString, as: "unaryStringListResolvingToString")
+        connection.bind(unaryIntListResolvingToString, as: "unaryIntListResolvingToString")
+        connection.bind(unaryDoubleListResolvingToString, as: "unaryDoubleListResolvingToString")
+        connection.bind(unaryStructListResolvingToString, as: "unaryStructListResolvingToString")
+        connection.bind(unaryIntArrayResolvingToString, as: "unaryIntArrayResolvingToString")
+        connection.bind(unaryStringStringMapResolvingToString, as: "unaryStringStringMapResolvingToString")
+        connection.bind(unaryStringStructMapResolvingToString, as: "unaryStringStructMapResolvingToString")
+        connection.bind(nullaryResolvingToStringCallback, as: "nullaryResolvingToStringCallback")
+        connection.bind(nullaryResolvingToIntCallback, as: "nullaryResolvingToIntCallback")
+        connection.bind(nullaryResolvingToDoubleCallback, as: "nullaryResolvingToDoubleCallback")
+        connection.bind(nullaryResolvingToStructCallback, as: "nullaryResolvingToStructCallback")
+        connection.bind(nullaryResolvingToStringListCallback, as: "nullaryResolvingToStringListCallback")
+        connection.bind(nullaryResolvingToIntListCallback, as: "nullaryResolvingToIntListCallback")
+        connection.bind(nullaryResolvingToDoubleListCallback, as: "nullaryResolvingToDoubleListCallback")
+        connection.bind(nullaryResolvingToStructListCallback, as: "nullaryResolvingToStructListCallback")
+        connection.bind(nullaryResolvingToIntArrayCallback, as: "nullaryResolvingToIntArrayCallback")
+        connection.bind(nullaryResolvingToStringStringMapCallback, as: "nullaryResolvingToStringStringMapCallback")
+        connection.bind(nullaryResolvingToStringIntMapCallback, as: "nullaryResolvingToStringIntMapCallback")
+        connection.bind(nullaryResolvingToStringDoubleMapCallback, as: "nullaryResolvingToStringDoubleMapCallback")
+        connection.bind(nullaryResolvingToStringStructMapCallback, as: "nullaryResolvingToStringStructMapCallback")
+        connection.bind(nullaryResolvingToStringIntCallback, as: "nullaryResolvingToStringIntCallback")
+        connection.bind(nullaryResolvingToIntStructCallback, as: "nullaryResolvingToIntStructCallback")
+        connection.bind(unaryIntResolvingToIntCallback, as: "unaryIntResolvingToIntCallback")
+        connection.bind(binaryIntDoubleResolvingToIntDoubleCallback, as: "binaryIntDoubleResolvingToIntDoubleCallback")
     }
 
     func nullaryResolvingToInt() -> Int {
@@ -87,11 +87,10 @@ class TestPlugin: Plugin {
     }
 
     func nullaryResolvingToStructList() -> [TestStruct] {
-
         return [
             TestStruct("1", 1, 1.0),
             TestStruct("2", 2, 2.0),
-            TestStruct("3", 3, 3.0)
+            TestStruct("3", 3, 3.0),
         ]
     }
 
@@ -115,7 +114,7 @@ class TestPlugin: Plugin {
         return [
             "key1": TestStruct("1", 1, 1.0),
             "key2": TestStruct("2", 2, 2.0),
-            "key3": TestStruct("3", 3, 3.0)
+            "key3": TestStruct("3", 3, 3.0),
         ]
     }
 
@@ -196,7 +195,7 @@ class TestPlugin: Plugin {
             [
                 TestStruct("1", 1, 1.0),
                 TestStruct("2", 2, 2.0),
-                TestStruct("3", 3, 3.0)
+                TestStruct("3", 3, 3.0),
             ]
         )
     }
@@ -210,7 +209,7 @@ class TestPlugin: Plugin {
             [
                 "key1": "value1",
                 "key2": "value2",
-                "key3": "value3"
+                "key3": "value3",
             ]
         )
     }
@@ -220,7 +219,7 @@ class TestPlugin: Plugin {
             [
                 "1": 1,
                 "2": 2,
-                "3": 3
+                "3": 3,
             ]
         )
     }
@@ -230,7 +229,7 @@ class TestPlugin: Plugin {
             [
                 "1.0": 1.0,
                 "2.0": 2.0,
-                "3.0": 3.0
+                "3.0": 3.0,
             ]
         )
     }
@@ -240,7 +239,7 @@ class TestPlugin: Plugin {
             [
                 "1": TestStruct("1", 1, 1.0),
                 "2": TestStruct("2", 2, 2.0),
-                "3": TestStruct("3", 3, 3.0)
+                "3": TestStruct("3", 3, 3.0),
             ]
         )
     }
@@ -274,8 +273,8 @@ class ExpectPlugin: Plugin {
     }
 
     func reset() {
-        self.isFinished = false
-        self.passed = false
+        isFinished = false
+        passed = false
         finishedExpectation = nil
     }
 
@@ -294,9 +293,9 @@ class ExpectPlugin: Plugin {
     }
 
     func bind<C>(to connection: C) where C: Connection {
-        connection.bind(self.ready, as: "ready")
-        connection.bind(self.pass, as: "pass")
-        connection.bind(self.finished, as: "finished")
+        connection.bind(ready, as: "ready")
+        connection.bind(pass, as: "pass")
+        connection.bind(finished, as: "finished")
     }
 }
 
@@ -322,6 +321,6 @@ struct TestStruct: Codable {
     }
 
     func asString() -> String {
-        return "\(self.string), \(self.integer), \(self.double)"
+        return "\(string), \(integer), \(double)"
     }
 }
