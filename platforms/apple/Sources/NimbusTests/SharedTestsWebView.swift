@@ -36,7 +36,13 @@ class SharedTestsWebView: XCTestCase {
             let userScript = WKUserScript(source: jsString, injectionTime: .atDocumentStart, forMainFrameOnly: false)
             webView.configuration.userContentController.addUserScript(userScript)
         } else {
-            XCTFail("couldn't get nimbus js")
+            // when running from swiftpm, look for the file relative to the source root
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/nimbus-bridge/dist/iife/nimbus.js", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
+                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+                webView.configuration.userContentController.addUserScript(userScript)
+            }
         }
 
         // load shared-tests.js
@@ -45,14 +51,22 @@ class SharedTestsWebView: XCTestCase {
             let userScript = WKUserScript(source: jsString, injectionTime: .atDocumentStart, forMainFrameOnly: false)
             webView.configuration.userContentController.addUserScript(userScript)
         } else {
-            XCTFail("couldn't get test js")
+            // when running from swiftpm, look for the file relative to the source root
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/test-www/dist/test-www/shared-tests.js", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
+                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+                webView.configuration.userContentController.addUserScript(userScript)
+            }
         }
 
         // load the html
         if let htmlURL = Bundle(for: SharedTestsWebView.self).url(forResource: "shared-tests", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(htmlURL, allowingReadAccessTo: htmlURL)
         } else {
-            XCTFail("couldn't get the test html")
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/test-www/dist/test-www/shared-tests.html", relativeTo: basepath)
+            webView.loadFileURL(url, allowingReadAccessTo: url)
         }
 
         wait(for: [readyExpectation], timeout: 60)

@@ -31,7 +31,13 @@ class SharedTestsJSCore: XCTestCase {
             context.evaluateScript(jsString)
             context.evaluateScript("__nimbus.plugins.expectPlugin.ready();")
         } else {
-            XCTFail("couldn't get test js")
+            // when running from swiftpm, look for the file relative to the source root
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/test-www/dist/test-www/shared-tests.js", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
+                context.evaluateScript(script)
+                context.evaluateScript("__nimbus.plugins.expectPlugin.ready();")
+            }
         }
     }
 
