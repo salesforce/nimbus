@@ -5,11 +5,11 @@ apply plugin: 'kotlin'
 
 dependencies {
     //noinspection DifferentStdlibGradleVersion
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation(Libs.kotlin_stdlib_jdk8)
     implementation project(':annotations')
-    implementation "com.squareup:kotlinpoet:$kotlinpoet_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:$kotlin_metadata_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
+    implementation(Libs.kotlinpoet)
+    implementation(Libs.kotlinx_metadata_jvm)
+    implementation(Libs.kotlinx_serialization_runtime)
 }
 
 buildscript {
@@ -22,7 +22,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath(Libs.kotlin_gradle_plugin)
     }
 }
 

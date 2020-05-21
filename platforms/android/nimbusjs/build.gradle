@@ -34,11 +34,11 @@ preBuild.doFirst {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    androidTestImplementation "androidx.test.ext:junit:$androidx_test_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    androidTestImplementation "com.google.truth:truth:$google_truth_version"
+    implementation(Libs.kotlin_stdlib_jdk8)
+    androidTestImplementation(Libs.junit)
+    androidTestImplementation(Libs.espresso_core)
+    androidTestImplementation(Libs.kotlintest_runner_junit4)
+    androidTestImplementation(Libs.truth)
 }
 
 task sourcesJar(type: Jar) {

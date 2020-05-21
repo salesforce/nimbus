@@ -43,19 +43,19 @@ dependencies {
     api project(":core")
     kapt project(":compiler-webview")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation(Libs.kotlin_stdlib)
 
-    testImplementation "org.json:json:$json_version"
-    testImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation(Libs.json)
+    testImplementation(Libs.kotlintest_runner_junit4)
+    testImplementation(Libs.mockk)
     kaptTest project(":compiler-webview")
 
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
-    androidTestImplementation "androidx.test.ext:junit:$androidx_test_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test:rules:$androidx_test_version", {
+    androidTestImplementation(Libs.kotlinx_serialization_runtime)
+    androidTestImplementation(Libs.junit)
+    androidTestImplementation(Libs.espresso_core)
+    androidTestImplementation(Libs.androidx_test_rules, {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
+    })
     kaptAndroidTest project(":compiler-webview")
 }
 

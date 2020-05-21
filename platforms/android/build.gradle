@@ -30,6 +30,9 @@ buildscript {
     }
 }
 
+plugins{
+    id("de.fayard.buildSrcVersions") version "0.7.0"
+}
 project.ext {
     if (project.hasProperty('preDexEnable')) {
         project.ext.preDexLibs = project.properties['preDexEnable'] == 'true'

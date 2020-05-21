@@ -38,12 +38,12 @@ android {
 
 dependencies {
     implementation project(":annotations")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
-    compileOnly "com.eclipsesource.j2v8:j2v8:$j2v8_version"
-    compileOnly "com.salesforce.k2v8:k2v8:$k2v8_version"
-    testImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
-    testImplementation "org.json:json:$json_version"
+    implementation(Libs.kotlin_stdlib_jdk8)
+    compileOnly(Libs.kotlinx_serialization_runtime)
+    compileOnly(Libs.j2v8)
+    compileOnly(Libs.k2v8)
+    testImplementation(Libs.kotlintest_runner_junit4)
+    testImplementation(Libs.json)
 }
 
 task sourcesJar(type: Jar) {

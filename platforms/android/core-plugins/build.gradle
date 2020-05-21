@@ -42,10 +42,10 @@ dependencies {
     compileOnly project(":annotations")
     compileOnly project(":bridge-webview")
     compileOnly project(":bridge-v8")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
-    compileOnly "com.eclipsesource.j2v8:j2v8:$j2v8_version"
-    compileOnly "com.salesforce.k2v8:k2v8:$k2v8_version"
+    implementation(Libs.kotlin_stdlib_jdk8)
+    compileOnly(Libs.kotlinx_serialization_runtime)
+    compileOnly(Libs.j2v8)
+    compileOnly(Libs.k2v8)
     kapt project(":compiler-webview")
     kapt project(":compiler-v8")
 }

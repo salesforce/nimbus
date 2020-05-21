@@ -45,22 +45,22 @@ android {
 
 dependencies {
     androidTestImplementation project(":annotations")
-    androidTestImplementation "com.salesforce.k2v8:k2v8:$k2v8_version"
+    androidTestImplementation(Libs.k2v8)
     androidTestImplementation project(":bridge-v8")
     androidTestImplementation project(":bridge-webview")
-    androidTestImplementation "com.eclipsesource.j2v8:j2v8:$j2v8_version"
-    androidTestImplementation "com.google.guava:guava:29.0-android"
+    androidTestImplementation(Libs.j2v8)
+    androidTestImplementation(Libs.guava)
     kaptAndroidTest project(":compiler-webview")
     kaptAndroidTest project(":compiler-v8")
 
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_version"
-    androidTestImplementation "androidx.test.ext:junit:$androidx_test_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test:rules:$androidx_test_version", {
+    androidTestImplementation(Libs.kotlinx_serialization_runtime)
+    androidTestImplementation(Libs.junit)
+    androidTestImplementation(Libs.espresso_core)
+    androidTestImplementation(Libs.androidx_test_rules, {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    androidTestImplementation "com.google.truth:truth:$google_truth_version"
-    androidTestImplementation "io.kotlintest:kotlintest-runner-junit4:$kotlin_test_runner_version"
+    })
+    androidTestImplementation(Libs.truth)
+    androidTestImplementation(Libs.kotlintest_runner_junit4)
 }
 
 /*
