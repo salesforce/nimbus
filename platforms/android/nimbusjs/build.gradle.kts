@@ -7,11 +7,11 @@ plugins {
 android {
     setDefaults()
 }
-fun String.runCommand(workingDir: File = file("./")): String? {
+fun String.runCommand(): String? {
     try {
         val parts = this.split("\\s".toRegex())
+        println("building ${parts[0]}")
         val proc = ProcessBuilder(*parts.toTypedArray())
-            .directory(workingDir)
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
@@ -24,14 +24,10 @@ fun String.runCommand(workingDir: File = file("./")): String? {
     }
 }
 
-//defaultTasks("run")
-tasks.register("run") {
-//gradle.projectsEvaluated {
-    doFirst {
+gradle.afterProject {
+    if (name == "nimbusjs"){
         println("Building nimbus.js")
         "$rootDir/nimbusjs/buildNimbusJS.sh".runCommand()
-//        val proc = "$rootDir/nimbusjs/buildNimbusJS.sh".execute()
-//        proc.waitForProcessOutput(System.out, System.err)
     }
 }
 

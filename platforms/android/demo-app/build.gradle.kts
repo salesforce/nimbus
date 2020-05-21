@@ -7,9 +7,6 @@ plugins {
 }
 
 android {
-    val projectSdk_version: Int by extra
-    val projectBuildTools_version: String by extra
-    val library_version: String by extra
     compileSdkVersion(29)
 
     defaultConfig {

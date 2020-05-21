@@ -8,9 +8,10 @@ object ProjectVersions {
     const val thisLibrary = "2.0"
 
     fun parseVersion(): String{
-        val versionFile = File("../../lerna.json").readText()
-        val parsed = JSONValue.parse(versionFile) as JSONObject
-        return parsed.getOrDefault("version", thisLibrary) as String
+        return "2.0-ALPHA"
+//        val versionFile = File("../../lerna.json").readText()
+//        val parsed = JSONValue.parse(versionFile) as JSONObject
+//        return parsed.getOrDefault("version", thisLibrary) as String
     }
 }
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Build nimbus.js"
 cd ../../packages/nimbus-bridge/
 
 npm install
