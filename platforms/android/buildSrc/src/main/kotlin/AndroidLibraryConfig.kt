@@ -21,7 +21,6 @@ fun AndroidLibraryExtension.setDefaults() {
         }
     }
     sourceSets.getByName("main") {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDir("src/androidMain/res")
         assets.srcDir("src/main/assets")
     }

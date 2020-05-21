@@ -1,17 +1,17 @@
 buildscript {
     ext {
-        kotlin_version = '1.3.71'
-        kotlin_serialization_version = '0.20.0'
-        kotlin_metadata_version = '0.1.0'
-        k2v8_version = '0.0.1'
-        kotlinpoet_version = '1.5.0'
-        kotlin_test_runner_version = '3.1.5'
-        google_truth_version = '1.0.1'
-        j2v8_version = '6.1.0@aar'
-        androidx_test_version = '1.1.1'
-        espresso_version = '3.2.0'
-        mockk_version = '1.9.3.kotlin12'
-        json_version = '20190722'
+        kotlin_version = "1.3.71"
+        kotlin_serialization_version = "0.20.0"
+        kotlin_metadata_version = "0.1.0"
+        k2v8_version = "0.0.1"
+        kotlinpoet_version = "1.5.0"
+        kotlin_test_runner_version = "3.1.5"
+        google_truth_version = "1.0.1"
+        j2v8_version = "6.1.0@aar"
+        androidx_test_version = "1.1.1"
+        espresso_version = "3.2.0"
+        mockk_version = "1.9.3.kotlin12"
+        json_version = "20190722"
     }
 
     repositories {
@@ -20,13 +20,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.18"
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath("com.android.tools.build:gradle:3.6.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
+        classpath("com.github.dcendents:android-maven-gradle-plugin:2.1")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.18")
+        classpath("com.dicedmelon.gradle:jacoco-android:0.1.4")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
     }
 }
 
@@ -34,13 +34,13 @@ plugins{
     id("de.fayard.buildSrcVersions") version "0.7.0"
 }
 project.ext {
-    if (project.hasProperty('preDexEnable')) {
-        project.ext.preDexLibs = project.properties['preDexEnable'] == 'true'
+    if (project.hasProperty("preDexEnable")) {
+        project.ext.preDexLibs = project.properties["preDexEnable"] == "true"
     } else {
         project.ext.preDexLibs = true // pre dexing should be true by default
     }
 
-    println('PREDEX ' + (project.ext.preDexLibs ? 'ENABLED' : 'DISABLED')) // goes to build log or console output
+    println("PREDEX " + (project.ext.preDexLibs ? "ENABLED" : "DISABLED")) // goes to build log or console output
 }
 
 allprojects {
