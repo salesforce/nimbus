@@ -272,11 +272,6 @@ class TestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun nullaryResolvingToIntDoubleStructCallback(callback: (Int, Double, TestStruct) -> Unit) {
-        callback(3, 4.0, TestStruct())
-    }
-
-    @BoundMethod
     fun unaryIntResolvingToIntCallback(param: Int, callback: (Int) -> Unit) {
         callback(param + 1)
     }

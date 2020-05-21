@@ -14,6 +14,7 @@ import android.webkit.WebView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.v8.V8
+import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
@@ -63,15 +64,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         // execute a script to get the device info plugin and then log to the console
-        v8.executeScript(
-            """
-            __nimbus.plugins.DeviceInfoPlugin.getDeviceInfo().then((deviceInfo) => {
-                let json = JSON.stringify(deviceInfo);
-                __nimbus.plugins.LogPlugin.debug('DemoApp', json);
-                __nimbus.plugins.ToastPlugin.toast('Device Info from V8: ' + json);
-            });
-            """.trimIndent()
-        )
+        v8.scope {
+            v8.executeScript(
+                """
+                    __nimbus.plugins.DeviceInfoPlugin.getDeviceInfo().then((deviceInfo) => {
+                        let json = JSON.stringify(deviceInfo);
+                        __nimbus.plugins.LogPlugin.debug('DemoApp', json);
+                        __nimbus.plugins.ToastPlugin.toast('Device Info from V8: ' + json);
+                    });
+                """.trimIndent()
+            )
+        }
     }
 
     override fun onDestroy() {
