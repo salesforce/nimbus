@@ -28,4 +28,8 @@ configurations.all {
             ) useVersion(kotlinVersion)
         }
     }
+    // set jvmTarget for all kotlin projects
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }

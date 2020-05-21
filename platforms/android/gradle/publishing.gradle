@@ -8,6 +8,22 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
     apply plugin: 'com.github.dcendents.android-maven'
 } else {
     apply plugin: 'maven'
+
+    task sourcesJar(type: Jar, dependsOn:classes) {
+        archiveClassifier.set("sources")
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn:javadoc) {
+        archiveClassifier.set("javadoc")
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
+
 }
 
 

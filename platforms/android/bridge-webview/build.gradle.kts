@@ -34,10 +34,12 @@ dependencies {
     kaptAndroidTest(project(":compiler-webview"))
 }
 
-//dokka {
-//    outputFormat = "html"
-//    outputDirectory = "$buildDir/dokka"
-//}
-//
+tasks {
+    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka"
+    }
+}
+
 apply(from= rootProject.file("gradle/lint.gradle"))
 apply(from= rootProject.file("gradle/publishing.gradle"))

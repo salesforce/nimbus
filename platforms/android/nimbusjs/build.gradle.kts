@@ -10,7 +10,6 @@ android {
 fun String.runCommand(): String? {
     try {
         val parts = this.split("\\s".toRegex())
-        println("building ${parts[0]}")
         val proc = ProcessBuilder(*parts.toTypedArray())
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.PIPE)

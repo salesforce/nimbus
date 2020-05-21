@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurper
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
@@ -37,11 +37,12 @@ dependencies {
     kaptTest(project(":compiler-v8"))
 }
 
-
-//dokka {
-//    outputFormat = "html"
-//    outputDirectory = "$buildDir/dokka"
-//}
+tasks {
+    val dokka by getting(DokkaTask::class) {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka"
+    }
+}
 
 apply(from= rootProject.file("gradle/lint.gradle"))
 apply(from= rootProject.file("gradle/publishing.gradle"))
