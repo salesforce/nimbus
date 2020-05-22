@@ -16,6 +16,7 @@ object Publishing {
     const val licenseUrl = "$siteUrl/blob/master/LICENSE"
     const val issuesUrl = "$siteUrl/issues"
     const val developerName = "Salesforce inc."
+    const val group = "com.salesforce.nimbus"
 }
 
 @Suppress("UnstableApiUsage")

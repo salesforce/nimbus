@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    project.version = ProjectVersions.packageVersion
     setDefaults()
 }
 
