@@ -27,3 +27,4 @@ tasks {
     }
 }
 apply(from= rootProject.file("gradle/lint.gradle"))
+apply(from= rootProject.file("gradle/publishing.gradle"))
