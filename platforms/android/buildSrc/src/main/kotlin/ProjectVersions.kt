@@ -5,15 +5,16 @@ import java.io.File
 object ProjectVersions {
     const val androidSdk = 29
     const val minSdk = 21
-    const val thisLibrary = "2.0"
+    // TODO: Switch back to lazy parsedVersion when publishing is using kotlin plugin
+    const val packageVersion = "0.0.4-alpha"
+//    val packageVersion: String by lazy {
+//        parseVersion()
+//    }
 
-    fun parseVersion(): String{
-        return "2.0-ALPHA"
-//        val versionFile = File("../../lerna.json").readText()
-//        val parsed = JSONValue.parse(versionFile) as JSONObject
-//        return parsed.getOrDefault("version", thisLibrary) as String
+    private fun parseVersion(): String{
+        val versionFile = File("../../lerna.json").readText()
+        println(versionFile)
+        val parsed = JSONValue.parse(versionFile) as JSONObject
+        return parsed.getOrDefault("version", packageVersion) as String
     }
 }
-
-
-val isDevVersion = ProjectVersions.thisLibrary.contains("-dev-")

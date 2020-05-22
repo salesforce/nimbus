@@ -14,44 +14,45 @@ import java.time.LocalDate
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
     publishing: PublishingExtension,
-    skipMetadataPublication: Boolean = false,
-    skipMultiplatformPublication: Boolean = skipMetadataPublication
+    skipMetadataPublication: Boolean = false
 ) {
     val bintrayUpload: TaskProvider<Task> by project.tasks.existing
     val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
+
     bintrayUpload.dependsOn(publishToMavenLocal)
-    if (!isDevVersion) {
-        project.checkNoVersionRanges()
-        bintrayUpload.configure {
-            doFirst {
-                val gitTag = ProcessGroovyMethods.getText(
-                    Runtime.getRuntime().exec("git describe --dirty")
-                ).trim()
-                val expectedTag = "v${ProjectVersions.thisLibrary}"
-                if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
-            }
+
+    // TODO: Is this necessary?
+    project.checkNoVersionRanges()
+
+    bintrayUpload.configure {
+        doFirst {
+            val gitTag = ProcessGroovyMethods.getText(
+                Runtime.getRuntime().exec("git describe --dirty")
+            ).trim()
+            val expectedTag = "v${ProjectVersions.packageVersion}"
+            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
         }
     }
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.filterNot {
-        skipMetadataPublication && it.name == "metadata" ||
-            skipMultiplatformPublication && it.name == "kotlinMultiplatform"
+        skipMetadataPublication && it.name == "metadata"
     }.map { it.name }.toTypedArray()
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
-        repo = if (isDevVersion) "nimbus-dev" else "maven"
-        name = "nimbus"
+        name = Publishing.packageName
+        repo = Publishing.bintrayRepo
+        userOrg = Publishing.userOrg
+        setLicenses(Publishing.licenseName)
         desc = Publishing.libraryDesc
-        websiteUrl = Publishing.siteUrl
-        issueTrackerUrl = "https://github.com/salesforce/nimbus/issues"
         vcsUrl = Publishing.gitUrl
-        setLicenses("BSD 3-clause")
+        websiteUrl = Publishing.siteUrl
+        issueTrackerUrl = Publishing.issuesUrl
         publicDownloadNumbers = true
-        githubRepo = "salesforce/nimbus"
-        publish = isDevVersion
+        githubRepo = Publishing.githubRepo
+        publish = true
         version(closureOf<BintrayExtension.VersionConfig> {
-            name = ProjectVersions.parseVersion()
+            name = ProjectVersions.packageVersion
             released = LocalDate.now().toString()
         })
     })

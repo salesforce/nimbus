@@ -4,16 +4,24 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.withType
 
 object Publishing {
-    const val gitUrl = "https://github.com/salesforce/nimbus.git"
+    // TODO: Grab from config file?
+    const val bintrayRepo = "jamiehouston-test"
     const val siteUrl = "https://github.com/salesforce/nimbus"
+    const val userOrg = "jamie-houston"
+    const val packageName = "jamie-nimbus"
+    const val gitUrl = "$siteUrl.git"
+    const val githubRepo = "salesforce/nimbus"
     const val libraryDesc = "Bridge native code to web views in a consistent way on iOS and Android."
     const val licenseName = "BSD 3-clause"
-    const val licenseUrl = "https://github.com/salesforce/nimbus/blob/master/LICENSE"
+    const val licenseUrl = "$siteUrl/blob/master/LICENSE"
+    const val issuesUrl = "$siteUrl/issues"
+    const val developerName = "Salesforce inc."
 }
 
 @Suppress("UnstableApiUsage")
 fun MavenPublication.setupPom() = pom {
-    name.set("nimbus")
+    // TODO: Should this be the same as artifactid?
+    name.set(Publishing.packageName)
     description.set(Publishing.libraryDesc)
     url.set(Publishing.siteUrl)
     licenses {
@@ -24,8 +32,7 @@ fun MavenPublication.setupPom() = pom {
     }
     developers {
         developer {
-            id.set("salesforce")
-            name.set("Salesforce")
+            name.set(Publishing.developerName)
         }
     }
     scm {
@@ -36,8 +43,8 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    project.group = "com.salesforce.nimbus"
-    project.version = ProjectVersions.thisLibrary
+    project.group = Publishing.packageName
+    project.version = ProjectVersions.packageVersion
     val publications = publications.withType<MavenPublication>()
     publications.all { setupPom() }
 }

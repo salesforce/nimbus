@@ -7,7 +7,7 @@ fun AndroidLibraryExtension.setDefaults() {
         minSdkVersion(ProjectVersions.minSdk)
         targetSdkVersion(ProjectVersions.androidSdk)
         versionCode = 1
-        versionName = ProjectVersions.parseVersion()
+        versionName = ProjectVersions.packageVersion
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,6 +20,8 @@ fun AndroidLibraryExtension.setDefaults() {
             isTestCoverageEnabled = true
         }
     }
+
+    // TODO: Set by project
     sourceSets.getByName("main") {
         res.srcDir("src/androidMain/res")
         assets.srcDir("src/main/assets")
@@ -31,6 +33,7 @@ fun AndroidLibraryExtension.setDefaults() {
         }
     }
 
+    // TODO: Is this still necessary
     // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
     libraryVariants.all(Action {
         generateBuildConfigProvider.configure {

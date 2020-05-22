@@ -23,22 +23,20 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
         archives javadocJar
         archives sourcesJar
     }
-
 }
 
-
-version = VERSION
 group = GROUP
 
 install {
     repositories.mavenInstaller {
         pom {
             project {
-                name project.name
-                url POM_URL
+                name Publishing.packageName
+                url Publishing.siteUrl
+                artifactId POM_NAME.toLowerCase().replaceAll(" ", "-")
 
                 packaging POM_PACKAGING
-                version version
+                version ProjectVersions.packageVersion
 
                 licenses {
                     license {
@@ -63,26 +61,22 @@ install {
     }
 }
 
-
 bintray {
-    def versionFile = file('../../../lerna.json')
-    def parsedVersion = new JsonSlurper().parseText(versionFile.text)
-    def versionToPublish = parsedVersion.version.toString()
-    project.version = versionToPublish
+    project.version = ProjectVersions.packageVersion
     user = project.findProperty('bintrayUser') ?: System.getenv('BINTRAY_USER')
     key = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
     configurations = ['archives']
     publish = true
     dryRun = false
     pkg {
-        name = project.name
-        repo = BINTRAY_REPO
-        userOrg = BINTRAY_ORG
+        name = Publishing.packageName
+        repo = Publishing.bintrayRepo
+        userOrg = Publishing.userOrg
         licenses = [POM_LICENSE_NAME]
         vcsUrl = POM_SCM_URL
         labels = ['android', 'salesforce', 'hybrid']
         version {
-            name = versionToPublish
+            name = ProjectVersions.packageVersion
             released = new Date()
         }
     }
