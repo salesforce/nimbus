@@ -1,6 +1,8 @@
 plugins {
     `java-library`
     id("kotlin")
+    `maven-publish`
+    id("com.jfrog.bintray")
 }
 
 dependencies {
@@ -10,5 +12,15 @@ dependencies {
     implementation(Libs.kotlinpoet)
     implementation(Libs.kotlinx_metadata_jvm)
 }
+
+afterEvaluate {
+    publishing {
+        setupAllPublications(project)
+    }
+
+    bintray {
+        setupPublicationsUpload(project, publishing)
+    }
+}
+
 apply(from=rootProject.file("gradle/lint.gradle"))
-apply(from= rootProject.file("gradle/publishing.gradle"))

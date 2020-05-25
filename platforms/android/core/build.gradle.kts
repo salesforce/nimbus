@@ -3,10 +3,11 @@ plugins {
     kotlin("android")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+    `maven-publish`
+    id("com.jfrog.bintray")
 }
 
 android {
-    project.version = ProjectVersions.packageVersion
     setDefaults()
 }
 
@@ -20,6 +21,16 @@ dependencies {
     testImplementation(Libs.json)
 }
 
+afterEvaluate {
+    publishing {
+        setupAllPublications(project)
+    }
+
+    bintray {
+        setupPublicationsUpload(project, publishing)
+    }
+}
+
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
         outputFormat = "html"
@@ -27,4 +38,3 @@ tasks {
     }
 }
 apply(from= rootProject.file("gradle/lint.gradle"))
-apply(from= rootProject.file("gradle/publishing.gradle"))

@@ -5,6 +5,8 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
     id("jacoco-android")
+    `maven-publish`
+    id("com.jfrog.bintray")
 }
 
 android {
@@ -39,5 +41,14 @@ tasks {
     }
 }
 
+afterEvaluate {
+    publishing {
+        setupAllPublications(project)
+    }
+
+    bintray {
+        setupPublicationsUpload(project, publishing)
+    }
+}
+
 apply(from= rootProject.file("gradle/lint.gradle"))
-apply(from= rootProject.file("gradle/publishing.gradle"))

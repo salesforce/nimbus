@@ -13,8 +13,7 @@ import java.time.LocalDate
 
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
-    publishing: PublishingExtension,
-    skipMetadataPublication: Boolean = false
+    publishing: PublishingExtension
 ) {
     val bintrayUpload: TaskProvider<Task> by project.tasks.existing
     val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
@@ -24,20 +23,20 @@ fun BintrayExtension.setupPublicationsUpload(
     // TODO: Is this necessary?
     project.checkNoVersionRanges()
 
-    bintrayUpload.configure {
-        doFirst {
-            val gitTag = ProcessGroovyMethods.getText(
-                Runtime.getRuntime().exec("git describe --dirty")
-            ).trim()
-            val expectedTag = "v${ProjectVersions.packageVersion}"
-            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
-        }
-    }
+    // TODO: Add this back... I like it
+//    bintrayUpload.configure {
+//        doFirst {
+//            val gitTag = ProcessGroovyMethods.getText(
+//                Runtime.getRuntime().exec("git describe --dirty")
+//            ).trim()
+//            val expectedTag = "v${ProjectVersions.packageVersion}"
+//            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
+//        }
+//    }
+
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
-    val publicationNames: Array<String> = publishing.publications.filterNot {
-        skipMetadataPublication && it.name == "metadata"
-    }.map { it.name }.toTypedArray()
+    val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
         name = Publishing.packageName
@@ -53,7 +52,6 @@ fun BintrayExtension.setupPublicationsUpload(
         publish = true
         version(closureOf<BintrayExtension.VersionConfig> {
             name = ProjectVersions.packageVersion
-            released = LocalDate.now().toString()
         })
     })
 }

@@ -25,6 +25,7 @@ fun MavenPublication.setupPom() = pom {
     name.set(Publishing.packageName)
     description.set(Publishing.libraryDesc)
     url.set(Publishing.siteUrl)
+    // TODO: Need to set packaging?  aar/jar?
     licenses {
         license {
             name.set(Publishing.licenseName)
@@ -44,7 +45,7 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    project.group = Publishing.packageName
+    project.group = Publishing.group
     project.version = ProjectVersions.packageVersion
     val publications = publications.withType<MavenPublication>()
     publications.all { setupPom() }

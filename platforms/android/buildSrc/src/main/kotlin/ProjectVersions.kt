@@ -6,7 +6,7 @@ object ProjectVersions {
     const val androidSdk = 29
     const val minSdk = 21
     // TODO: Switch back to lazy parsedVersion when publishing is using kotlin plugin
-    const val packageVersion = "0.0.13-alpha"
+    const val packageVersion = "0.0.14-alpha"
 //    val packageVersion: String by lazy {
 //        parseVersion()
 //    }

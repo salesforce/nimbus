@@ -2,6 +2,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("android.extensions")
+    `maven-publish`
+    id("com.jfrog.bintray")
 }
 
 android {
@@ -23,6 +25,7 @@ fun String.runCommand(): String? {
     }
 }
 
+// TODO: Move this to before build... right now it's called whenever a sync or any task.
 gradle.afterProject {
     if (name == "nimbusjs"){
         println("Building nimbus.js")
@@ -37,4 +40,15 @@ dependencies {
     androidTestImplementation(Libs.kotlintest_runner_junit4)
     androidTestImplementation(Libs.truth)
 }
-apply(from= rootProject.file("gradle/publishing.gradle"))
+
+afterEvaluate {
+    publishing {
+        setupAllPublications(project)
+    }
+
+    bintray {
+        setupPublicationsUpload(project, publishing)
+    }
+}
+
+//apply(from= rootProject.file("gradle/publishing.gradle"))
