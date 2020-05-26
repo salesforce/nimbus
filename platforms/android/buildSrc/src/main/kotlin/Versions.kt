@@ -15,9 +15,9 @@ object Versions {
     const val org_jetbrains_kotlinx_kotlinx_serialization: String = "0.20.0"
              // available: "0.20.0-1.4-M1-release-99"
 
-    const val org_jetbrains_kotlin: String = "1.3.71" // available: "1.3.72"
-
     const val org_jacoco: String = "0.7.9"
+
+    const val org_jetbrains_kotlin_kotlin_serialization: String = "1.3.72"
 
     const val com_android_tools_build_gradle: String = "3.6.3"
 
@@ -25,21 +25,37 @@ object Versions {
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
+    const val kotlin_scripting_compiler_embeddable: String = "1.3.72"
+
+    const val kotlin_annotation_processing_gradle: String = "1.3.72"
+
+    const val kotlin_android_extensions_runtime: String = "1.3.72"
+
+    const val kotlin_serialization_unshaded: String = "1.3.72"
+
     const val android_maven_gradle_plugin: String = "2.1"
+
+    const val kotlin_android_extensions: String = "1.3.72"
 
     const val kotlintest_runner_junit4: String = "3.1.5" // available: "3.4.2"
 
     const val gradle_bintray_plugin: String = "1.8.4" // available: "1.8.5"
 
+    const val kotlin_gradle_plugin: String = "1.3.72"
+
     const val kotlinx_metadata_jvm: String = "0.1.0"
 
-    const val dokka_gradle_plugin: String = "0.9.18" // available: "0.10.1"
+    const val dokka_gradle_plugin: String = "0.10.1"
+
+    const val kotlin_stdlib_jdk8: String =  "1.3.72"
 
     const val constraintlayout: String = "1.1.3"
 
-    const val jacoco_android: String = "0.1.4"
+    const val jacoco_android: String = "0.2"
 
     const val espresso_core: String = "3.2.0"
+
+    const val kotlin_stdlib: String = "1.3.72"
 
     const val lint_gradle: String = "26.6.3"
 
@@ -66,7 +82,7 @@ object Versions {
     const val k2v8: String = "0.0.1"
 
     /**
-     * Current version: "5.6.4"
+     * Current version: "6.4.1"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */

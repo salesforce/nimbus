@@ -6,9 +6,10 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-//    id("jacoco-android")
+    id("com.hiya.jacoco-android")
     `maven-publish`
     id("com.jfrog.bintray")
+//    id("com.jfrog.artifactory")
 }
 
 android {

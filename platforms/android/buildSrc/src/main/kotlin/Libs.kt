@@ -15,63 +15,6 @@ object Libs {
             Versions.org_jetbrains_kotlinx_kotlinx_serialization
 
     /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_android_extensions: String =
-            "org.jetbrains.kotlin:kotlin-android-extensions:" + Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_android_extensions_runtime: String =
-            "org.jetbrains.kotlin:kotlin-android-extensions-runtime:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_annotation_processing_gradle: String =
-            "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_scripting_compiler_embeddable: String =
-            "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_serialization: String = "org.jetbrains.kotlin:kotlin-serialization:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_serialization_unshaded: String =
-            "org.jetbrains.kotlin:kotlin-serialization-unshaded:" + Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
-            Versions.org_jetbrains_kotlin
-
-    /**
      * http://jacoco.org
      */
     const val org_jacoco_agent: String = "org.jacoco:org.jacoco.agent:" + Versions.org_jacoco
@@ -80,6 +23,13 @@ object Libs {
      * http://jacoco.org
      */
     const val org_jacoco_ant: String = "org.jacoco:org.jacoco.ant:" + Versions.org_jacoco
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val org_jetbrains_kotlin_kotlin_serialization: String =
+            "org.jetbrains.kotlin:kotlin-serialization:" +
+            Versions.org_jetbrains_kotlin_kotlin_serialization
 
     /**
      * https://developer.android.com/studio
@@ -97,11 +47,45 @@ object Libs {
             Versions.de_fayard_buildsrcversions_gradle_plugin
 
     /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_scripting_compiler_embeddable: String =
+            "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" +
+            Versions.kotlin_scripting_compiler_embeddable
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_annotation_processing_gradle: String =
+            "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" +
+            Versions.kotlin_annotation_processing_gradle
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_android_extensions_runtime: String =
+            "org.jetbrains.kotlin:kotlin-android-extensions-runtime:" +
+            Versions.kotlin_android_extensions_runtime
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_serialization_unshaded: String =
+            "org.jetbrains.kotlin:kotlin-serialization-unshaded:" +
+            Versions.kotlin_serialization_unshaded
+
+    /**
      * https://github.com/dcendents/android-maven-gradle-plugin
      */
     const val android_maven_gradle_plugin: String =
             "com.github.dcendents:android-maven-gradle-plugin:" +
             Versions.android_maven_gradle_plugin
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_android_extensions: String =
+            "org.jetbrains.kotlin:kotlin-android-extensions:" + Versions.kotlin_android_extensions
 
     /**
      * http://www.github.com/kotlintest/kotlintest
@@ -115,6 +99,12 @@ object Libs {
     /**
      * https://kotlinlang.org/
      */
+    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
+            Versions.kotlin_gradle_plugin
+
+    /**
+     * https://kotlinlang.org/
+     */
     const val kotlinx_metadata_jvm: String = "org.jetbrains.kotlinx:kotlinx-metadata-jvm:" +
             Versions.kotlinx_metadata_jvm
 
@@ -122,19 +112,29 @@ object Libs {
             Versions.dokka_gradle_plugin
 
     /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
+            Versions.kotlin_stdlib_jdk8
+
+    /**
      * http://tools.android.com
      */
     const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:" +
             Versions.constraintlayout
 
-    const val jacoco_android: String = "com.dicedmelon.gradle:jacoco-android:" +
-            Versions.jacoco_android
+    const val jacoco_android: String = "com.hiya:jacoco-android:" + Versions.jacoco_android
 
     /**
      * https://developer.android.com/testing
      */
     const val espresso_core: String = "androidx.test.espresso:espresso-core:" +
             Versions.espresso_core
+
+    /**
+     * https://kotlinlang.org/
+     */
+    const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" + Versions.kotlin_stdlib
 
     /**
      * https://developer.android.com/studio

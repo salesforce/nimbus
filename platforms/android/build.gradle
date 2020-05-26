@@ -11,7 +11,7 @@ buildscript {
         classpath(Libs.android_maven_gradle_plugin)
         classpath(Libs.dokka_gradle_plugin)
         classpath(Libs.jacoco_android)
-        classpath(Libs.kotlin_serialization)
+        classpath(Libs.org_jetbrains_kotlin_kotlin_serialization)
     }
 }
 

@@ -15,7 +15,6 @@ fun BintrayExtension.setupPublicationsUpload(
     project: Project,
     publishing: PublishingExtension
 ) {
-    println("Setting up publication for ${project.name}")
     val bintrayUpload: TaskProvider<Task> by project.tasks.existing
     val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
 
@@ -51,7 +50,7 @@ fun BintrayExtension.setupPublicationsUpload(
         publicDownloadNumbers = true
         githubRepo = Publishing.githubRepo
         publish = true
-        dryRun = false
+        dryRun = true
         version(closureOf<BintrayExtension.VersionConfig> {
             name = ProjectVersions.packageVersion
         })

@@ -46,12 +46,12 @@ fun MavenPublication.setupPom() = pom {
 
 fun PublishingExtension.setupAllPublications(project: Project) {
     val publication = publications.create<MavenPublication>(Publishing.group)
-    if (project.plugins.hasPlugin("com.android.application") ||
-        project.plugins.hasPlugin("com.android.library")) {
+    if (project.isAndroidModule()) {
         publication.from(project.components["release"])
     } else {
         publication.from(project.components["java"])
     }
+
     publication.artifactId = project.name
 
     project.group = Publishing.group
