@@ -51,3 +51,6 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// TODO: Move lint to plugin
+// TODO: Move Dokka config to plugin
