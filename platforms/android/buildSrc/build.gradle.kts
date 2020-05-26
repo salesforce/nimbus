@@ -16,6 +16,7 @@ dependencies {
     implementation("com.android.tools.build:gradle:3.6.3")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     implementation("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
+    implementation("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
 }
 
 configurations.all {

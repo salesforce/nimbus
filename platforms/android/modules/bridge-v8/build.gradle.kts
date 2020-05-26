@@ -9,7 +9,7 @@ plugins {
     id("com.hiya.jacoco-android")
     `maven-publish`
     id("com.jfrog.bintray")
-//    id("com.jfrog.artifactory")
+    id("com.jfrog.artifactory")
 }
 
 android {
@@ -54,6 +54,9 @@ afterEvaluate {
 
     bintray {
         setupPublicationsUpload(project, publishing)
+    }
+    artifactory {
+        setupSnapshots()
     }
 }
 

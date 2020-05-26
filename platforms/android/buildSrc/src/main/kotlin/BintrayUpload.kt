@@ -6,6 +6,7 @@ import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.closureOf
+import org.gradle.kotlin.dsl.delegateClosureOf
 import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
@@ -56,3 +57,32 @@ fun BintrayExtension.setupPublicationsUpload(
         })
     })
 }
+
+fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(){
+
+    setContextUrl("https://oss.jfrog.org")
+    publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
+        repository(delegateClosureOf<groovy.lang.GroovyObject> {
+            val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
+            setProperty("repoKey", targetRepoKey)
+            setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
+            setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
+            setProperty("maven", true)
+        })
+        defaults(delegateClosureOf<groovy.lang.GroovyObject> {
+            invokeMethod("publications", "mavenPublication")
+            setProperty("publishArtifacts", true)
+            setProperty("publishPom", true)
+        })
+    })
+    resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
+        setProperty("repoKey", "jcenter")
+    })
+//    clientConfig.info.buildNumber = ProjectVersions.packageVersion
+}
+
+fun buildTagFor(version: String): String =
+    when (version.substringAfterLast('-')) {
+        "SNAPSHOT" -> "snapshot"
+        else -> "release"
+    }

@@ -7,10 +7,10 @@ import org.gradle.kotlin.dsl.withType
 
 object Publishing {
     // TODO: Grab from config file?
-    const val bintrayRepo = "jamiehouston-test"
+    const val bintrayRepo = "android"
     const val siteUrl = "https://github.com/salesforce/nimbus"
-    const val userOrg = "jamie-houston"
-    const val packageName = "jamie-nimbus"
+    const val userOrg = "salesforce-mobile"
+    const val packageName = "nimbus"
     const val gitUrl = "$siteUrl.git"
     const val githubRepo = "salesforce/nimbus"
     const val libraryDesc = "Bridge native code to web views in a consistent way on iOS and Android."
