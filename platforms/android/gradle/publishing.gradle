@@ -7,7 +7,6 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
 } else {
     apply plugin: 'maven'
 
-    println("Adding tasks")
     task sourcesJar(type: Jar, dependsOn:classes) {
         archiveClassifier.set("sources")
         from sourceSets.main.allSource

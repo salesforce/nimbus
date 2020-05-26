@@ -23,11 +23,9 @@ object Publishing {
 
 @Suppress("UnstableApiUsage")
 fun MavenPublication.setupPom() = pom {
-    // TODO: Should this be the same as artifactid?
     name.set(Publishing.packageName)
     description.set(Publishing.libraryDesc)
     url.set(Publishing.siteUrl)
-    // TODO: Need to set packaging?  aar/jar?
     licenses {
         license {
             name.set(Publishing.licenseName)
@@ -47,17 +45,13 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-//    val publicationName = "com.salesforce.nimbus"
-//    val artifactID = "annotations"
-//    publishing {
-//        publications.create<MavenPublication>(publicationName) {
-//            from(components["java"])
-//            artifactId = artifactID
-//        }
-//    }
     val publication = publications.create<MavenPublication>(Publishing.group)
-    println("components are ${project.components}")
-    publication.from(project.components["java"])
+    if (project.plugins.hasPlugin("com.android.application") ||
+        project.plugins.hasPlugin("com.android.library")) {
+        publication.from(project.components["release"])
+    } else {
+        publication.from(project.components["java"])
+    }
     publication.artifactId = project.name
 
     project.group = Publishing.group

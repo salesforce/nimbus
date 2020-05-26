@@ -40,14 +40,22 @@ android {
 }
 
 dependencies {
-    androidTestImplementation project(":annotations")
+//    androidTestImplementation(nimbusModule("annotations"))
+//    androidTestImplementation(Libs.k2v8)
+//    androidTestImplementation(nimbusModule("bridge-v8"))
+//    androidTestImplementation(nimbusModule("bridge-webview"))
+//    androidTestImplementation(Libs.j2v8)
+//    androidTestImplementation(Libs.guava)
+//    kaptAndroidTest(nimbusModule("compiler-webview"))
+//    kaptAndroidTest(nimbusModule("compiler-v8"))
+    androidTestImplementation project(":modules:annotations")
     androidTestImplementation(Libs.k2v8)
-    androidTestImplementation project(":bridge-v8")
-    androidTestImplementation project(":bridge-webview")
+    androidTestImplementation project(":modules:bridge-v8")
+    androidTestImplementation project(":modules:bridge-webview")
     androidTestImplementation(Libs.j2v8)
     androidTestImplementation(Libs.guava)
-    kaptAndroidTest project(":compiler-webview")
-    kaptAndroidTest project(":compiler-v8")
+    kaptAndroidTest project(":modules:compiler-webview")
+    kaptAndroidTest project(":modules:compiler-v8")
 
     androidTestImplementation(Libs.kotlinx_serialization_runtime)
     androidTestImplementation(Libs.junit)

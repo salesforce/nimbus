@@ -38,7 +38,6 @@ fun BintrayExtension.setupPublicationsUpload(
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
-    println("Publications are ${publicationNames.forEach { println(it) }}")
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
         name = Publishing.packageName

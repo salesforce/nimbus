@@ -27,11 +27,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":bridge-webview"))
-    implementation(project(":bridge-v8"))
-    implementation(project(":core-plugins"))
-    kapt(project(":compiler-webview"))
-    kapt(project(":compiler-v8"))
+    implementation(nimbusModule("bridge-webview"))
+    implementation(nimbusModule("bridge-v8"))
+    implementation(nimbusModule("core-plugins"))
+    kapt(nimbusModule("compiler-webview"))
+    kapt(nimbusModule("compiler-v8"))
 
     implementation(Libs.kotlin_stdlib_jdk8)
     implementation(Libs.kotlinx_serialization_runtime)
