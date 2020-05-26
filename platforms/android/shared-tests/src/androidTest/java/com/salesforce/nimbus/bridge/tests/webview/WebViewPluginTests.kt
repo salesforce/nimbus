@@ -324,11 +324,6 @@ class WebViewPluginTests {
     }
 
     @Test
-    fun verifyNullaryResolvingToDoubleIntStructCallback() {
-        executeTest("verifyNullaryResolvingToDoubleIntStructCallback()")
-    }
-
-    @Test
     fun verifyUnaryIntResolvingToIntCallback() {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
     }

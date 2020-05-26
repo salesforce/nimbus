@@ -263,11 +263,6 @@ class V8PluginTests {
     }
 
     @Test
-    fun verifyNullaryResolvingToDoubleIntStructCallback() {
-        executeTest("verifyNullaryResolvingToDoubleIntStructCallback()")
-    }
-
-    @Test
     fun verifyUnaryIntResolvingToIntCallback() {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
     }

@@ -351,6 +351,12 @@ class V8BinderGenerator : BinderGenerator() {
         parameterIndex: Int
     ): CodeBlock {
 
+        // Check if there are more than two parameters in callback. Only two parameters (result, error) are allowed.
+        if (declaredType.typeArguments.size > 3) { // one type is for the return type (should be void)
+            error(parameter, "Only two parameters are allowed in callbacks.")
+            return CodeBlock.of("")
+        }
+
         // try to get the parameter type from the kotlin class
         // metadata to determine if it is nullable
         val kotlinParameterType = kotlinParameter?.type

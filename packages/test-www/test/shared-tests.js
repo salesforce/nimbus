@@ -480,19 +480,6 @@ function verifyNullaryResolvingToIntStructCallback() {
   }).then(() => {});
 }
 
-function verifyNullaryResolvingToDoubleIntStructCallback() {
-  __nimbus.plugins.testPlugin.nullaryResolvingToIntDoubleStructCallback((int, double, struct) => {
-    if (int === 3 &&
-      double === 4.0 &&
-      struct.string === 'String' &&
-      struct.integer === 1 &&
-      struct.double === 2.0) {
-      __nimbus.plugins.expectPlugin.pass();
-    }
-    __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
-}
-
 function verifyUnaryIntResolvingToIntCallback() {
   __nimbus.plugins.testPlugin.unaryIntResolvingToIntCallback(3, (result) => {
     if (result === 4) {

@@ -36,7 +36,6 @@ class WebViewBinderGenerator : BinderGenerator() {
     private val jsonSerializationConfigurationClassName = ClassName("kotlinx.serialization.json", "JsonConfiguration")
 
     private val jsonObjectClassName = ClassName("org.json", "JSONObject")
-    private val jsonArrayClassName = ClassName("org.json", "JSONArray")
 
     private val toJSONEncodableFunctionName = ClassName(nimbusPackage, "toJSONEncodable")
     private val kotlinJSONEncodableClassName = ClassName(nimbusPackage, "KotlinJSONEncodable")
@@ -252,6 +251,12 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinParameter: KmValueParameter?,
         funSpec: FunSpec.Builder
     ) {
+
+        // Check if there are more than two parameters in callback. Only two parameters (result, error) are allowed.
+        if (declaredType.typeArguments.size > 3) { // one type is for the return type (should be void)
+            error(parameter, "Only two parameters are allowed in callbacks.")
+            return
+        }
 
         // try to get the parameter type from the kotlin class
         // metadata to determine if it is nullable
