@@ -15,13 +15,14 @@ fun BintrayExtension.setupPublicationsUpload(
     project: Project,
     publishing: PublishingExtension
 ) {
+    println("Setting up publication for ${project.name}")
     val bintrayUpload: TaskProvider<Task> by project.tasks.existing
     val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
 
     bintrayUpload.dependsOn(publishToMavenLocal)
 
     // TODO: Is this necessary?
-    project.checkNoVersionRanges()
+//    project.checkNoVersionRanges()
 
     // TODO: Add this back... I like it
 //    bintrayUpload.configure {
@@ -37,6 +38,7 @@ fun BintrayExtension.setupPublicationsUpload(
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
+    println("Publications are ${publicationNames.forEach { println(it) }}")
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
         name = Publishing.packageName
@@ -50,6 +52,7 @@ fun BintrayExtension.setupPublicationsUpload(
         publicDownloadNumbers = true
         githubRepo = Publishing.githubRepo
         publish = true
+        dryRun = false
         version(closureOf<BintrayExtension.VersionConfig> {
             name = ProjectVersions.packageVersion
         })

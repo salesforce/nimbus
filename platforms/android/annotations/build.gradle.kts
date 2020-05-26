@@ -5,6 +5,15 @@ plugins {
     id("com.jfrog.bintray")
 }
 
+//val publicationName = "com.salesforce.nimbus"
+//val artifactID = "annotations"
+//publishing {
+//    publications.create<MavenPublication>(publicationName) {
+//        from(components["java"])
+//        artifactId = artifactID
+//    }
+//}
+//
 dependencies {
     implementation(Libs.kotlin_stdlib_jdk8)
 }
@@ -20,3 +29,4 @@ afterEvaluate {
 }
 
 apply(from= rootProject.file("gradle/lint.gradle"))
+//apply(from= rootProject.file("gradle/publishing.gradle"))

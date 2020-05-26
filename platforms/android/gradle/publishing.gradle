@@ -7,6 +7,7 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
 } else {
     apply plugin: 'maven'
 
+    println("Adding tasks")
     task sourcesJar(type: Jar, dependsOn:classes) {
         archiveClassifier.set("sources")
         from sourceSets.main.allSource
@@ -23,51 +24,51 @@ if (project.getPlugins().hasPlugin('com.android.application') ||
     }
 }
 
-//group = Publishing.group
-//
-//install {
-//    repositories.mavenInstaller {
-//        pom {
-//            project {
-//                name Publishing.packageName
-//                url Publishing.siteUrl
-//
-//                // If we decide to use anything other than project name as artifactId, we'd change it here
-//                // artifactId POM_NAME.toLowerCase().replaceAll(" ", "-")
-//
-//                packaging POM_PACKAGING
-//                version ProjectVersions.packageVersion
-//
-//                licenses {
-//                    license {
-//                        name POM_LICENSE_NAME
-//                        url POM_LICENSE_URL
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        name POM_DEVELOPER
-//                    }
-//                }
-//
-//                scm {
-//                    url POM_SCM_URL
-//                    connection POM_SCM_CONNECTION
-//                    developerConnection POM_SCM_DEV_CONNECTION
-//                }
-//            }
-//        }
-//    }
-//}
-//
+group = Publishing.group
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                name Publishing.packageName
+                url Publishing.siteUrl
+
+                // If we decide to use anything other than project name as artifactId, we'd change it here
+                // artifactId POM_NAME.toLowerCase().replaceAll(" ", "-")
+
+                packaging POM_PACKAGING
+                version ProjectVersions.packageVersion
+
+                licenses {
+                    license {
+                        name POM_LICENSE_NAME
+                        url POM_LICENSE_URL
+                    }
+                }
+
+                developers {
+                    developer {
+                        name POM_DEVELOPER
+                    }
+                }
+
+                scm {
+                    url POM_SCM_URL
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                }
+            }
+        }
+    }
+}
+
 //bintray {
 //    project.version = ProjectVersions.packageVersion
 //    user = project.findProperty('bintrayUser') ?: System.getenv('BINTRAY_USER')
 //    key = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
 //    configurations = ['archives']
 //    publish = true
-//    dryRun = false
+//    dryRun = true
 //    pkg {
 //        name = Publishing.packageName
 //        repo = Publishing.bintrayRepo

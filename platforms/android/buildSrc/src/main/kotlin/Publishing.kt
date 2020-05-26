@@ -1,6 +1,8 @@
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 
 object Publishing {
@@ -45,6 +47,19 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
+//    val publicationName = "com.salesforce.nimbus"
+//    val artifactID = "annotations"
+//    publishing {
+//        publications.create<MavenPublication>(publicationName) {
+//            from(components["java"])
+//            artifactId = artifactID
+//        }
+//    }
+    val publication = publications.create<MavenPublication>(Publishing.group)
+    println("components are ${project.components}")
+    publication.from(project.components["java"])
+    publication.artifactId = project.name
+
     project.group = Publishing.group
     project.version = ProjectVersions.packageVersion
     val publications = publications.withType<MavenPublication>()
