@@ -58,9 +58,9 @@ fun BintrayExtension.setupPublicationsUpload(
     })
 }
 
-fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(){
+fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project){
 
-    setContextUrl("https://oss.jfrog.org")
+    setContextUrl("https://oss.jfrog.org/artifactory")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
@@ -70,13 +70,15 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
             setProperty("maven", true)
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
-            invokeMethod("publications", "mavenPublication")
+            invokeMethod("publications", getPublications(project))
+            invokeMethod("publishConfigs", arrayOf("archives"))
             setProperty("publishArtifacts", true)
             setProperty("publishPom", true)
         })
     })
     resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
-        setProperty("repoKey", "jcenter")
+        setProperty("repoKey", "libs-snapshot")
+        setProperty("maven", true)
     })
 //    clientConfig.info.buildNumber = ProjectVersions.packageVersion
 }
@@ -86,3 +88,10 @@ fun buildTagFor(version: String): String =
         "SNAPSHOT" -> "snapshot"
         else -> "release"
     }
+fun getPublications(project: Project): Array<String> {
+    return if (project.isAndroidModule()) {
+        arrayOf("androidDebug", "androidRelease")
+    } else {
+        arrayOf("mavenJava")
+    }
+}

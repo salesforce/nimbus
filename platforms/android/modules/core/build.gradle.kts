@@ -13,6 +13,7 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
     implementation(nimbusModule("annotations"))
     implementation(Libs.kotlin_stdlib_jdk8)
     compileOnly(Libs.kotlinx_serialization_runtime)
@@ -31,7 +32,7 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
     artifactory {
-        setupSnapshots()
+        setupSnapshots(project)
     }
 }
 

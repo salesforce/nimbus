@@ -22,7 +22,7 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
     artifactory {
-        setupSnapshots()
+        setupSnapshots(project)
     }
 }
 

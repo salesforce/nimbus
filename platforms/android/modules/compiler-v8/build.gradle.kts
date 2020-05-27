@@ -18,12 +18,11 @@ afterEvaluate {
     publishing {
         setupAllPublications(project)
     }
-
     bintray {
         setupPublicationsUpload(project, publishing)
     }
     artifactory {
-        setupSnapshots()
+        setupSnapshots(project)
     }
 }
 

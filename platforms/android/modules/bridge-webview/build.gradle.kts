@@ -19,6 +19,7 @@ dependencies {
     api(nimbusModule("core"))
     kapt(nimbusModule("compiler-webview"))
 
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
     implementation(Libs.kotlin_stdlib)
 
     testImplementation(Libs.json)
@@ -51,7 +52,7 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
     artifactory {
-        setupSnapshots()
+        setupSnapshots(project)
     }
 }
 

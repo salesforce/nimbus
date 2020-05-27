@@ -25,6 +25,8 @@ dependencies {
     implementation(Libs.j2v8)
     implementation(Libs.kotlinx_serialization_runtime)
     implementation(Libs.kotlin_stdlib_jdk8)
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
+
 
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
@@ -56,7 +58,7 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
     artifactory {
-        setupSnapshots()
+        setupSnapshots(project)
     }
 }
 

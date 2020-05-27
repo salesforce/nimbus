@@ -12,7 +12,7 @@ buildscript {
         classpath(Libs.dokka_gradle_plugin)
         classpath(Libs.jacoco_android)
         classpath(Libs.org_jetbrains_kotlin_kotlin_serialization)
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2")
 
     }
 }

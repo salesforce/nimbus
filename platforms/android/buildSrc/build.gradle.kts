@@ -16,23 +16,27 @@ dependencies {
     implementation("com.android.tools.build:gradle:3.6.3")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     implementation("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5")
-    implementation("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
+    implementation("org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2")
 }
 
 configurations.all {
-    val isKotlinCompiler = name == "embeddedKotlin" ||
-        name.startsWith("kotlin") ||
-        name.startsWith("kapt")
-    if (!isKotlinCompiler) {
-        resolutionStrategy.eachDependency {
-            @Suppress("UnstableApiUsage")
-            if (requested.group == "org.jetbrains.kotlin" &&
-                requested.module.name == "kotlin-compiler-embeddable"
-            ) useVersion(kotlinVersion)
-        }
-    }
+//    val isKotlinCompiler = name == "embeddedKotlin" ||
+//        name.startsWith("kotlin") ||
+//        name.startsWith("kapt")
+//    if (!isKotlinCompiler) {
+//        resolutionStrategy.eachDependency {
+//            @Suppress("UnstableApiUsage")
+//            if (requested.group == "org.jetbrains.kotlin" &&
+//                requested.module.name == "kotlin-compiler-embeddable"
+//            ) useVersion(kotlinVersion)
+//        }
+//    }
     // set jvmTarget for all kotlin projects
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
+}
+
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
 }
