@@ -23,7 +23,7 @@ fun AndroidLibraryExtension.setDefaults() {
 
     // TODO: Set by project
     sourceSets.getByName("main") {
-        res.srcDir("src/androidMain/res")
+        res.srcDir("src/main/res")
         assets.srcDir("src/main/assets")
     }
 

@@ -47,7 +47,6 @@ afterEvaluate {
     publishing {
         setupAllPublications(project)
     }
-
     bintray {
         setupPublicationsUpload(project, publishing)
     }
