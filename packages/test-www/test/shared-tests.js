@@ -498,4 +498,24 @@ function verifyBinaryIntDoubleResolvingToIntDoubleCallback() {
   }).then(() => {});
 }
 
+function verifyBinaryIntResolingIntCallbackReturnsInt() {
+  let count = 0;
+  const test = () => {
+    count = count + 1;
+    if (count === 2) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+  }
+  __nimbus.plugins.testPlugin.binaryIntResolingIntCallbackReturnsInt(3, (int) => {
+    if (int === 2) {
+      test();
+    }
+  }).then((result) =>{
+    if (result === 1) {
+      test();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 // endregion

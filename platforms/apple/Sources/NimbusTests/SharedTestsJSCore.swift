@@ -212,4 +212,8 @@ class SharedTestsJSCore: XCTestCase {
     func testVerifyBinaryIntDoubleResolvingToIntDoubleCallback() {
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
     }
+    
+    func testVerifyBinaryIntResolingIntCallbackReturnsInt() {
+        executeTest("verifyBinaryIntResolingIntCallbackReturnsInt()")
+    }
 }
