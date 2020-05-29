@@ -1,4 +1,3 @@
-import org.gradle.api.Action
 import com.android.build.gradle.LibraryExtension as AndroidLibraryExtension
 
 fun AndroidLibraryExtension.setDefaults() {
@@ -23,8 +22,8 @@ fun AndroidLibraryExtension.setDefaults() {
 
     // TODO: Set by project
     sourceSets.getByName("main") {
-        res.srcDir("src/main/res")
-        assets.srcDir("src/main/assets")
+        res.srcDir("src/androidMain/res")
+        assets.srcDir("src/androidMain/assets")
     }
 
     testOptions {
@@ -35,9 +34,9 @@ fun AndroidLibraryExtension.setDefaults() {
 
     // TODO: Is this still necessary
     // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
-    libraryVariants.all(Action {
+    libraryVariants.all {
         generateBuildConfigProvider.configure {
             enabled = false
         }
-    })
+    }
 }

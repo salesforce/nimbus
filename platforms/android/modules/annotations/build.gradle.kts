@@ -17,7 +17,6 @@ afterEvaluate {
     publishing {
         setupAllPublications(project)
     }
-
     bintray {
         setupPublicationsUpload(project, publishing)
     }
@@ -28,4 +27,3 @@ afterEvaluate {
 
 
 apply(from= rootProject.file("gradle/lint.gradle"))
-//apply(from= rootProject.file("gradle/publishing.gradle"))

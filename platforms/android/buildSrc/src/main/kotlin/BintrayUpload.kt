@@ -71,7 +71,7 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
             invokeMethod("publications", getPublications(project))
-            invokeMethod("publishConfigs", arrayOf("archives"))
+//            invokeMethod("publishConfigs", arrayOf("archives"))
             setProperty("publishArtifacts", true)
             setProperty("publishPom", true)
         })
@@ -91,7 +91,9 @@ fun buildTagFor(version: String): String =
 fun getPublications(project: Project): Array<String> {
     return if (project.isAndroidModule()) {
         arrayOf("androidDebug", "androidRelease")
+//        arrayOf("release")
     } else {
         arrayOf("mavenJava")
+//        arrayOf("java")
     }
 }

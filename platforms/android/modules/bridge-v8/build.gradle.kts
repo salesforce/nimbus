@@ -27,7 +27,6 @@ dependencies {
     implementation(Libs.kotlin_stdlib_jdk8)
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
-
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
     androidTestImplementation(Libs.androidx_test_rules){
