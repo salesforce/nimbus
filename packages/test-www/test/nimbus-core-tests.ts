@@ -30,7 +30,7 @@ interface JSAPITestPlugin {
   binaryResolvingToObjectCallbackToInt(
     param0: number,
     completion: (innerParam: JSAPITestStruct) => void
-  ): Promise<number>
+  ): Promise<number>;
 }
 
 declare module "nimbus-bridge" {
