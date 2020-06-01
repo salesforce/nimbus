@@ -504,6 +504,7 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
     count = count + 1;
     if (count === 2) {
       __nimbus.plugins.expectPlugin.pass();
+      __nimbus.plugins.expectPlugin.finished();
     }
   }
   __nimbus.plugins.testPlugin.binaryIntResolvingIntCallbackReturnsInt(3, (int) => {
@@ -514,7 +515,6 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
     if (result === 1) {
       verifyCallbacks();
     }
-    __nimbus.plugins.expectPlugin.finished();
   });
 }
 
