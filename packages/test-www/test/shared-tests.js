@@ -498,21 +498,21 @@ function verifyBinaryIntDoubleResolvingToIntDoubleCallback() {
   }).then(() => {});
 }
 
-function verifyBinaryIntResolingIntCallbackReturnsInt() {
+function verifyBinaryIntResolvingIntCallbackReturnsInt() {
   let count = 0;
-  const test = () => {
+  const verifyCallbacks = () => {
     count = count + 1;
     if (count === 2) {
       __nimbus.plugins.expectPlugin.pass();
     }
   }
-  __nimbus.plugins.testPlugin.binaryIntResolingIntCallbackReturnsInt(3, (int) => {
+  __nimbus.plugins.testPlugin.binaryIntResolvingIntCallbackReturnsInt(3, (int) => {
     if (int === 2) {
-      test();
+      verifyCallbacks();
     }
   }).then((result) =>{
     if (result === 1) {
-      test();
+      verifyCallbacks();
     }
     __nimbus.plugins.expectPlugin.finished();
   });

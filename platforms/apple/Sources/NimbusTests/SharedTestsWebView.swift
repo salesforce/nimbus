@@ -126,5 +126,6 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyNullaryResolvingToIntStructCallback()")
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
+        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
     }
 }
