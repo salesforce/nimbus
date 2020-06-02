@@ -118,6 +118,26 @@ public class CallbackTestPlugin {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaTests.MochaMessage) -> Swift.Void) {
         completion(777, MochaTests.MochaMessage())
     }
+
+    func callbackWithSingleParamAndReturn(completion: @escaping (MochaTests.MochaMessage) -> Void) -> String {
+        completion(.init())
+        return "one"
+    }
+
+    func callbackWithSinglePrimitiveParamAndReturn(completion: @escaping (Int) -> Void) -> String {
+        completion(1)
+        return "one"
+    }
+
+    func callbackWithTwoParamAndReturn(completion: @escaping (MochaTests.MochaMessage, MochaTests.MochaMessage) -> Void) -> String {
+        completion(.init(), .init(stringField: "mock", intField: 3))
+        return "two"
+    }
+
+    func callbackWithTwoPrimitiveParamAndReturn(completion: @escaping (Int, Int) -> Void) -> String {
+        completion(1, 2)
+        return "two"
+    }
 }
 
 extension CallbackTestPlugin: Plugin {
@@ -128,5 +148,9 @@ extension CallbackTestPlugin: Plugin {
         connection.bind(CallbackTestPlugin.callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(CallbackTestPlugin.callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(CallbackTestPlugin.callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(CallbackTestPlugin.callbackWithSingleParamAndReturn, as: "callbackWithSingleParamAndReturn")
+        connection.bind(CallbackTestPlugin.callbackWithSinglePrimitiveParamAndReturn, as: "callbackWithSinglePrimitiveParamAndReturn")
+        connection.bind(CallbackTestPlugin.callbackWithTwoParamAndReturn, as: "callbackWithTwoParamAndReturn")
+        connection.bind(CallbackTestPlugin.callbackWithTwoPrimitiveParamAndReturn, as: "callbackWithTwoPrimitiveParamAndReturn")
     }
 }
