@@ -147,6 +147,24 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(79))
     }
 
+    func testBindUnaryWithBinaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(79))
+    }
+
     func testBindUnaryWithBinaryPrimitiveNSArrayCallback() {
         binder.bind(BindTarget.unaryWithBinaryPrimitiveNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -158,6 +176,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindUnaryWithBinaryPrimitiveNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
@@ -181,6 +220,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
     }
 
+    func testBindUnaryWithBinaryPrimitiveNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
     func testBindUnaryWithBinaryNSArrayPrimitiveCallback() {
         binder.bind(BindTarget.unaryWithBinaryNSArrayPrimitiveCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -192,6 +252,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(37))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindUnaryWithBinaryNSArrayPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(37))
@@ -215,6 +296,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray2, ["four", "five", "six"])
     }
 
+    func testBindUnaryWithBinaryNSArrayNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, ["one", "two", "three"])
+        XCTAssertEqual(resultArray2, ["four", "five", "six"])
+    }
+
     func testBindUnaryWithBinaryNSArrayNSDictionaryCallback() {
         binder.bind(BindTarget.unaryWithBinaryNSArrayNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -226,6 +328,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
+    func testBindUnaryWithBinaryNSArrayNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, ["one", "two", "three"])
@@ -249,6 +372,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(37))
     }
 
+    func testBindUnaryWithBinaryNSDictionaryPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(result, .some(37))
+    }
+
     func testBindUnaryWithBinaryNSDictionaryNSArrayCallback() {
         binder.bind(BindTarget.unaryWithBinaryNSDictionaryNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -266,6 +410,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray, ["one", "two", "three"])
     }
 
+    func testBindUnaryWithBinaryNSDictionaryNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
     func testBindUnaryWithBinaryNSDictionaryNSDictionaryCallback() {
         binder.bind(BindTarget.unaryWithBinaryNSDictionaryNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -277,6 +442,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultDict2, ["four": 4, "five": 5, "six": 6])
+    }
+
+    func testBindUnaryWithBinaryNSDictionaryNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.unaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 1)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
@@ -382,6 +568,24 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(79))
     }
 
+    func testBindBinaryWithBinaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(79))
+    }
+
     func testBindBinaryWithBinaryPrimitiveNSArrayCallback() {
         binder.bind(BindTarget.binaryWithBinaryPrimitiveNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -393,6 +597,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindBinaryWithBinaryPrimitiveNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
@@ -416,6 +641,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
     }
 
+    func testBindBinaryWithBinaryPrimitiveNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
     func testBindBinaryWithBinaryNSArrayPrimitiveCallback() {
         binder.bind(BindTarget.binaryWithBinaryNSArrayPrimitiveCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -427,6 +673,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(37))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindBinaryWithBinaryNSArrayPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(37))
@@ -450,6 +717,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray2, ["four", "five", "six"])
     }
 
+    func testBindBinaryWithBinaryNSArrayNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, ["one", "two", "three"])
+        XCTAssertEqual(resultArray2, ["four", "five", "six"])
+    }
+
     func testBindBinaryWithBinaryNSArrayNSDictionaryCallback() {
         binder.bind(BindTarget.binaryWithBinaryNSArrayNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -461,6 +749,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
+    func testBindBinaryWithBinaryNSArrayNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, ["one", "two", "three"])
@@ -484,6 +793,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(37))
     }
 
+    func testBindBinaryWithBinaryNSDictionaryPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(result, .some(37))
+    }
+
     func testBindBinaryWithBinaryNSDictionaryNSArrayCallback() {
         binder.bind(BindTarget.binaryWithBinaryNSDictionaryNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -501,6 +831,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray, ["one", "two", "three"])
     }
 
+    func testBindBinaryWithBinaryNSDictionaryNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
     func testBindBinaryWithBinaryNSDictionaryNSDictionaryCallback() {
         binder.bind(BindTarget.binaryWithBinaryNSDictionaryNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -512,6 +863,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultDict2, ["four": 4, "five": 5, "six": 6])
+    }
+
+    func testBindBinaryWithBinaryNSDictionaryNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.binaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 2)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
@@ -617,6 +989,24 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(79))
     }
 
+    func testBindTernaryWithBinaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(79))
+    }
+
     func testBindTernaryWithBinaryPrimitiveNSArrayCallback() {
         binder.bind(BindTarget.ternaryWithBinaryPrimitiveNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -628,6 +1018,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindTernaryWithBinaryPrimitiveNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
@@ -651,6 +1062,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
     }
 
+    func testBindTernaryWithBinaryPrimitiveNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(42))
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
     func testBindTernaryWithBinaryNSArrayPrimitiveCallback() {
         binder.bind(BindTarget.ternaryWithBinaryNSArrayPrimitiveCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -662,6 +1094,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(37))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindTernaryWithBinaryNSArrayPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(37))
@@ -685,6 +1138,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray2, ["four", "five", "six"])
     }
 
+    func testBindTernaryWithBinaryNSArrayNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, ["one", "two", "three"])
+        XCTAssertEqual(resultArray2, ["four", "five", "six"])
+    }
+
     func testBindTernaryWithBinaryNSArrayNSDictionaryCallback() {
         binder.bind(BindTarget.ternaryWithBinaryNSArrayNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -696,6 +1170,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
+    func testBindTernaryWithBinaryNSArrayNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, ["one", "two", "three"])
@@ -719,6 +1214,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(37))
     }
 
+    func testBindTernaryWithBinaryNSDictionaryPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(result, .some(37))
+    }
+
     func testBindTernaryWithBinaryNSDictionaryNSArrayCallback() {
         binder.bind(BindTarget.ternaryWithBinaryNSDictionaryNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -736,6 +1252,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray, ["one", "two", "three"])
     }
 
+    func testBindTernaryWithBinaryNSDictionaryNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
     func testBindTernaryWithBinaryNSDictionaryNSDictionaryCallback() {
         binder.bind(BindTarget.ternaryWithBinaryNSDictionaryNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -747,6 +1284,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultDict2, ["four": 4, "five": 5, "six": 6])
+    }
+
+    func testBindTernaryWithBinaryNSDictionaryNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.ternaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 3)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
@@ -852,6 +1410,24 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(92))
     }
 
+    func testBindQuaternaryWithBinaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(92))
+    }
+
     func testBindQuaternaryWithBinaryPrimitiveNSArrayCallback() {
         binder.bind(BindTarget.quaternaryWithBinaryPrimitiveNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -863,6 +1439,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(55))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindQuaternaryWithBinaryPrimitiveNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(55))
@@ -886,6 +1483,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
     }
 
+    func testBindQuaternaryWithBinaryPrimitiveNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(55))
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
     func testBindQuaternaryWithBinaryNSArrayPrimitiveCallback() {
         binder.bind(BindTarget.quaternaryWithBinaryNSArrayPrimitiveCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -897,6 +1515,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(37))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindQuaternaryWithBinaryNSArrayPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(37))
@@ -920,6 +1559,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray2, ["four", "five", "six"])
     }
 
+    func testBindQuaternaryWithBinaryNSArrayNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, ["one", "two", "three"])
+        XCTAssertEqual(resultArray2, ["four", "five", "six"])
+    }
+
     func testBindQuaternaryWithBinaryNSArrayNSDictionaryCallback() {
         binder.bind(BindTarget.quaternaryWithBinaryNSArrayNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -931,6 +1591,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
+    func testBindQuaternaryWithBinaryNSArrayNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, ["one", "two", "three"])
@@ -954,6 +1635,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(37))
     }
 
+    func testBindQuaternaryWithBinaryNSDictionaryPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(result, .some(37))
+    }
+
     func testBindQuaternaryWithBinaryNSDictionaryNSArrayCallback() {
         binder.bind(BindTarget.quaternaryWithBinaryNSDictionaryNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -971,6 +1673,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray, ["one", "two", "three"])
     }
 
+    func testBindQuaternaryWithBinaryNSDictionaryNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
     func testBindQuaternaryWithBinaryNSDictionaryNSDictionaryCallback() {
         binder.bind(BindTarget.quaternaryWithBinaryNSDictionaryNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -982,6 +1705,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultDict2, ["four": 4, "five": 5, "six": 6])
+    }
+
+    func testBindQuaternaryWithBinaryNSDictionaryNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quaternaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 4)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
@@ -1087,6 +1831,24 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(99))
     }
 
+    func testBindQuinaryWithBinaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(99))
+    }
+
     func testBindQuinaryWithBinaryPrimitiveNSArrayCallback() {
         binder.bind(BindTarget.quinaryWithBinaryPrimitiveNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -1098,6 +1860,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(55))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindQuinaryWithBinaryPrimitiveNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(55))
@@ -1121,6 +1904,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
     }
 
+    func testBindQuinaryWithBinaryPrimitiveNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(55))
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
     func testBindQuinaryWithBinaryNSArrayPrimitiveCallback() {
         binder.bind(BindTarget.quinaryWithBinaryNSArrayPrimitiveCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -1132,6 +1936,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(44))
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
+    func testBindQuinaryWithBinaryNSArrayPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(44))
@@ -1155,6 +1980,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray2, ["four", "five", "six"])
     }
 
+    func testBindQuinaryWithBinaryNSArrayNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, ["one", "two", "three"])
+        XCTAssertEqual(resultArray2, ["four", "five", "six"])
+    }
+
     func testBindQuinaryWithBinaryNSArrayNSDictionaryCallback() {
         binder.bind(BindTarget.quinaryWithBinaryNSArrayNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -1166,6 +2012,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+    }
+
+    func testBindQuinaryWithBinaryNSArrayNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultArray, ["one", "two", "three"])
@@ -1189,6 +2056,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(44))
     }
 
+    func testBindQuinaryWithBinaryNSDictionaryPrimitiveCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(result, .some(44))
+    }
+
     func testBindQuinaryWithBinaryNSDictionaryNSArrayCallback() {
         binder.bind(BindTarget.quinaryWithBinaryNSDictionaryNSArrayCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -1206,6 +2094,27 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(resultArray, ["one", "two", "three"])
     }
 
+    func testBindQuinaryWithBinaryNSDictionaryNSArrayCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultArray, ["one", "two", "three"])
+    }
+
     func testBindQuinaryWithBinaryNSDictionaryNSDictionaryCallback() {
         binder.bind(BindTarget.quinaryWithBinaryNSDictionaryNSDictionaryCallback, as: "")
         let expecter = expectation(description: "callback")
@@ -1217,6 +2126,27 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         _ = try? binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
+        XCTAssertEqual(resultDict2, ["four": 4, "five": 5, "six": 6])
+    }
+
+    func testBindQuinaryWithBinaryNSDictionaryNSDictionaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.quinaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [42, 37, 13, 7, make_callable(callback)]) as? Int {
+            XCTAssertEqual(value, 5)
+        } else {
+            XCTFail("Expected a return value")
+        }
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(resultDict1, ["one": 1, "two": 2, "three": 3])
@@ -1343,10 +2273,23 @@ class BindTarget {
         callback(42, 37)
     }
 
+    func unaryWithBinaryCallbackWithPrimitiveReturn(callback: @escaping BinaryCallback) -> Int {
+        called = true
+        callback(42, 37)
+        return 1
+    }
+
     func unaryWithBinaryPrimitiveNSArrayCallback(callback: @escaping BinaryPrimitiveNSArrayCallback) {
         called = true
         let arr1: NSArray = ["one", "two", "three"]
         callback(42, arr1)
+    }
+
+    func unaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn(callback: @escaping BinaryPrimitiveNSArrayCallback) -> Int {
+        called = true
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(42, arr1)
+        return 1
     }
 
     func unaryWithBinaryPrimitiveNSDictionaryCallback(callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
@@ -1355,10 +2298,24 @@ class BindTarget {
         callback(42, dict1)
     }
 
+    func unaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn(callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> Int {
+        called = true
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(42, dict1)
+        return 1
+    }
+
     func unaryWithBinaryNSArrayPrimitiveCallback(callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
         callback(arr0, 37)
+    }
+
+    func unaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn(callback: @escaping BinaryNSArrayPrimitiveCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        callback(arr0, 37)
+        return 1
     }
 
     func unaryWithBinaryNSArrayNSArrayCallback(callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -1368,6 +2325,14 @@ class BindTarget {
         callback(arr0, arr1)
     }
 
+    func unaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn(callback: @escaping BinaryNSArrayNSArrayCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let arr1: NSArray = ["four", "five", "six"]
+        callback(arr0, arr1)
+        return 1
+    }
+
     func unaryWithBinaryNSArrayNSDictionaryCallback(callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
@@ -1375,10 +2340,25 @@ class BindTarget {
         callback(arr0, dict1)
     }
 
+    func unaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn(callback: @escaping BinaryNSArrayNSDictionaryCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arr0, dict1)
+        return 1
+    }
+
     func unaryWithBinaryNSDictionaryPrimitiveCallback(callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         callback(dict0, 37)
+    }
+
+    func unaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn(callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(dict0, 37)
+        return 1
     }
 
     func unaryWithBinaryNSDictionaryNSArrayCallback(callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -1388,11 +2368,27 @@ class BindTarget {
         callback(dict0, arr1)
     }
 
+    func unaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn(callback: @escaping BinaryNSDictionaryNSArrayCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(dict0, arr1)
+        return 1
+    }
+
     func unaryWithBinaryNSDictionaryNSDictionaryCallback(callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
         callback(dict0, dict1)
+    }
+
+    func unaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn(callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
+        callback(dict0, dict1)
+        return 1
     }
 
     func unaryWithBinaryCallbackThrows(callback: @escaping BinaryCallback) throws {
@@ -1460,10 +2456,23 @@ class BindTarget {
         callback(arg0, 37)
     }
 
+    func binaryWithBinaryCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryCallback) -> Int {
+        called = true
+        callback(arg0, 37)
+        return 2
+    }
+
     func binaryWithBinaryPrimitiveNSArrayCallback(arg0: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) {
         called = true
         let arr1: NSArray = ["one", "two", "three"]
         callback(arg0, arr1)
+    }
+
+    func binaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) -> Int {
+        called = true
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(arg0, arr1)
+        return 2
     }
 
     func binaryWithBinaryPrimitiveNSDictionaryCallback(arg0: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
@@ -1472,10 +2481,24 @@ class BindTarget {
         callback(arg0, dict1)
     }
 
+    func binaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> Int {
+        called = true
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arg0, dict1)
+        return 2
+    }
+
     func binaryWithBinaryNSArrayPrimitiveCallback(arg0: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
         callback(arr0, 37)
+    }
+
+    func binaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        callback(arr0, 37)
+        return 2
     }
 
     func binaryWithBinaryNSArrayNSArrayCallback(arg0: Int, callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -1485,6 +2508,14 @@ class BindTarget {
         callback(arr0, arr1)
     }
 
+    func binaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSArrayNSArrayCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let arr1: NSArray = ["four", "five", "six"]
+        callback(arr0, arr1)
+        return 2
+    }
+
     func binaryWithBinaryNSArrayNSDictionaryCallback(arg0: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
@@ -1492,10 +2523,25 @@ class BindTarget {
         callback(arr0, dict1)
     }
 
+    func binaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arr0, dict1)
+        return 2
+    }
+
     func binaryWithBinaryNSDictionaryPrimitiveCallback(arg0: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         callback(dict0, 37)
+    }
+
+    func binaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(dict0, 37)
+        return 2
     }
 
     func binaryWithBinaryNSDictionaryNSArrayCallback(arg0: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -1505,11 +2551,27 @@ class BindTarget {
         callback(dict0, arr1)
     }
 
+    func binaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(dict0, arr1)
+        return 2
+    }
+
     func binaryWithBinaryNSDictionaryNSDictionaryCallback(arg0: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
         callback(dict0, dict1)
+    }
+
+    func binaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
+        callback(dict0, dict1)
+        return 2
     }
 
     func binaryWithBinaryCallbackThrows(arg0: Int, callback: @escaping BinaryCallback) throws {
@@ -1577,10 +2639,23 @@ class BindTarget {
         callback(arg0, arg1)
     }
 
+    func ternaryWithBinaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryCallback) -> Int {
+        called = true
+        callback(arg0, arg1)
+        return 3
+    }
+
     func ternaryWithBinaryPrimitiveNSArrayCallback(arg0: Int, arg1: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) {
         called = true
         let arr1: NSArray = ["one", "two", "three"]
         callback(arg0, arr1)
+    }
+
+    func ternaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) -> Int {
+        called = true
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(arg0, arr1)
+        return 3
     }
 
     func ternaryWithBinaryPrimitiveNSDictionaryCallback(arg0: Int, arg1: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
@@ -1589,10 +2664,24 @@ class BindTarget {
         callback(arg0, dict1)
     }
 
+    func ternaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> Int {
+        called = true
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arg0, dict1)
+        return 3
+    }
+
     func ternaryWithBinaryNSArrayPrimitiveCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
         callback(arr0, arg1)
+    }
+
+    func ternaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        callback(arr0, arg1)
+        return 3
     }
 
     func ternaryWithBinaryNSArrayNSArrayCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -1602,6 +2691,14 @@ class BindTarget {
         callback(arr0, arr1)
     }
 
+    func ternaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayNSArrayCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let arr1: NSArray = ["four", "five", "six"]
+        callback(arr0, arr1)
+        return 3
+    }
+
     func ternaryWithBinaryNSArrayNSDictionaryCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
@@ -1609,10 +2706,25 @@ class BindTarget {
         callback(arr0, dict1)
     }
 
+    func ternaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arr0, dict1)
+        return 3
+    }
+
     func ternaryWithBinaryNSDictionaryPrimitiveCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         callback(dict0, arg1)
+    }
+
+    func ternaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(dict0, arg1)
+        return 3
     }
 
     func ternaryWithBinaryNSDictionaryNSArrayCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -1622,11 +2734,27 @@ class BindTarget {
         callback(dict0, arr1)
     }
 
+    func ternaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(dict0, arr1)
+        return 3
+    }
+
     func ternaryWithBinaryNSDictionaryNSDictionaryCallback(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
         callback(dict0, dict1)
+    }
+
+    func ternaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
+        callback(dict0, dict1)
+        return 3
     }
 
     func ternaryWithBinaryCallbackThrows(arg0: Int, arg1: Int, callback: @escaping BinaryCallback) throws {
@@ -1694,10 +2822,23 @@ class BindTarget {
         callback(arg0 + arg2, arg1)
     }
 
+    func quaternaryWithBinaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryCallback) -> Int {
+        called = true
+        callback(arg0 + arg2, arg1)
+        return 4
+    }
+
     func quaternaryWithBinaryPrimitiveNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) {
         called = true
         let arr1: NSArray = ["one", "two", "three"]
         callback(arg0 + arg2, arr1)
+    }
+
+    func quaternaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) -> Int {
+        called = true
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(arg0 + arg2, arr1)
+        return 4
     }
 
     func quaternaryWithBinaryPrimitiveNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
@@ -1706,10 +2847,24 @@ class BindTarget {
         callback(arg0 + arg2, dict1)
     }
 
+    func quaternaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> Int {
+        called = true
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arg0 + arg2, dict1)
+        return 4
+    }
+
     func quaternaryWithBinaryNSArrayPrimitiveCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
         callback(arr0, arg1)
+    }
+
+    func quaternaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        callback(arr0, arg1)
+        return 4
     }
 
     func quaternaryWithBinaryNSArrayNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -1719,6 +2874,14 @@ class BindTarget {
         callback(arr0, arr1)
     }
 
+    func quaternaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayNSArrayCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let arr1: NSArray = ["four", "five", "six"]
+        callback(arr0, arr1)
+        return 4
+    }
+
     func quaternaryWithBinaryNSArrayNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
@@ -1726,10 +2889,25 @@ class BindTarget {
         callback(arr0, dict1)
     }
 
+    func quaternaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arr0, dict1)
+        return 4
+    }
+
     func quaternaryWithBinaryNSDictionaryPrimitiveCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         callback(dict0, arg1)
+    }
+
+    func quaternaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(dict0, arg1)
+        return 4
     }
 
     func quaternaryWithBinaryNSDictionaryNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -1739,11 +2917,27 @@ class BindTarget {
         callback(dict0, arr1)
     }
 
+    func quaternaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(dict0, arr1)
+        return 4
+    }
+
     func quaternaryWithBinaryNSDictionaryNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
         callback(dict0, dict1)
+    }
+
+    func quaternaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
+        callback(dict0, dict1)
+        return 4
     }
 
     func quaternaryWithBinaryCallbackThrows(arg0: Int, arg1: Int, arg2: Int, callback: @escaping BinaryCallback) throws {
@@ -1811,10 +3005,23 @@ class BindTarget {
         callback(arg0 + arg2, arg1 + arg3)
     }
 
+    func quinaryWithBinaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryCallback) -> Int {
+        called = true
+        callback(arg0 + arg2, arg1 + arg3)
+        return 5
+    }
+
     func quinaryWithBinaryPrimitiveNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) {
         called = true
         let arr1: NSArray = ["one", "two", "three"]
         callback(arg0 + arg2, arr1)
+    }
+
+    func quinaryWithBinaryPrimitiveNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryPrimitiveNSArrayCallback) -> Int {
+        called = true
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(arg0 + arg2, arr1)
+        return 5
     }
 
     func quinaryWithBinaryPrimitiveNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
@@ -1823,10 +3030,24 @@ class BindTarget {
         callback(arg0 + arg2, dict1)
     }
 
+    func quinaryWithBinaryPrimitiveNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> Int {
+        called = true
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arg0 + arg2, dict1)
+        return 5
+    }
+
     func quinaryWithBinaryNSArrayPrimitiveCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
         callback(arr0, arg1 + arg3)
+    }
+
+    func quinaryWithBinaryNSArrayPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayPrimitiveCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        callback(arr0, arg1 + arg3)
+        return 5
     }
 
     func quinaryWithBinaryNSArrayNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -1836,6 +3057,14 @@ class BindTarget {
         callback(arr0, arr1)
     }
 
+    func quinaryWithBinaryNSArrayNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayNSArrayCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let arr1: NSArray = ["four", "five", "six"]
+        callback(arr0, arr1)
+        return 5
+    }
+
     func quinaryWithBinaryNSArrayNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = ["one", "two", "three"]
@@ -1843,10 +3072,25 @@ class BindTarget {
         callback(arr0, dict1)
     }
 
+    func quinaryWithBinaryNSArrayNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSArrayNSDictionaryCallback) -> Int {
+        called = true
+        let arr0: NSArray = ["one", "two", "three"]
+        let dict1: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(arr0, dict1)
+        return 5
+    }
+
     func quinaryWithBinaryNSDictionaryPrimitiveCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         callback(dict0, arg1 + arg3)
+    }
+
+    func quinaryWithBinaryNSDictionaryPrimitiveCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        callback(dict0, arg1 + arg3)
+        return 5
     }
 
     func quinaryWithBinaryNSDictionaryNSArrayCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -1856,11 +3100,27 @@ class BindTarget {
         callback(dict0, arr1)
     }
 
+    func quinaryWithBinaryNSDictionaryNSArrayCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryNSArrayCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let arr1: NSArray = ["one", "two", "three"]
+        callback(dict0, arr1)
+        return 5
+    }
+
     func quinaryWithBinaryNSDictionaryNSDictionaryCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
         let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
         callback(dict0, dict1)
+    }
+
+    func quinaryWithBinaryNSDictionaryNSDictionaryCallbackWithPrimitiveReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict0: NSDictionary = ["one": 1, "two": 2, "three": 3]
+        let dict1: NSDictionary = ["four": 4, "five": 5, "six": 6]
+        callback(dict0, dict1)
+        return 5
     }
 
     func quinaryWithBinaryCallbackThrows(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping BinaryCallback) throws {
