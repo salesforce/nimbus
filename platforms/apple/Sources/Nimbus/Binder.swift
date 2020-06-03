@@ -6,6 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+// swiftlint:disable line_length file_length
+
 import Foundation
 
 public protocol Binder {
@@ -48,7 +50,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (@escaping (CB0) -> Void) throws -> Void
     )
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -64,7 +66,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> Void
     )
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -96,7 +98,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, @escaping (CB0) -> Void) throws -> Void
     ) where A0: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -112,7 +114,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, @escaping (CB0, CB1) -> Void) throws -> Void
     ) where A0: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -144,7 +146,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, @escaping (CB0) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, CB0: Encodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -160,7 +162,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, @escaping (CB0, CB1) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, CB0: Encodable, CB1: Encodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -192,7 +194,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, A2, @escaping (CB0) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, A2: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -208,7 +210,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, A2, @escaping (CB0, CB1) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, A2: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -240,7 +242,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, A2, A3, @escaping (CB0) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -256,7 +258,7 @@ public protocol Binder {
         _ name: String,
         to function: @escaping (A0, A1, A2, A3, @escaping (CB0, CB1) -> Void) throws -> Void
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -317,7 +319,7 @@ public extension Binder {
     ) {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -337,7 +339,7 @@ public extension Binder {
     ) {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -377,7 +379,7 @@ public extension Binder {
     ) where A0: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -397,7 +399,7 @@ public extension Binder {
     ) where A0: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -437,7 +439,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, CB0: Encodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -457,7 +459,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, CB0: Encodable, CB1: Encodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -497,7 +499,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, A2: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -517,7 +519,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, A2: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -557,7 +559,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */
@@ -577,7 +579,7 @@ public extension Binder {
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable {
         bind(name, to: function)
     }
-    
+
     /**
      Bind the specified function to this connection.
      */

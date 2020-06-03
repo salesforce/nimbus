@@ -298,7 +298,7 @@ class JSAPITestPlugin: Plugin {
         XCTAssertEqual(param, 5)
         completion(JSAPITestStruct())
     }
-    
+
     func binaryResolvingToObjectCallbackToInt(param: Int, completion: (JSAPITestStruct) -> Void) -> Int {
         XCTAssertEqual(param, 5)
         completion(.init())

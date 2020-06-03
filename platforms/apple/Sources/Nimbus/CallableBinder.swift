@@ -101,7 +101,7 @@ extension CallableBinder {
             return try function(callback)
         }
     }
-    
+
     public func bind<R: Encodable, CB0: Encodable>(
         _ name: String,
         to function: @escaping (@escaping (CB0) -> Void) throws -> R
@@ -125,7 +125,7 @@ extension CallableBinder {
             return try function(callback)
         }
     }
-    
+
     public func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
         _ name: String,
         to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R
@@ -176,7 +176,7 @@ extension CallableBinder {
             return try function(a0, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, CB0: Encodable>(
         _ name: String,
         to function: @escaping (A0, @escaping (CB0) -> Void) throws -> R
@@ -202,7 +202,7 @@ extension CallableBinder {
             return try function(a0, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, CB0: Encodable, CB1: Encodable>(
         _ name: String,
         to function: @escaping (A0, @escaping (CB0, CB1) -> Void) throws -> R
@@ -257,7 +257,7 @@ extension CallableBinder {
             return try function(a0, a1, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, CB0>(
         _ name: String,
         to function: @escaping (A0, A1, @escaping (CB0) -> Void) throws -> R
@@ -285,7 +285,7 @@ extension CallableBinder {
             return try function(a0, a1, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, CB0, CB1>(
         _ name: String,
         to function: @escaping (A0, A1, @escaping (CB0, CB1) -> Void) throws -> R
@@ -344,7 +344,7 @@ extension CallableBinder {
             return try function(a0, a1, a2, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, A2, CB0: Encodable>(
         _ name: String,
         to function: @escaping (A0, A1, A2, @escaping (CB0) -> Void) throws -> R
@@ -374,7 +374,7 @@ extension CallableBinder {
             return try function(a0, a1, a2, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, A2, CB0: Encodable, CB1: Encodable>(
         _ name: String,
         to function: @escaping (A0, A1, A2, @escaping (CB0, CB1) -> Void) throws -> R
@@ -437,7 +437,7 @@ extension CallableBinder {
             return try function(a0, a1, a2, a3, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, A2, A3, CB0: Encodable>(
         _ name: String,
         to function: @escaping (A0, A1, A2, A3, @escaping (CB0) -> Void) throws -> R
@@ -469,7 +469,7 @@ extension CallableBinder {
             return try function(a0, a1, a2, a3, callback)
         }
     }
-    
+
     public func bind<R: Encodable, A0, A1, A2, A3, CB0: Encodable, CB1: Encodable>(
         _ name: String,
         to function: @escaping (A0, A1, A2, A3, @escaping (CB0, CB1) -> Void) throws -> R
