@@ -6,7 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-// swiftlint:disable line_length file_length
+// swiftlint:disable file_length
+
 
 import Foundation
 

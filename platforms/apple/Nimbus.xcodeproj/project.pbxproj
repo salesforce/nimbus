@@ -55,6 +55,8 @@
 		CC64246924479C0400604279 /* JSValueCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64246824479C0400604279 /* JSValueCallback.swift */; };
 		CC7214CB2474605B00FCCC2D /* SharedTestsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */; };
 		CC8169582458BCA200E5C0FA /* iife in Resources */ = {isa = PBXBuildFile; fileRef = CC8169562458BB3900E5C0FA /* iife */; };
+		CC88CA232472DF6A009D809F /* JSCoreDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = CC88CA222472DF6A009D809F /* JSCoreDemo.js */; };
+		CC88CA272472E048009D809F /* ConsolePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC88CA262472E048009D809F /* ConsolePlugin.swift */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
 		CC97224D23E4834400F899E7 /* NimbusJSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97224C23E4834400F899E7 /* NimbusJSTests.swift */; };
 		CC97224F23E4834400F899E7 /* NimbusJS.h in Headers */ = {isa = PBXBuildFile; fileRef = CC97223F23E4834400F899E7 /* NimbusJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -218,6 +220,8 @@
 		CC64246824479C0400604279 /* JSValueCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueCallback.swift; sourceTree = "<group>"; };
 		CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestsWebView.swift; sourceTree = "<group>"; };
 		CC8169562458BB3900E5C0FA /* iife */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iife; path = "../../../../packages/nimbus-bridge/dist/iife"; sourceTree = "<group>"; };
+		CC88CA222472DF6A009D809F /* JSCoreDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = JSCoreDemo.js; sourceTree = "<group>"; };
+		CC88CA262472E048009D809F /* ConsolePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsolePlugin.swift; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC97223F23E4834400F899E7 /* NimbusJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NimbusJS.h; sourceTree = "<group>"; };
 		CC97224023E4834400F899E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -348,6 +352,8 @@
 				291A85EC21E52D3E00510832 /* Main.storyboard */,
 				2961103021E54872007058EA /* NimbusApp-Bridging-Header.h */,
 				291A85EA21E52D3E00510832 /* ViewController.swift */,
+				CC88CA222472DF6A009D809F /* JSCoreDemo.js */,
+				CC88CA262472E048009D809F /* ConsolePlugin.swift */,
 			);
 			name = NimbusMobileApp;
 			path = Sources/NimbusMobileApp;
@@ -767,6 +773,7 @@
 				291A85F321E52D4000510832 /* LaunchScreen.storyboard in Resources */,
 				291A85F021E52D4000510832 /* Assets.xcassets in Resources */,
 				291A85EE21E52D3E00510832 /* Main.storyboard in Resources */,
+				CC88CA232472DF6A009D809F /* JSCoreDemo.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -936,6 +943,7 @@
 			files = (
 				291A85EB21E52D3E00510832 /* ViewController.swift in Sources */,
 				291A85E921E52D3E00510832 /* AppDelegate.swift in Sources */,
+				CC88CA272472E048009D809F /* ConsolePlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

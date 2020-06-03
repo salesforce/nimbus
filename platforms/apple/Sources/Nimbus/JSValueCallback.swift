@@ -28,7 +28,7 @@ class JSValueCallback {
     }
 
     func call(args: [Any]) throws {
-        guard let _ = callback?.call(withArguments: args) else {
+        guard let _ = callback?.call(withArguments: args) else { // swiftlint:disable:this unused_optional_binding
             throw JSValueCallbackError.invalidCallback
         }
     }

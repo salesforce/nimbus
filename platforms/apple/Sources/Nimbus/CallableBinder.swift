@@ -6,6 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+// swiftlint:disable identifier_name
+
 typealias Callable = ([Any?]) throws -> Any?
 
 /// Represents an error when the type or number of arguments is incorrect
