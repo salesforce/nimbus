@@ -127,6 +127,60 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 1) %><% } %>))
     }
 
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithUnaryCallbackReturnsPrimitive() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithUnaryCallbackWithPrimitiveReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.UnaryCallback = { value in
+            result = value
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 1) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithUnaryCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithUnaryCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.UnaryCallback = { value in
+            result = value
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 1) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithUnaryCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithUnaryCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.UnaryCallback = { value in
+            result = value
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 1) %><% } %>))
+    }
+
     func testBind<%= arity.name.capitalizingFirstLetter() %>WithUnaryCallbackThrows() {
         binder.bind(BindTarget.<%= arity.name %>WithUnaryCallbackThrows, as: "")
         let expecter = expectation(description: "callback")
@@ -161,7 +215,43 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 2) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<%if index > 2 { %><%= arities.takeAsSum(count: index - 1) %><% } else { %><%= arities.takeAsSum(count: 2) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        let callback: BindTarget.BinaryCallback = { value1, value2 in
+            result = value1 + value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected return value")
         }
@@ -198,7 +288,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryPrimitiveNSArrayCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryPrimitiveNSArrayCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryPrimitiveNSArrayCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryPrimitiveNSArrayCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryPrimitiveNSArrayCallback = { value1, value2 in
+            result = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -236,7 +368,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryPrimitiveNSDictionaryCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryPrimitiveNSDictionaryCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index - 1)%><% } else if index == 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index) %><% } else if index == 1 { %><%= arities.takeAsSumOfBinaryCallback(position: .first, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryPrimitiveNSDictionaryCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryPrimitiveNSDictionaryCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryPrimitiveNSDictionaryCallback = { value1, value2 in
+            result = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -274,7 +448,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index - 1)%><% } else { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayPrimitiveCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayPrimitiveCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index - 1)%><% } else { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index + 1) %><% } %>))
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayPrimitiveCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayPrimitiveCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSArrayPrimitiveCallback = { value1, value2 in
+            resultArray = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -312,7 +528,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, <%= arr0 %>)
+        XCTAssertEqual(resultArray2, <%= arr1 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayNSArrayCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayNSArrayCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray1, <%= arr0 %>)
+        XCTAssertEqual(resultArray2, <%= arr1 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayNSArrayCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayNSArrayCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray1: NSArray?
+        var resultArray2: NSArray?
+        let callback: BindTarget.BinaryNSArrayNSArrayCallback = { value1, value2 in
+            resultArray1 = value1
+            resultArray2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -350,7 +608,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayNSDictionaryCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayNSDictionaryCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSArrayNSDictionaryCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSArrayNSDictionaryCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultArray: NSArray?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSArrayNSDictionaryCallback = { value1, value2 in
+            resultArray = value1
+            resultDict = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -388,7 +688,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index - 1)%><% } else { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index + 1) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryPrimitiveCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryPrimitiveCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+        XCTAssertEqual(result, .some(<% if index > 2 { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index - 1)%><% } else { %><%= arities.takeAsSumOfBinaryCallback(position: .second, count: index + 1) %><% } %>))
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryPrimitiveCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryPrimitiveCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Int?
+        var resultDict: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryPrimitiveCallback = { value1, value2 in
+            resultDict = value1
+            result = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -426,7 +768,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryNSArrayCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryNSArrayCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict, <%= dict0 %>)
+        XCTAssertEqual(resultArray, <%= arr0 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryNSArrayCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryNSArrayCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict: NSDictionary?
+        var resultArray: NSArray?
+        let callback: BindTarget.BinaryNSDictionaryNSArrayCallback = { value1, value2 in
+            resultDict = value1
+            resultArray = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -464,7 +848,49 @@ class BinderTests: XCTestCase {
             expecter.fulfill()
         }
         if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? Int {
-            XCTAssertEqual(value, <%= index%>)
+            XCTAssertEqual(value, <%= index %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, <%= dict0 %>)
+        XCTAssertEqual(resultDict2, <%= dict1 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryNSDictionaryCallbackReturnsNSArray() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryNSDictionaryCallbackWithNSArrayReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSArray {
+            XCTAssertEqual(value, <%= arr0 %>)
+        } else {
+            XCTFail("Expected a return value")
+        }
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(resultDict1, <%= dict0 %>)
+        XCTAssertEqual(resultDict2, <%= dict1 %>)
+    }
+
+    func testBind<%= arity.name.capitalizingFirstLetter() %>WithBinaryNSDictionaryNSDictionaryCallbackReturnsNSDictionary() throws {
+        binder.bind(BindTarget.<%= arity.name %>WithBinaryNSDictionaryNSDictionaryCallbackWithNSDictionaryReturn, as: "")
+        let expecter = expectation(description: "callback")
+        var resultDict1: NSDictionary?
+        var resultDict2: NSDictionary?
+        let callback: BindTarget.BinaryNSDictionaryNSDictionaryCallback = { value1, value2 in
+            resultDict1 = value1
+            resultDict2 = value2
+            expecter.fulfill()
+        }
+        if let value = try binder.callable?.call(args: [<%= arities.takeAndMakeParamsWithCallable(count: index)%>]) as? NSDictionary {
+            XCTAssertEqual(value, <%= dict0 %>)
         } else {
             XCTFail("Expected a return value")
         }
@@ -575,6 +1001,24 @@ class BindTarget {
         callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
     }
 
+    func <%= arity.name %>WithUnaryCallbackWithPrimitiveReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) -> Int {
+        called = true
+        callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
+        return <%= index %>
+    }
+
+    func <%= arity.name %>WithUnaryCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) -> NSArray {
+        called = true
+        callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithUnaryCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) -> NSDictionary {
+        called = true
+        callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithUnaryCallbackThrows(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping UnaryCallback) throws {
         called = true
         callback(<%= arities.getCallbackArgsForUnaryCallback(count: index) %>)
@@ -587,10 +1031,52 @@ class BindTarget {
         callback(arr)
     }
 
+    func <%= arity.name %>WithUnaryNSArrayCallbackWithPrimitiveReturn(callback: @escaping UnaryNSArrayCallback) -> Int {
+        called = true
+        let arr: NSArray = <%= arr0 %>
+        callback(arr)
+        return <%= index %>
+    }
+
+    func <%= arity.name %>WithUnaryNSArrayCallbackWithNSArrayReturn(callback: @escaping UnaryNSArrayCallback) -> NSArray {
+        called = true
+        let arr: NSArray = <%= arr0 %>
+        callback(arr)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithUnaryNSArrayCallbackWithNSDictionaryReturn(callback: @escaping UnaryNSArrayCallback) -> NSDictionary {
+        called = true
+        let arr: NSArray = <%= arr0 %>
+        callback(arr)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithUnaryNSDictionaryCallback(callback: @escaping UnaryNSDictionaryCallback) {
         called = true
         let dict: NSDictionary = <%= dict0 %>
         callback(dict)
+    }
+
+    func <%= arity.name %>WithUnaryNSDictionaryCallbackWithPrimitiveReturn(callback: @escaping UnaryNSDictionaryCallback) -> Int {
+        called = true
+        let dict: NSDictionary = <%= dict0 %>
+        callback(dict)
+        return <%= index %>
+    }
+
+    func <%= arity.name %>WithUnaryNSDictionaryCallbackWithNSArrayReturn(callback: @escaping UnaryNSDictionaryCallback) -> NSArray {
+        called = true
+        let dict: NSDictionary = <%= dict0 %>
+        callback(dict)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithUnaryNSDictionaryCallbackWithNSDictionaryReturn(callback: @escaping UnaryNSDictionaryCallback) -> NSDictionary {
+        called = true
+        let dict: NSDictionary = <%= dict0 %>
+        callback(dict)
+        return <%= dict0 %>
     }
 
     func <%= arity.name %>WithBinaryCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryCallback) {
@@ -602,6 +1088,18 @@ class BindTarget {
         called = true
         callback(<%= arities.getCallbackArgsForBinaryCallback(count: index) %>)
         return <%= index%>
+    }
+
+    func <%= arity.name %>WithBinaryCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryCallback) -> NSArray {
+        called = true
+        callback(<%= arities.getCallbackArgsForBinaryCallback(count: index) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryCallback) -> NSDictionary {
+        called = true
+        callback(<%= arities.getCallbackArgsForBinaryCallback(count: index) %>)
+        return <%= dict0 %>
     }
 
     func <%= arity.name %>WithBinaryPrimitiveNSArrayCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSArrayCallback) {
@@ -617,6 +1115,20 @@ class BindTarget {
         return <%= index%>
     }
 
+    func <%= arity.name %>WithBinaryPrimitiveNSArrayCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSArrayCallback) -> NSArray {
+        called = true
+        let arr1: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forPrimitiveNSArray) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryPrimitiveNSArrayCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSArrayCallback) -> NSDictionary {
+        called = true
+        let arr1: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forPrimitiveNSArray) %>)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithBinaryPrimitiveNSDictionaryCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSDictionaryCallback) {
         called = true
         let dict1: NSDictionary = <%= dict0 %>
@@ -630,6 +1142,20 @@ class BindTarget {
         return <%= index%>
     }
 
+    func <%= arity.name %>WithBinaryPrimitiveNSDictionaryCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> NSArray {
+        called = true
+        let dict1: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forPrimitiveNSDictionary) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryPrimitiveNSDictionaryCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryPrimitiveNSDictionaryCallback) -> NSDictionary {
+        called = true
+        let dict1: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forPrimitiveNSDictionary) %>)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithBinaryNSArrayPrimitiveCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayPrimitiveCallback) {
         called = true
         let arr0: NSArray = <%= arr0 %>
@@ -641,6 +1167,20 @@ class BindTarget {
         let arr0: NSArray = <%= arr0 %>
         callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayPrimitive) %>)
         return <%= index%>
+    }
+
+    func <%= arity.name %>WithBinaryNSArrayPrimitiveCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayPrimitiveCallback) -> NSArray {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayPrimitive) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryNSArrayPrimitiveCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayPrimitiveCallback) -> NSDictionary {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayPrimitive) %>)
+        return <%= dict0 %>
     }
 
     func <%= arity.name %>WithBinaryNSArrayNSArrayCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSArrayCallback) {
@@ -658,6 +1198,22 @@ class BindTarget {
         return <%= index%>
     }
 
+    func <%= arity.name %>WithBinaryNSArrayNSArrayCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSArrayCallback) -> NSArray {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        let arr1: NSArray = <%= arr1 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayNSArray) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryNSArrayNSArrayCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSArrayCallback) -> NSDictionary {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        let arr1: NSArray = <%= arr1 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayNSArray) %>)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithBinaryNSArrayNSDictionaryCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSDictionaryCallback) {
         called = true
         let arr0: NSArray = <%= arr0 %>
@@ -673,6 +1229,22 @@ class BindTarget {
         return <%= index%>
     }
 
+    func <%= arity.name %>WithBinaryNSArrayNSDictionaryCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSDictionaryCallback) -> NSArray {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        let dict1: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayNSDictionary) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryNSArrayNSDictionaryCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSArrayNSDictionaryCallback) -> NSDictionary {
+        called = true
+        let arr0: NSArray = <%= arr0 %>
+        let dict1: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSArrayNSDictionary) %>)
+        return <%= dict0 %>
+    }
+
     func <%= arity.name %>WithBinaryNSDictionaryPrimitiveCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryPrimitiveCallback) {
         called = true
         let dict0: NSDictionary = <%= dict0 %>
@@ -684,6 +1256,20 @@ class BindTarget {
         let dict0: NSDictionary = <%= dict0 %>
         callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryPrimitive) %>)
         return <%= index%>
+    }
+
+    func <%= arity.name %>WithBinaryNSDictionaryPrimitiveCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> NSArray {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryPrimitive) %>)
+        return <%= arr0 %>
+    }
+
+    func <%= arity.name %>WithBinaryNSDictionaryPrimitiveCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryPrimitiveCallback) -> NSDictionary {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryPrimitive) %>)
+        return <%= dict0 %>
     }
 
     func <%= arity.name %>WithBinaryNSDictionaryNSArrayCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSArrayCallback) {
@@ -701,6 +1287,22 @@ class BindTarget {
         return <%= index%>
     }
 
+    func <%= arity.name %>WithBinaryNSDictionaryNSArrayCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSArrayCallback) -> NSArray {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        let arr1: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryNSArray) %>)
+        return <%= arr0%>
+    }
+
+    func <%= arity.name %>WithBinaryNSDictionaryNSArrayCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSArrayCallback) -> NSDictionary {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        let arr1: NSArray = <%= arr0 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryNSArray) %>)
+        return <%= dict0%>
+    }
+
     func <%= arity.name %>WithBinaryNSDictionaryNSDictionaryCallback(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSDictionaryCallback) {
         called = true
         let dict0: NSDictionary = <%= dict0 %>
@@ -714,6 +1316,22 @@ class BindTarget {
         let dict1: NSDictionary = <%= dict1 %>
         callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryNSDictionary) %>)
         return <%= index%>
+    }
+
+    func <%= arity.name %>WithBinaryNSDictionaryNSDictionaryCallbackWithNSDictionaryReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> NSDictionary {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        let dict1: NSDictionary = <%= dict1 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryNSDictionary) %>)
+        return <%= dict0%>
+    }
+
+    func <%= arity.name %>WithBinaryNSDictionaryNSDictionaryCallbackWithNSArrayReturn(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryNSDictionaryNSDictionaryCallback) -> NSArray {
+        called = true
+        let dict0: NSDictionary = <%= dict0 %>
+        let dict1: NSDictionary = <%= dict1 %>
+        callback(<%= arities.getCallbackArgsForBinaryCallbackWithFoundation(count: index, formattingPurpose: .forNSDictionaryNSDictionary) %>)
+        return <%= arr0 %>
     }
 
     func <%= arity.name %>WithBinaryCallbackThrows(<% if index > 1 { %><%= getCommaSeparatedString(count: index - 1, formattingPurpose: .forMethodArgsAsIntDecl) %>, <% } %>callback: @escaping BinaryCallback) throws {
