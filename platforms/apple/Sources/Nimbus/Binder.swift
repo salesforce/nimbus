@@ -8,7 +8,6 @@
 
 // swiftlint:disable file_length
 
-
 import Foundation
 
 public protocol Binder {
