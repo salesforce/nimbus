@@ -356,6 +356,11 @@ class V8BinderGenerator : BinderGenerator() {
             error(parameter, "Only two parameters are allowed in callbacks.")
             return CodeBlock.of("")
         }
+        val functionBlock = CodeBlock.Builder()
+            .addStatement(
+                "val callback$parameterIndex = parameters.get($parameterIndex) as %T",
+                v8FunctionClassName
+            )
 
         // try to get the parameter type from the kotlin class
         // metadata to determine if it is nullable
@@ -452,11 +457,7 @@ class V8BinderGenerator : BinderGenerator() {
         argBlock
             .addStatement(")")
             .addStatement(
-                "val callback = parameters.get($parameterIndex) as %T",
-                v8FunctionClassName
-            )
-            .addStatement(
-                "callback.use { it.call(v8, params.%T(v8)) }",
+                "callback$parameterIndex.use { it.call(v8, params.%T(v8)) }",
                 ClassName(k2v8Package, "toV8Array")
             )
 
@@ -492,7 +493,10 @@ class V8BinderGenerator : BinderGenerator() {
             .add("%L", argBlock.build())
             .endControlFlow()
 
-        return lambda.build()
+        // add lambda to function block
+        functionBlock.add(lambda.build())
+
+        return functionBlock.build()
     }
 
     private fun processListParameter(
