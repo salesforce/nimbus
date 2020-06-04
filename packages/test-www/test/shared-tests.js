@@ -45,6 +45,21 @@ function verifyNullaryResolvingToStruct() {
   });
 }
 
+function verifyNullaryResolvingToDateWrapper() {
+  __nimbus.plugins.testPlugin.nullaryResolvingToDateWrapper().then((result) => {
+    let date = new Date(result.date);
+    if (date.getFullYear() === 2020 &&
+      date.getMonth() === 5 && // month is 0 indexed
+      date.getDate() === 4 &&
+      date.getHours() === 12 &&
+      date.getMinutes() === 24 &&
+      date.getSeconds() === 48) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 function verifyNullaryResolvingToIntList() {
   __nimbus.plugins.testPlugin.nullaryResolvingToIntList().then((result) => {
     if (result[0] === 1 &&
@@ -203,6 +218,18 @@ function verifyUnaryStructResolvingToJsonString() {
   });
 }
 
+function verifyUnaryDateWrapperResolvingToJsonString() {
+  __nimbus.plugins.testPlugin.unaryDateWrapperResolvingToJsonString({
+    "date": "2020-06-04T03:02:01.000+0000"
+  }).then((result) => {
+    let json = JSON.parse(result);
+    if (json['date'] === '2020-06-05T03:02:01.000+0000') {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 function verifyUnaryStringListResolvingToString() {
   __nimbus.plugins.testPlugin.unaryStringListResolvingToString(['1','2','3']).then((result) => {
     if (result === '1, 2, 3') {
@@ -343,6 +370,21 @@ function verifyNullaryResolvingToStructCallback() {
     if (result.string === 'String' &&
       result.integer === 1 &&
       result.double === 2.0) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  }).then(() => {});
+}
+
+function verifyNullaryResolvingToDateWrapperCallback() {
+  __nimbus.plugins.testPlugin.nullaryResolvingToDateWrapperCallback((result) => {
+    let date = new Date(result.date);
+    if (date.getFullYear() === 2020 &&
+      date.getMonth() === 5 && // month is 0 indexed
+      date.getDate() === 4 &&
+      date.getHours() === 0 &&
+      date.getMinutes() === 0 &&
+      date.getSeconds() === 0) {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
