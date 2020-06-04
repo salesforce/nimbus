@@ -42,6 +42,7 @@ tasks {
         outputDirectory = "$buildDir/dokka"
     }
 }
+apply(from= rootProject.file("gradle/publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {

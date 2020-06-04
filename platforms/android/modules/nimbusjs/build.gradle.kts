@@ -41,6 +41,7 @@ dependencies {
     androidTestImplementation(Libs.kotlintest_runner_junit4)
     androidTestImplementation(Libs.truth)
 }
+apply(from= rootProject.file("gradle/publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -53,3 +54,4 @@ afterEvaluate {
         setupSnapshots(project)
     }
 }
+

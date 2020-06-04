@@ -48,6 +48,8 @@ tasks {
     }
 }
 
+apply(from= rootProject.file("gradle/publishing-tasks.gradle"))
+
 afterEvaluate {
     publishing {
         setupAllPublications(project)

@@ -45,10 +45,12 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    val publication = publications.create<MavenPublication>(Publishing.group)
-    if (project.isAndroidModule()) {
-        publication.from(project.components["release"])
-    } else {
+    val publication = if (project.isAndroidModule())
+        publications.getByName("release") as MavenPublication
+    else
+        publications.create<MavenPublication>(Publishing.group)
+
+    if (!project.isAndroidModule()) {
         publication.from(project.components["java"])
     }
 
