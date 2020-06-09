@@ -9,6 +9,7 @@ end
 version = package_version.call
 Pod::Spec.new do |s|
   s.name             = 'NimbusBridge'
+  s.module_name      = 'Nimbus'
   s.version          = version
   s.summary          = 'Nimbus is a framework for building cross-platform hybrid applications.'
   s.homepage         = 'https://github.com/salesforce/nimbus'
