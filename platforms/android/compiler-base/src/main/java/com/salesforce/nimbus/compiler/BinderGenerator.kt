@@ -343,7 +343,7 @@ abstract class BinderGenerator : AbstractProcessor() {
     protected fun TypeMirror.isListType(): Boolean {
         return toString().startsWith("java.util.List") ||
             processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-            .any { it.startsWith("java.util.List") }
+                .any { it.startsWith("java.util.List") }
     }
 
     protected fun TypeMirror.isMapType(): Boolean {
@@ -356,6 +356,10 @@ abstract class BinderGenerator : AbstractProcessor() {
         return toString().startsWith("$nimbusPackage.JSONEncodable") ||
             processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
                 .any { it.startsWith("$nimbusPackage.JSONEncodable") }
+    }
+
+    protected fun TypeMirror.isObjectArray(): Boolean {
+        return toString() == "java.lang.Object[]"
     }
 
     protected fun TypeName.isKotlinSerializableType(): Boolean {
@@ -376,5 +380,9 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     protected fun TypeMirror.isArrayType(): Boolean {
         return kind == TypeKind.ARRAY
+    }
+
+    protected fun TypeMirror.isAnyType(): Boolean {
+        return (asKotlinTypeName() as ClassName).simpleName == "Any"
     }
 }

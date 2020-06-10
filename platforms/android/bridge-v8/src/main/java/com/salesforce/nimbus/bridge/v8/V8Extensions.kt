@@ -4,6 +4,7 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import com.salesforce.k2v8.toV8Array
 
 /**
@@ -59,3 +60,12 @@ fun V8.createObject() = V8Object(this)
 fun V8.bridge(builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
     return V8Bridge.Builder().apply(builder).attach(this)
 }
+
+@Suppress("UNCHECKED_CAST")
+fun V8Object.toMap(): Map<String, Any> = V8ObjectUtils.toMap(this) as Map<String, Any>
+
+@Suppress("UNCHECKED_CAST")
+fun V8Array.toList(): List<Any> = V8ObjectUtils.toList(this) as List<Any>
+
+@Suppress("UNCHECKED_CAST")
+fun V8Array.toArray(): Array<Any> = (V8ObjectUtils.toList(this) as List<Any>).toTypedArray()

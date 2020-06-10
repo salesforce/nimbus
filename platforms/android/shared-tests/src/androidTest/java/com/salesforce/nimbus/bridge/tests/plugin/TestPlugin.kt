@@ -176,7 +176,8 @@ class TestPlugin : Plugin {
             param.copy(date = Calendar.getInstance().apply {
                 time = param.date
                 add(Calendar.DAY_OF_YEAR, 1)
-            }.time))
+            }.time)
+        )
     }
 
     @BoundMethod
@@ -205,6 +206,16 @@ class TestPlugin : Plugin {
     }
 
     @BoundMethod
+    fun unaryAnyListResolvingToBoolean(param: List<Any>): Boolean {
+        return param.size == 2 && param[0] is Map<*, *> && param[1] is Map<*, *>
+    }
+
+    @BoundMethod
+    fun unaryAnyArrayResolvingToBoolean(param: Array<Any>): Boolean {
+        return param.size == 2 && param[0] is Map<*, *> && param[1] is Map<*, *>
+    }
+
+    @BoundMethod
     fun unaryStringStringMapResolvingToString(param: Map<String, String>): String {
         return param.map { "${it.key}, ${it.value}" }.joinToString(separator = ", ")
     }
@@ -212,6 +223,11 @@ class TestPlugin : Plugin {
     @BoundMethod
     fun unaryStringStructMapResolvingToString(param: Map<String, TestStruct>): String {
         return param.map { "${it.key}, ${it.value}" }.joinToString(separator = ", ")
+    }
+
+    @BoundMethod
+    fun unaryStringAnyMapResolvingToBoolean(param: Map<String, Any>): Boolean {
+        return param.size == 2 && param["key1"] is Map<*, *> && param["key2"] is Map<*, *>
     }
 
     // endregion

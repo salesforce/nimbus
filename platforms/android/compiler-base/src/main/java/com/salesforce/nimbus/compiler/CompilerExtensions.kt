@@ -1,5 +1,6 @@
 package com.salesforce.nimbus.compiler
 
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.BYTE
 import com.squareup.kotlinpoet.CHAR
@@ -33,6 +34,7 @@ fun TypeName.toKotlinTypeName(nullable: Boolean = false): TypeName {
     return when (this) {
         is ClassName -> when (packageName) {
             "java.lang" -> when (simpleName) {
+                "Object" -> ANY
                 "String" -> STRING
                 "Void" -> UNIT
                 "Boolean" -> BOOLEAN
@@ -69,7 +71,14 @@ fun TypeName.toKotlinTypeName(nullable: Boolean = false): TypeName {
 /**
  * Converts a Java [TypeMirror] to a Kotlin [TypeName]
  */
-fun TypeMirror.asKotlinTypeName(nullable: Boolean = false) = asTypeName().toKotlinTypeName(nullable = nullable)
+fun TypeMirror.asKotlinTypeName(nullable: Boolean = false): TypeName {
+    val typeName = asTypeName()
+    return if (typeName is WildcardTypeName) {
+        typeName.outTypes.first().toKotlinTypeName(nullable)
+    } else {
+        typeName.toKotlinTypeName(nullable)
+    }
+}
 
 /**
  * Converts a Java [TypeMirror] to a raw Kotlin [TypeName]

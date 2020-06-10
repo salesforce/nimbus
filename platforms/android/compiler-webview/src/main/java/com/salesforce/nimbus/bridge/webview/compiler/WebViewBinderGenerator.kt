@@ -193,11 +193,11 @@ class WebViewBinderGenerator : BinderGenerator() {
                 funSpec
             )
             else -> {
-                // TODO: we should whitelist types we know work rather than just hoping for the best
                 funSpec.addStatement(
                     "return target.%N($argsString)",
                     functionElement.simpleName.toString()
                 )
+                funSpec.returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
             }
         }
 
@@ -558,7 +558,8 @@ class WebViewBinderGenerator : BinderGenerator() {
             declaredType.isJSONEncodableType() -> {
                 val companion =
                     processingEnv.typeUtils.asElement(declaredType).enclosedElements.find { it.getName() == "Companion" }
-                val hasDecode = companion?.enclosedElements?.any { it.getName() == "decode" } ?: false
+                val hasDecode = companion?.enclosedElements?.any { it.getName() == "decode" }
+                    ?: false
 
                 // convert from json if there is a decode function
                 if (hasDecode) {

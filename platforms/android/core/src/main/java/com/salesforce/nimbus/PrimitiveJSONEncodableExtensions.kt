@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
+import kotlin.reflect.KClass
 
 class PrimitiveJSONEncodable(val value: Any) : JSONEncodable {
     private val stringifiedValue: String
@@ -41,19 +42,12 @@ class KotlinJSONEncodable<T>(private val value: T, private val serializer: KSeri
 /**
  * Creates a [Map] from a JSON string.
  */
-inline fun <reified K, reified V> mapFromJSON(jsonString: String): Map<K, V> {
+inline fun <reified K, reified V : Any> mapFromJSON(jsonString: String): Map<K, V> {
     val json = JSONObject(jsonString)
     val result = HashMap<K, V>()
     json.keys().forEach { key ->
-        val value = when (V::class) {
-            Int::class -> json.getInt(key)
-            Double::class -> json.getDouble(key)
-            Boolean::class -> json.getBoolean(key)
-            Long::class -> json.getLong(key)
-            String::class -> json.getString(key)
-            else -> json.get(key)
-        }
-        result[key as K] = value as V
+        @Suppress("RemoveExplicitTypeArguments")
+        result[key as K] = extractValueFromJSONObject<V>(V::class, json, key)
     }
     return result
 }
@@ -61,19 +55,12 @@ inline fun <reified K, reified V> mapFromJSON(jsonString: String): Map<K, V> {
 /**
  * Creates a [List] from a JSON string.
  */
-inline fun <reified V> listFromJSON(jsonString: String): List<V> {
+inline fun <reified V : Any> listFromJSON(jsonString: String): List<V> {
     val json = JSONArray(jsonString)
     val result = ArrayList<V>()
-    for (i in 0 until json.length()) {
-        val value = when (V::class) {
-            Int::class -> json.getInt(i)
-            Double::class -> json.getDouble(i)
-            Boolean::class -> json.getBoolean(i)
-            Long::class -> json.getLong(i)
-            String::class -> json.getString(i)
-            else -> json.get(i)
-        }
-        result.add(value as V)
+    for (index in 0 until json.length()) {
+        @Suppress("RemoveExplicitTypeArguments")
+        result.add(extractValueFromJSONArray<V>(V::class, json, index))
     }
     return result
 }
@@ -81,20 +68,50 @@ inline fun <reified V> listFromJSON(jsonString: String): List<V> {
 /**
  * Creates an [Array] from a JSON string.
  */
-@Suppress("USELESS_CAST")
-inline fun <reified V> arrayFromJSON(jsonString: String): Array<V> {
+inline fun <reified V : Any> arrayFromJSON(jsonString: String): Array<V> {
     val json = JSONArray(jsonString)
-    return Array(json.length()) { i ->
-        val value = when (V::class) {
-            Int::class -> json.getInt(i)
-            Double::class -> json.getDouble(i)
-            Boolean::class -> json.getBoolean(i)
-            Long::class -> json.getLong(i)
-            String::class -> json.getString(i)
-            else -> json.get(i)
-        }
-        value as V
+    return Array(json.length()) { index ->
+        @Suppress("RemoveExplicitTypeArguments")
+        extractValueFromJSONArray<V>(V::class, json, index)
     }
+}
+
+/**
+ * Extracts a value [V] from the json array at the index specified.
+ */
+fun <V : Any> extractValueFromJSONArray(kClass: KClass<V>, json: JSONArray, index: Int): V {
+    @Suppress("UNCHECKED_CAST")
+    return when (kClass) {
+        Int::class -> json.getInt(index)
+        Double::class -> json.getDouble(index)
+        Boolean::class -> json.getBoolean(index)
+        Long::class -> json.getLong(index)
+        String::class -> json.getString(index)
+        else -> {
+            val value = json.get(index)
+            if (value is JSONObject) mapFromJSON<String, Any>(value.toString())
+            else value
+        }
+    } as V
+}
+
+/**
+ * Extracts a value [V] from the json object with the key specified.
+ */
+fun <V : Any> extractValueFromJSONObject(kClass: KClass<V>, json: JSONObject, key: String): V {
+    @Suppress("UNCHECKED_CAST")
+    return when (kClass) {
+        Int::class -> json.getInt(key)
+        Double::class -> json.getDouble(key)
+        Boolean::class -> json.getBoolean(key)
+        Long::class -> json.getLong(key)
+        String::class -> json.getString(key)
+        else -> {
+            val value = json.get(key)
+            if (value is JSONObject) mapFromJSON<String, Any>(value.toString())
+            else value
+        }
+    } as V
 }
 
 /**

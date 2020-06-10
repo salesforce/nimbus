@@ -240,6 +240,16 @@ class WebViewPluginTests {
     }
 
     @Test
+    fun verifyUnaryAnyListResolvingToBoolean() {
+        executeTest("verifyUnaryAnyListResolvingToBoolean()")
+    }
+
+    @Test
+    fun verifyUnaryAnyArrayResolvingToBoolean() {
+        executeTest("verifyUnaryAnyArrayResolvingToBoolean()")
+    }
+
+    @Test
     fun verifyUnaryStringStringMapResolvingToString() {
         executeTest("verifyUnaryStringStringMapResolvingToString()")
     }
@@ -247,6 +257,11 @@ class WebViewPluginTests {
     @Test
     fun verifyUnaryStringStructMapResolvingToString() {
         executeTest("verifyUnaryStringStructMapResolvingToString()")
+    }
+
+    @Test
+    fun verifyUnaryStringAnyMapResolvingToBoolean() {
+        executeTest("verifyUnaryStringAnyMapResolvingToBoolean()")
     }
 
     // endregion

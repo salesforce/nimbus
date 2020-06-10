@@ -223,7 +223,7 @@ class V8BinderGenerator : BinderGenerator() {
                                         "value type for Map. Currently only String is supported."
                                 )
                                 return@forEachIndexed
-                            } else processMapParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                            } else processMapParameter(declaredType, parameter, parameterIndex)
                         }
                         else -> {
                             error(
@@ -317,12 +317,22 @@ class V8BinderGenerator : BinderGenerator() {
         parameter: VariableElement,
         parameterIndex: Int
     ): CodeBlock {
-        return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
-            arraySerializerClassName,
-            parameter.asType().typeArguments().first(),
-            serializerFunctionName
-        )
+        return when {
+            parameter.asType().isObjectArray() -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { (it as V8Array).let { it.%T() } }",
+                    ClassName(nimbusV8Package, "toArray")
+                )
+            }
+            else -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
+                    arraySerializerClassName,
+                    parameter.asType().typeArguments().first(),
+                    serializerFunctionName
+                )
+            }
+        }
     }
 
     private fun processStringParameter(
@@ -506,30 +516,49 @@ class V8BinderGenerator : BinderGenerator() {
         parameterIndex: Int
     ): CodeBlock {
         val parameterValueType = declaredType.typeArguments.first()
-        return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
-            listSerializerClassName,
-            parameterValueType.asKotlinTypeName(kotlinParameter.isNullable()),
-            serializerFunctionName
-        )
+        return when {
+            parameterValueType.isAnyType() -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { (it as V8Array).let { it.%T() } }",
+                    ClassName(nimbusV8Package, "toList")
+                )
+            }
+            else -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
+                    listSerializerClassName,
+                    parameterValueType.asKotlinTypeName(kotlinParameter.isNullable()),
+                    serializerFunctionName
+                )
+            }
+        }
     }
 
     private fun processMapParameter(
         declaredType: DeclaredType,
         parameter: VariableElement,
-        kotlinParameter: KmValueParameter?,
         parameterIndex: Int
     ): CodeBlock {
         val parameterKeyType = declaredType.typeArguments[0]
         val parameterValueType = declaredType.typeArguments[1]
-        return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T(), %T.%T()), it) }",
-            mapSerializerClassName,
-            parameterKeyType.asKotlinTypeName(kotlinParameter.isNullable()),
-            serializerFunctionName,
-            parameterValueType.asKotlinTypeName(kotlinParameter.isNullable()),
-            serializerFunctionName
-        )
+        return when {
+            parameterValueType.isAnyType() -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { it.%T() }",
+                    ClassName(nimbusV8Package, "toMap")
+                )
+            }
+            else -> {
+                CodeBlock.of(
+                    "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T(), %T.%T()), it) }",
+                    mapSerializerClassName,
+                    parameterKeyType.asKotlinTypeName(),
+                    serializerFunctionName,
+                    parameterValueType.asKotlinTypeName(),
+                    serializerFunctionName
+                )
+            }
+        }
     }
 
     private fun processResult(

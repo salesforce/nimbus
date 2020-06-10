@@ -291,6 +291,46 @@ function verifyUnaryIntArrayResolvingToString() {
   });
 }
 
+function verifyUnaryAnyListResolvingToBoolean() {
+  __nimbus.plugins.testPlugin.unaryAnyListResolvingToBoolean([
+    {
+      string: "test1",
+      integer: 1,
+      double: 1.0
+    },
+    {
+      string: "test2",
+      integer: 2,
+      double: 2.0
+    }
+  ]).then((result) => {
+    if (result === true) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyUnaryAnyArrayResolvingToBoolean() {
+  __nimbus.plugins.testPlugin.unaryAnyArrayResolvingToBoolean([
+    {
+      string: "test1",
+      integer: 1,
+      double: 1.0
+    },
+    {
+      string: "test2",
+      integer: 2,
+      double: 2.0
+    }
+  ]).then((result) => {
+    if (result === true) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 function verifyUnaryStringStringMapResolvingToString() {
   __nimbus.plugins.testPlugin.unaryStringStringMapResolvingToString({"key1":"value1","key2":"value2","key3":"value3"}).then((result) => {
     if (result === 'key1, value1, key2, value2, key3, value3') {
@@ -319,6 +359,26 @@ function verifyUnaryStringStructMapResolvingToString() {
     }
   }).then((result) => {
     if (result === 'key1, string1, 1, 1.0, key2, string2, 2, 2.0, key3, string3, 3, 3.0') {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyUnaryStringAnyMapResolvingToBoolean() {
+  __nimbus.plugins.testPlugin.unaryStringAnyMapResolvingToBoolean({
+    "key1": {
+      string: "string1",
+      integer: 1,
+      double: 1.0
+    },
+    "key2": {
+      string: "string2",
+      integer: 2,
+      double: 2.0
+    }
+  }).then((result) => {
+    if (result === true) {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
