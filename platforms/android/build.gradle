@@ -41,6 +41,18 @@ allprojects {
 }
 
 subprojects {
+    task printPubs {
+        doLast {
+            if (project.hasProperty("publishing")) {
+                project.publishing.publications.each { publication ->
+                    println "Publication [name: $publication.name, groupId: $publication.groupId, artifactId: $publication.artifactId, version: $publication.version"
+                }
+            } else {
+                println("No publishing for project ${project.name}")
+            }
+        }
+    }
+
     project.plugins.whenPluginAdded { plugin ->
         if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
             project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
@@ -53,6 +65,5 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
 // TODO: Move lint to plugin
 // TODO: Move Dokka config to plugin

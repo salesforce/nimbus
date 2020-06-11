@@ -6,11 +6,11 @@ plugins {
     id("kotlin")
     id("com.jfrog.bintray")
     id("com.jfrog.artifactory")
-
 }
 
 dependencies {
     implementation(Libs.kotlin_stdlib_jdk8)
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 }
 
 afterEvaluate {

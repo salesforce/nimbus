@@ -1,6 +1,10 @@
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
@@ -48,9 +52,16 @@ fun PublishingExtension.setupAllPublications(project: Project) {
     val publication = if (project.isAndroidModule())
         publications.getByName("release") as MavenPublication
     else
-        publications.create<MavenPublication>(Publishing.group)
+        publications.create<MavenPublication>("release")
 
     if (!project.isAndroidModule()) {
+//    val publication = publications.create<MavenPublication>("mavenLocal")
+////        artifact(LazyPublishArtifact(sourcesJar))
+////    }
+//    println("publication is ${publication.name}")
+//    if (project.isAndroidModule()) {
+//        publication.from(project.components["release"])
+//    } else {
         publication.from(project.components["java"])
     }
 

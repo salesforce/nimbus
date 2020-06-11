@@ -60,9 +60,10 @@ fun BintrayExtension.setupPublicationsUpload(
 
 fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project){
 
-    setContextUrl("https://oss.jfrog.org/artifactory")
+    setContextUrl("https://oss.jfrog.org")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
+            println("publishing version ${project.version}")
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
             setProperty("repoKey", targetRepoKey)
             setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
@@ -70,10 +71,12 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
             setProperty("maven", true)
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
+//            invokeMethod("publications", "com.salesforce.nimbus")
             invokeMethod("publications", getPublications(project))
 //            invokeMethod("publishConfigs", arrayOf("archives"))
             setProperty("publishArtifacts", true)
             setProperty("publishPom", true)
+            setProperty("publishIvy", false)
         })
     })
     resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
@@ -90,8 +93,8 @@ fun buildTagFor(version: String): String =
     }
 fun getPublications(project: Project): Array<String> {
     return if (project.isAndroidModule()) {
-        arrayOf("androidDebug", "androidRelease")
-//        arrayOf("release")
+//        arrayOf("androidDebug", "androidRelease")
+        arrayOf("release")
     } else {
         arrayOf("mavenJava")
 //        arrayOf("java")
