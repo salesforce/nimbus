@@ -7,7 +7,7 @@
 
 import "mocha";
 import { expect } from "chai";
-import __nimbus from "nimbus-bridge";
+import __nimbus from "nimbus-types";
 
 describe("Message Broadcasting", () => {
   if (window == undefined) {

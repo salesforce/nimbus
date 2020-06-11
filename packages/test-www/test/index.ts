@@ -5,12 +5,12 @@
 // For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-import "nimbus-bridge";
+import nimbus from "nimbus-types";
 import "./nimbus-core-tests";
 import "./broadcast-tests";
 import "./callback-encodable-tests";
 
-const { plugins } = __nimbus;
+const { plugins } = nimbus;
 
 let callbackTestPlugin: any = plugins.callbackTestPlugin;
 

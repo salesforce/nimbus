@@ -24,6 +24,6 @@
         "typescript": "^3.5.2"
     },
     "dependencies": {
-        "nimbus-bridge": "^2.0.0"
+        "nimbus-types": "^2.0.0"
     }
 }

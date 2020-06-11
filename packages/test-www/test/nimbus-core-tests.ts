@@ -7,7 +7,7 @@
 
 import "mocha";
 import { expect } from "chai";
-import nimbus from "nimbus-bridge";
+import nimbus from "nimbus-types";
 
 interface JSAPITestStruct {
   intField: number;
@@ -33,7 +33,7 @@ interface JSAPITestPlugin {
   ): Promise<number>;
 }
 
-declare module "nimbus-bridge" {
+declare module "nimbus-types" {
   interface NimbusPlugins {
     jsapiTestPlugin: JSAPITestPlugin;
   }
