@@ -30,18 +30,18 @@ fs.copySync(
     path.resolve(mochaPath, 'mocha.js'),
     path.resolve(dist, 'mocha.js')
 );
-const chaiPath = path.resolve(__dirname, 'node_modules', 'chai');
-fs.copySync(path.resolve(chaiPath, 'chai.js'), path.resolve(dist, 'chai.js'));
+const chaiPath = path.resolve(__dirname, "node_modules", "chai");
+fs.copySync(path.resolve(chaiPath, "chai.js"), path.resolve(dist, "chai.js"));
 
 export default {
-    input: 'test/index.ts',
-    external: ['mocha', 'chai'],
-    output: {
-        file: output,
-        format: 'iife',
-        globals: {
-            chai: 'chai'
-        }
-    },
-    plugins: [resolve(), typescript()]
+  input: "test/index.ts",
+  external: ["mocha", "chai"],
+  output: {
+    file: output,
+    format: "iife",
+    globals: {
+      chai: "chai"
+    }
+  },
+  plugins: [resolve(), typescript()]
 };
