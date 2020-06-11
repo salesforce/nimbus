@@ -7,7 +7,7 @@
 
 import "mocha";
 import { expect } from "chai";
-import nimbus from "nimbus-bridge";
+import nimbus from "nimbus-types";
 
 describe("Nimbus JS initialization", () => {
   it("preserves existing objects", () => {

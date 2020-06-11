@@ -1,4 +1,4 @@
-import { DeviceInfoPlugin, DeviceInfo } from "nimbus-bridge";
+import { DeviceInfoPlugin, DeviceInfo } from "nimbus-types";
 
 const template = document.createElement("template");
 template.innerHTML = `
