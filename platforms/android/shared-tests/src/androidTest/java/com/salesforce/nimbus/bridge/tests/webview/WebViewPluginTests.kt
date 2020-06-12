@@ -136,6 +136,11 @@ class WebViewPluginTests {
     }
 
     @Test
+    fun verifyNullaryResolvingToDateWrapper() {
+        executeTest("verifyNullaryResolvingToDateWrapper()")
+    }
+
+    @Test
     fun verifyNullaryResolvingToIntList() {
         executeTest("verifyNullaryResolvingToIntList()")
     }
@@ -205,6 +210,11 @@ class WebViewPluginTests {
     }
 
     @Test
+    fun verifyUnaryDateWrapperResolvingToJsonString() {
+        executeTest("verifyUnaryDateWrapperResolvingToJsonString()")
+    }
+
+    @Test
     fun verifyUnaryStringListResolvingToString() {
         executeTest("verifyUnaryStringListResolvingToString()")
     }
@@ -266,6 +276,11 @@ class WebViewPluginTests {
     @Test
     fun verifyNullaryResolvingToStructCallback() {
         executeTest("verifyNullaryResolvingToStructCallback()")
+    }
+
+    @Test
+    fun verifyNullaryResolvingToDateWrapperCallback() {
+        executeTest("verifyNullaryResolvingToDateWrapperCallback()")
     }
 
     @Test

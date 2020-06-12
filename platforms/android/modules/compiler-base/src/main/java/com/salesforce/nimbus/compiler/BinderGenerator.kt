@@ -85,6 +85,11 @@ abstract class BinderGenerator : AbstractProcessor() {
             // get all serializable elements
             serializableElements = env.getElementsAnnotatedWith(Serializable::class.java)
 
+                // Filter out any non-declared types (such as properties/methods annotated). This is necessary
+                // when a Serializable class has a property annotated @Serializable with a custom serializer.
+                .filter { it.asType().kind == TypeKind.DECLARED }
+                .toSet()
+
             // find any duplicate plugin names
             val duplicates =
                 pluginElements.groupingBy { it.getAnnotation(PluginOptions::class.java).name }

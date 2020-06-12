@@ -32,18 +32,21 @@ fs.copySync(
 );
 const chaiPath = path.resolve(__dirname, "node_modules", "chai");
 fs.copySync(path.resolve(chaiPath, "chai.js"), path.resolve(dist, "chai.js"));
-const sharedTestsPath = path.resolve(__dirname, "test", "shared-tests.js")
-fs.copySync(path.resolve(sharedTestsPath), path.resolve(dist, "shared-tests.js"))
+const sharedTestsPath = path.resolve(__dirname, "test", "shared-tests.js");
+fs.copySync(
+  path.resolve(sharedTestsPath),
+  path.resolve(dist, "shared-tests.js")
+);
 
 export default {
   input: "test/index.ts",
-  external: ["mocha", "chai", "nimbus-bridge"],
+  external: ["mocha", "chai", "nimbus-types"],
   output: {
     file: output,
     format: "iife",
     globals: {
       chai: "chai",
-      "nimbus-bridge": "__nimbus",
+      "nimbus-types": "__nimbus",
     },
   },
   plugins: [resolve(), typescript()],

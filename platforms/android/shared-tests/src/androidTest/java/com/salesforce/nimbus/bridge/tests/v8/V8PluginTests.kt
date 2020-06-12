@@ -75,6 +75,11 @@ class V8PluginTests {
     }
 
     @Test
+    fun verifyNullaryResolvingToDateWrapper() {
+        executeTest("verifyNullaryResolvingToDateWrapper()")
+    }
+
+    @Test
     fun verifyNullaryResolvingToIntList() {
         executeTest("verifyNullaryResolvingToIntList()")
     }
@@ -144,6 +149,11 @@ class V8PluginTests {
     }
 
     @Test
+    fun verifyUnaryDateWrapperResolvingToJsonString() {
+        executeTest("verifyUnaryDateWrapperResolvingToJsonString()")
+    }
+
+    @Test
     fun verifyUnaryStringListResolvingToString() {
         executeTest("verifyUnaryStringListResolvingToString()")
     }
@@ -205,6 +215,11 @@ class V8PluginTests {
     @Test
     fun verifyNullaryResolvingToStructCallback() {
         executeTest("verifyNullaryResolvingToStructCallback()")
+    }
+
+    @Test
+    fun verifyNullaryResolvingToDateWrapperCallback() {
+        executeTest("verifyNullaryResolvingToDateWrapperCallback()")
     }
 
     @Test

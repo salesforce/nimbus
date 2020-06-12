@@ -56,6 +56,7 @@ class TestPlugin: Plugin {
         connection.bind(nullaryResolvingToIntStructCallback, as: "nullaryResolvingToIntStructCallback")
         connection.bind(unaryIntResolvingToIntCallback, as: "unaryIntResolvingToIntCallback")
         connection.bind(binaryIntDoubleResolvingToIntDoubleCallback, as: "binaryIntDoubleResolvingToIntDoubleCallback")
+        connection.bind(binaryIntResolvingIntCallbackReturnsInt, as: "binaryIntResolvingIntCallbackReturnsInt")
     }
 
     func nullaryResolvingToInt() -> Int {
@@ -258,6 +259,11 @@ class TestPlugin: Plugin {
 
     func binaryIntDoubleResolvingToIntDoubleCallback(param0: Int, param1: Double, callback: (Int, Double) -> Void) {
         callback(param0 + 1, param1 * 2)
+    }
+
+    func binaryIntResolvingIntCallbackReturnsInt(param0: Int, callback: (Int) -> Void) -> Int {
+        callback(param0 - 1)
+        return param0 - 2
     }
 }
 

@@ -299,6 +299,12 @@ class JSAPITestPlugin: Plugin {
         completion(JSAPITestStruct())
     }
 
+    func binaryResolvingToObjectCallbackToInt(param: Int, completion: (JSAPITestStruct) -> Void) -> Int {
+        XCTAssertEqual(param, 5)
+        completion(.init())
+        return 1
+    }
+
     var namespace: String {
         return "jsapiTestPlugin"
     }
@@ -311,6 +317,7 @@ class JSAPITestPlugin: Plugin {
         connection.bind(unaryObjectResolvingToVoid, as: "unaryObjectResolvingToVoid")
         connection.bind(binaryResolvingToIntCallback, as: "binaryResolvingToIntCallback")
         connection.bind(binaryResolvingToObjectCallback, as: "binaryResolvingToObjectCallback")
+        connection.bind(binaryResolvingToObjectCallbackToInt, as: "binaryResolvingToObjectCallbackToInt")
     }
 
     struct JSAPITestStruct: Codable, Equatable {

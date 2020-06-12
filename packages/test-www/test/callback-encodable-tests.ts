@@ -27,7 +27,7 @@ interface CallbackTestPlugin {
   ): void;
 }
 
-declare module "nimbus-bridge" {
+declare module "nimbus-types" {
   interface NimbusPlugins {
     callbackTestPlugin: CallbackTestPlugin;
   }
