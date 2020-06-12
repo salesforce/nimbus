@@ -113,59 +113,63 @@ describe("Callbacks with", () => {
   });
   // commented out until supported by android
   // tests work on iOS but fail on android
-  // it('should return a promise string and the callback should have an object', done => {
-  //   nimbusWithCallbackTestPlugin.callbackTestPlugin.callbackWithSingleParamAndReturn(
-  //     (param0: MochaMessage) => {
-  //       expect(param0).to.deep.equal({
-  //         intField: 42,
-  //         stringField: "This is a string"
-  //       });
-  //     }
-  //   ).then((result: string) => {
-  //     expect(result).to.equal("one");
-  //     done();
-  //   });
-  // });
+  it("should return a promise string and the callback should have an object", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .callbackWithSingleParamAndReturn((param0: MochaMessage) => {
+        expect(param0).to.deep.equal({
+          intField: 42,
+          stringField: "This is a string",
+        });
+      })
+      .then((result: string) => {
+        expect(result).to.equal("one");
+        done();
+      });
+  });
 
-  // it('should return a promise string and the callback should have an int', done => {
-  //   nimbusWithCallbackTestPlugin.callbackTestPlugin.callbackWithSinglePrimitiveParamAndReturn(
-  //     (param0: number) => {
-  //       expect(param0).to.equal(1);
-  //     }
-  //   ).then((result: string) => {
-  //     expect(result).to.equal("one");
-  //     done();
-  //   });
-  // });
+  it("should return a promise string and the callback should have an int", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .callbackWithSinglePrimitiveParamAndReturn((param0: number) => {
+        expect(param0).to.equal(1);
+      })
+      .then((result: string) => {
+        expect(result).to.equal("one");
+        done();
+      });
+  });
 
-  // it('should return a promise string and the callback should have two objects', done => {
-  //   nimbusWithCallbackTestPlugin.callbackTestPlugin.callbackWithTwoParamAndReturn(
-  //     (param0: MochaMessage, param1: MochaMessage) => {
-  //       expect(param0).to.deep.equal({
-  //         intField: 42,
-  //         stringField: "This is a string"
-  //       });
+  it("should return a promise string and the callback should have two objects", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .callbackWithTwoParamAndReturn(
+        (param0: MochaMessage, param1: MochaMessage) => {
+          expect(param0).to.deep.equal({
+            intField: 42,
+            stringField: "This is a string",
+          });
 
-  //       expect(param1).to.deep.equal({
-  //         intField: 3,
-  //         stringField: "mock"
-  //       });
-  //     }
-  //   ).then((result: string) => {
-  //     expect(result).to.equal("two");
-  //     done();
-  //   });
-  // });
+          expect(param1).to.deep.equal({
+            intField: 3,
+            stringField: "mock",
+          });
+        }
+      )
+      .then((result: string) => {
+        expect(result).to.equal("two");
+        done();
+      });
+  });
 
-  // it('should return a promise string and the callback should have two ints', done => {
-  //   nimbusWithCallbackTestPlugin.callbackTestPlugin.callbackWithTwoPrimitiveParamAndReturn(
-  //     (param0: number, param1: number) => {
-  //       expect(param0).to.equal(1);
-  //       expect(param1).to.equal(2);
-  //     }
-  //   ).then((result: string) => {
-  //     expect(result).to.equal("two");
-  //     done();
-  //   });
-  // });
+  it("should return a promise string and the callback should have two ints", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .callbackWithTwoPrimitiveParamAndReturn(
+        (param0: number, param1: number) => {
+          expect(param0).to.equal(1);
+          expect(param1).to.equal(2);
+        }
+      )
+      .then((result: string) => {
+        expect(result).to.equal("two");
+        done();
+      });
+  });
 });

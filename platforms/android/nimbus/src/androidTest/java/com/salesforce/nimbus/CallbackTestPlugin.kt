@@ -100,4 +100,29 @@ class CallbackTestPlugin : Plugin {
         jo1.put("six", 6)
         arg(jo0, jo1)
     }
+
+    @BoundMethod
+    fun callbackWithSingleParamAndReturn(arg: (param0: MochaTests.MochaMessage) -> Unit): String {
+        arg(MochaTests.MochaMessage())
+        return "one"
+    }
+
+    @BoundMethod
+    fun callbackWithSinglePrimitiveParamAndReturn(arg: (param0: Int) -> Unit): String {
+        arg(777)
+        return "one"
+    }
+
+    @BoundMethod
+    fun callbackWithTwoParamAndReturn(arg: (param0: MochaTests.MochaMessage, param1: MochaTests.MochaMessage) -> Unit): String {
+        var mochaMessage = MochaTests.MochaMessage("mock", 3)
+        arg(MochaTests.MochaMessage(), mochaMessage)
+        return "two"
+    }
+
+    @BoundMethod
+    fun callbackWithTwoPrimitiveParamAndReturn(arg: (param0: Int, param1: Int) -> Unit): String {
+        arg(1, 2)
+        return "two"
+    }
 }
