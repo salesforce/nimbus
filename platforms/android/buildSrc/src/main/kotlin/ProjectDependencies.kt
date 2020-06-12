@@ -4,8 +4,9 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 
 fun DependencyHandler.nimbusModule(nimbusModule: String): Dependency {
     // TODO: Verify configuration - without being set, artifactory doesn't match build versions.  Might need to set to release/debug though.
+
 //    val configuration = if (this.isAndroidModule()) { "default" } else {"debug"}
-//    return project(mapOf("path" to ":modules:$nimbusModule", "configuration" to "compile"))
+//    return project(mapOf("path" to ":modules:$nimbusModule", "configuration" to "default"))
     return project(mapOf("path" to ":modules:$nimbusModule"))
 }
 

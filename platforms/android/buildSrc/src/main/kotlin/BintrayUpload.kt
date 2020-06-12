@@ -89,11 +89,12 @@ fun buildTagFor(version: String): String =
         else -> "release"
     }
 fun getPublications(project: Project): Array<String> {
-    return if (project.isAndroidModule()) {
-        arrayOf("androidDebug", "androidRelease")
+    return arrayOf("release")
+//    return if (project.isAndroidModule()) {
+//        arrayOf("androidDebug", "androidRelease")
 //        arrayOf("release")
-    } else {
-        arrayOf("mavenJava")
+//    } else {
+//        arrayOf("mavenJava")
 //        arrayOf("java")
-    }
+//    }
 }
