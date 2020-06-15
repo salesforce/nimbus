@@ -348,4 +348,10 @@ class TestPlugin : Plugin {
     fun binaryIntDoubleResolvingToIntDoubleCallback(param0: Int, param1: Double, callback: (Int, Double) -> Unit) {
         callback(param0 + 1, param1 * 2)
     }
+
+    @BoundMethod
+    fun binaryIntResolvingIntCallbackReturnsInt(param0: Int, callback: (Int) -> Unit): Int {
+        callback(param0 - 1)
+        return param0 - 2
+    }
 }

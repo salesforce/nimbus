@@ -57,7 +57,6 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinFunction: KmFunction?
     ): FunSpec {
         val functionName = functionElement.simpleName.toString()
-        val functionReturnType = functionElement.returnType
 
         // try to find the fun from the kotlin class metadata to see if the
         // return type is nullable
@@ -98,12 +97,6 @@ class WebViewBinderGenerator : BinderGenerator() {
                                 !functionParameterReturnType.isUnitType() -> error(
                                     functionElement,
                                     "Only a Unit (Void) return type in callbacks is supported."
-                                )
-
-                                // throw a compiler error if the function does not return void
-                                !functionReturnType.isUnitType() -> error(
-                                    functionElement,
-                                    "Functions with a callback only support a Unit (Void) return type."
                                 )
                                 else -> processFunctionParameter(
                                     declaredType,
@@ -197,7 +190,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 funSpec.addStatement(
                     "return target.%N($argsString)",
                     functionElement.simpleName.toString()
-                )
+                ).returns(returnType.asKotlinTypeName())
             }
         }
 
