@@ -98,6 +98,11 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
     }
 }
 
+public struct TestError: Error, Encodable {
+    let code: Int
+    let message: String
+}
+
 public class CallbackTestPlugin {
     func callbackWithSingleParam(completion: @escaping (MochaTests.MochaMessage) -> Swift.Void) {
         let mochaMessage = MochaTests.MochaMessage()
@@ -138,6 +143,22 @@ public class CallbackTestPlugin {
         completion(1, 2)
         return "two"
     }
+
+    func promiseResolved() -> String {
+        return "promise"
+    }
+
+    func promiseRejectedEncoded() throws -> String {
+        throw TestError(code: 42, message: "mock promise rejection")
+    }
+
+    func promiseRejected() throws -> String {
+        throw MockError.rejectedError
+    }
+}
+
+enum MockError: Error {
+    case rejectedError
 }
 
 extension CallbackTestPlugin: Plugin {
@@ -152,5 +173,8 @@ extension CallbackTestPlugin: Plugin {
         connection.bind(CallbackTestPlugin.callbackWithSinglePrimitiveParamAndReturn, as: "callbackWithSinglePrimitiveParamAndReturn")
         connection.bind(CallbackTestPlugin.callbackWithTwoParamAndReturn, as: "callbackWithTwoParamAndReturn")
         connection.bind(CallbackTestPlugin.callbackWithTwoPrimitiveParamAndReturn, as: "callbackWithTwoPrimitiveParamAndReturn")
+        connection.bind(CallbackTestPlugin.promiseResolved, as: "promiseResolved")
+        connection.bind(CallbackTestPlugin.promiseRejectedEncoded, as: "promiseRejectedEncoded")
+        connection.bind(CallbackTestPlugin.promiseRejected, as: "promiseRejected")
     }
 }

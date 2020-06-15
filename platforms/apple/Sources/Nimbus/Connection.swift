@@ -141,7 +141,18 @@ public class Connection<C>: Binder {
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
-        webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        switch error {
+        case let encodableError as EncodableError:
+            let error = EncodableValue.error(encodableError)
+            if let data = try? JSONEncoder().encode(error),
+                let jsonString = String(data: data, encoding: .utf8) {
+                webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, \(jsonString).e);")
+            } else {
+                fatalError("Unable to encode error object: \(error)")
+            }
+        default:
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        }
     }
 
     private static func unwrapNSNull(_ opt: Any?) -> Any? {

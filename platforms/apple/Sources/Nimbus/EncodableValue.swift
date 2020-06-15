@@ -14,12 +14,17 @@ import Foundation
  Once `JSONEncoder` supports encoding top-level fragments this can
  be removed.
  */
+
+public typealias EncodableError = Error & Encodable
+
 public enum EncodableValue: Encodable {
     case void
     case value(Encodable)
+    case error(EncodableError)
 
     enum Keys: String, CodingKey {
         case v // swiftlint:disable:this identifier_name
+        case e // swiftlint:disable:this identifier_name
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -30,6 +35,9 @@ public enum EncodableValue: Encodable {
         case .value(let value):
             let superContainer = container.superEncoder(forKey: .v)
             try value.encode(to: superContainer)
+        case .error(let error):
+            let superContainer = container.superEncoder(forKey: .e)
+            try error.encode(to: superContainer)
         }
     }
 }
