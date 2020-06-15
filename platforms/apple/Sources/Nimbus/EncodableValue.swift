@@ -32,10 +32,10 @@ public enum EncodableValue: Encodable {
         switch self {
         case .void:
             try container.encodeNil(forKey: .v)
-        case .value(let value):
+        case let .value(value):
             let superContainer = container.superEncoder(forKey: .v)
             try value.encode(to: superContainer)
-        case .error(let error):
+        case let .error(error):
             let superContainer = container.superEncoder(forKey: .e)
             try error.encode(to: superContainer)
         }
