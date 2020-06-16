@@ -14,6 +14,8 @@ dependencies {
     implementation(Libs.kotlinx_metadata_jvm)
 }
 
+apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+
 afterEvaluate {
     publishing {
         setupAllPublications(project)

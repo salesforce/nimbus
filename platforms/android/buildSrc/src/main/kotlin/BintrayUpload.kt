@@ -53,7 +53,7 @@ fun BintrayExtension.setupPublicationsUpload(
         publish = true
         dryRun = true
         version(closureOf<BintrayExtension.VersionConfig> {
-            name = ProjectVersions.packageVersion
+            name = project.version.toString()
         })
     })
 }

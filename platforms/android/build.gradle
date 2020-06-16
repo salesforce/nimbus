@@ -39,6 +39,8 @@ allprojects {
             url "https://dl.bintray.com/salesforce-mobile/android"
         }
     }
+    group GROUP
+    version VERSION
 }
 
 subprojects {

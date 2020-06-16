@@ -13,6 +13,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 }
 
+apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+
 afterEvaluate {
     publishing {
         setupAllPublications(project)
@@ -24,6 +26,5 @@ afterEvaluate {
         setupSnapshots(project)
     }
 }
-
 
 apply(from= rootProject.file("gradle/lint.gradle"))

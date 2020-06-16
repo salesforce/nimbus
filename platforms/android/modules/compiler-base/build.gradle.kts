@@ -14,6 +14,8 @@ dependencies {
     implementation(Libs.kotlinx_serialization_runtime)
 }
 
+apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+
 afterEvaluate {
     publishing {
         setupAllPublications(project)

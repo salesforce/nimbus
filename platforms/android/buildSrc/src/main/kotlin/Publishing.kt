@@ -22,7 +22,6 @@ object Publishing {
     const val licenseUrl = "$siteUrl/blob/master/LICENSE"
     const val issuesUrl = "$siteUrl/issues"
     const val developerName = "Salesforce inc."
-    const val group = "com.salesforce.nimbus"
 }
 
 @Suppress("UnstableApiUsage")
@@ -49,10 +48,10 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    val publication = if (project.isAndroidModule())
+    val publication = //if (project.isAndroidModule())
         publications.getByName("release") as MavenPublication
-    else
-        publications.create<MavenPublication>("release")
+//    else
+//        publications.create<MavenPublication>("release")
 
     if (!project.isAndroidModule()) {
 //    val publication = publications.create<MavenPublication>("mavenLocal")
@@ -67,8 +66,6 @@ fun PublishingExtension.setupAllPublications(project: Project) {
 
     publication.artifactId = project.name
 
-    project.group = Publishing.group
-    project.version = ProjectVersions.packageVersion
     val publications = publications.withType<MavenPublication>()
     publications.all { setupPom() }
 }

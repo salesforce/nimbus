@@ -22,7 +22,8 @@ dependencies {
     testImplementation(Libs.json)
 }
 
-apply(from= rootProject.file("gradle/publishing-tasks.gradle"))
+apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+
 afterEvaluate {
     publishing {
         setupAllPublications(project)
