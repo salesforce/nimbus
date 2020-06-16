@@ -148,7 +148,8 @@ public class Connection<C>: Binder {
                 let jsonString = String(data: data, encoding: .utf8) {
                 webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, \(jsonString).e);")
             } else {
-                fatalError("Unable to encode error object: \(error)")
+                //if unable to decode then send then fallthrough to default error message
+                fallthrough
             }
         default:
             webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
