@@ -1,24 +1,12 @@
 apply plugin: 'maven-publish'
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    android.libraryVariants.all { variant ->
-        if (variant.name == 'release') {
-            owner.classpath += variant.javaCompileProvider.get().classpath
-        }
-    }
-    exclude '**/R.html', '**/R.*.html', '**/index.html', '**/*.kt'
-}
-
-task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-    archiveClassifier.set('javadoc')
-    from androidJavadocs.destinationDir
-}
-
-task androidSourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
     from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 // Because the components are created only during the afterEvaluate phase, you must
@@ -32,8 +20,7 @@ afterEvaluate {
 //                from components.release
 
                 // Adds javadocs and sources as separate jars.
-                artifact androidJavadocsJar
-                artifact androidSourcesJar
+                artifact sourcesJar
                 artifact("$buildDir/outputs/aar/$project.name-debug.aar")
             }
         }

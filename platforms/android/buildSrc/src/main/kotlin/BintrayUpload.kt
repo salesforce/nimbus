@@ -60,7 +60,7 @@ fun BintrayExtension.setupPublicationsUpload(
 
 fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project){
 
-    setContextUrl("https://oss.jfrog.org")
+    setContextUrl("http://oss.jfrog.org")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
