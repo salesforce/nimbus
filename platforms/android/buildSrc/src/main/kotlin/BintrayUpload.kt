@@ -51,7 +51,7 @@ fun BintrayExtension.setupPublicationsUpload(
         publicDownloadNumbers = true
         githubRepo = Publishing.githubRepo
         publish = true
-        dryRun = true
+        dryRun = false
         version(closureOf<BintrayExtension.VersionConfig> {
             name = project.version.toString()
         })
@@ -63,8 +63,9 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
     setContextUrl("https://oss.jfrog.org")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
-            println("publishing version ${project.version}")
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
+            println("publishing version ${project.version}")
+            println("publishing to $targetRepoKey")
             setProperty("repoKey", targetRepoKey)
             setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
             setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))

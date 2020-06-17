@@ -20,7 +20,7 @@ afterEvaluate {
                 artifact javadocJar
                 artifact sourcesJar
                 artifact("$buildDir/outputs/libs/${project.name}.jar")
-            }gs
+            }
         }
     }
 }
