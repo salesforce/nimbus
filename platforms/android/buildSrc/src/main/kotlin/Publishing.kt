@@ -49,7 +49,7 @@ fun MavenPublication.setupPom() = pom {
 
 fun PublishingExtension.setupAllPublications(project: Project) {
     val publication = //if (project.isAndroidModule())
-        publications.getByName("release") as MavenPublication
+        publications.getByName("mavenPublication") as MavenPublication
 //    else
 //        publications.create<MavenPublication>("release")
 

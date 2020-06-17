@@ -43,12 +43,6 @@ tasks {
     }
 }
 
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-
-    from(android.sourceSets["main"].java.srcDirs())
-}
-
 apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {

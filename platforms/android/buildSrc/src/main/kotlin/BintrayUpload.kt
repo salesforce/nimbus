@@ -80,7 +80,7 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
         })
     })
     resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
-        setProperty("repoKey", "libs-snapshot")
+        setProperty("repoKey", "jcenter")
         setProperty("maven", true)
     })
 //    clientConfig.info.buildNumber = ProjectVersions.packageVersion
@@ -92,11 +92,11 @@ fun buildTagFor(version: String): String =
         else -> "release"
     }
 fun getPublications(project: Project): Array<String> {
-    return if (project.isAndroidModule()) {
+//    return if (project.isAndroidModule()) {
 //        arrayOf("androidDebug", "androidRelease")
-        arrayOf("release")
-    } else {
-        arrayOf("mavenJava")
+ return       arrayOf("mavenPublication")
+//    } else {
+//        arrayOf("mavenJava")
 //        arrayOf("java")
-    }
+//    }
 }

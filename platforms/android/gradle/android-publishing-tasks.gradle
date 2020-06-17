@@ -27,13 +27,14 @@ afterEvaluate {
     publishing {
         publications {
             // Creates a Maven publication called "release".
-            release(MavenPublication) {
+            mavenPublication(MavenPublication) {
                 // Applies the component for the release build variant.
 //                from components.release
 
                 // Adds javadocs and sources as separate jars.
                 artifact androidJavadocsJar
                 artifact androidSourcesJar
+                artifact("$buildDir/outputs/aar/$project.name-debug.aar")
             }
         }
     }

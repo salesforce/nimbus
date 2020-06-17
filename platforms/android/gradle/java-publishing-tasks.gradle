@@ -16,10 +16,11 @@ afterEvaluate {
     publishing {
         publications {
             // Creates a Maven publication called "release".
-            release(MavenPublication) {
+            mavenPublication(MavenPublication) {
                 artifact javadocJar
                 artifact sourcesJar
-            }
+                artifact("$buildDir/outputs/libs/${project.name}.jar")
+            }gs
         }
     }
 }
