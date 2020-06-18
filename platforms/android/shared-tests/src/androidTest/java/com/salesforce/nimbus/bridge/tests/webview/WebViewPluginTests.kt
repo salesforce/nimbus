@@ -348,6 +348,11 @@ class WebViewPluginTests {
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
     }
 
+    @Test
+    fun verifyBinaryIntResolvingIntCallbackReturnsInt() {
+        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
+
     // endregion
 
     private fun executeTest(script: String) {

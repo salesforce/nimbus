@@ -540,25 +540,24 @@ function verifyBinaryIntDoubleResolvingToIntDoubleCallback() {
   }).then(() => {});
 }
 
-// comment out unsupported test for android
-// function verifyBinaryIntResolvingIntCallbackReturnsInt() {
-//   let count = 0;
-//   const verifyCallbacks = () => {
-//     count = count + 1;
-//     if (count === 2) {
-//       __nimbus.plugins.expectPlugin.pass();
-//       __nimbus.plugins.expectPlugin.finished();
-//     }
-//   }
-//   __nimbus.plugins.testPlugin.binaryIntResolvingIntCallbackReturnsInt(3, (int) => {
-//     if (int === 2) {
-//       verifyCallbacks();
-//     }
-//   }).then((result) =>{
-//     if (result === 1) {
-//       verifyCallbacks();
-//     }
-//   });
-// }
+function verifyBinaryIntResolvingIntCallbackReturnsInt() {
+  let count = 0;
+  const verifyCallbacks = () => {
+    count = count + 1;
+    if (count === 2) {
+      __nimbus.plugins.expectPlugin.pass();
+      __nimbus.plugins.expectPlugin.finished();
+    }
+  }
+  __nimbus.plugins.testPlugin.binaryIntResolvingIntCallbackReturnsInt(3, (int) => {
+    if (int === 2) {
+      verifyCallbacks();
+    }
+  }).then((result) =>{
+    if (result === 1) {
+      verifyCallbacks();
+    }
+  });
+}
 
 // endregion

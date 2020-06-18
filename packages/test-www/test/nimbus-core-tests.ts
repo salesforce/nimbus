@@ -6,7 +6,7 @@
 //
 
 import "mocha";
-import { expect } from "chai";
+import {expect} from "chai";
 import nimbus from "nimbus-types";
 
 interface JSAPITestStruct {
@@ -125,18 +125,18 @@ describe("Nimbus JS API", () => {
   });
 
   // commented out test because they fail in android as it is not supported yet
-  // it('binary function accepting int and callback taking an object returning an int', (done) => {
-  //   __nimbus.plugins.jsapiTestPlugin.binaryResolvingToObjectCallbackToInt(
-  //     5,
-  //     (result: JSAPITestStruct) => {
-  //       expect(result).to.deep.equal({
-  //         intField: 42,
-  //         stringField: "JSAPITEST"
-  //       });
-  //     }
-  //   ).then((value: number) => {
-  //     expect(value).to.deep.equal(1);
-  //     done();
-  //   })
-  // });
+  it('binary function accepting int and callback taking an object returning an int', (done) => {
+    __nimbus.plugins.jsapiTestPlugin.binaryResolvingToObjectCallbackToInt(
+      5,
+      (result: JSAPITestStruct) => {
+        expect(result).to.deep.equal({
+          intField: 42,
+          stringField: "JSAPITEST"
+        });
+      }
+    ).then((value: number) => {
+      expect(value).to.deep.equal(1);
+      done();
+    })
+  });
 });

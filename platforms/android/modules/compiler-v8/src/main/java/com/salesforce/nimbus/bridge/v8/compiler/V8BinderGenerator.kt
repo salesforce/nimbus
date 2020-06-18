@@ -1,5 +1,6 @@
 package com.salesforce.nimbus.bridge.v8.compiler
 
+import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.compiler.BinderGenerator
 import com.salesforce.nimbus.compiler.asKotlinTypeName
 import com.salesforce.nimbus.compiler.asRawTypeName
@@ -39,6 +40,10 @@ class V8BinderGenerator : BinderGenerator() {
     private val v8ArrayClassName = ClassName(v8Package, "V8Array")
     private val v8FunctionClassName = ClassName(v8Package, "V8Function")
     private val k2V8ClassName = ClassName(k2v8Package, "K2V8")
+
+    override fun shouldGenerateBinder(pluginElement: Element): Boolean {
+        return pluginElement.getAnnotation(PluginOptions::class.java).supportsV8
+    }
 
     override fun processClassProperties(builder: TypeSpec.Builder) {
 
@@ -146,7 +151,6 @@ class V8BinderGenerator : BinderGenerator() {
         kotlinFunction: KmFunction?
     ): FunSpec {
         val functionName = functionElement.simpleName.toString()
-        val functionReturnType = functionElement.returnType
 
         // create the binder function
         val parameters = "parameters"
@@ -196,15 +200,6 @@ class V8BinderGenerator : BinderGenerator() {
                                     error(
                                         functionElement,
                                         "Only a Unit (Void) return type in callbacks is supported."
-                                    )
-                                    return@forEachIndexed
-                                }
-
-                                // throw a compiler error if the function does not return void
-                                !functionReturnType.isUnitType() -> {
-                                    error(
-                                        functionElement,
-                                        "Functions with a callback only support a Unit (Void) return type."
                                     )
                                     return@forEachIndexed
                                 }

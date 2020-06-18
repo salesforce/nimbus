@@ -165,4 +165,11 @@ class JSAPITestPlugin : Plugin {
         assertEquals(param0, 5)
         param1(JSAPITestStruct())
     }
+
+    @BoundMethod
+    fun binaryResolvingToObjectCallbackToInt(param0: Int, param1: (result: JSAPITestStruct) -> Unit): Int {
+        assertEquals(param0, 5)
+        param1(JSAPITestStruct())
+        return 1
+    }
 }

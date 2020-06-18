@@ -113,7 +113,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                             pluginElement,
                             "${PluginOptions::class.java.simpleName} class must extend $nimbusPackage.Plugin."
                         )
-                    } else {
+                    } else if (shouldGenerateBinder(pluginElement)) {
 
                         // process each plugin element to create a type spec
                         val binderTypeSpec = processPluginElement(pluginElement, serializableElements)
@@ -316,6 +316,10 @@ abstract class BinderGenerator : AbstractProcessor() {
     protected open fun processUnbindFunction(builder: FunSpec.Builder) {
         /* leave for subclasses to override */
     }
+
+    abstract fun shouldGenerateBinder(
+        pluginElement: Element
+    ): Boolean
 
     abstract fun createBinderExtensionFunction(
         pluginElement: Element,

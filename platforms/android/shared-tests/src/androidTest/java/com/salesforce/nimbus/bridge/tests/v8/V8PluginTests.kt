@@ -287,6 +287,11 @@ class V8PluginTests {
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
     }
 
+    @Test
+    fun verifyBinaryIntResolvingIntCallbackReturnsInt() {
+        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
+
     // endregion
 
     private fun executeTest(function: String) {
