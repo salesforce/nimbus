@@ -75,13 +75,6 @@ object Libs {
             Versions.kotlin_serialization_unshaded
 
     /**
-     * https://github.com/dcendents/android-maven-gradle-plugin
-     */
-    const val android_maven_gradle_plugin: String =
-            "com.github.dcendents:android-maven-gradle-plugin:" +
-            Versions.android_maven_gradle_plugin
-
-    /**
      * https://kotlinlang.org/
      */
     const val kotlin_android_extensions: String =

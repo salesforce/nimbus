@@ -9,19 +9,14 @@ artifacts {
     archives sourcesJar
 }
 
-// Because the components are created only during the afterEvaluate phase, you must
-// configure your publications using the afterEvaluate() lifecycle method.
+artifactoryPublish.dependsOn("build")
+
 afterEvaluate {
     publishing {
         publications {
-            // Creates a Maven publication called "release".
             mavenPublication(MavenPublication) {
-                // Applies the component for the release build variant.
-//                from components.release
-
-                // Adds javadocs and sources as separate jars.
                 artifact sourcesJar
-                artifact("$buildDir/outputs/aar/$project.name-debug.aar")
+                artifact("$buildDir/outputs/aar/$project.name-release.aar")
             }
         }
     }

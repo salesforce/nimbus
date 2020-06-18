@@ -38,6 +38,7 @@ fun BintrayExtension.setupPublicationsUpload(
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
+    publicationNames.forEach { println("Publication: $it") }
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
         name = Publishing.packageName
@@ -59,7 +60,6 @@ fun BintrayExtension.setupPublicationsUpload(
 }
 
 fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project){
-
     setContextUrl("http://oss.jfrog.org")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {

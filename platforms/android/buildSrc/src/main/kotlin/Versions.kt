@@ -33,8 +33,6 @@ object Versions {
 
     const val kotlin_serialization_unshaded: String = "1.3.72"
 
-    const val android_maven_gradle_plugin: String = "2.1"
-
     const val kotlin_android_extensions: String = "1.3.72"
 
     const val kotlintest_runner_junit4: String = "3.1.5" // available: "3.4.2"
