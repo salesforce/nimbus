@@ -21,9 +21,9 @@ dependencies {
     testImplementation(Libs.json)
 }
 //
-//apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+// apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
 //
-//afterEvaluate {
+// afterEvaluate {
 //    publishing {
 //        setupAllPublications(project)
 //    }
@@ -34,7 +34,7 @@ dependencies {
 //    artifactory {
 //        setupSnapshots(project)
 //    }
-//}
+// }
 //
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
@@ -42,4 +42,4 @@ tasks {
         outputDirectory = "$buildDir/dokka"
     }
 }
-apply(from= rootProject.file("gradle/lint.gradle"))
+apply(from = rootProject.file("gradle/lint.gradle"))

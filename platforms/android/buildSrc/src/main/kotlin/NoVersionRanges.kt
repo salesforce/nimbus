@@ -14,5 +14,4 @@ fun Project.checkNoVersionRanges() {
             }
         }
     }
-
 }

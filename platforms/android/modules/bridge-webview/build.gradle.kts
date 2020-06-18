@@ -30,7 +30,7 @@ dependencies {
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
     androidTestImplementation(Libs.androidx_test_rules) {
-        exclude("com.android.support",  "support-annotations")
+        exclude("com.android.support", "support-annotations")
     }
     kaptAndroidTest(nimbusModule("compiler-webview"))
 }
@@ -42,7 +42,7 @@ tasks {
     }
 }
 
-apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -56,4 +56,4 @@ afterEvaluate {
     }
 }
 
-apply(from= rootProject.file("gradle/lint.gradle"))
+apply(from = rootProject.file("gradle/lint.gradle"))

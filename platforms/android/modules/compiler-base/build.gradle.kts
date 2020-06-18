@@ -13,7 +13,7 @@ dependencies {
     implementation(Libs.kotlinx_serialization_runtime)
 }
 
-apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/java-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -27,4 +27,4 @@ afterEvaluate {
     }
 }
 
-apply(from= rootProject.file("gradle/lint.gradle"))
+apply(from = rootProject.file("gradle/lint.gradle"))

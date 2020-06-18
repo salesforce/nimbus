@@ -13,7 +13,6 @@ import org.gradle.plugin.use.PluginDependencySpec
  */
 object Versions {
     const val org_jetbrains_kotlinx_kotlinx_serialization: String = "0.20.0"
-             // available: "0.20.0-1.4-M1-release-99"
 
     const val org_jetbrains_kotlin_kotlin_serialization: String = "1.3.72"
 

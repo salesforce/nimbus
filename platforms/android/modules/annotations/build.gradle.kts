@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.scope.publishArtifactToConfiguration
+
 
 plugins {
     `maven-publish`
@@ -11,7 +11,7 @@ dependencies {
     implementation(Libs.kotlin_stdlib)
 }
 
-apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/java-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -25,4 +25,4 @@ afterEvaluate {
     }
 }
 
-apply(from= rootProject.file("gradle/lint.gradle"))
+apply(from = rootProject.file("gradle/lint.gradle"))

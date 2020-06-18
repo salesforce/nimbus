@@ -27,7 +27,7 @@ fun String.runCommand(): String? {
 
 // TODO: Move this to before build... right now it's called whenever a sync or any task.
 gradle.afterProject {
-    if (name == "nimbusjs"){
+    if (name == "nimbusjs") {
         println("Building nimbus.js")
         "$rootDir/modules/nimbusjs/buildNimbusJS.sh".runCommand()
     }
@@ -41,7 +41,7 @@ dependencies {
     androidTestImplementation(Libs.truth)
 }
 
-apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {

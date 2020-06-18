@@ -13,7 +13,7 @@ dependencies {
     api(Libs.kotlinx_metadata_jvm)
 }
 
-apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/java-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -28,4 +28,4 @@ afterEvaluate {
     }
 }
 
-apply(from=rootProject.file("gradle/lint.gradle"))
+apply(from = rootProject.file("gradle/lint.gradle"))

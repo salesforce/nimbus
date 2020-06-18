@@ -10,7 +10,6 @@ import org.junit.runner.RunWith
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
-
 @RunWith(AndroidJUnit4::class)
 class NimbusJSUtilsTests {
 

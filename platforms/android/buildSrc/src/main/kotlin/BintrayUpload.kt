@@ -1,6 +1,5 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.jfrog.bintray.gradle.BintrayExtension
-import org.codehaus.groovy.runtime.ProcessGroovyMethods
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
@@ -9,8 +8,6 @@ import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.delegateClosureOf
 import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
-import org.gradle.kotlin.dsl.provideDelegate
-import java.time.LocalDate
 
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
@@ -59,7 +56,7 @@ fun BintrayExtension.setupPublicationsUpload(
     })
 }
 
-fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project){
+fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project) {
     setContextUrl("http://oss.jfrog.org")
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
@@ -95,7 +92,7 @@ fun buildTagFor(version: String): String =
 fun getPublications(project: Project): Array<String> {
 //    return if (project.isAndroidModule()) {
 //        arrayOf("androidDebug", "androidRelease")
- return       arrayOf("mavenPublication")
+    return arrayOf("mavenPublication")
 //    } else {
 //        arrayOf("mavenJava")
 //        arrayOf("java")
