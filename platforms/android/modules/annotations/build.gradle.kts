@@ -9,7 +9,6 @@ plugins {
 
 dependencies {
     implementation(Libs.kotlin_stdlib)
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 }
 
 apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))

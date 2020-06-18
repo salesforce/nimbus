@@ -19,7 +19,6 @@ dependencies {
     api(nimbusModule("core"))
     kapt(nimbusModule("compiler-webview"))
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
     api(Libs.kotlin_stdlib)
 
     testImplementation(Libs.json)

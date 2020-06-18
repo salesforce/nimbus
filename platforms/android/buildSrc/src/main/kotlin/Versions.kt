@@ -15,8 +15,6 @@ object Versions {
     const val org_jetbrains_kotlinx_kotlinx_serialization: String = "0.20.0"
              // available: "0.20.0-1.4-M1-release-99"
 
-    const val org_jacoco: String = "0.7.9"
-
     const val org_jetbrains_kotlin_kotlin_serialization: String = "1.3.72"
 
     const val com_android_tools_build_gradle: String = "4.0.0"
@@ -29,9 +27,9 @@ object Versions {
 
     const val kotlin_android_extensions: String = "1.3.72"
 
-    const val kotlintest_runner_junit4: String = "3.1.5" // available: "3.4.2"
+    const val kotlintest_runner_junit4: String = "3.4.2"
 
-    const val gradle_bintray_plugin: String = "1.8.4" // available: "1.8.5"
+    const val gradle_bintray_plugin: String = "1.8.5"
 
     const val kotlin_gradle_plugin: String = "1.3.72"
 
@@ -47,19 +45,17 @@ object Versions {
 
     const val lint_gradle: String = "26.6.3"
 
-    const val kotlinpoet: String = "1.5.0"
+    const val kotlinpoet: String = "1.6.0"
 
     const val appcompat: String = "1.1.0"
 
-    const val ktlint: String = "0.32.0" // available: "0.36.0"
-
-    const val aapt2: String = "3.6.3-6040484"
+    const val ktlint: String = "0.37.0"
 
     const val guava: String = "29.0-android"
 
     const val junit: String = "1.1.1"
 
-    const val mockk: String = "1.9.3.kotlin12" // available: "1.10.0"
+    const val mockk: String = "1.10.0"
 
     const val truth: String = "1.0.1"
 

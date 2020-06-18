@@ -15,16 +15,6 @@ object Libs {
             Versions.org_jetbrains_kotlinx_kotlinx_serialization
 
     /**
-     * http://jacoco.org
-     */
-    const val org_jacoco_agent: String = "org.jacoco:org.jacoco.agent:" + Versions.org_jacoco
-
-    /**
-     * http://jacoco.org
-     */
-    const val org_jacoco_ant: String = "org.jacoco:org.jacoco.ant:" + Versions.org_jacoco
-
-    /**
      * https://kotlinlang.org/
      */
     const val org_jetbrains_kotlin_kotlin_serialization: String =
@@ -115,11 +105,6 @@ object Libs {
      * https://github.com/pinterest/ktlint
      */
     const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
-
-    /**
-     * https://developer.android.com/studio
-     */
-    const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
 
     /**
      * https://github.com/google/guava

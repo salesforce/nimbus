@@ -39,5 +39,4 @@ dependencies {
     implementation(Libs.j2v8)
     implementation(Libs.k2v8)
     implementation(Libs.appcompat)
-    implementation("androidx.fragment:fragment:1.2.5")
 }

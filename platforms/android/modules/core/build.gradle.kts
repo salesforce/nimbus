@@ -20,22 +20,22 @@ dependencies {
     testImplementation(Libs.kotlintest_runner_junit4)
     testImplementation(Libs.json)
 }
-
-apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
-
-afterEvaluate {
-    publishing {
-        setupAllPublications(project)
-    }
-
-    bintray {
-        setupPublicationsUpload(project, publishing)
-    }
-    artifactory {
-        setupSnapshots(project)
-    }
-}
-
+//
+//apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+//
+//afterEvaluate {
+//    publishing {
+//        setupAllPublications(project)
+//    }
+//
+//    bintray {
+//        setupPublicationsUpload(project, publishing)
+//    }
+//    artifactory {
+//        setupSnapshots(project)
+//    }
+//}
+//
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
         outputFormat = "html"

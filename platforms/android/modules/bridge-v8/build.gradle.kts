@@ -1,4 +1,3 @@
-import de.undercouch.gradle.tasks.download.org.apache.commons.logging.LogFactory.release
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
@@ -26,7 +25,6 @@ dependencies {
     api(Libs.j2v8)
     implementation(Libs.kotlinx_serialization_runtime)
     api(Libs.kotlin_stdlib)
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
