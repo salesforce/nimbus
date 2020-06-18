@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
 @RunWith(AndroidJUnit4::class)
-class NimbusJSUtilsTests {
+class NimbusJSUtilitiesTests {
 
     private lateinit var context: Context
     private lateinit var nimbusJsStringWithScriptTags: String
