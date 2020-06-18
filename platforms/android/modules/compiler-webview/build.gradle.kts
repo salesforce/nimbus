@@ -1,5 +1,4 @@
 plugins {
-    `java-library`
     id("kotlin")
     `maven-publish`
     id("com.jfrog.bintray")
@@ -7,11 +6,11 @@ plugins {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib_jdk8)
-    implementation(nimbusModule("compiler-base"))
+    implementation(Libs.kotlin_stdlib)
+    api(nimbusModule("compiler-base"))
     implementation(nimbusModule("annotations"))
-    implementation(Libs.kotlinpoet)
-    implementation(Libs.kotlinx_metadata_jvm)
+    api(Libs.kotlinpoet)
+    api(Libs.kotlinx_metadata_jvm)
 }
 
 apply(from= rootProject.file("gradle/java-publishing-tasks.gradle"))

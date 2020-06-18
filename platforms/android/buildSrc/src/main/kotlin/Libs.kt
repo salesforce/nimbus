@@ -56,27 +56,6 @@ object Libs {
     /**
      * https://kotlinlang.org/
      */
-    const val kotlin_annotation_processing_gradle: String =
-            "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" +
-            Versions.kotlin_annotation_processing_gradle
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_android_extensions_runtime: String =
-            "org.jetbrains.kotlin:kotlin-android-extensions-runtime:" +
-            Versions.kotlin_android_extensions_runtime
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_serialization_unshaded: String =
-            "org.jetbrains.kotlin:kotlin-serialization-unshaded:" +
-            Versions.kotlin_serialization_unshaded
-
-    /**
-     * https://kotlinlang.org/
-     */
     const val kotlin_android_extensions: String =
             "org.jetbrains.kotlin:kotlin-android-extensions:" + Versions.kotlin_android_extensions
 
@@ -103,18 +82,6 @@ object Libs {
 
     const val dokka_gradle_plugin: String = "org.jetbrains.dokka:dokka-gradle-plugin:" +
             Versions.dokka_gradle_plugin
-
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
-            Versions.kotlin_stdlib_jdk8
-
-    /**
-     * http://tools.android.com
-     */
-    const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:" +
-            Versions.constraintlayout
 
     const val jacoco_android: String = "com.hiya:jacoco-android:" + Versions.jacoco_android
 

@@ -18,14 +18,14 @@ android {
 }
 
 dependencies {
-    api(nimbusModule("annotations"))
+    implementation(nimbusModule("annotations"))
     api(nimbusModule("core"))
-    api(Libs.k2v8)
+    implementation(Libs.k2v8)
     kapt(nimbusModule("compiler-v8"))
 
-    implementation(Libs.j2v8)
+    api(Libs.j2v8)
     implementation(Libs.kotlinx_serialization_runtime)
-    implementation(Libs.kotlin_stdlib_jdk8)
+    api(Libs.kotlin_stdlib)
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
     androidTestImplementation(Libs.junit)

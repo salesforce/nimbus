@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
     kotlin("kapt")
     kotlin("plugin.serialization")
 }
@@ -11,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.salesforce.nimbusdemoapp"
-        minSdkVersion(21)
-        targetSdkVersion(29)
+        minSdkVersion(ProjectVersions.minSdk)
+        targetSdkVersion(ProjectVersions.androidSdk)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -30,12 +29,15 @@ dependencies {
     implementation(nimbusModule("bridge-webview"))
     implementation(nimbusModule("bridge-v8"))
     implementation(nimbusModule("core-plugins"))
+    implementation(nimbusModule("core"))
+    implementation(nimbusModule("annotations"))
     kapt(nimbusModule("compiler-webview"))
     kapt(nimbusModule("compiler-v8"))
 
-    implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.kotlin_stdlib)
     implementation(Libs.kotlinx_serialization_runtime)
     implementation(Libs.j2v8)
+    implementation(Libs.k2v8)
     implementation(Libs.appcompat)
-    implementation(Libs.constraintlayout)
+    implementation("androidx.fragment:fragment:1.2.5")
 }

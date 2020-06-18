@@ -27,12 +27,6 @@ object Versions {
 
     const val kotlin_scripting_compiler_embeddable: String = "1.3.72"
 
-    const val kotlin_annotation_processing_gradle: String = "1.3.72"
-
-    const val kotlin_android_extensions_runtime: String = "1.3.72"
-
-    const val kotlin_serialization_unshaded: String = "1.3.72"
-
     const val kotlin_android_extensions: String = "1.3.72"
 
     const val kotlintest_runner_junit4: String = "3.1.5" // available: "3.4.2"
@@ -44,10 +38,6 @@ object Versions {
     const val kotlinx_metadata_jvm: String = "0.1.0"
 
     const val dokka_gradle_plugin: String = "0.10.1"
-
-    const val kotlin_stdlib_jdk8: String =  "1.3.72"
-
-    const val constraintlayout: String = "1.1.3"
 
     const val jacoco_android: String = "0.2"
 

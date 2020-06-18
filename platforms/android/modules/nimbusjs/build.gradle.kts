@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
     `maven-publish`
     id("com.jfrog.bintray")
     id("com.jfrog.artifactory")
@@ -35,7 +34,7 @@ gradle.afterProject {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.kotlin_stdlib)
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
     androidTestImplementation(Libs.kotlintest_runner_junit4)

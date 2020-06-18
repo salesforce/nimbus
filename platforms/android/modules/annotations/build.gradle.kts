@@ -1,7 +1,6 @@
 import com.android.build.gradle.internal.scope.publishArtifactToConfiguration
 
 plugins {
-    `java-library`
     `maven-publish`
     id("kotlin")
     id("com.jfrog.bintray")
@@ -9,7 +8,7 @@ plugins {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.kotlin_stdlib)
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 }
 

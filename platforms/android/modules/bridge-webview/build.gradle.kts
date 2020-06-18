@@ -15,12 +15,12 @@ android {
 }
 
 dependencies {
-    api(nimbusModule("annotations"))
+    implementation(nimbusModule("annotations"))
     api(nimbusModule("core"))
     kapt(nimbusModule("compiler-webview"))
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
-    implementation(Libs.kotlin_stdlib)
+    api(Libs.kotlin_stdlib)
 
     testImplementation(Libs.json)
     testImplementation(Libs.kotlintest_runner_junit4)

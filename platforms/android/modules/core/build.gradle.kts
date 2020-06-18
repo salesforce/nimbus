@@ -13,8 +13,7 @@ android {
 }
 
 dependencies {
-    implementation(nimbusModule("annotations"))
-    implementation(Libs.kotlin_stdlib_jdk8)
+    api(Libs.kotlin_stdlib)
     compileOnly(Libs.kotlinx_serialization_runtime)
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)

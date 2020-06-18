@@ -15,7 +15,7 @@ dependencies {
     compileOnly(nimbusModule("annotations"))
     compileOnly(nimbusModule("bridge-webview"))
     compileOnly(nimbusModule("bridge-v8"))
-    implementation(Libs.kotlin_stdlib_jdk8)
+    api(Libs.kotlin_stdlib)
     compileOnly(Libs.kotlinx_serialization_runtime)
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)

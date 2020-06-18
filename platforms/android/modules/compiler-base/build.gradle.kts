@@ -1,5 +1,4 @@
 plugins {
-    `java-library`
     id("kotlin")
     `maven-publish`
     id("com.jfrog.bintray")
@@ -7,10 +6,10 @@ plugins {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.kotlin_stdlib)
     implementation(nimbusModule("annotations"))
-    implementation(Libs.kotlinpoet)
-    implementation(Libs.kotlinx_metadata_jvm)
+    api(Libs.kotlinpoet)
+    api(Libs.kotlinx_metadata_jvm)
     implementation(Libs.kotlinx_serialization_runtime)
 }
 
