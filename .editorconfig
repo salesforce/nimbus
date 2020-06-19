@@ -9,3 +9,6 @@ insert_final_newline = true
 
 [*.{js,ts,yml,yaml}]
 indent_size = 2
+
+[*.{kt,kts}]
+disabled_rules = import-ordering

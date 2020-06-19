@@ -7,17 +7,17 @@ import androidx.test.rule.ActivityTestRule
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
 import com.salesforce.k2v8.scope
-import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
 import com.salesforce.nimbus.bridge.tests.plugin.v8Binder
-import com.salesforce.nimbus.bridge.v8.V8Bridge
+import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.v8.bridge
+import com.salesforce.nimbus.bridge.v8.V8Bridge
+import org.junit.runner.RunWith
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)

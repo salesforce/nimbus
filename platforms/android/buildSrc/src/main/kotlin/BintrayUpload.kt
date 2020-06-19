@@ -1,22 +1,19 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.delegateClosureOf
-import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
 
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
     publishing: PublishingExtension
 ) {
-    val bintrayUpload: TaskProvider<Task> by project.tasks.existing
-    val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
-
-    bintrayUpload.dependsOn(publishToMavenLocal)
+//    val bintrayUpload: TaskProvider<Task> by project.tasks.existing
+//    val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
+//
+//    bintrayUpload.dependsOn(publishToMavenLocal)
 
     // TODO: Is this necessary?
 //    project.checkNoVersionRanges()
