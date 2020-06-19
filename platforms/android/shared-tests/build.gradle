@@ -37,17 +37,19 @@ android {
         unitTests.returnDefaultValues = true
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        pickFirst("META-INF/LICENSE*")
+        pickFirst("META-INF/DEPENDENCIES")
+    }
+
 }
 
 dependencies {
-//    androidTestImplementation(nimbusModule("annotations"))
-//    androidTestImplementation(Libs.k2v8)
-//    androidTestImplementation(nimbusModule("bridge-v8"))
-//    androidTestImplementation(nimbusModule("bridge-webview"))
-//    androidTestImplementation(Libs.j2v8)
-//    androidTestImplementation(Libs.guava)
-//    kaptAndroidTest(nimbusModule("compiler-webview"))
-//    kaptAndroidTest(nimbusModule("compiler-v8"))
     androidTestImplementation project(":modules:annotations")
     androidTestImplementation(Libs.k2v8)
     androidTestImplementation project(":modules:bridge-v8")
