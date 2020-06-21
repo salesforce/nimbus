@@ -63,7 +63,6 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
             setProperty("repoKey", targetRepoKey)
             setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
             setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
-            setProperty("maven", true)
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
 //            invokeMethod("publications", "com.salesforce.nimbus")
@@ -76,7 +75,6 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
     })
     resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
         setProperty("repoKey", "jcenter")
-        setProperty("maven", true)
     })
 //    clientConfig.info.buildNumber = ProjectVersions.packageVersion
 }

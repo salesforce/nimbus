@@ -11,13 +11,29 @@ artifacts {
 
 artifactoryPublish.dependsOn("build")
 
-afterEvaluate {
-    publishing {
-        publications {
-            mavenPublication(MavenPublication) {
-                artifact sourcesJar
-                artifact("$buildDir/outputs/aar/$project.name-release.aar")
-            }
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            artifact sourcesJar
+            artifact("$buildDir/outputs/aar/$project.name-release.aar")
         }
+    }
+}
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = project.findProperty('bintrayUser') ?: System.getenv('BINTRAY_USER')
+            password = project.findProperty('bintrayApiKey') ?: System.getenv('BINTRAY_API_KEY')
+        }
+        defaults {
+            publications('mavenPublication')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
     }
 }

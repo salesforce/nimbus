@@ -15,8 +15,9 @@ afterEvaluate {
     publishing {
         publications {
             mavenPublication(MavenPublication) {
-                artifact sourcesJar
-                artifact("$buildDir/outputs/libs/${project.name}.jar")
+//                from components.java
+//                artifact sourcesJar
+//                artifact("$buildDir/outputs/libs/${project.name}.jar")
             }
         }
     }
