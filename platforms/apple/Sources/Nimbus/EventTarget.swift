@@ -11,8 +11,8 @@ protocol Event: Codable {
     var type: EventType { get }
 }
 
-struct EventTarget<T> {
-    func addEventListener() -> String {
+struct EventTarget<T: Event> {
+    func addEventListener(name: T.EventType.RawValue, listener: (Int) -> Void) -> String {
         return ""
     }
 

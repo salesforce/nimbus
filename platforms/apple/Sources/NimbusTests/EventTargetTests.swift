@@ -11,10 +11,10 @@ import XCTest
 @testable import Nimbus
 
 class EventTargetTests: XCTestCase {
-    var target = EventTarget<TestEventType>()
+    var target = EventTarget<TestEvent>()
 
     override func setUp() {
-        target = EventTarget<TestEventType>()
+        target = EventTarget<TestEvent>()
     }
 
     enum TestEventType: String, Codable {
@@ -22,12 +22,8 @@ class EventTargetTests: XCTestCase {
         case two
     }
 
-    struct TestEventOne: Event {
-        var type = TestEventType.one
-    }
-
-    struct TestEventTwo: Event {
-        var type = TestEventType.two
+    struct TestEvent: Event, Codable {
+        var type: TestEventType
     }
 
     func testBinding() {
