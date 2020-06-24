@@ -162,7 +162,7 @@ let releaseCallback = (callbackId: string): void => {
 // in the storage
 let resolvePromise = (promiseUuid: string, data: any, error: any): void => {
   if (error) {
-    uuidsToPromises[promiseUuid].reject(data);
+    uuidsToPromises[promiseUuid].reject(error);
   } else {
     uuidsToPromises[promiseUuid].resolve(data);
   }
