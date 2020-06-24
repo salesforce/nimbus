@@ -20,11 +20,13 @@ struct EventTarget<T> {
 
     }
 
-    func dispatchEvent<T: Event>(event: T) {
+    func dispatchEvent(event: String) {
 
     }
 
     func bind(to connection: Connection) {
-
+        connection.bind(addEventListener, as: "addEventListener")
+        connection.bind(removeEventListener, as: "removeEventListener")
+        connection.bind(dispatchEvent, as: "dispatchEvent")
     }
 }
