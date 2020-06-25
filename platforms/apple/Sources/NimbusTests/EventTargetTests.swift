@@ -37,18 +37,37 @@ class EventTargetTests: XCTestCase {
     }
 
     func testDispatch() {
+        let exp = expectation(description: "dispatch")
+        let event = TestEvent(type: .one)
         // Add a listener
+        _ = target.addEventListener(name: event) { (_) in
+            exp.fulfill()
+        }
         // Dispatch an event
+        target.dispatchEvent(event: TestEventType.one.rawValue)
         // verify listener is called
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testRemoveListener() {
+        var exp = expectation(description: "dispatch")
+        let event = TestEvent(type: .one)
         // Add a listener
+        let listenerId = target.addEventListener(name: event) { (_) in
+            exp.fulfill()
+        }
         // Dispatch an event
+        target.dispatchEvent(event: TestEventType.one.rawValue)
         // verify listener is called
+        waitForExpectations(timeout: 1, handler: nil)
         // remove listener
+        target.removeEventListener(listenerId: listenerId)
+        exp = expectation(description: "inverted")
+        exp.isInverted = true
         // dispatch event
+        target.dispatchEvent(event: TestEventType.one.rawValue)
         // verify listener is not called
+        waitForExpectations(timeout: 2, handler: nil)
     }
 
 }
