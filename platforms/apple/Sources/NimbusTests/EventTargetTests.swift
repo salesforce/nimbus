@@ -53,26 +53,26 @@ class EventTargetTests: XCTestCase {
 
     func testDispatch() {
         let exp = expectation(description: "dispatch")
-        let event = TestEventOne(message: "testMessage")
         // Add a listener
-        _ = target.addEventListener(name: "testEventOne") { (_) in
+        _ = target.addEventListener(name: "testEventOne") { (result) in
+            XCTAssertTrue(result is String)
             exp.fulfill()
         }
         // Dispatch an event
-        target.publishEvent(\.testEventOne, payload: event)
+        target.publishEvent(\.testEventOne, payload: TestEventOne(message: "testMessage"))
         // verify listener is called
         waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testRemoveListener() {
         var exp = expectation(description: "dispatch")
-        let event = TestEventOne(message: "testMessage")
         // Add a listener
-        let listenerId = target.addEventListener(name: "testEventOne") { (_) in
+        let listenerId = target.addEventListener(name: "testEventOne") { (result) in
+            XCTAssertTrue(result is String)
             exp.fulfill()
         }
         // Dispatch an event
-        target.publishEvent(\.testEventOne, payload: event)
+        target.publishEvent(\.testEventOne, payload: TestEventOne(message: "testMessage"))
         // verify listener is called
         waitForExpectations(timeout: 1, handler: nil)
         // remove listener
@@ -80,7 +80,7 @@ class EventTargetTests: XCTestCase {
         exp = expectation(description: "inverted")
         exp.isInverted = true
         // dispatch event
-        target.publishEvent(\.testEventOne, payload: event)
+        target.publishEvent(\.testEventOne, payload: TestEventOne(message: "testMessage"))
         // verify listener is not called
         waitForExpectations(timeout: 2, handler: nil)
     }

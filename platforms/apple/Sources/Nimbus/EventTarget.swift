@@ -37,7 +37,7 @@ class EventTarget<Events: EventKeyPathing> {
         }
     }
 
-    func publishEvent<V: Encodable>(_ eventKeyPath: KeyPath<Events, V>, payload: V) {
+    func publishEvent<V: Codable>(_ eventKeyPath: KeyPath<Events, V>, payload: V) {
         guard let eventName = Events.stringForKeyPath(eventKeyPath),
             let map = listeners[eventName] else {
             return
