@@ -12,14 +12,15 @@ buildscript {
         classpath(Libs.dokka_gradle_plugin)
         classpath(Libs.jacoco_android)
         classpath(Libs.org_jetbrains_kotlin_kotlin_serialization)
-        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2")
+//        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.16.0")
     }
 }
 
 plugins{
     id("de.fayard.buildSrcVersions") version "0.7.0"
     id("com.autonomousapps.dependency-analysis") version "0.49.0"
-
+    id("com.jfrog.artifactory")
+    id("maven-publish")
 }
 project.ext {
     if (project.hasProperty("preDexEnable")) {
@@ -67,6 +68,25 @@ subprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getenv('BINTRAY_USER')
+            password = System.getenv('BINTRAY_API_KEY')
+        }
+        defaults {
+            publications('mavenPublication')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
 }
 // TODO: Move lint to plugin
 // TODO: Move Dokka config to plugin

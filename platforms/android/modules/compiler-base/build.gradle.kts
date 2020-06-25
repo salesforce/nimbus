@@ -2,7 +2,7 @@ plugins {
     id("kotlin")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("com.jfrog.artifactory")
+//    id("com.jfrog.artifactory")
 }
 
 dependencies {
