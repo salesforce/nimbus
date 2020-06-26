@@ -51,6 +51,8 @@ public protocol Binder {
         to function: @escaping (@escaping (CB0) -> Void) throws -> Void
     )
 
+    func bind(_ name: String, to function: @escaping (@escaping (Encodable) -> Void) throws -> Void)
+
     /**
      Bind the specified function to this connection.
      */
@@ -340,6 +342,10 @@ public extension Binder {
         _ function: @escaping () throws -> Void,
         as name: String
     ) {
+        bind(name, to: function)
+    }
+
+    func bind(_ function: @escaping (@escaping (Encodable) -> Void) throws -> Void, as name: String) {
         bind(name, to: function)
     }
 

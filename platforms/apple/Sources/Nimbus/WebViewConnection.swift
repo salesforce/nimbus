@@ -123,6 +123,10 @@ public class WebViewConnection: Connection, CallableBinder {
         })
     }
 
+    func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
+        return .failure(DecodeError())
+    }
+
     func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
         guard
             let callbackId = value as? String,

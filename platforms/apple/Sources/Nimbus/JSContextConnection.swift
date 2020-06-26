@@ -89,6 +89,10 @@ public class JSContextConnection: Connection, CallableBinder {
         })
     }
 
+    func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
+        return .failure(DecodeError())
+    }
+
     func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
         guard let callbackFunction = value as? JSValue else {
             return .failure(DecodeError())

@@ -102,6 +102,20 @@ class BinderTests: XCTestCase {
         XCTAssertEqual(result, .some(42))
     }
 
+    func testBindUnaryWithUnaryEncodableCallback() {
+        binder.bind(binder.target.unaryWithUnaryEncodableCallback, as: "")
+        let expecter = expectation(description: "callback")
+        var result: Encodable?
+        let callback: BindTarget.UnaryEncodableCallback = { value in
+            result = value
+            expecter.fulfill()
+        }
+        _ = try? binder.callable([callback])
+        wait(for: [expecter], timeout: 5)
+        XCTAssert(binder.target.called)
+        XCTAssertEqual(result as? String, "encodable string")
+    }
+
     func testBindUnaryWithUnaryCallbackThrows() {
         binder.bind(binder.target.unaryWithUnaryCallbackThrows, as: "")
         let expecter = expectation(description: "callback")
@@ -781,7 +795,9 @@ class BindTarget {
     private(set) var called = false
 
     typealias UnaryCallback = (Int) -> Void
+    typealias UnaryEncodableCallback = (Encodable) -> Void
     typealias BinaryCallback = (Int, Int) -> Void
+    typealias BinaryEncodableCallback = (Encodable, Encodable) -> Void
 
     func nullaryNoReturn() {
         called = true
@@ -824,6 +840,11 @@ class BindTarget {
     func unaryWithUnaryCallback(callback: @escaping UnaryCallback) {
         called = true
         callback(42)
+    }
+
+    func unaryWithUnaryEncodableCallback(callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
     }
 
     func unaryWithUnaryCallbackThrows(callback: @escaping UnaryCallback) throws {
@@ -1145,6 +1166,15 @@ class TestBinder: CallableBinder {
             return .success(fn)
         default:
             return .failure(DecodeError())
+        }
+    }
+
+    func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
+        switch value {
+        case let fn as (Encodable) -> Void:
+            return .success(fn)
+        default:
+            return  .failure(DecodeError())
         }
     }
 

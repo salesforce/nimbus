@@ -36,6 +36,8 @@ protocol CallableBinder: class, Binder {
 
     func callback<T: Encodable>(from value: Any?, taking argType: T.Type) -> Result<(T) -> Void, Error>
 
+    func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error>
+
     func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error>
 }
 
@@ -100,6 +102,15 @@ extension CallableBinder {
             guard let self = self else { throw DecodeError() }
             try self.assertArgsCount(expected: 1, actual: args.count)
             let callback = try self.callback(from: args[0], taking: CB0.self).get()
+            return try function(callback)
+        }
+    }
+
+    public func bind(_ name: String, to function: @escaping (@escaping (Encodable) -> Void) throws -> Void) {
+        bindCallable(name) { [weak self] (args: [Any?]) in
+            guard let self = self else { throw DecodeError() }
+            try self.assertArgsCount(expected: 1, actual: args.count)
+            let callback = try self.callbackEncodable(from: args[0]).get()
             return try function(callback)
         }
     }
