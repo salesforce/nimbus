@@ -47,6 +47,7 @@ class JSContextConnectionTests: XCTestCase {
             connection.bind(structParameter, as: "structParameter")
             connection.bind(callbackParameter, as: "callbackParameter")
             connection.bind(callCallbackStructParameter, as: "callCallbackStructParameter")
+            connection.bind(callbackEncodableParameter, as: "callbackEncodableParameter")
         }
 
         func anInt() -> Int {
@@ -72,6 +73,10 @@ class JSContextConnectionTests: XCTestCase {
         func callbackParameter(number: Int, completion: (Int) -> Void) {
             receivedInt = number
             completion(number + 1)
+        }
+
+        func callbackEncodableParameter(callback: (Encodable) -> Void) {
+            callback(TestStruct(foo: "structparam", bar: 15))
         }
 
         func callCallbackStructParameter(number: Int, completion: (TestStruct) -> Void) {
@@ -253,6 +258,28 @@ class JSContextConnectionTests: XCTestCase {
         wait(for: expectationPlugin.currentExpectations(), timeout: 3)
         XCTAssertTrue(expectationPlugin.passed)
         XCTAssertEqual(testPlugin.receivedInt, 3)
+    }
+
+    func testCallbackEncodable() throws {
+        beginPluginTest()
+        let testScript = """
+        function callbackResult(result) {
+            if (result.foo !== "structparam") {
+                __nimbus.plugins.ExpectationPlugin.fail();
+                return;
+            }
+            if (result.bar !== 15) {
+                __nimbus.plugins.ExpectationPlugin.fail();
+                return;
+            }
+            __nimbus.plugins.ExpectationPlugin.pass();
+            return;
+        }
+        __nimbus.plugins.ConnectionTestPlugin.callbackEncodableParameter(callbackResult).then();
+        """
+        _ = context.evaluateScript(testScript)
+        wait(for: expectationPlugin.currentExpectations(), timeout: 3)
+        XCTAssertTrue(expectationPlugin.passed)
     }
 
     func testJSValueFunctionExtension() {

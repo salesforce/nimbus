@@ -90,7 +90,16 @@ public class JSContextConnection: Connection, CallableBinder {
     }
 
     func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
-        return .failure(DecodeError())
+        guard let callbackFunction = value as? JSValue else {
+            return .failure(DecodeError())
+        }
+        let callback = JSValueCallback(callback: callbackFunction)
+        return .success({ [weak self] (value: Encodable) in
+            guard let self = self else { return }
+            guard let context = self.context else { return }
+            guard let result = try? value.toJSValue(context: context) else { return }
+            try? callback.call(args: [result])
+        })
     }
 
     func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
