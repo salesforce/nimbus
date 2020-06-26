@@ -39,6 +39,7 @@ class TestPlugin: Plugin {
         connection.bind(unaryIntArrayResolvingToString, as: "unaryIntArrayResolvingToString")
         connection.bind(unaryStringStringMapResolvingToString, as: "unaryStringStringMapResolvingToString")
         connection.bind(unaryStringStructMapResolvingToString, as: "unaryStringStructMapResolvingToString")
+        connection.bind(unaryCallbackEncodable, as: "unaryCallbackEncodable")
         connection.bind(nullaryResolvingToStringCallback, as: "nullaryResolvingToStringCallback")
         connection.bind(nullaryResolvingToIntCallback, as: "nullaryResolvingToIntCallback")
         connection.bind(nullaryResolvingToDoubleCallback, as: "nullaryResolvingToDoubleCallback")
@@ -161,6 +162,10 @@ class TestPlugin: Plugin {
 
     func unaryStringStructMapResolvingToString(param: [String: TestStruct]) -> String {
         return param.map { "\($0.key), \($0.value.asString())" }.sorted().joined(separator: ", ")
+    }
+
+    func unaryCallbackEncodable(callback: (Encodable) -> Void) {
+        callback(TestStruct())
     }
 
     func nullaryResolvingToStringCallback(callback: (String) -> Void) {

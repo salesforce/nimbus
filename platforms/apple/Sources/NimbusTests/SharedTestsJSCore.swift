@@ -145,6 +145,10 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyUnaryStringStructMapResolvingToString()")
     }
 
+    func testVerifyUnaryCallbackEncodable() {
+        executeTest("verifyUnaryCallbackEncodable()")
+    }
+
     func testVerifyNullaryResolvingToStringCallback() {
         executeTest("verifyNullaryResolvingToStringCallback()")
     }

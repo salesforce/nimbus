@@ -231,7 +231,7 @@ function verifyUnaryDateWrapperResolvingToJsonString() {
 }
 
 function verifyUnaryStringListResolvingToString() {
-  __nimbus.plugins.testPlugin.unaryStringListResolvingToString(['1','2','3']).then((result) => {
+  __nimbus.plugins.testPlugin.unaryStringListResolvingToString(['1', '2', '3']).then((result) => {
     if (result === '1, 2, 3') {
       __nimbus.plugins.expectPlugin.pass();
     }
@@ -292,7 +292,7 @@ function verifyUnaryIntArrayResolvingToString() {
 }
 
 function verifyUnaryStringStringMapResolvingToString() {
-  __nimbus.plugins.testPlugin.unaryStringStringMapResolvingToString({"key1":"value1","key2":"value2","key3":"value3"}).then((result) => {
+  __nimbus.plugins.testPlugin.unaryStringStringMapResolvingToString({ "key1": "value1", "key2": "value2", "key3": "value3" }).then((result) => {
     if (result === 'key1, value1, key2, value2, key3, value3') {
       __nimbus.plugins.expectPlugin.pass();
     }
@@ -325,6 +325,17 @@ function verifyUnaryStringStructMapResolvingToString() {
   });
 }
 
+function verifyUnaryCallbackEncodable() {
+  __nimbus.plugins.testPlugin.unaryCallbackEncodable((result) => {
+    if (result.string === 'String' &&
+      result.integer === 1 &&
+      result.double === 2.0) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  }).then(() => { });
+}
+
 // endregion
 
 // region callbacks
@@ -335,7 +346,7 @@ function verifyNullaryResolvingToStringCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished()
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToIntCallback() {
@@ -344,7 +355,7 @@ function verifyNullaryResolvingToIntCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToLongCallback() {
@@ -353,7 +364,7 @@ function verifyNullaryResolvingToLongCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToDoubleCallback() {
@@ -362,7 +373,7 @@ function verifyNullaryResolvingToDoubleCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStructCallback() {
@@ -373,7 +384,7 @@ function verifyNullaryResolvingToStructCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToDateWrapperCallback() {
@@ -388,7 +399,7 @@ function verifyNullaryResolvingToDateWrapperCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringListCallback() {
@@ -399,7 +410,7 @@ function verifyNullaryResolvingToStringListCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToIntListCallback() {
@@ -410,7 +421,7 @@ function verifyNullaryResolvingToIntListCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToDoubleListCallback() {
@@ -421,7 +432,7 @@ function verifyNullaryResolvingToDoubleListCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStructListCallback() {
@@ -438,7 +449,7 @@ function verifyNullaryResolvingToStructListCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToIntArrayCallback() {
@@ -449,7 +460,7 @@ function verifyNullaryResolvingToIntArrayCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringStringMapCallback() {
@@ -460,7 +471,7 @@ function verifyNullaryResolvingToStringStringMapCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringIntMapCallback() {
@@ -471,7 +482,7 @@ function verifyNullaryResolvingToStringIntMapCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringDoubleMapCallback() {
@@ -482,7 +493,7 @@ function verifyNullaryResolvingToStringDoubleMapCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringStructMapCallback() {
@@ -499,7 +510,7 @@ function verifyNullaryResolvingToStringStructMapCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToStringIntCallback() {
@@ -508,7 +519,7 @@ function verifyNullaryResolvingToStringIntCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyNullaryResolvingToIntStructCallback() {
@@ -519,7 +530,7 @@ function verifyNullaryResolvingToIntStructCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyUnaryIntResolvingToIntCallback() {
@@ -528,7 +539,7 @@ function verifyUnaryIntResolvingToIntCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyBinaryIntDoubleResolvingToIntDoubleCallback() {
@@ -537,7 +548,7 @@ function verifyBinaryIntDoubleResolvingToIntDoubleCallback() {
       __nimbus.plugins.expectPlugin.pass();
     }
     __nimbus.plugins.expectPlugin.finished();
-  }).then(() => {});
+  }).then(() => { });
 }
 
 function verifyBinaryIntResolvingIntCallbackReturnsInt() {
@@ -553,7 +564,7 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
     if (int === 2) {
       verifyCallbacks();
     }
-  }).then((result) =>{
+  }).then((result) => {
     if (result === 1) {
       verifyCallbacks();
     }

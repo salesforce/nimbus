@@ -126,6 +126,7 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyNullaryResolvingToIntStructCallback()")
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
+        executeTest("verifyUnaryCallbackEncodable()")
 //        commented out until android support
 //        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
     }

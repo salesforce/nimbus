@@ -124,7 +124,16 @@ public class WebViewConnection: Connection, CallableBinder {
     }
 
     func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
-        return .failure(DecodeError())
+        guard
+            let callbackId = value as? String,
+            let webView = self.webView else {
+            return .failure(DecodeError())
+        }
+        let callback = WebViewCallback(webView: webView, callbackId: callbackId)
+        return .success({ (value: Encodable) in
+            guard let result = try? value.toJSONValue() else { return }
+            _ = try? callback.call(args: [result])
+        })
     }
 
     func callback<T: Encodable, U: Encodable>(from value: Any?, taking argType: (T.Type, U.Type)) -> Result<(T, U) -> Void, Error> {
@@ -200,4 +209,10 @@ public class WebViewConnection: Connection, CallableBinder {
     private weak var webView: WKWebView?
     private var bridge: JSEvaluating?
     private var bindings: [String: Callable] = [:]
+}
+
+extension Encodable {
+    func toJSONValue() throws -> Any? {
+        return try String(data: JSONEncoder().encode(self), encoding: .utf8)
+    }
 }
