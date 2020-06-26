@@ -12,13 +12,13 @@ protocol EventKeyPathing {
     static func stringForKeyPath(_ keyPath: PartialKeyPath<Self>) -> String?
 }
 
-private typealias Listener = (Int) -> Void
+private typealias Listener = (Encodable) -> Void
 private typealias ListenerMap = [String: Listener]
 
 class EventTarget<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
 
-    func addEventListener(name: String, listener: @escaping (Int) -> Void) -> String {
+    func addEventListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
         let listenerId = UUID().uuidString
         var listenerMap: ListenerMap = [:]
         if let map = listeners[name] {
@@ -44,7 +44,7 @@ class EventTarget<Events: EventKeyPathing> {
         }
 
         map.forEach { _, listener in
-            listener(0)
+            listener(payload)
         }
     }
 

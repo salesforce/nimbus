@@ -55,7 +55,7 @@ class EventTargetTests: XCTestCase {
         let exp = expectation(description: "dispatch")
         // Add a listener
         _ = target.addEventListener(name: "testEventOne") { (result) in
-            XCTAssertTrue(result is String)
+            XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
         // Dispatch an event
@@ -68,7 +68,7 @@ class EventTargetTests: XCTestCase {
         var exp = expectation(description: "dispatch")
         // Add a listener
         let listenerId = target.addEventListener(name: "testEventOne") { (result) in
-            XCTAssertTrue(result is String)
+            XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
         // Dispatch an event

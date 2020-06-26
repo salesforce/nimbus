@@ -117,12 +117,22 @@ public protocol Binder {
         to function: @escaping (A0, @escaping (CB0) -> Void) throws -> Void
     ) where A0: Decodable
 
+    func bind<A0>(
+        _ name: String,
+        to function: @escaping (A0, @escaping (Encodable) -> Void) throws -> Void
+    ) where A0: Decodable
+
     /**
      Bind the specified function to this connection.
      */
     func bind<R: Encodable, A0, CB0: Encodable>(
         _ name: String,
         to function: @escaping (A0, @escaping (CB0) -> Void) throws -> R
+    ) where A0: Decodable
+
+    func bind<R: Encodable, A0>(
+        _ name: String,
+        to function: @escaping (A0, @escaping (Encodable) -> Void) throws -> R
     ) where A0: Decodable
 
     /**
@@ -345,6 +355,9 @@ public extension Binder {
         bind(name, to: function)
     }
 
+    /**
+    Bind the specified function to this connection.
+    */
     func bind(_ function: @escaping (@escaping (Encodable) -> Void) throws -> Void, as name: String) {
         bind(name, to: function)
     }
@@ -390,6 +403,10 @@ public extension Binder {
         bind(name, to: function)
     }
 
+    func bind<A0>(_ function: @escaping (A0, @escaping (Encodable) -> Void) throws -> Void, as name: String) where A0: Decodable {
+        bind(name, to: function)
+    }
+
     /**
      Bind the specified function to this connection.
      */
@@ -397,6 +414,13 @@ public extension Binder {
         _ function: @escaping (@escaping (CB0) -> Void) throws -> R,
         as name: String
     ) {
+        bind(name, to: function)
+    }
+
+    func bind<R: Encodable, A0>(
+        _ function: @escaping (A0, @escaping (Encodable) -> Void) throws -> R,
+        as name: String
+    ) where A0: Decodable {
         bind(name, to: function)
     }
 
