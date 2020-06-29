@@ -1373,7 +1373,7 @@ class TestBinder: CallableBinder {
         case let fn as (Encodable) -> Void:
             return .success(fn)
         default:
-            return  .failure(DecodeError())
+            return .failure(DecodeError())
         }
     }
 

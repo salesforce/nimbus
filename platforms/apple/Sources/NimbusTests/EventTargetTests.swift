@@ -54,7 +54,7 @@ class EventTargetTests: XCTestCase {
     func testDispatch() {
         let exp = expectation(description: "dispatch")
         // Add a listener
-        _ = target.addEventListener(name: "testEventOne") { (result) in
+        _ = target.addEventListener(name: "testEventOne") { result in
             XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
@@ -67,7 +67,7 @@ class EventTargetTests: XCTestCase {
     func testRemoveListener() {
         var exp = expectation(description: "dispatch")
         // Add a listener
-        let listenerId = target.addEventListener(name: "testEventOne") { (result) in
+        let listenerId = target.addEventListener(name: "testEventOne") { result in
             XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
@@ -84,7 +84,6 @@ class EventTargetTests: XCTestCase {
         // verify listener is not called
         waitForExpectations(timeout: 2, handler: nil)
     }
-
 }
 
 class TestConnection: JSContextConnection {

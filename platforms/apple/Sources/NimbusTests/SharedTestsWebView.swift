@@ -131,7 +131,7 @@ class SharedTestsWebView: XCTestCase {
 
         // Event Publishing
         let subscribe = expectation(description: "subscribe")
-        webView.evaluateJavaScript("subscribeToStructEvent()") { (_, _) in
+        webView.evaluateJavaScript("subscribeToStructEvent()") { _, _ in
             subscribe.fulfill()
         }
         wait(for: [subscribe], timeout: 5)
@@ -149,7 +149,7 @@ class SharedTestsWebView: XCTestCase {
         expectPlugin.readyExpectation = expectation(description: "ready")
         expectPlugin.isReady = false
         let unsubscribe = expectation(description: "unsubscribe")
-        webView.evaluateJavaScript("unsubscribeFromStructEvent()") { (_, _) in
+        webView.evaluateJavaScript("unsubscribeFromStructEvent()") { _, _ in
             unsubscribe.fulfill()
         }
         wait(for: [unsubscribe], timeout: 5)

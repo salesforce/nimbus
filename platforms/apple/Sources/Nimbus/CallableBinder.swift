@@ -615,7 +615,7 @@ extension CallableBinder {
         }
     }
 
-    public func bind<A0>(_ name: String, to function: @escaping(A0, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable {
+    public func bind<A0>(_ name: String, to function: @escaping (A0, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
             try self.assertArgsCount(expected: 2, actual: args.count)
@@ -625,7 +625,7 @@ extension CallableBinder {
         }
     }
 
-    public func bind<A0, A1>(_ name: String, to function: @escaping(A0, A1, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable {
+    public func bind<A0, A1>(_ name: String, to function: @escaping (A0, A1, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
             try self.assertArgsCount(expected: 3, actual: args.count)
@@ -636,7 +636,7 @@ extension CallableBinder {
         }
     }
 
-    public func bind<A0, A1, A2>(_ name: String, to function: @escaping(A0, A1, A2, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable, A2: Decodable {
+    public func bind<A0, A1, A2>(_ name: String, to function: @escaping (A0, A1, A2, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable, A2: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
             try self.assertArgsCount(expected: 4, actual: args.count)
@@ -648,7 +648,7 @@ extension CallableBinder {
         }
     }
 
-    public func bind<A0, A1, A2, A3>(_ name: String, to function: @escaping(A0, A1, A2, A3, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable {
+    public func bind<A0, A1, A2, A3>(_ name: String, to function: @escaping (A0, A1, A2, A3, @escaping (Encodable) -> Void) throws -> Void) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
             try self.assertArgsCount(expected: 5, actual: args.count)
@@ -663,7 +663,7 @@ extension CallableBinder {
 
     public func bind<R: Encodable>(
         _ name: String,
-        to function: @escaping (@escaping(Encodable) -> Void) throws -> R
+        to function: @escaping (@escaping (Encodable) -> Void) throws -> R
     ) {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
@@ -675,7 +675,7 @@ extension CallableBinder {
 
     public func bind<R: Encodable, A0>(
         _ name: String,
-        to function: @escaping (A0, @escaping(Encodable) -> Void) throws -> R
+        to function: @escaping (A0, @escaping (Encodable) -> Void) throws -> R
     ) where A0: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
@@ -688,7 +688,7 @@ extension CallableBinder {
 
     public func bind<R: Encodable, A0, A1>(
         _ name: String,
-        to function: @escaping (A0, A1, @escaping(Encodable) -> Void) throws -> R
+        to function: @escaping (A0, A1, @escaping (Encodable) -> Void) throws -> R
     ) where A0: Decodable, A1: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
@@ -702,7 +702,7 @@ extension CallableBinder {
 
     public func bind<R: Encodable, A0, A1, A2>(
         _ name: String,
-        to function: @escaping (A0, A1, A2, @escaping(Encodable) -> Void) throws -> R
+        to function: @escaping (A0, A1, A2, @escaping (Encodable) -> Void) throws -> R
     ) where A0: Decodable, A1: Decodable, A2: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
@@ -717,7 +717,7 @@ extension CallableBinder {
 
     public func bind<R: Encodable, A0, A1, A2, A3>(
         _ name: String,
-        to function: @escaping (A0, A1, A2, A3, @escaping(Encodable) -> Void) throws -> R
+        to function: @escaping (A0, A1, A2, A3, @escaping (Encodable) -> Void) throws -> R
     ) where A0: Decodable, A1: Decodable, A2: Decodable, A3: Decodable {
         bindCallable(name) { [weak self] (args: [Any?]) in
             guard let self = self else { throw DecodeError() }
