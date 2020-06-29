@@ -11,7 +11,7 @@ import XCTest
 @testable import Nimbus
 
 // repetitive tests are repetitive...
-// swiftlint:disable type_body_length file_length identifier_name
+// swiftlint:disable type_body_length file_length identifier_name function_body_length
 
 class BinderTests: XCTestCase {
     let binder = TestBinder()
@@ -100,20 +100,6 @@ class BinderTests: XCTestCase {
         wait(for: [expecter], timeout: 5)
         XCTAssert(binder.target.called)
         XCTAssertEqual(result, .some(42))
-    }
-
-    func testBindUnaryWithUnaryEncodableCallback() {
-        binder.bind(binder.target.unaryWithUnaryEncodableCallback, as: "")
-        let expecter = expectation(description: "callback")
-        var result: Encodable?
-        let callback: BindTarget.UnaryEncodableCallback = { value in
-            result = value
-            expecter.fulfill()
-        }
-        _ = try? binder.callable([callback])
-        wait(for: [expecter], timeout: 5)
-        XCTAssert(binder.target.called)
-        XCTAssertEqual(result as? String, "encodable string")
     }
 
     func testBindUnaryWithUnaryCallbackThrows() {
@@ -784,6 +770,161 @@ class BinderTests: XCTestCase {
         XCTAssert(binder.target.called)
         XCTAssertEqual(result0, .some(79))
         XCTAssertEqual(result1, .some(50))
+
+        // callback
+        func testBindUnaryWithEncodableCallback() {
+            binder.bind(binder.target.unaryWithEncodableCallback, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            _ = try? binder.callable([callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+        }
+
+        // 0, callback
+        func testBindBinaryWithEncodableCallback() {
+            binder.bind(binder.target.binaryWithEncodableCallback, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            _ = try? binder.callable([1, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+        }
+
+        // 0, 1, callback
+        func testBindTernaryWithEncodableCallback() {
+            binder.bind(binder.target.ternaryWithEncodableCallback, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            _ = try? binder.callable([1, 2, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+        }
+
+        // 0, 1, 2, callback
+        func testBindQuaternaryWithEncodableCallback() {
+            binder.bind(binder.target.quaternaryWithEncodableCallback, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            _ = try? binder.callable([1, 2, 3, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+        }
+
+        // 0, 1, 2, 3, callback
+        func testBindQuinaryWithEncodableCallback() {
+            binder.bind(binder.target.quinaryWithEncodableCallback, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            _ = try? binder.callable([1, 2, 3, 4, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+        }
+
+        // callback with return
+        func testUnaryWithEncodableCallbackWithReturn() {
+            binder.bind(binder.target.unaryWithEncodableCallbackWithReturn, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            let returnResult = try? binder.callable([callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+            XCTAssertEqual(returnResult as? String, "return value")
+        }
+
+        // 0, callbck with return
+        func testBinaryWithEncodableCallbackWithReturn() {
+            binder.bind(binder.target.binaryWithEncodableCallbackWithReturn, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            let returnResult = try? binder.callable([1, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+            XCTAssertEqual(returnResult as? String, "return value")
+        }
+
+        // 0, 1, callback with return
+        func testTernaryWithEncodableCallbackWithReturn() {
+            binder.bind(binder.target.ternaryWithEncodableCallbackWithReturn, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            let returnResult = try? binder.callable([1, 2, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+            XCTAssertEqual(returnResult as? String, "return value")
+        }
+
+        // 0, 1, 2, callback with return
+        func testQuaternaryWithEncodableCallbackWithReturn() {
+            binder.bind(binder.target.quaternaryWithEncodableCallbackWithReturn, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            let returnResult = try? binder.callable([1, 2, 3, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+            XCTAssertEqual(returnResult as? String, "return value")
+        }
+
+        // 0, 1, 2, 3, callback with return
+        func testQuinaryWithEncodableCallbackWithReturn() {
+            binder.bind(binder.target.quinaryWithEncodableCallbackWithReturn, as: "")
+            let expecter = expectation(description: "callback")
+            var result: Encodable?
+            let callback: BindTarget.UnaryEncodableCallback = { value in
+                result = value
+                expecter.fulfill()
+            }
+            let returnResult = try? binder.callable([1, 2, 3, 4, callback])
+            wait(for: [expecter], timeout: 5)
+            XCTAssert(binder.target.called)
+            XCTAssertEqual(result as? String, "encodable string")
+            XCTAssertEqual(returnResult as? String, "return value")
+        }
     }
 }
 
@@ -797,7 +938,6 @@ class BindTarget {
     typealias UnaryCallback = (Int) -> Void
     typealias UnaryEncodableCallback = (Encodable) -> Void
     typealias BinaryCallback = (Int, Int) -> Void
-    typealias BinaryEncodableCallback = (Encodable, Encodable) -> Void
 
     func nullaryNoReturn() {
         called = true
@@ -840,11 +980,6 @@ class BindTarget {
     func unaryWithUnaryCallback(callback: @escaping UnaryCallback) {
         called = true
         callback(42)
-    }
-
-    func unaryWithUnaryEncodableCallback(callback: @escaping UnaryEncodableCallback) {
-        called = true
-        callback("encodable string")
     }
 
     func unaryWithUnaryCallbackThrows(callback: @escaping UnaryCallback) throws {
@@ -1134,6 +1269,70 @@ class BindTarget {
         callback0(arg0 + arg1)
         callback1(arg1 + arg2)
         throw BindError.boundMethodThrew
+    }
+
+    func unaryWithEncodableCallback(callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
+    }
+
+    // 0, callback
+    func binaryWithEncodableCallback(arg0: Int, callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
+    }
+
+    // 0, 1, callback
+    func ternaryWithEncodableCallback(arg0: Int, arg1: Int, callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
+    }
+
+    // 0, 1, 2, callback
+    func quaternaryWithEncodableCallback(arg0: Int, arg1: Int, arg2: Int, callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
+    }
+
+    // 0, 1, 2, 3, callback
+    func quinaryWithEncodableCallback(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping UnaryEncodableCallback) {
+        called = true
+        callback("encodable string")
+    }
+
+    // callback with return
+    func unaryWithEncodableCallbackWithReturn(callback: @escaping UnaryEncodableCallback) -> String {
+        called = true
+        callback("encodable string")
+        return "return value"
+    }
+
+    // 0, callback
+    func binaryWithEncodableCallbackWithReturn(arg0: Int, callback: @escaping UnaryEncodableCallback) -> String {
+        called = true
+        callback("encodable string")
+        return "return value"
+    }
+
+    // 0, 1, callback
+    func ternaryWithEncodableCallbackWithReturn(arg0: Int, arg1: Int, callback: @escaping UnaryEncodableCallback) -> String {
+        called = true
+        callback("encodable string")
+        return "return value"
+    }
+
+    // 0, 1, 2, callback
+    func quaternaryWithEncodableCallbackWithReturn(arg0: Int, arg1: Int, arg2: Int, callback: @escaping UnaryEncodableCallback) -> String {
+        called = true
+        callback("encodable string")
+        return "return value"
+    }
+
+    // 0, 1, 2, 3, callback
+    func quinaryWithEncodableCallbackWithReturn(arg0: Int, arg1: Int, arg2: Int, arg3: Int, callback: @escaping UnaryEncodableCallback) -> String {
+        called = true
+        callback("encodable string")
+        return "return value"
     }
 }
 
