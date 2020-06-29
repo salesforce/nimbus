@@ -23,6 +23,7 @@ dependencies {
 
  apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
 
+afterEvaluate {
     publishing {
         setupAllPublications(project)
     }
@@ -33,6 +34,7 @@ dependencies {
 //    artifactory {
 //        setupSnapshots(project)
 //    }
+}
 
 
 tasks {
