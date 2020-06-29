@@ -217,8 +217,25 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
     }
 
-//        commented out until android support
-//    func testVerifyBinaryIntResolvingIntCallbackReturnsInt() {
-//        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
-//    }
+    func testVerifyBinaryIntResolvingIntCallbackReturnsInt() {
+        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
+
+    func testEventPublishing() {
+        context.evaluateScript("subscribeToStructEvent()")
+        XCTAssertTrue(expectPlugin.isReady)
+        testPlugin.publishStructEvent()
+        waitForExpectations(timeout: 1, handler: nil)
+        XCTAssertTrue(expectPlugin.isFinished)
+        XCTAssertTrue(expectPlugin.passed)
+
+        let invert = expectation(description: "inverted")
+        invert.isInverted = true
+        expectPlugin.finishedExpectation = invert
+        expectPlugin.isReady = false
+        context.evaluateScript("unsubscribeFromStructEvent()")
+        XCTAssert(expectPlugin.isReady)
+        testPlugin.publishStructEvent()
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 }

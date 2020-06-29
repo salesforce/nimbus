@@ -572,3 +572,25 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
 }
 
 // endregion
+
+// region events
+
+var listenerID = "";
+
+function subscribeToStructEvent() {
+  __nimbus.plugins.testPlugin.addEventListener("structEvent", (theStruct) => {
+    if (theStruct.theStruct.string === "String"
+      && theStruct.theStruct.integer === 1
+      && theStruct.theStruct.double === 2.0) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  }).then((listen) => {
+    listenerID = listen;
+  });
+}
+
+function unsubscribeFromStructEvent() {
+  __nimbus.plugins.testPlugin.removeEventListener(listenerID);
+  __nimbus.plugins.expectPlugin.ready();
+}

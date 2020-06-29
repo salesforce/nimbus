@@ -10,11 +10,18 @@ import XCTest
 @testable import Nimbus
 
 class TestPlugin: Plugin {
+    var eventPublisher = EventTarget<SharedTestEvents>()
+
     var namespace: String {
         return "testPlugin"
     }
 
+    func publishStructEvent() {
+        eventPublisher.publishEvent(\SharedTestEvents.structEvent, payload: StructEvent(theStruct: TestStruct()))
+    }
+
     func bind<C>(to connection: C) where C: Connection { // swiftlint:disable:this function_body_length
+        eventPublisher.bind(to: connection)
         connection.bind(nullaryResolvingToInt, as: "nullaryResolvingToInt")
         connection.bind(nullaryResolvingToDouble, as: "nullaryResolvingToDouble")
         connection.bind(nullaryResolvingToString, as: "nullaryResolvingToString")
@@ -333,5 +340,21 @@ struct TestStruct: Codable {
 
     func asString() -> String {
         return "\(string), \(integer), \(double)"
+    }
+}
+
+struct StructEvent: Codable {
+    var theStruct: TestStruct
+}
+
+struct SharedTestEvents: EventKeyPathing {
+    var structEvent: StructEvent
+
+    static func stringForKeyPath(_ keyPath: PartialKeyPath<SharedTestEvents>) -> String? {
+        switch keyPath {
+        case \SharedTestEvents.structEvent: return "structEvent"
+        default:
+            return nil
+        }
     }
 }
