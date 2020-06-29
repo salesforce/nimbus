@@ -73,8 +73,6 @@ class SharedTestsWebView: XCTestCase {
     }
 
     func executeTest(_ testName: String) {
-        loadWebViewAndWait()
-        XCTAssertTrue(expectPlugin.isReady)
         expectPlugin.reset()
         expectPlugin.finishedExpectation = expectation(description: testName)
         webView.evaluateJavaScript(testName, completionHandler: nil)
@@ -84,6 +82,8 @@ class SharedTestsWebView: XCTestCase {
     }
 
     func testAllTests() { // swiftlint:disable:this function_body_length
+        loadWebViewAndWait()
+        XCTAssertTrue(expectPlugin.isReady)
         executeTest("verifyNullaryResolvingToInt()")
         executeTest("verifyNullaryResolvingToDouble()")
         executeTest("verifyNullaryResolvingToDouble()")
@@ -127,7 +127,34 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
         executeTest("verifyUnaryCallbackEncodable()")
-//        commented out until android support
-//        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+        executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+
+        // Event Publishing
+        let subscribe = expectation(description: "subscribe")
+        webView.evaluateJavaScript("subscribeToStructEvent()") { (_, _) in
+            subscribe.fulfill()
+        }
+        wait(for: [subscribe], timeout: 5)
+        XCTAssertTrue(expectPlugin.isReady)
+        expectPlugin.reset()
+        expectPlugin.finishedExpectation = expectation(description: "events")
+        testPlugin.publishStructEvent()
+        waitForExpectations(timeout: 5, handler: nil)
+        XCTAssertTrue(expectPlugin.isFinished)
+        XCTAssertTrue(expectPlugin.passed, "Failed Event Publishing")
+
+        let invert = expectation(description: "inverted")
+        invert.isInverted = true
+        expectPlugin.finishedExpectation = invert
+        expectPlugin.readyExpectation = expectation(description: "ready")
+        expectPlugin.isReady = false
+        let unsubscribe = expectation(description: "unsubscribe")
+        webView.evaluateJavaScript("unsubscribeFromStructEvent()") { (_, _) in
+            unsubscribe.fulfill()
+        }
+        wait(for: [unsubscribe], timeout: 5)
+        XCTAssertTrue(expectPlugin.isReady)
+        testPlugin.publishStructEvent()
+        waitForExpectations(timeout: 5)
     }
 }
