@@ -7,6 +7,7 @@
 //
 
 export { DeviceInfoPlugin, DeviceInfo } from "./plugins/device";
+export { EventPublisher } from "./EventPublisher";
 
 export interface NimbusPlugins {
   [s: string]: any;
