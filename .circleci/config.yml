@@ -252,8 +252,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            # - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            # - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
             - platforms/android/modules/bridge-webview/build/dokka
             - platforms/android/modules/bridge-v8/build/dokka
             - platforms/android/modules/core/build/dokka
