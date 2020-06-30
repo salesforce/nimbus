@@ -21,6 +21,8 @@ class SharedTestsWebView: XCTestCase {
         testPlugin = TestPlugin()
         webView = WKWebView()
         bridge = WebViewBridge()
+        loadWebViewAndWait()
+        XCTAssertTrue(expectPlugin.isReady)
     }
 
     func loadWebViewAndWait() {
@@ -82,8 +84,6 @@ class SharedTestsWebView: XCTestCase {
     }
 
     func testAllTests() { // swiftlint:disable:this function_body_length
-        loadWebViewAndWait()
-        XCTAssertTrue(expectPlugin.isReady)
         executeTest("verifyNullaryResolvingToInt()")
         executeTest("verifyNullaryResolvingToDouble()")
         executeTest("verifyNullaryResolvingToDouble()")
@@ -127,8 +127,9 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
 
-        // Event Publishing
+    func testEventPublishing() {
         let subscribe = expectation(description: "subscribe")
         webView.evaluateJavaScript("subscribeToStructEvent()") { _, _ in
             subscribe.fulfill()
