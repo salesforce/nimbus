@@ -126,7 +126,8 @@ public class WebViewConnection: Connection, CallableBinder {
     func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
         guard
             let callbackId = value as? String,
-            let webView = self.webView else {
+            let webView = self.webView
+        else {
             return .failure(DecodeError())
         }
         let callback = WebViewCallback(webView: webView, callbackId: callbackId)

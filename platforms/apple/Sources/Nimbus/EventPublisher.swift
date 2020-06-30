@@ -18,7 +18,7 @@ private typealias ListenerMap = [String: Listener]
 class EventPublisher<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
 
-    func addEventListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
+    func addListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
         let listenerId = UUID().uuidString
         var listenerMap: ListenerMap = [:]
         if let map = listeners[name] {
@@ -29,7 +29,7 @@ class EventPublisher<Events: EventKeyPathing> {
         return listenerId
     }
 
-    func removeEventListener(listenerId: String) {
+    func removeListener(listenerId: String) {
         listeners.forEach { key, map in
             listeners[key] = map.filter { key, _ in
                 key != listenerId
@@ -49,7 +49,7 @@ class EventPublisher<Events: EventKeyPathing> {
     }
 
     func bind(to connection: Connection) {
-        connection.bind(addEventListener, as: "addEventListener")
-        connection.bind(removeEventListener, as: "removeEventListener")
+        connection.bind(addListener, as: "addListener")
+        connection.bind(removeListener, as: "removeListener")
     }
 }

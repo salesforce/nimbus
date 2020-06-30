@@ -578,7 +578,7 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
 var listenerID = "";
 
 function subscribeToStructEvent() {
-  __nimbus.plugins.testPlugin.addEventListener("structEvent", (theStruct) => {
+  __nimbus.plugins.testPlugin.addListener("structEvent", (theStruct) => {
     if (theStruct.theStruct.string === "String"
       && theStruct.theStruct.integer === 1
       && theStruct.theStruct.double === 2.0) {
@@ -591,6 +591,6 @@ function subscribeToStructEvent() {
 }
 
 function unsubscribeFromStructEvent() {
-  __nimbus.plugins.testPlugin.removeEventListener(listenerID);
+  __nimbus.plugins.testPlugin.removeListener(listenerID);
   __nimbus.plugins.expectPlugin.ready();
 }

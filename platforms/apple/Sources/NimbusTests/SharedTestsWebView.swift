@@ -134,12 +134,12 @@ class SharedTestsWebView: XCTestCase {
         webView.evaluateJavaScript("subscribeToStructEvent()") { _, _ in
             subscribe.fulfill()
         }
-        wait(for: [subscribe], timeout: 5)
+        wait(for: [subscribe], timeout: 20)
         XCTAssertTrue(expectPlugin.isReady)
         expectPlugin.reset()
         expectPlugin.finishedExpectation = expectation(description: "events")
         testPlugin.publishStructEvent()
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
         XCTAssertTrue(expectPlugin.isFinished)
         XCTAssertTrue(expectPlugin.passed, "Failed Event Publishing")
 
@@ -152,9 +152,9 @@ class SharedTestsWebView: XCTestCase {
         webView.evaluateJavaScript("unsubscribeFromStructEvent()") { _, _ in
             unsubscribe.fulfill()
         }
-        wait(for: [unsubscribe], timeout: 5)
+        wait(for: [unsubscribe], timeout: 20)
         XCTAssertTrue(expectPlugin.isReady)
         testPlugin.publishStructEvent()
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 2)
     }
 }

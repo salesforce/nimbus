@@ -47,14 +47,14 @@ class EventPublisherTests: XCTestCase {
         let connection = TestConnection(from: JSContext(), bridge: JSContextBridge(), as: "test")
         target.bind(to: connection)
         XCTAssertEqual(connection.boundNames.count, 2)
-        XCTAssertTrue(connection.boundNames.contains("addEventListener"))
-        XCTAssertTrue(connection.boundNames.contains("removeEventListener"))
+        XCTAssertTrue(connection.boundNames.contains("addListener"))
+        XCTAssertTrue(connection.boundNames.contains("removeListener"))
     }
 
     func testDispatch() {
         let exp = expectation(description: "dispatch")
         // Add a listener
-        _ = target.addEventListener(name: "testEventOne") { result in
+        _ = target.addListener(name: "testEventOne") { result in
             XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
@@ -67,7 +67,7 @@ class EventPublisherTests: XCTestCase {
     func testRemoveListener() {
         var exp = expectation(description: "dispatch")
         // Add a listener
-        let listenerId = target.addEventListener(name: "testEventOne") { result in
+        let listenerId = target.addListener(name: "testEventOne") { result in
             XCTAssertTrue(result is TestEventOne)
             exp.fulfill()
         }
@@ -76,7 +76,7 @@ class EventPublisherTests: XCTestCase {
         // verify listener is called
         waitForExpectations(timeout: 1, handler: nil)
         // remove listener
-        target.removeEventListener(listenerId: listenerId)
+        target.removeListener(listenerId: listenerId)
         exp = expectation(description: "inverted")
         exp.isInverted = true
         // dispatch event
