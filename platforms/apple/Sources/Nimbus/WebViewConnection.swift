@@ -58,21 +58,10 @@ public class WebViewConnection: Connection, CallableBinder {
      */
     func bindCallable(_ name: String, to callable: @escaping Callable) {
         bindings[name] = callable
-        let stubScript = """
-        __nimbusPluginExports = window.__nimbusPluginExports || {};
-        (function(){
-          let exports = __nimbusPluginExports["\(namespace)"];
-          if (exports === undefined) {
-            exports = [];
-            __nimbusPluginExports["\(namespace)"] = exports;
-          }
-          exports.push("\(name)");
-        }());
-        true;
-        """
+        scriptParts.append(name)
 
-        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-        webView?.configuration.userContentController.addUserScript(script)
+//        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+//        webView?.configuration.userContentController.addUserScript(script)
     }
 
     func decode<T: Decodable>(_ value: Any?, as type: T.Type) -> Result<T, Error> {
@@ -219,10 +208,31 @@ public class WebViewConnection: Connection, CallableBinder {
         webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
     }
 
+    func userScript() -> String? {
+        guard scriptParts.count > 0 else { return nil }
+        let exports = scriptParts.map { name in
+            return "exports.push(\"\(name)\");"
+        }.joined()
+        let stubScript = """
+        __nimbusPluginExports = window.__nimbusPluginExports || {};
+        (function(){
+          let exports = __nimbusPluginExports["\(namespace)"];
+          if (exports === undefined) {
+            exports = [];
+            __nimbusPluginExports["\(namespace)"] = exports;
+          }
+        \(exports)
+        }());
+        true;
+        """
+        return stubScript
+    }
+
     private let namespace: String
     private weak var webView: WKWebView?
     private var bridge: JSEvaluating?
     private var bindings: [String: Callable] = [:]
+    private var scriptParts: [String] = []
 }
 
 extension Encodable {

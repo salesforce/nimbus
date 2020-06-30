@@ -71,7 +71,7 @@ class SharedTestsWebView: XCTestCase {
             webView.loadFileURL(url, allowingReadAccessTo: url)
         }
 
-        wait(for: [readyExpectation], timeout: 60)
+        wait(for: [readyExpectation], timeout: 5)
     }
 
     func executeTest(_ testName: String) {
