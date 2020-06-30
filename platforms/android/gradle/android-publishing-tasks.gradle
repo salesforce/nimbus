@@ -13,16 +13,16 @@ afterEvaluate {
     publishing {
         publications {
             mavenPublication(MavenPublication) {
-                groupId = group
+//                groupId = group
                 artifact(sourcesJar)
                 artifact("$buildDir/outputs/aar/$project.name-release.aar")
             }
         }
     }
 
-    artifactoryPublish {
-        publications(publishing.publications.mavenPublication)
-    }
+//    artifactoryPublish {
+//        publications(publishing.publications.mavenPublication)
+//    }
 }
 
 //artifactory {
