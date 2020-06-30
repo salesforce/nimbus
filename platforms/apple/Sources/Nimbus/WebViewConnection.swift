@@ -108,6 +108,19 @@ public class WebViewConnection: Connection, CallableBinder {
         }
     }
 
+    func encode(_ value: Encodable) -> Result<Any?, Error> {
+        if #available(iOS 13, macOS 10.15, *) {
+            return Result {
+                return try value.toJSONValue()
+            }
+        } else {
+            let encodableValue: EncodableValue = .value(value)
+            return Result {
+                return try encodableValue.toJSONValue()
+            }
+        }
+    }
+
     func callback<T: Encodable>(from value: Any?, taking argType: T.Type) -> Result<(T) -> Void, Error> {
         guard
             let callbackId = value as? String,
@@ -132,7 +145,7 @@ public class WebViewConnection: Connection, CallableBinder {
         }
         let callback = WebViewCallback(webView: webView, callbackId: callbackId)
         return .success({ (value: Encodable) in
-            guard let result = try? value.toJSONValue() else { return }
+            guard let result = try? self.encode(value).get() as Any else { return }
             _ = try? callback.call(args: [result])
         })
     }
