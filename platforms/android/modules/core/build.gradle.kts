@@ -17,6 +17,7 @@ dependencies {
     compileOnly(Libs.kotlinx_serialization_runtime)
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)
+    testImplementation(Libs.junit)
     testImplementation(Libs.kotest_runner_junit5)
     testImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
     testImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
@@ -44,5 +45,9 @@ tasks {
         outputFormat = "html"
         outputDirectory = "$buildDir/dokka"
     }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 apply(from = rootProject.file("gradle/lint.gradle"))
