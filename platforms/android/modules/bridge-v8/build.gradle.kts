@@ -6,7 +6,6 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-//    id("com.vanniktech.android.junit.jacoco")
     `maven-publish`
     id("com.jfrog.bintray")
     id("com.jfrog.artifactory")
@@ -45,11 +44,14 @@ dependencies {
         exclude("com.android.support", "support-annotations")
     }
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotlintest_runner_junit4)
+    androidTestImplementation(Libs.kotest_runner_junit5)
+    androidTestImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.truth)
+    testImplementation(Libs.kotest_runner_junit5)
+    testImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
     kaptTest(nimbusModule("compiler-v8"))
 }
 

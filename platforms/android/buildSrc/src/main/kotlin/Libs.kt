@@ -52,8 +52,8 @@ object Libs {
     /**
      * http://www.github.com/kotlintest/kotlintest
      */
-    const val kotlintest_runner_junit4: String = "io.kotest:kotest-runner-junit5-jvm:" +
-            Versions.kotlintest_runner_junit4
+    const val kotest_runner_junit5: String = "io.kotest:kotest-runner-junit5-jvm:" +
+            Versions.kotest_runner_junit5
 
     const val gradle_bintray_plugin: String = "com.jfrog.bintray.gradle:gradle-bintray-plugin:" +
             Versions.gradle_bintray_plugin

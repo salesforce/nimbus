@@ -37,7 +37,7 @@ dependencies {
     implementation(Libs.kotlin_stdlib)
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
-    androidTestImplementation(Libs.kotlintest_runner_junit4)
+    androidTestImplementation(Libs.kotest_runner_junit5)
     androidTestImplementation(Libs.truth)
 }
 

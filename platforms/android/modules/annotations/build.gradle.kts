@@ -1,5 +1,3 @@
-
-
 plugins {
     `maven-publish`
     id("kotlin")

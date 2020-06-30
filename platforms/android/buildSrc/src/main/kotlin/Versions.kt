@@ -26,7 +26,7 @@ object Versions {
 
     const val kotlin_android_extensions: String = "1.3.72"
 
-    const val kotlintest_runner_junit4: String = "4.1.1"
+    const val kotest_runner_junit5: String = "4.1.1"
 
     const val gradle_bintray_plugin: String = "1.8.5"
 

@@ -66,7 +66,7 @@ dependencies {
         exclude group: "com.android.support", module: "support-annotations"
     })
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotlintest_runner_junit4)
+    androidTestImplementation(Libs.kotest_runner_junit5)
 }
 
 /*

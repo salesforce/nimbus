@@ -21,17 +21,13 @@ dependencies {
 
     api(Libs.kotlin_stdlib)
 
+    testImplementation(Libs.junit)
     testImplementation(Libs.json)
-    testImplementation(Libs.kotlintest_runner_junit4)
+    testImplementation(Libs.kotest_runner_junit5)
+    testImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
     testImplementation(Libs.mockk)
     kaptTest(nimbusModule("compiler-webview"))
 
-    androidTestImplementation(Libs.kotlinx_serialization_runtime)
-    androidTestImplementation(Libs.junit)
-    androidTestImplementation(Libs.espresso_core)
-    androidTestImplementation(Libs.androidx_test_rules) {
-        exclude("com.android.support", "support-annotations")
-    }
     kaptAndroidTest(nimbusModule("compiler-webview"))
 }
 

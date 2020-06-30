@@ -19,7 +19,7 @@ plugins{
     id("com.autonomousapps.dependency-analysis") version "0.49.0"
     id("com.jfrog.artifactory")
     id("maven-publish")
-    id "com.vanniktech.android.junit.jacoco" version "0.16.0"
+    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
 }
 project.ext {
     if (project.hasProperty("preDexEnable")) {

@@ -17,7 +17,9 @@ dependencies {
     compileOnly(Libs.kotlinx_serialization_runtime)
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)
-    testImplementation(Libs.kotlintest_runner_junit4)
+    testImplementation(Libs.kotest_runner_junit5)
+    testImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
     testImplementation(Libs.json)
 }
 

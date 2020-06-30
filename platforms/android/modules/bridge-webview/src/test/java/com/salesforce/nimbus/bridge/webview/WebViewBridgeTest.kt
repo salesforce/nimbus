@@ -5,14 +5,13 @@ import android.webkit.WebView
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * Unit tests for [WebViewBridge].
@@ -103,22 +102,22 @@ class WebViewBridgeTest {
     @Test
     fun makeCallbackReturnsCallbackWhenWebViewAttached() {
         val callback = webViewBridge.makeCallback("1")
-        assertNotNull(callback)
-        assertEquals(mockWebView, callback?.webView)
-        assertEquals("1", callback?.callbackId)
+        callback.shouldNotBeNull()
+        callback.webView.shouldBe(mockWebView)
+        callback.callbackId.shouldBe("1")
     }
 
     @Test
     fun makeCallbackReturnsNullWhenWebViewNotAttached() {
         webViewBridge.detach()
         val callback = webViewBridge.makeCallback("1")
-        assertNull(callback)
+        callback.shouldNotBeNull()
     }
 
     @Test
     fun nativePluginNamesReturnsJsonArrayStringOfNames() {
         val nativePluginNames = webViewBridge.nativePluginNames()
-        assertEquals("[\"Test\",\"Test2\"]", nativePluginNames)
+        nativePluginNames.shouldBe("[\"Test\",\"Test2\"]")
     }
 }
 

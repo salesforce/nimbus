@@ -4,8 +4,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.salesforce.k2v8.scope
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
+import io.kotest.properties.Gen
+import io.kotest.properties.bool
+import io.kotest.properties.double
+import io.kotest.properties.forAll
+import io.kotest.properties.int
+import io.kotest.properties.long
+import io.kotest.properties.string
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

@@ -7,11 +7,17 @@
 
 package com.salesforce.nimbus
 
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AnnotationSpec
-import io.kotlintest.specs.Test
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.properties.Gen
+import io.kotest.properties.bool
+import io.kotest.properties.double
+import io.kotest.properties.forAll
+import io.kotest.properties.int
+import io.kotest.properties.list
+import io.kotest.properties.long
+import io.kotest.properties.map
+import io.kotest.properties.string
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
