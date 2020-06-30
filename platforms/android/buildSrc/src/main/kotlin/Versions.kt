@@ -26,7 +26,7 @@ object Versions {
 
     const val kotlin_android_extensions: String = "1.3.72"
 
-    const val kotlintest_runner_junit4: String = "3.4.2"
+    const val kotlintest_runner_junit4: String = "4.1.1"
 
     const val gradle_bintray_plugin: String = "1.8.5"
 
@@ -37,6 +37,8 @@ object Versions {
     const val dokka_gradle_plugin: String = "0.10.1"
 
     const val jacoco_android: String = "0.2"
+
+    const val jacoco: String = "0.8.4"
 
     const val espresso_core: String = "3.2.0"
 

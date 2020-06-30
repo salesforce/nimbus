@@ -10,9 +10,7 @@ buildscript {
         classpath(Libs.kotlin_gradle_plugin)
         classpath(Libs.gradle_bintray_plugin)
         classpath(Libs.dokka_gradle_plugin)
-        classpath(Libs.jacoco_android)
         classpath(Libs.org_jetbrains_kotlin_kotlin_serialization)
-//        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.16.0")
     }
 }
 
@@ -21,6 +19,7 @@ plugins{
     id("com.autonomousapps.dependency-analysis") version "0.49.0"
     id("com.jfrog.artifactory")
     id("maven-publish")
+    id "com.vanniktech.android.junit.jacoco" version "0.16.0"
 }
 project.ext {
     if (project.hasProperty("preDexEnable")) {
@@ -42,6 +41,13 @@ allprojects {
     }
     group GROUP
     version VERSION
+    junitJacoco {
+        jacocoVersion = Versions.jacoco // type String
+        ignoreProjects = [] // type String array
+        excludes // type String List
+        includeNoLocationClasses = false // type boolean
+        includeInstrumentationCoverageInMergedReport = false // type boolean
+    }
 }
 
 subprojects {

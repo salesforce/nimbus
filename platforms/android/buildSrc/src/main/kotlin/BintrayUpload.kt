@@ -32,7 +32,6 @@ fun BintrayExtension.setupPublicationsUpload(
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
-    publicationNames.forEach { println("Publication: $it") }
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
         name = Publishing.packageName
@@ -58,16 +57,12 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
     publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
         repository(delegateClosureOf<groovy.lang.GroovyObject> {
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
-            println("publishing version ${project.version}")
-            println("publishing to $targetRepoKey")
             setProperty("repoKey", targetRepoKey)
             setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
             setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
-//            invokeMethod("publications", "com.salesforce.nimbus")
             invokeMethod("publications", getPublications(project))
-//            invokeMethod("publishConfigs", arrayOf("archives"))
             setProperty("publishArtifacts", true)
             setProperty("publishPom", true)
             setProperty("publishIvy", false)
@@ -76,7 +71,6 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
     resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
         setProperty("repoKey", "jcenter")
     })
-//    clientConfig.info.buildNumber = ProjectVersions.packageVersion
 }
 
 fun buildTagFor(version: String): String =

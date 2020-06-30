@@ -187,7 +187,6 @@ jobs:
     resource_class: medium+
 
     environment:
-
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
@@ -239,10 +238,10 @@ jobs:
           destination: reports
 
       - store_test_results:
-          path: platforms/android/bridge-webview/build/test-results
+          path: platforms/android/modules/bridge-webview/build/test-results
 
       - store_test_results:
-          path: platforms/android/bridge-v8/build/test-results
+          path: platforms/android/modules/bridge-v8/build/test-results
 
       - run:
           name: Codecov Android
@@ -253,11 +252,11 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - platforms/android/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/bridge-webview/build/dokka
-            - platforms/android/bridge-v8/build/dokka
-            - platforms/android/core/build/dokka
+            - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/modules/bridge-webview/build/dokka
+            - platforms/android/modules/bridge-v8/build/dokka
+            - platforms/android/modules/core/build/dokka
 
   build-and-test-ts:
     docker:
@@ -301,7 +300,7 @@ jobs:
       - run:
           name: Upload Android coverage
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -f ./workspace/platforms/android/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -F Android
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -f ./workspace/platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -F Android
 
   upload-android-release:
     docker:
@@ -335,9 +334,9 @@ jobs:
           command: |
             mkdir -p docs/dist/docs/api
             mkdir -p docs/dist/docs/api/android
-            mv doc-build/platforms/android/bridge-webview/build/dokka docs/dist/docs/api/android/bridge-webview
-            mv doc-build/platforms/android/bridge-v8/build/dokka docs/dist/docs/api/android/bridge-v8
-            mv doc-build/platforms/android/core/build/dokka docs/dist/docs/api/android/core
+            mv doc-build/platforms/android/modules/bridge-webview/build/dokka docs/dist/docs/api/android/bridge-webview
+            mv doc-build/platforms/android/modules/bridge-v8/build/dokka docs/dist/docs/api/android/bridge-v8
+            mv doc-build/platforms/android/modules/core/build/dokka docs/dist/docs/api/android/core
             mv doc-build/platforms/apple/.build/docs docs/dist/docs/api/apple
             mv doc-build/packages/nimbus-bridge/dist/typedoc docs/dist/docs/api/ts
       - persist_to_workspace:
