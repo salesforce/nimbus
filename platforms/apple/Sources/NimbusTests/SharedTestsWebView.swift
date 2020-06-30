@@ -126,7 +126,6 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyNullaryResolvingToIntStructCallback()")
         executeTest("verifyUnaryIntResolvingToIntCallback()")
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
-        executeTest("verifyUnaryCallbackEncodable()")
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
 
         // Event Publishing
