@@ -13,7 +13,7 @@ android {
         targetSdkVersion ProjectVersions.androidSdk
         versionCode 1
         versionName version
-            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -34,12 +34,20 @@ android {
     }
 
     testOptions {
-        unitTests.returnDefaultValues = true
+        unitTests {
+            returnDefaultValues = true
+            all {
+                useJUnitPlatform()
+            }
+        }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     packagingOptions {
@@ -67,6 +75,8 @@ dependencies {
     })
     androidTestImplementation(Libs.truth)
     androidTestImplementation(Libs.kotest_runner_junit5)
+    androidTestImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
+    androidTestImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
 }
 
 /*
@@ -79,8 +89,8 @@ task buildTestWebApp(type: Exec) {
 
 tasks.whenTaskAdded { task ->
     if (task.name ==~ "assemble.*AndroidTest") {
-    task.dependsOn buildTestWebApp
-}
+        task.dependsOn buildTestWebApp
+    }
 }
 
 apply from: rootProject.file("gradle/lint.gradle")

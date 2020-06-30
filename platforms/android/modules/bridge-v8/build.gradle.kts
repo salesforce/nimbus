@@ -38,6 +38,7 @@ dependencies {
     implementation(Libs.kotlinx_serialization_runtime)
     api(Libs.kotlin_stdlib)
 
+    androidTestImplementation("io.mockk:mockk-android:${Versions.mockk}")
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espresso_core)
     androidTestImplementation(Libs.androidx_test_rules) {
