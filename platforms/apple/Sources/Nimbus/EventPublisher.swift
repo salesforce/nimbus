@@ -20,10 +20,7 @@ class EventPublisher<Events: EventKeyPathing> {
 
     func addListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
         let listenerId = UUID().uuidString
-        var listenerMap: ListenerMap = [:]
-        if let map = listeners[name] {
-            listenerMap = map
-        }
+        var listenerMap: ListenerMap = listeners[name, default: [:]]
         listenerMap[listenerId] = listener
         listeners[name] = listenerMap
         return listenerId
