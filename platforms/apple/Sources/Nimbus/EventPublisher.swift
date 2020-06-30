@@ -17,19 +17,24 @@ private typealias ListenerMap = [String: Listener]
 
 class EventPublisher<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
+    private var listenerQueue: DispatchQueue = DispatchQueue(label: "EventPublisher")
 
     func addListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
         let listenerId = UUID().uuidString
-        var listenerMap: ListenerMap = listeners[name, default: [:]]
-        listenerMap[listenerId] = listener
-        listeners[name] = listenerMap
+        listenerQueue.sync {
+            var listenerMap: ListenerMap = listeners[name, default: [:]]
+            listenerMap[listenerId] = listener
+            listeners[name] = listenerMap
+        }
         return listenerId
     }
 
     func removeListener(listenerId: String) {
-        listeners.forEach { key, map in
-            listeners[key] = map.filter { key, _ in
-                key != listenerId
+        listenerQueue.sync {
+            listeners.forEach { key, map in
+                listeners[key] = map.filter { key, _ in
+                    key != listenerId
+                }
             }
         }
     }
@@ -40,8 +45,10 @@ class EventPublisher<Events: EventKeyPathing> {
             return
         }
 
-        map.forEach { _, listener in
-            listener(payload)
+        listenerQueue.sync {
+            map.forEach { _, listener in
+                listener(payload)
+            }
         }
     }
 
