@@ -15,7 +15,7 @@ protocol EventKeyPathing {
 private typealias Listener = (Encodable) -> Void
 private typealias ListenerMap = [String: Listener]
 
-class EventTarget<Events: EventKeyPathing> {
+class EventPublisher<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
 
     func addEventListener(name: String, listener: @escaping (Encodable) -> Void) -> String {

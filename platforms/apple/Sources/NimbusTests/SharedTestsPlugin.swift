@@ -10,7 +10,7 @@ import XCTest
 @testable import Nimbus
 
 class TestPlugin: Plugin {
-    var eventPublisher = EventTarget<SharedTestEvents>()
+    var eventPublisher = EventPublisher<SharedTestEvents>()
 
     var namespace: String {
         return "testPlugin"

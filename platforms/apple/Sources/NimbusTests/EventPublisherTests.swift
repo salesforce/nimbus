@@ -10,11 +10,11 @@ import JavaScriptCore
 import XCTest
 @testable import Nimbus
 
-class EventTargetTests: XCTestCase {
-    var target = EventTarget<TestEvents>()
+class EventPublisherTests: XCTestCase {
+    var target = EventPublisher<TestEvents>()
 
     override func setUp() {
-        target = EventTarget<TestEvents>()
+        target = EventPublisher<TestEvents>()
     }
 
     struct TestEventOne: Codable {
