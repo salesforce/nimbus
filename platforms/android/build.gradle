@@ -11,6 +11,7 @@ buildscript {
         classpath(Libs.gradle_bintray_plugin)
         classpath(Libs.dokka_gradle_plugin)
         classpath(Libs.org_jetbrains_kotlin_kotlin_serialization)
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2")
     }
 }
 

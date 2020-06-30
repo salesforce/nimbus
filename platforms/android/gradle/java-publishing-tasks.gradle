@@ -21,4 +21,7 @@ afterEvaluate {
             }
         }
     }
+    artifactoryPublish {
+        publications(publishing.publications.mavenPublication)
+    }
 }
