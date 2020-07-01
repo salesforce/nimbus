@@ -241,6 +241,11 @@ struct MochaMessage: Encodable {
     var intField = 42
 }
 
+public struct TestError: Error, Encodable {
+    let code: Int
+    let message: String
+}
+
 public class CallbackTestPlugin {
     func callbackWithSingleParam(completion: @escaping (MochaMessage) -> Swift.Void) {
         let mochaMessage = MochaMessage()
@@ -265,6 +270,22 @@ public class CallbackTestPlugin {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaMessage) -> Swift.Void) {
         completion(777, MochaMessage())
     }
+
+    func promiseResolved() -> String {
+        return "promise"
+    }
+
+    func promiseRejectedEncoded() throws -> String {
+        throw TestError(code: 42, message: "mock promise rejection")
+    }
+
+    func promiseRejected() throws -> String {
+        throw MockError.rejectedError
+    }
+}
+
+enum MockError: Error {
+    case rejectedError
 }
 
 extension CallbackTestPlugin: Plugin {
@@ -278,6 +299,9 @@ extension CallbackTestPlugin: Plugin {
         connection.bind(callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(promiseResolved, as: "promiseResolved")
+        connection.bind(promiseRejectedEncoded, as: "promiseRejectedEncoded")
+        connection.bind(promiseRejected, as: "promiseRejected")
     }
 }
 

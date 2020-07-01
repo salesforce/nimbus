@@ -202,11 +202,23 @@ public class WebViewConnection: Connection, CallableBinder {
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
-        webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        switch error {
+        case let encodableError as EncodableError:
+            let error = EncodableValue.error(encodableError)
+            if let data = try? JSONEncoder().encode(error),
+                let jsonString = String(data: data, encoding: .utf8) {
+                webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, \(jsonString).e);")
+            } else {
+                // if unable to decode then send then fallthrough to default error message
+                fallthrough
+            }
+        default:
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        }
     }
 
     func userScript() -> String? {
-        guard scriptParts.count > 0 else { return nil }
+        guard !scriptParts.isEmpty else { return nil }
         let exports = scriptParts.map { name in
             "exports.push(\"\(name)\");"
         }.joined()

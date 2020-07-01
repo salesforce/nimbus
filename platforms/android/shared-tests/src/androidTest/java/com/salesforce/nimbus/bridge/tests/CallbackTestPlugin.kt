@@ -6,6 +6,7 @@ import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.bridge.tests.webview.WebViewMochaTests
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Exception
 
 @PluginOptions(name = "callbackTestPlugin")
 class CallbackTestPlugin : Plugin {
@@ -103,5 +104,13 @@ class CallbackTestPlugin : Plugin {
         jo1.put("five", 5)
         jo1.put("six", 6)
         arg(jo0, jo1)
+    }
+
+    @BoundMethod
+    fun promiseResolved(): String = "promise"
+
+    @BoundMethod
+    fun promiseRejected() {
+        throw Exception()
     }
 }
