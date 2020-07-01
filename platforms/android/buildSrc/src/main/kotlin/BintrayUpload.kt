@@ -1,33 +1,40 @@
 
 import com.jfrog.bintray.gradle.BintrayExtension
+import org.codehaus.groovy.runtime.ProcessGroovyMethods
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.delegateClosureOf
+import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
+import org.gradle.kotlin.dsl.provideDelegate
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
     publishing: PublishingExtension
 ) {
-//    val bintrayUpload: TaskProvider<Task> by project.tasks.existing
-//    val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
-//
-//    bintrayUpload.dependsOn(publishToMavenLocal)
+    val bintrayUpload: TaskProvider<Task> by project.tasks.existing
+    val publishToMavenLocal: TaskProvider<Task> by project.tasks.existing
 
-    // TODO: Is this necessary?
-//    project.checkNoVersionRanges()
+    bintrayUpload.dependsOn(publishToMavenLocal)
 
-    // TODO: Add this back... I like it
-//    bintrayUpload.configure {
-//        doFirst {
-//            val gitTag = ProcessGroovyMethods.getText(
-//                Runtime.getRuntime().exec("git describe --dirty")
-//            ).trim()
-//            val expectedTag = "v${ProjectVersions.packageVersion}"
-//            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
-//        }
-//    }
+    if (!isSnapshot(project.version.toString())) {
+        project.checkNoVersionRanges()
+    }
+
+    // TODO: Verify this is what we want
+    bintrayUpload.configure {
+        doFirst {
+            val gitTag = ProcessGroovyMethods.getText(
+                Runtime.getRuntime().exec("git describe --dirty")
+            ).trim()
+            val expectedTag = "v${project.version}"
+            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
+        }
+    }
 
     user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
@@ -62,7 +69,7 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
             setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
         })
         defaults(delegateClosureOf<groovy.lang.GroovyObject> {
-            invokeMethod("publications", getPublications(project))
+            invokeMethod("publications", arrayOf("mavenPublication"))
             setProperty("publishArtifacts", true)
             setProperty("publishPom", true)
             setProperty("publishIvy", false)
@@ -73,17 +80,7 @@ fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSna
     })
 }
 
-fun buildTagFor(version: String): String =
-    when (version.substringAfterLast('-')) {
-        "SNAPSHOT" -> "snapshot"
-        else -> "release"
-    }
-fun getPublications(project: Project): Array<String> {
-//    return if (project.isAndroidModule()) {
-//        arrayOf("androidDebug", "androidRelease")
-    return arrayOf("mavenPublication")
-//    } else {
-//        arrayOf("mavenJava")
-//        arrayOf("java")
-//    }
-}
+fun buildTagFor(version: String): String = if (isSnapshot(version)) "snapshot" else "release"
+
+fun isSnapshot(version: String): Boolean = (version.substringAfterLast('-') == "SNAPSHOT")
+

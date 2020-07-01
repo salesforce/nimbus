@@ -21,12 +21,6 @@ fun AndroidLibraryExtension.setDefaults() {
         }
     }
 
-    // TODO: Set by project
-//    sourceSets.getByName("main") {
-//        res.srcDir("src/androidMain/res")
-//        assets.srcDir("src/androidMain/assets")
-//    }
-
     testOptions {
         unitTests.apply {
             isReturnDefaultValues = true

@@ -9,6 +9,7 @@ fun Project.checkNoVersionRanges() {
                     "Version ranges are forbidden because they would make builds non reproducible."
                 }
                 check("SNAPSHOT" !in version) {
+                    println("${project.name} using ${requested.name} has ${requested.version}")
                     "Snapshot versions are forbidden because they would make builds non reproducible."
                 }
             }

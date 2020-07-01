@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(ProjectVersions.androidSdk)
 
     defaultConfig {
         applicationId = "com.salesforce.nimbusdemoapp"
@@ -20,7 +20,6 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {

@@ -22,15 +22,6 @@ plugins{
     id("maven-publish")
 //    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
 }
-//project.ext {
-//    if (project.hasProperty("preDexEnable")) {
-//        project.ext.preDexLibs = project.properties["preDexEnable"] == "true"
-//    } else {
-//        project.ext.preDexLibs = true // pre dexing should be true by default
-//    }
-//
-//    println("PREDEX " + (project.ext.preDexLibs ? "ENABLED" : "DISABLED")) // goes to build log or console output
-//}
 
 allprojects {
     repositories {
@@ -51,28 +42,6 @@ allprojects {
 //    }
 }
 
-//subprojects {
-//    task printPubs {
-//        doLast {
-//            if (project.hasProperty("publishing")) {
-//                project.publishing.publications.each { publication ->
-//                    println "Publication [name: $publication.name, groupId: $publication.groupId, artifactId: $publication.artifactId, version: $publication.version"
-//                }
-//            } else {
-//                println("No publication for project ${project.name}")
-//            }
-//        }
-//    }
-//
-//    project.plugins.whenPluginAdded { plugin ->
-//        if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
-//            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-//        } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
-//            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-//        }
-//    }
-//}
-//
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
