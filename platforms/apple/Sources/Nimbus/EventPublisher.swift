@@ -31,21 +31,20 @@ class EventPublisher<Events: EventKeyPathing> {
 
     func removeListener(listenerId: String) {
         listenerQueue.sync {
-            listeners.forEach { key, map in
-                listeners[key] = map.filter { key, _ in
-                    key != listenerId
-                }
+            listeners = listeners.mapValues { map in
+                var updatedListeners = map
+                updatedListeners.removeValue(forKey: listenerId)
+                return updatedListeners
             }
         }
     }
 
     func publishEvent<V: Codable>(_ eventKeyPath: KeyPath<Events, V>, payload: V) {
-        guard let eventName = Events.stringForKeyPath(eventKeyPath),
-            let map = listeners[eventName] else {
-            return
-        }
-
         listenerQueue.sync {
+            guard let eventName = Events.stringForKeyPath(eventKeyPath),
+                let map = listeners[eventName] else {
+                return
+            }
             map.forEach { _, listener in
                 listener(payload)
             }
