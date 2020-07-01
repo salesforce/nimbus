@@ -128,6 +128,18 @@ extension CallableBinder {
         }
     }
 
+    public func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
+        _ name: String,
+        to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R
+    ) {
+        bindCallable(name) { [weak self] (args: [Any?]) in
+            guard let self = self else { throw DecodeError() }
+            try self.assertArgsCount(expected: 1, actual: args.count)
+            let callback = try self.callback(from: args[0], taking: (CB0.self, CB1.self)).get()
+            return try self.encode(function(callback)).get()
+        }
+    }
+
     public func bind<CB0: Encodable, CB1: Encodable>(
         _ name: String,
         to function: @escaping (@escaping (CB0) -> Void, @escaping (CB1) -> Void) throws -> Void
@@ -138,18 +150,6 @@ extension CallableBinder {
             let cb0 = try self.callback(from: args[0], taking: CB0.self).get()
             let cb1 = try self.callback(from: args[1], taking: CB1.self).get()
             return try function(cb0, cb1)
-        }
-    }
-
-    public func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
-        _ name: String,
-        to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R
-    ) {
-        bindCallable(name) { [weak self] (args: [Any?]) in
-            guard let self = self else { throw DecodeError() }
-            try self.assertArgsCount(expected: 1, actual: args.count)
-            let callback = try self.callback(from: args[0], taking: (CB0.self, CB1.self)).get()
-            return try self.encode(function(callback)).get()
         }
     }
 
