@@ -13,11 +13,6 @@ interface MochaMessage {
   stringField: string;
 }
 
-interface TestError {
-  code: number;
-  message: string;
-}
-
 interface CallbackTestPlugin {
   callbackWithSingleParam(completion: (param0: MochaMessage) => void): void;
   callbackWithTwoParams(
@@ -182,28 +177,19 @@ describe("Callbacks with", () => {
   });
 
   it("promise resolves and passes the value", (done) => {
-    nimbusWithCallbackTestPlugin.callbackTestPlugin.promiseResolved()
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .promiseResolved()
       .then((result: string) => {
-        expect(result).to.equal("promise")
-        done();
-      });
-  });
-
-  it("promise rejects and passes encoded error", (done) => {
-    nimbusWithCallbackTestPlugin.callbackTestPlugin.promiseRejectedEncoded()
-      .catch((error: TestError) => {
-        expect(error).to.deep.equal({
-          code: 42,
-          message: "mock promise rejection"
-        });
+        expect(result).to.equal("promise");
         done();
       });
   });
 
   it("promise rejects and passes the error", (done) => {
-    nimbusWithCallbackTestPlugin.callbackTestPlugin.promiseRejected()
-      .catch((error) => {
-        expect(error).to.equal("rejectedError")
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .promiseRejected()
+      .then((_) => done("unexpected completion"))
+      .catch((_) => {
         done();
       });
   });

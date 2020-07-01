@@ -2,6 +2,7 @@ package com.salesforce.nimbus
 
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Exception
 
 @PluginOptions(name = "callbackTestPlugin")
 class CallbackTestPlugin : Plugin {
@@ -124,5 +125,13 @@ class CallbackTestPlugin : Plugin {
     fun callbackWithTwoPrimitiveParamAndReturn(arg: (param0: Int, param1: Int) -> Unit): String {
         arg(1, 2)
         return "two"
+    }
+
+    @BoundMethod
+    fun promiseResolved(): String = "promise"
+
+    @BoundMethod
+    fun promiseRejected() {
+        throw Exception()
     }
 }

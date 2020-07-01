@@ -136,13 +136,17 @@ let promisify = (src: any): void => {
   let dest: any = {};
   Object.keys(src).forEach((key): void => {
     let func = src[key];
-    dest[key] = (...args: any[]): any => {
+    dest[key] = (...args: any[]): Promise<any> => {
       args = cloneArguments(args);
-      let result = func.call(src, ...args);
-      if (result !== undefined) {
-        result = JSON.parse(result);
+      try {
+        let result = func.call(src, ...args);
+        if (result !== undefined) {
+          result = JSON.parse(result);
+        }
+        return Promise.resolve(result);
+      } catch (error) {
+        return Promise.reject(error);
       }
-      return Promise.resolve(result);
     };
   });
   return dest;
