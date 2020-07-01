@@ -37,6 +37,9 @@ interface CallbackTestPlugin {
   callbackWithTwoPrimitiveParamAndReturn(
     completion: (param0: number, param1: number) => void
   ): Promise<string>;
+  promiseResolved(): Promise<string>;
+  promiseRejected(): Promise<string>;
+  promiseRejectedEncoded(): Promise<string>;
 }
 
 declare interface NimbusWithCallbackTestPlugin {
@@ -169,6 +172,24 @@ describe("Callbacks with", () => {
       )
       .then((result: string) => {
         expect(result).to.equal("two");
+        done();
+      });
+  });
+
+  it("promise resolves and passes the value", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .promiseResolved()
+      .then((result: string) => {
+        expect(result).to.equal("promise");
+        done();
+      });
+  });
+
+  it("promise rejects and passes the error", (done) => {
+    nimbusWithCallbackTestPlugin.callbackTestPlugin
+      .promiseRejected()
+      .then((_) => done("unexpected completion"))
+      .catch((_) => {
         done();
       });
   });
