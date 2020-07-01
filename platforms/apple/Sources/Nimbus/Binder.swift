@@ -70,17 +70,17 @@ public protocol Binder {
     /**
      Bind the specified function to this connection.
      */
-    func bind<CB0: Encodable, CB1: Encodable>(
+    func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
         _ name: String,
-        to function: @escaping (@escaping (CB0) -> Void, @escaping (CB1) -> Void) throws -> Void
+        to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R
     )
 
     /**
      Bind the specified function to this connection.
      */
-    func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
+    func bind<CB0: Encodable, CB1: Encodable>(
         _ name: String,
-        to function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R
+        to function: @escaping (@escaping (CB0) -> Void, @escaping (CB1) -> Void) throws -> Void
     )
 
     /**
@@ -399,6 +399,16 @@ public extension Binder {
      */
     func bind<CB0: Encodable, CB1: Encodable>(
         _ function: @escaping (@escaping (CB0, CB1) -> Void) throws -> Void,
+        as name: String
+    ) {
+        bind(name, to: function)
+    }
+
+    /**
+     Bind the specified function to this connection.
+     */
+    func bind<R: Encodable, CB0: Encodable, CB1: Encodable>(
+        _ function: @escaping (@escaping (CB0, CB1) -> Void) throws -> R,
         as name: String
     ) {
         bind(name, to: function)
