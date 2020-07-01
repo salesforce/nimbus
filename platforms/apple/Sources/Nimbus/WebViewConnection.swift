@@ -59,9 +59,6 @@ public class WebViewConnection: Connection, CallableBinder {
     func bindCallable(_ name: String, to callable: @escaping Callable) {
         bindings[name] = callable
         scriptParts.append(name)
-
-//        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-//        webView?.configuration.userContentController.addUserScript(script)
     }
 
     func decode<T: Decodable>(_ value: Any?, as type: T.Type) -> Result<T, Error> {
@@ -211,7 +208,7 @@ public class WebViewConnection: Connection, CallableBinder {
     func userScript() -> String? {
         guard scriptParts.count > 0 else { return nil }
         let exports = scriptParts.map { name in
-            return "exports.push(\"\(name)\");"
+            "exports.push(\"\(name)\");"
         }.joined()
         let stubScript = """
         __nimbusPluginExports = window.__nimbusPluginExports || {};

@@ -83,49 +83,175 @@ class SharedTestsWebView: XCTestCase {
         XCTAssertTrue(expectPlugin.passed, "Failed: \(testName)")
     }
 
-    func testAllTests() { // swiftlint:disable:this function_body_length
+    func testVerifyNullaryResolvingToInt() {
         executeTest("verifyNullaryResolvingToInt()")
+    }
+
+    func testVerifyNullaryResolvingToDouble() {
         executeTest("verifyNullaryResolvingToDouble()")
-        executeTest("verifyNullaryResolvingToDouble()")
+    }
+
+    func testVerifyNullaryResolvingToString() {
         executeTest("verifyNullaryResolvingToString()")
+    }
+
+    func testVerifyNullaryResolvingToStruct() {
         executeTest("verifyNullaryResolvingToStruct()")
+    }
+
+    func testVerifyNullaryResolvingToIntList() {
         executeTest("verifyNullaryResolvingToIntList()")
+    }
+
+    func testVerifyNullaryResolvingToDoubleList() {
         executeTest("verifyNullaryResolvingToDoubleList()")
+    }
+
+    func testVerifyNullaryResolvingToStringList() {
         executeTest("verifyNullaryResolvingToStringList()")
+    }
+
+    func testVerifyNullaryResolvingToStructList() {
         executeTest("verifyNullaryResolvingToStructList()")
+    }
+
+    func testVerifyNullaryResolvingToIntArray() {
         executeTest("verifyNullaryResolvingToIntArray()")
+    }
+
+    func testVerifyNullaryResolvingToStringStringMap() {
         executeTest("verifyNullaryResolvingToStringStringMap()")
+    }
+
+    func testVerifyNullaryResolvingToStringIntMap() {
         executeTest("verifyNullaryResolvingToStringIntMap()")
+    }
+
+    func testVerifyNullaryResolvingToStringDoubleMap() {
         executeTest("verifyNullaryResolvingToStringDoubleMap()")
+    }
+
+    func testVerifyNullaryResolvingToStringStructMap() {
         executeTest("verifyNullaryResolvingToStringStructMap()")
+    }
+
+    func testVerifyUnaryIntResolvingToInt() {
         executeTest("verifyUnaryIntResolvingToInt()")
+    }
+
+    func testVerifyUnaryDoubleResolvingToDouble() {
         executeTest("verifyUnaryDoubleResolvingToDouble()")
+    }
+
+    func testVerifyUnaryStringResolvingToInt() {
         executeTest("verifyUnaryStringResolvingToInt()")
+    }
+
+    func testVerifyUnaryStructResolvingToJsonString() {
         executeTest("verifyUnaryStructResolvingToJsonString()")
+    }
+
+    func testVerifyUnaryStringListResolvingToString() {
         executeTest("verifyUnaryStringListResolvingToString()")
+    }
+
+    func testVerifyUnaryIntListResolvingToString() {
         executeTest("verifyUnaryIntListResolvingToString()")
+    }
+
+    func testVerifyUnaryDoubleListResolvingToString() {
         executeTest("verifyUnaryDoubleListResolvingToString()")
+    }
+
+    func testVerifyUnaryStructListResolvingToString() {
         executeTest("verifyUnaryStructListResolvingToString()")
+    }
+
+    func testVerifyUnaryIntArrayResolvingToString() {
         executeTest("verifyUnaryIntArrayResolvingToString()")
+    }
+
+    func testVerifyUnaryStringStringMapResolvingToString() {
         executeTest("verifyUnaryStringStringMapResolvingToString()")
+    }
+
+    func testVerifyUnaryStringStructMapResolvingToString() {
         executeTest("verifyUnaryStringStructMapResolvingToString()")
+    }
+
+    func testVerifyUnaryCallbackEncodable() {
+        executeTest("verifyUnaryCallbackEncodable()")
+    }
+
+    func testVerifyNullaryResolvingToStringCallback() {
         executeTest("verifyNullaryResolvingToStringCallback()")
+    }
+
+    func testVerifyNullaryResolvingToIntCallback() {
         executeTest("verifyNullaryResolvingToIntCallback()")
+    }
+
+    func testVerifyNullaryResolvingToDoubleCallback() {
         executeTest("verifyNullaryResolvingToDoubleCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStructCallback() {
         executeTest("verifyNullaryResolvingToStructCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringListCallback() {
         executeTest("verifyNullaryResolvingToStringListCallback()")
+    }
+
+    func testVerifyNullaryResolvingToIntListCallback() {
         executeTest("verifyNullaryResolvingToIntListCallback()")
+    }
+
+    func testVerifyNullaryResolvingToDoubleListCallback() {
         executeTest("verifyNullaryResolvingToDoubleListCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStructListCallback() {
         executeTest("verifyNullaryResolvingToStructListCallback()")
+    }
+
+    func testVerifyNullaryResolvingToIntArrayCallback() {
         executeTest("verifyNullaryResolvingToIntArrayCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringStringMapCallback() {
         executeTest("verifyNullaryResolvingToStringStringMapCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringIntMapCallback() {
         executeTest("verifyNullaryResolvingToStringIntMapCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringDoubleMapCallback() {
         executeTest("verifyNullaryResolvingToStringDoubleMapCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringStructMapCallback() {
         executeTest("verifyNullaryResolvingToStringStructMapCallback()")
+    }
+
+    func testVerifyNullaryResolvingToStringIntCallback() {
         executeTest("verifyNullaryResolvingToStringIntCallback()")
+    }
+
+    func testVerifyNullaryResolvingToIntStructCallback() {
         executeTest("verifyNullaryResolvingToIntStructCallback()")
+    }
+
+    func testVerifyUnaryIntResolvingToIntCallback() {
         executeTest("verifyUnaryIntResolvingToIntCallback()")
+    }
+
+    func testVerifyBinaryIntDoubleResolvingToIntDoubleCallback() {
         executeTest("verifyBinaryIntDoubleResolvingToIntDoubleCallback()")
+    }
+
+    func testVerifyBinaryIntResolvingIntCallbackReturnsInt() {
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
     }
 
