@@ -256,6 +256,7 @@ class SharedTestsWebView: XCTestCase {
     }
 
     func testEventPublishing() {
+        expectPlugin.readyExpectation = expectation(description: "ready")
         let subscribe = expectation(description: "subscribe")
         webView.evaluateJavaScript("subscribeToStructEvent()") { _, _ in
             subscribe.fulfill()
