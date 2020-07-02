@@ -587,6 +587,7 @@ function subscribeToStructEvent() {
     __nimbus.plugins.expectPlugin.finished();
   }).then((listen) => {
     listenerID = listen;
+    __nimbus.plugins.expectPlugin.ready();
   });
 }
 

@@ -3,6 +3,9 @@ package com.salesforce.nimbus.bridge.tests.plugin
 import com.salesforce.k2v8.V8ObjectDecoder
 import com.salesforce.k2v8.V8ObjectEncoder
 import com.salesforce.nimbus.BoundMethod
+import com.salesforce.nimbus.DefaultEventPublisher
+import com.salesforce.nimbus.Event
+import com.salesforce.nimbus.EventPublisher
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import kotlinx.serialization.Decoder
@@ -61,8 +64,13 @@ object DateSerializer : KSerializer<Date> {
     }
 }
 
+@Serializable
+class StructEvent(val theStruct: TestStruct) : Event {
+    override val name: String = "structEvent"
+}
+
 @PluginOptions(name = "testPlugin")
-class TestPlugin : Plugin {
+class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher() {
 
     // region nullary parameters
 

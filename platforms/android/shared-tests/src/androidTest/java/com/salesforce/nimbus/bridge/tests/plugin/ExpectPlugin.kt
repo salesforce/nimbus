@@ -8,9 +8,12 @@ import java.util.concurrent.CountDownLatch
 @PluginOptions("expectPlugin")
 class ExpectPlugin : Plugin {
 
-    val testReady = CountDownLatch(1)
-    val testFinished = CountDownLatch(1)
+    var testReady = CountDownLatch(1)
+        private set
+    var testFinished = CountDownLatch(1)
+        private set
     var passed = false
+        private set
 
     @BoundMethod
     fun ready() {
@@ -25,5 +28,11 @@ class ExpectPlugin : Plugin {
     @BoundMethod
     fun finished() {
         testFinished.countDown()
+    }
+
+    fun reset() {
+        testReady = CountDownLatch(1)
+        testFinished = CountDownLatch(1)
+        passed = false
     }
 }

@@ -452,7 +452,7 @@ class V8BinderGenerator : BinderGenerator() {
         argBlock
             .addStatement(")")
             .addStatement(
-                "callback$parameterIndex.use { it.call(v8, params.%T(v8)) }",
+                "callback$parameterIndex.call(v8, params.%T(v8))",
                 ClassName(k2v8Package, "toV8Array")
             )
 
