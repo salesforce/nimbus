@@ -64,6 +64,23 @@ class EventPublisherTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
+    func testDispatchTwice() {
+        var exp = expectation(description: "dispatch")
+        // Add a listener
+        _ = target.addListener(name: "testEventOne") { result in
+            XCTAssertTrue(result is TestEventOne)
+            exp.fulfill()
+        }
+        // Dispatch an event
+        target.publishEvent(\.testEventOne, payload: TestEventOne(message: "testMessage"))
+        // verify listener is called
+        waitForExpectations(timeout: 1, handler: nil)
+
+        exp = expectation(description: "dispatch again")
+        target.publishEvent(\.testEventOne, payload: TestEventOne(message: "testMessage"))
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
     func testRemoveListener() {
         var exp = expectation(description: "dispatch")
         // Add a listener
