@@ -38,7 +38,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
     func loadWebViewAndWait(html: String = "<html><body></body></html>") {
         loadingExpectation = expectation(description: "web view loaded")
         webView.loadHTMLString(html, baseURL: nil)
-        wait(for: [loadingExpectation!], timeout: 10)
+        wait(for: [loadingExpectation!], timeout: 60)
     }
 
     func webView(_: WKWebView, didFinish _: WKNavigation!) {
