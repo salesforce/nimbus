@@ -6,11 +6,11 @@ plugins {
 }
 
 dependencies {
-    implementation(Libs.kotlin_stdlib)
+    implementation(Libs.kotlinStdlib)
     implementation(nimbusModule("annotations"))
     api(Libs.kotlinpoet)
-    api(Libs.kotlinx_metadata_jvm)
-    implementation(Libs.kotlinx_serialization_runtime)
+    api(Libs.kotlinxMetadataJvm)
+    implementation(Libs.kotlinxSerializationRuntime)
 }
 
 apply(from = rootProject.file("gradle/java-publishing-tasks.gradle"))

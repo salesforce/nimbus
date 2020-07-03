@@ -66,16 +66,16 @@ dependencies {
     kaptAndroidTest project(":modules:compiler-webview")
     kaptAndroidTest project(":modules:compiler-v8")
 
-    androidTestImplementation(Libs.kotlinx_serialization_runtime)
+    androidTestImplementation(Libs.kotlinxSerializationRuntime)
     androidTestImplementation(Libs.junit)
-    androidTestImplementation(Libs.espresso_core)
-    androidTestImplementation(Libs.androidx_test_rules, {
+    androidTestImplementation(Libs.espressoCore)
+    androidTestImplementation(Libs.androidxTestRules, {
         exclude group: "com.android.support", module: "support-annotations"
     })
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotest_runner_junit5)
-    androidTestImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
-    androidTestImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
+    androidTestImplementation(Libs.kotestRunner)
+    androidTestImplementation(Libs.kotestProperty)
+    androidTestImplementation(Libs.kotestAssertions)
 }
 
 /*

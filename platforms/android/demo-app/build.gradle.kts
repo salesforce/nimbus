@@ -38,8 +38,8 @@ dependencies {
     kapt(nimbusModule("compiler-webview"))
     kapt(nimbusModule("compiler-v8"))
 
-    implementation(Libs.kotlin_stdlib)
-    implementation(Libs.kotlinx_serialization_runtime)
+    implementation(Libs.kotlinStdlib)
+    implementation(Libs.kotlinxSerializationRuntime)
     implementation(Libs.j2v8)
     implementation(Libs.k2v8)
     implementation(Libs.appcompat)

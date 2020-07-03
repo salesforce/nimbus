@@ -13,14 +13,14 @@ android {
 }
 
 dependencies {
-    api(Libs.kotlin_stdlib)
-    compileOnly(Libs.kotlinx_serialization_runtime)
+    api(Libs.kotlinStdlib)
+    compileOnly(Libs.kotlinxSerializationRuntime)
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)
     testImplementation(Libs.junit)
-    testImplementation(Libs.kotest_runner_junit5)
-    testImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
+    testImplementation(Libs.kotestRunner)
+    testImplementation(Libs.kotestAssertions)
+    testImplementation(Libs.kotestProperty)
     testImplementation(Libs.json)
 }
 

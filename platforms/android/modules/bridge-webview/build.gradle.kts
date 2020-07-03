@@ -19,12 +19,12 @@ dependencies {
     api(nimbusModule("core"))
     kapt(nimbusModule("compiler-webview"))
 
-    api(Libs.kotlin_stdlib)
+    api(Libs.kotlinStdlib)
 
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
-    testImplementation(Libs.kotest_runner_junit5)
-    testImplementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest_runner_junit5}")
+    testImplementation(Libs.kotestRunner)
+    testImplementation(Libs.kotestAssertions)
     testImplementation(Libs.mockk)
     kaptTest(nimbusModule("compiler-webview"))
 

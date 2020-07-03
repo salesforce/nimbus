@@ -35,24 +35,24 @@ dependencies {
     kapt(nimbusModule("compiler-v8"))
 
     api(Libs.j2v8)
-    implementation(Libs.kotlinx_serialization_runtime)
-    api(Libs.kotlin_stdlib)
+    implementation(Libs.kotlinxSerializationRuntime)
+    api(Libs.kotlinStdlib)
 
-    androidTestImplementation("io.mockk:mockk-android:${Versions.mockk}")
+    androidTestImplementation(Libs.mockkAndroid)
     androidTestImplementation(Libs.junit)
-    androidTestImplementation(Libs.espresso_core)
-    androidTestImplementation(Libs.androidx_test_rules) {
+    androidTestImplementation(Libs.espressoCore)
+    androidTestImplementation(Libs.androidxTestRules) {
         exclude("com.android.support", "support-annotations")
     }
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotest_runner_junit5)
-    androidTestImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
+    androidTestImplementation(Libs.kotestRunner)
+    androidTestImplementation(Libs.kotestProperty)
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.truth)
-    testImplementation(Libs.kotest_runner_junit5)
-    testImplementation("io.kotest:kotest-property-jvm:${Versions.kotest_runner_junit5}")
+    testImplementation(Libs.kotestRunner)
+    testImplementation(Libs.kotestProperty)
     kaptTest(nimbusModule("compiler-v8"))
 }
 
