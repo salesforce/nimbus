@@ -108,6 +108,19 @@ public class WebViewConnection: Connection, CallableBinder {
         }
     }
 
+    func encode(_ value: Encodable) -> Result<Any?, Error> {
+        if #available(iOS 13, macOS 10.15, *) {
+            return Result {
+                try value.toJSONValue()
+            }
+        } else {
+            let encodableValue: EncodableValue = .value(value)
+            return Result {
+                try encodableValue.toJSONValue()
+            }
+        }
+    }
+
     func callback<T: Encodable>(from value: Any?, taking argType: T.Type) -> Result<(T) -> Void, Error> {
         guard
             let callbackId = value as? String,
@@ -118,6 +131,20 @@ public class WebViewConnection: Connection, CallableBinder {
         let callback = WebViewCallback(webView: webView, callbackId: callbackId)
         return .success({ [weak self] (value: T) in
             guard let self = self else { return }
+            guard let result = try? self.encode(value).get() as Any else { return }
+            _ = try? callback.call(args: [result])
+        })
+    }
+
+    func callbackEncodable(from value: Any?) -> Result<(Encodable) -> Void, Error> {
+        guard
+            let callbackId = value as? String,
+            let webView = self.webView
+        else {
+            return .failure(DecodeError())
+        }
+        let callback = WebViewCallback(webView: webView, callbackId: callbackId)
+        return .success({ (value: Encodable) in
             guard let result = try? self.encode(value).get() as Any else { return }
             _ = try? callback.call(args: [result])
         })
@@ -196,4 +223,10 @@ public class WebViewConnection: Connection, CallableBinder {
     private weak var webView: WKWebView?
     private var bridge: JSEvaluating?
     private var bindings: [String: Callable] = [:]
+}
+
+extension Encodable {
+    func toJSONValue() throws -> Any? {
+        return try String(data: JSONEncoder().encode(self), encoding: .utf8)
+    }
 }

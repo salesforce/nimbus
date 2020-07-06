@@ -51,7 +51,7 @@ class WebViewCallback {
             {
                 var jsonArgs = \(formattedJsonArgs);
                 jsonArgs = jsonArgs.map(v => v.v);
-                __nimbus.callCallback('\(self.callbackId)', ...jsonArgs);
+                __nimbus.callCallback('\(callbackId)', ...jsonArgs);
             }
             null;
             """

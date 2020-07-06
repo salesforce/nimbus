@@ -6,6 +6,8 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
+// swiftlint:disable type_body_length
+
 import JavaScriptCore
 import XCTest
 @testable import Nimbus

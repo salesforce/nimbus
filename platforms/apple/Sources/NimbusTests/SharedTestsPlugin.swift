@@ -10,11 +10,18 @@ import XCTest
 @testable import Nimbus
 
 class TestPlugin: Plugin {
+    var eventPublisher = EventPublisher<SharedTestEvents>()
+
     var namespace: String {
         return "testPlugin"
     }
 
+    func publishStructEvent() {
+        eventPublisher.publishEvent(\SharedTestEvents.structEvent, payload: StructEvent(theStruct: TestStruct()))
+    }
+
     func bind<C>(to connection: C) where C: Connection { // swiftlint:disable:this function_body_length
+        eventPublisher.bind(to: connection)
         connection.bind(nullaryResolvingToInt, as: "nullaryResolvingToInt")
         connection.bind(nullaryResolvingToDouble, as: "nullaryResolvingToDouble")
         connection.bind(nullaryResolvingToString, as: "nullaryResolvingToString")
@@ -39,6 +46,7 @@ class TestPlugin: Plugin {
         connection.bind(unaryIntArrayResolvingToString, as: "unaryIntArrayResolvingToString")
         connection.bind(unaryStringStringMapResolvingToString, as: "unaryStringStringMapResolvingToString")
         connection.bind(unaryStringStructMapResolvingToString, as: "unaryStringStructMapResolvingToString")
+        connection.bind(unaryCallbackEncodable, as: "unaryCallbackEncodable")
         connection.bind(nullaryResolvingToStringCallback, as: "nullaryResolvingToStringCallback")
         connection.bind(nullaryResolvingToIntCallback, as: "nullaryResolvingToIntCallback")
         connection.bind(nullaryResolvingToDoubleCallback, as: "nullaryResolvingToDoubleCallback")
@@ -161,6 +169,10 @@ class TestPlugin: Plugin {
 
     func unaryStringStructMapResolvingToString(param: [String: TestStruct]) -> String {
         return param.map { "\($0.key), \($0.value.asString())" }.sorted().joined(separator: ", ")
+    }
+
+    func unaryCallbackEncodable(callback: (Encodable) -> Void) {
+        callback(TestStruct())
     }
 
     func nullaryResolvingToStringCallback(callback: (String) -> Void) {
@@ -328,5 +340,21 @@ struct TestStruct: Codable {
 
     func asString() -> String {
         return "\(string), \(integer), \(double)"
+    }
+}
+
+struct StructEvent: Codable {
+    var theStruct: TestStruct
+}
+
+struct SharedTestEvents: EventKeyPathing {
+    var structEvent: StructEvent
+
+    static func stringForKeyPath(_ keyPath: PartialKeyPath<SharedTestEvents>) -> String? {
+        switch keyPath {
+        case \SharedTestEvents.structEvent: return "structEvent"
+        default:
+            return nil
+        }
     }
 }
