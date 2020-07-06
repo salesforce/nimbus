@@ -60,7 +60,62 @@ jobs:
           name: Build Swift Package
           command: swift build
 
-  build-and-test-ios:
+  build-and-test-ios-11:
+    macos:
+      xcode: "11.1.0"
+
+    shell: /bin/bash --login -eo pipefail
+
+    steps:
+      - checkout
+
+      - run:
+          name: Prime iOS 11 Simulator
+          command: xcrun instruments -w "iPhone 7 (11.4) [" || true
+
+      - restore_cache:
+          keys:
+            - v1-pods-ios-11-{{ checksum "platforms/apple/Podfile.lock" }}
+            - v1-pods-ios-11
+
+      - restore_cache:
+          keys:
+            - v1-bundler-ios-11-{{ checksum "platforms/apple/Gemfile.lock" }}
+            - v1-bundler-ios-11
+
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            bundle install
+            bundle exec pod install
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/Pods
+          key: v1-pods-ios-11-{{ checksum "platforms/apple/Podfile.lock" }}
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/.bundle
+          key: v1-bundler-ios-11-{{ checksum "platforms/apple/Gemfile.lock" }}
+
+      - run:
+          name: Build iOS 11
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=11.4,platform=iOS Simulator,name=iPhone 7'
+
+      - run:
+          name: Test iOS 11
+          working_directory: platforms/apple
+          command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=11.4,platform=iOS Simulator,name=iPhone 7' -enableCodeCoverage NO
+
+      - run:
+          name: Build iOS Demo app iOS 11
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusApp -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=11.4,platform=iOS Simulator,name=iPhone 7'
+
+  build-and-test-ios-12:
     macos:
       xcode: "11.5.0"
 
@@ -70,17 +125,8 @@ jobs:
       - checkout
 
       - run:
-          name: Prime iOS 12 Simulator
-          command: xcrun instruments -w "iPhone 7 (12.4) [" || true
-
-      - run:
-          name: Prime iOS 13 Simulator
-          command: xcrun instruments -w "iPhone 11 Pro (13.5) [" || true
-
-      - run:
-          name: Build nimbus-bridge
-          command: |
-            npm install
+            name: Prime iOS 12 Simulator
+            command: xcrun instruments -w "iPhone 7 (12.4) [" || true
 
       - restore_cache:
           keys:
@@ -120,6 +166,56 @@ jobs:
           command: xcodebuild test -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.4,platform=iOS Simulator,name=iPhone 7' -enableCodeCoverage NO
 
       - run:
+          name: Build iOS Demo app iOS 12
+          working_directory: platforms/apple
+          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusApp -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.4,platform=iOS Simulator,name=iPhone 7'
+
+  build-and-test-ios-13:
+    macos:
+      xcode: "11.5.0"
+
+    shell: /bin/bash --login -eo pipefail
+
+    steps:
+      - checkout
+
+      - run:
+          name: Prime iOS 13 Simulator
+          command: xcrun instruments -w "iPhone 11 Pro (13.5) [" || true
+
+      - run:
+          name: Build nimbus-bridge
+          command: |
+            npm install
+
+      - restore_cache:
+          keys:
+            - v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
+            - v1-pods
+
+      - restore_cache:
+          keys:
+            - v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
+            - v1-bundler
+
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            bundle install
+            bundle exec pod install
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/Pods
+          key: v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/.bundle
+          key: v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
+
+      - run:
           name: Build iOS 13
           working_directory: platforms/apple
           command: xcodebuild build -workspace Nimbus.xcworkspace -scheme Nimbus -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=13.5,platform=iOS Simulator,name=iPhone 11 Pro'
@@ -139,11 +235,6 @@ jobs:
           working_directory: platforms/apple
           command: |
             bundle exec slather coverage -x -b build/Debug --scheme Nimbus ./Nimbus.xcodeproj/
-
-      - run:
-          name: Build iOS Demo app iOS 12
-          working_directory: platforms/apple
-          command: xcodebuild build -workspace Nimbus.xcworkspace -scheme NimbusApp -configuration Debug -sdk iphonesimulator -derivedDataPath build/Debug -destination 'OS=12.4,platform=iOS Simulator,name=iPhone 7'
 
       - run:
           name: Build iOS Demo app iOS 13
@@ -388,7 +479,7 @@ workflows:
   version: 2
   create-release-from-tag:
     jobs:
-      - build-and-test-ios:
+      - build-and-test-ios-13:
           filters:
             branches:
               ignore: /.*/
@@ -402,7 +493,7 @@ workflows:
               only: /.*/
       - create-tagged-release:
           requires:
-            - build-and-test-ios
+            - build-and-test-ios-13
           filters:
             branches:
               ignore: /.*/
@@ -419,7 +510,9 @@ workflows:
 
   build-and-test:
     jobs:
-      - build-and-test-ios
+      - build-and-test-ios-13
+      - build-and-test-ios-12
+      - build-and-test-ios-11
       - build-and-test-macos
       - build-swiftpm
       - build-and-test-android
@@ -427,7 +520,7 @@ workflows:
       - build-docs:
           requires:
             - build-and-test-ts
-            - build-and-test-ios
+            - build-and-test-ios-13
             - build-and-test-android
       - publish-docs:
           requires:
@@ -438,5 +531,5 @@ workflows:
                 - master
       - upload-coverage:
           requires:
-            - build-and-test-ios
+            - build-and-test-ios-13
             - build-and-test-android
