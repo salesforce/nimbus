@@ -23,13 +23,14 @@ dependencies {
 
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
-    testImplementation(Libs.kotestRunner)
-    testImplementation(Libs.kotestAssertions)
     testImplementation(Libs.mockk)
+    androidTestImplementation(Libs.mockkAndroid)
     kaptTest(nimbusModule("compiler-webview"))
 
     kaptAndroidTest(nimbusModule("compiler-webview"))
 }
+
+addTestDependencies()
 
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {

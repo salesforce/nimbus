@@ -37,9 +37,10 @@ dependencies {
     implementation(Libs.kotlinStdlib)
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espressoCore)
-    androidTestImplementation(Libs.kotestRunner)
     androidTestImplementation(Libs.truth)
 }
+
+addTestDependencies()
 
 apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
 

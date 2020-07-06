@@ -17,7 +17,7 @@ fun AndroidLibraryExtension.setDefaults() {
             isTestCoverageEnabled = false
         }
         getByName("debug") {
-            isTestCoverageEnabled = true
+            isTestCoverageEnabled = false
         }
     }
 

@@ -22,7 +22,7 @@ android {
             testCoverageEnabled false
         }
         debug {
-            testCoverageEnabled true
+//            testCoverageEnabled true
         }
     }
 
@@ -45,6 +45,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -73,9 +74,6 @@ dependencies {
         exclude group: "com.android.support", module: "support-annotations"
     })
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotestRunner)
-    androidTestImplementation(Libs.kotestProperty)
-    androidTestImplementation(Libs.kotestAssertions)
 }
 
 /*

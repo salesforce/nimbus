@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
@@ -45,16 +46,14 @@ dependencies {
         exclude("com.android.support", "support-annotations")
     }
     androidTestImplementation(Libs.truth)
-    androidTestImplementation(Libs.kotestRunner)
-    androidTestImplementation(Libs.kotestProperty)
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.truth)
-    testImplementation(Libs.kotestRunner)
-    testImplementation(Libs.kotestProperty)
     kaptTest(nimbusModule("compiler-v8"))
 }
+
+addTestDependencies()
 
 tasks {
     val dokka by getting(DokkaTask::class) {

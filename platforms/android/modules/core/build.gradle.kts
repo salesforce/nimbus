@@ -18,11 +18,10 @@ dependencies {
     compileOnly(Libs.j2v8)
     compileOnly(Libs.k2v8)
     testImplementation(Libs.junit)
-    testImplementation(Libs.kotestRunner)
-    testImplementation(Libs.kotestAssertions)
-    testImplementation(Libs.kotestProperty)
     testImplementation(Libs.json)
 }
+
+addTestDependencies()
 
  apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
 

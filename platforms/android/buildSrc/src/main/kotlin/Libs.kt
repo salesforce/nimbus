@@ -19,8 +19,11 @@ object Libs {
 
     const val kotestProperty: String = "io.kotest:kotest-property-jvm:" + Versions.kotest
 
-    const val kotestRunner: String = "io.kotest:kotest-runner-junit5-jvm:" +
+    const val kotestRunnerJUnit5: String = "io.kotest:kotest-runner-junit5-jvm:" +
             Versions.kotest
+
+    const val kotestRunnerConsole: String = "io.kotest:kotest-runner-console-jvm:" +
+        Versions.kotest
 
     const val mockk: String = "io.mockk:mockk:" + Versions.mockk
 
