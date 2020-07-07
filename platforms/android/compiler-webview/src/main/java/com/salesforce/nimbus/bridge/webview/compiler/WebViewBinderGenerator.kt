@@ -14,7 +14,6 @@ import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
@@ -34,7 +33,7 @@ class WebViewBinderGenerator : BinderGenerator() {
     override val serializedOutputType = ClassName("kotlin", "String")
 
     private val jsonSerializationClassName = ClassName("kotlinx.serialization.json", "Json")
-    private val jsonSerializationConfigurationClassName = ClassName("kotlinx.serialization.json", "JsonConfiguration")
+    private val jsonSerializationConfigurationClassName = ClassName(nimbusPackage, "NIMBUS_JSON_CONFIGURATION")
 
     private val jsonObjectClassName = ClassName("org.json", "JSONObject")
 
@@ -425,10 +424,10 @@ class WebViewBinderGenerator : BinderGenerator() {
                 "__nimbus.callCallback",
                 "args"
             )
-        )
+        ).add("\n")
 
         // get the type args for the lambda function
-        val lambdaTypeArgs =
+        val functionTypeArgs =
             declaredType.typeArguments.mapIndexed { index, type ->
                 val kotlinType = kotlinParameterType?.arguments?.get(index)
                 val typeIsNullable = kotlinType.isNullable()
@@ -440,26 +439,61 @@ class WebViewBinderGenerator : BinderGenerator() {
                 }
             }
 
-        val lambdaType = LambdaTypeName.get(
-            null,
-            parameters = *lambdaTypeArgs.dropLast(1).toTypedArray(),
-            returnType = lambdaTypeArgs.last()
-        )
+        val functionType = ClassName(
+            "kotlin",
+            "Function${declaredType.typeArguments.size - 1}"
+        ).parameterizedBy(functionTypeArgs)
 
-        val lambda = CodeBlock.builder()
+        val function = CodeBlock.builder()
             .beginControlFlow(
-                "val %N: %T = { ${declaredType.typeArguments.dropLast(
-                    1
-                ).mapIndexed { index, _ -> "arg$index" }.joinToString(
-                    separator = ", "
-                )} ->",
+                "val %N = object : %T {",
                 parameter.simpleName,
-                lambdaType
+                functionType
+            )
+            .beginControlFlow(
+                "override fun invoke(${declaredType.typeArguments.dropLast(
+                    1
+                ).mapIndexed { index, _ -> "arg$index: %T" }.joinToString(
+                    separator = ", "
+                )})",
+                *functionTypeArgs.dropLast(1).toTypedArray()
             )
             .add("%L", invoke.build())
             .endControlFlow()
+            .add("\n")
+            .beginControlFlow(
+                "protected fun finalize()"
+            )
+            .addStatement(
+                "val args = arrayOf<%T>(",
+                ClassName(
+                    nimbusPackage,
+                    "JSEncodable"
+                ).parameterizedBy(serializedOutputType).nullable(true)
+            )
+            .indent()
+            .add(
+                "%T(%NId)\n",
+                ClassName(
+                    nimbusPackage,
+                    "PrimitiveJSONEncodable"
+                ),
+                parameter.simpleName
+            )
+            .unindent()
+            .add(")\n")
+            .add(
+                CodeBlock.of(
+                    "runtime?.invoke(%S, %N, null)",
+                    "__nimbus.releaseCallback",
+                    "args"
+                )
+            )
+            .add("\n")
+            .endControlFlow()
+            .endControlFlow()
 
-        funSpec.addCode(lambda.build())
+        funSpec.addCode(function.build())
     }
 
     private fun processListParameter(
@@ -476,7 +510,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 String::class
             )
             funSpec.addStatement(
-                "val %N = %T(%T.Stable).parse(%T(%T.serializer()), %NString)",
+                "val %N = %T(%T).parse(%T(%T.serializer()), %NString)",
                 parameter.simpleName,
                 jsonSerializationClassName,
                 jsonSerializationConfigurationClassName,
@@ -520,7 +554,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 String::class
             )
             funSpec.addStatement(
-                "val %N = %T(%T.Stable).parse(%T(%T.serializer(), %T.serializer()), %NString)",
+                "val %N = %T(%T).parse(%T(%T.serializer(), %T.serializer()), %NString)",
                 parameter.simpleName,
                 jsonSerializationClassName,
                 jsonSerializationConfigurationClassName,
@@ -583,7 +617,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                     String::class
                 )
                 funSpec.addStatement(
-                    "val %N = %T(%T.Stable).parse(%T.serializer(), %NString)",
+                    "val %N = %T(%T).parse(%T.serializer(), %NString)",
                     parameter.simpleName,
                     jsonSerializationClassName,
                     jsonSerializationConfigurationClassName,
@@ -636,7 +670,7 @@ class WebViewBinderGenerator : BinderGenerator() {
             parameterType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T.Stable).stringify(%T(%T.%T()), target.%N($argsString))",
+                        "val json = %T(%T).stringify(%T(%T.%T()), target.%N($argsString))",
                         jsonSerializationClassName,
                         jsonSerializationConfigurationClassName,
                         listSerializerClassName,
@@ -676,7 +710,7 @@ class WebViewBinderGenerator : BinderGenerator() {
             arrayType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T.Stable).stringify(%T(%T.%T()), target.%N($argsString))",
+                        "val json = %T(%T).stringify(%T(%T.%T()), target.%N($argsString))",
                         jsonSerializationClassName,
                         jsonSerializationConfigurationClassName,
                         arraySerializerClassName,
@@ -725,7 +759,7 @@ class WebViewBinderGenerator : BinderGenerator() {
             valueParameterType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T.Stable).stringify(%T(%T.%T(), %T.%T()), target.%N($argsString))",
+                        "val json = %T(%T).stringify(%T(%T.%T(), %T.%T()), target.%N($argsString))",
                         jsonSerializationClassName,
                         jsonSerializationConfigurationClassName,
                         mapSerializerClassName,
@@ -779,7 +813,7 @@ class WebViewBinderGenerator : BinderGenerator() {
     ) {
         funSpec.apply {
             addStatement(
-                "val json = %T(%T.Stable).stringify(%T.serializer(), target.%N($argsString))",
+                "val json = %T(%T).stringify(%T.serializer(), target.%N($argsString))",
                 jsonSerializationClassName,
                 jsonSerializationConfigurationClassName,
                 functionElement.returnType,
