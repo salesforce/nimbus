@@ -46,6 +46,8 @@ dependencies {
         exclude("com.android.support", "support-annotations")
     }
     androidTestImplementation(Libs.truth)
+    androidTestImplementation(Libs.kotestProperty)
+    androidTestImplementation(Libs.mockkAndroid)
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
     testImplementation(Libs.mockk)
