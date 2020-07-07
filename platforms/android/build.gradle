@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 buildscript {
@@ -32,7 +33,9 @@ allprojects {
         }
     }
     group GROUP
-    version VERSION
+    def versionFile = file("$rootDir/../../lerna.json")
+    def parsedVersion = new JsonSlurper().parseText(versionFile.text)
+    version = parsedVersion.version.toString()
 
     junitJacoco {
         jacocoVersion = Versions.jacoco // type String
@@ -49,14 +52,11 @@ task clean(type: Delete) {
 
 artifactory {
     contextUrl = 'http://oss.jfrog.org'
-//    contextUrl = 'http://127.0.0.1:8081/artifactory'
     publish {
         repository {
             repoKey = 'oss-snapshot-local'
             username = System.getenv('BINTRAY_USER')
             password = System.getenv('BINTRAY_API_KEY')
-//            username = 'admin'
-//            password = 'test1234'
         }
         defaults {
             publications('mavenPublication')
@@ -66,42 +66,5 @@ artifactory {
     }
     resolve {
         repoKey = 'jcenter'
-    }
-}
-// TODO: Move lint to plugin
-// TODO: Move Dokka config to plugin
-tasks.withType(Test) {
-    testLogging {
-        // set options for log level LIFECYCLE
-        events TestLogEvent.FAILED,
-            TestLogEvent.PASSED,
-            TestLogEvent.SKIPPED,
-            TestLogEvent.STANDARD_OUT
-        exceptionFormat TestExceptionFormat.FULL
-        showExceptions true
-        showCauses true
-        showStackTraces true
-
-        // set options for log level DEBUG and INFO
-        debug {
-            events TestLogEvent.STARTED,
-                TestLogEvent.FAILED,
-                TestLogEvent.PASSED,
-                TestLogEvent.SKIPPED,
-                TestLogEvent.STANDARD_ERROR,
-                TestLogEvent.STANDARD_OUT
-            exceptionFormat TestExceptionFormat.FULL
-        }
-        info.events = debug.events
-        info.exceptionFormat = debug.exceptionFormat
-
-        afterSuite { desc, result ->
-            if (!desc.parent) { // will match the outermost suite
-                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
-                def startItem = '|  ', endItem = '  |'
-                def repeatLength = startItem.length() + output.length() + endItem.length()
-                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
-            }
-        }
     }
 }
