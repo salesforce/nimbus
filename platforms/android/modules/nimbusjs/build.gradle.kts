@@ -26,12 +26,12 @@ fun String.runCommand(): String? {
 }
 
 // TODO: Move this to before build... right now it's called whenever a sync or any task.
-gradle.afterProject {
-    if (name == "nimbusjs") {
-        println("Building nimbus.js")
-        "$rootDir/modules/nimbusjs/buildNimbusJS.sh".runCommand()
-    }
-}
+//gradle.afterProject {
+//    if (name == "nimbusjs") {
+//        println("Building nimbus.js")
+//        "$rootDir/modules/nimbusjs/buildNimbusJS.sh".runCommand()
+//    }
+//}
 
 dependencies {
     implementation(Libs.kotlinStdlib)

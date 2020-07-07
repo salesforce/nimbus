@@ -27,6 +27,14 @@ android {
         excludes.add("META-INF/ASL2.0")
         excludes.add("META-INF/*.kotlin_module")
     }
+    compileOptions {
+        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
 }
 
 dependencies {
@@ -47,8 +55,10 @@ dependencies {
     }
     androidTestImplementation(Libs.truth)
     androidTestImplementation(Libs.kotestProperty)
+    androidTestImplementation(Libs.kotestCore)
     androidTestImplementation(Libs.mockkAndroid)
     kaptAndroidTest(nimbusModule("compiler-v8"))
+    androidTestImplementation("io.kotest:kotest-extensions-robolectric-jvm:+")
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.truth)

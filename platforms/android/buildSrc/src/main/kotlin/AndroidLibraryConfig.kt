@@ -1,5 +1,6 @@
 import org.gradle.api.JavaVersion
 import com.android.build.gradle.LibraryExtension as AndroidLibraryExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun AndroidLibraryExtension.setDefaults() {
     compileSdkVersion(ProjectVersions.androidSdk)
@@ -31,6 +32,11 @@ fun AndroidLibraryExtension.setDefaults() {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
 
     packagingOptions {
         pickFirst("META-INF/LICENSE*")
