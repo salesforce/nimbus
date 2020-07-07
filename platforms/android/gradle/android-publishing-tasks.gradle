@@ -13,9 +13,9 @@ afterEvaluate {
     publishing {
         publications {
             mavenPublication(MavenPublication) {
-//                groupId = group
                 artifact(sourcesJar)
-                artifact("$buildDir/outputs/aar/$project.name-release.aar")
+                // TODO: Create debug and release publications...?
+                from components.release
             }
         }
     }

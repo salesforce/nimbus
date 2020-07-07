@@ -1,12 +1,8 @@
 apply plugin: 'maven-publish'
 
-task sourcesJar(type: Jar, dependsOn:classes) {
-    archiveClassifier.set('sources')
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 artifactoryPublish.dependsOn("build")
@@ -15,13 +11,7 @@ afterEvaluate {
     publishing {
         publications {
             mavenPublication(MavenPublication) {
-//                from components.java
-                artifact sourcesJar
-                artifact("$buildDir/outputs/libs/${project.name}.jar")
             }
         }
-    }
-    artifactoryPublish {
-        publications(publishing.publications.mavenPublication)
     }
 }

@@ -43,12 +43,10 @@ fun MavenPublication.setupPom() = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    val publication = // if (project.isAndroidModule())
-        publications.getByName("mavenPublication") as MavenPublication
-//    else
-//        publications.create<MavenPublication>("release")
+    val publication = publications.getByName("mavenPublication") as MavenPublication
 
     if (!project.isAndroidModule()) {
+
 //    val publication = publications.create<MavenPublication>("mavenLocal")
 // //        artifact(LazyPublishArtifact(sourcesJar))
 // //    }
