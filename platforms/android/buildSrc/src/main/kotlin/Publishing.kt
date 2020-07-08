@@ -4,41 +4,38 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 
-object Publishing {
-    // TODO: Grab from config file?
-    const val bintrayRepo = "android"
-    const val siteUrl = "https://github.com/salesforce/nimbus"
-    const val userOrg = "salesforce-mobile"
-    const val packageName = "nimbus"
-    const val gitUrl = "$siteUrl.git"
-    const val githubRepo = "salesforce/nimbus"
-    const val libraryDesc = "Bridge native code to web views in a consistent way on iOS and Android."
-    const val licenseName = "BSD 3-clause"
-    const val licenseUrl = "$siteUrl/blob/master/LICENSE"
-    const val issuesUrl = "$siteUrl/issues"
-    const val developerName = "Salesforce inc."
+object PublishingSettingsKey {
+    const val bintrayRepo = "BINTRAY_REPO"
+    const val siteUrl = "POM_SCM_URL"
+    const val userOrg = "BINTRAY_ORG"
+    const val packageName = "PACKAGE_NAME"
+    const val gitUrl = "POM_SCM_CONNECTION"
+    const val githubRepo = "POM_GITHUB_REPO"
+    const val licenseName = "POM_LICENSE_NAME"
+    const val licenseUrl = "POM_LICENSE_URL"
+    const val issuesUrl = "POM_ISSUE_URL"
+    const val developerName = "POM_DEVELOPER"
 }
 
 @Suppress("UnstableApiUsage")
-fun MavenPublication.setupPom() = pom {
-    name.set(Publishing.packageName)
-    description.set(Publishing.libraryDesc)
-    url.set(Publishing.siteUrl)
+fun MavenPublication.setupPom(project: Project) = pom {
+    name.set(project.getSettingValue(PublishingSettingsKey.packageName))
+    url.set(project.getSettingValue(PublishingSettingsKey.siteUrl))
     licenses {
         license {
-            name.set(Publishing.licenseName)
-            url.set(Publishing.licenseUrl)
+            name.set(project.getSettingValue("POM_LICENSE_NAME"))
+            url.set(project.getSettingValue("POM_LICENSE_URL"))
         }
     }
     developers {
         developer {
-            name.set(Publishing.developerName)
+            name.set(project.getSettingValue(PublishingSettingsKey.developerName))
         }
     }
     scm {
-        connection.set(Publishing.gitUrl)
-        developerConnection.set(Publishing.gitUrl)
-        url.set(Publishing.siteUrl)
+        connection.set(project.getSettingValue(PublishingSettingsKey.gitUrl))
+        developerConnection.set(project.getSettingValue(PublishingSettingsKey.gitUrl))
+        url.set(project.getSettingValue(PublishingSettingsKey.siteUrl))
     }
 }
 
@@ -47,18 +44,11 @@ fun PublishingExtension.setupAllPublications(project: Project) {
 
     if (!project.isAndroidModule()) {
 
-//    val publication = publications.create<MavenPublication>("mavenLocal")
-// //        artifact(LazyPublishArtifact(sourcesJar))
-// //    }
-//    println("publication is ${publication.name}")
-//    if (project.isAndroidModule()) {
-//        publication.from(project.components["release"])
-//    } else {
         publication.from(project.components["java"])
     }
 
     publication.artifactId = project.name
 
     val publications = publications.withType<MavenPublication>()
-    publications.all { setupPom() }
+    publications.all { setupPom(project) }
 }

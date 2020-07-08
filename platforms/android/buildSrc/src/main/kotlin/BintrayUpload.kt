@@ -1,6 +1,5 @@
 
 import com.jfrog.bintray.gradle.BintrayExtension
-import org.codehaus.groovy.runtime.ProcessGroovyMethods
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
@@ -36,21 +35,20 @@ fun BintrayExtension.setupPublicationsUpload(
 //        }
 //    }
 //
-    user = (project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
-    key = (project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
+    user = (project.getSettingValue("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
+    key = (project.getSettingValue("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
-        name = Publishing.packageName
-        repo = Publishing.bintrayRepo
-        userOrg = Publishing.userOrg
-        setLicenses(Publishing.licenseName)
-        desc = Publishing.libraryDesc
-        vcsUrl = Publishing.gitUrl
-        websiteUrl = Publishing.siteUrl
-        issueTrackerUrl = Publishing.issuesUrl
+        name = project.getSettingValue(PublishingSettingsKey.packageName)
+        repo = project.getSettingValue(PublishingSettingsKey.bintrayRepo)
+        userOrg = project.getSettingValue(PublishingSettingsKey.userOrg)
+        setLicenses(project.getSettingValue(PublishingSettingsKey.licenseName))
+        vcsUrl = project.getSettingValue(PublishingSettingsKey.gitUrl)
+        websiteUrl = project.getSettingValue(PublishingSettingsKey.siteUrl)
+        issueTrackerUrl = project.getSettingValue(PublishingSettingsKey.issuesUrl)
         publicDownloadNumbers = true
-        githubRepo = Publishing.githubRepo
+        githubRepo = project.getSettingValue(PublishingSettingsKey.githubRepo)
         publish = true
         dryRun = true
         version(closureOf<BintrayExtension.VersionConfig> {
