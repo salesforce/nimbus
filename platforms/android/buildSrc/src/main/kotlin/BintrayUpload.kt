@@ -35,8 +35,8 @@ fun BintrayExtension.setupPublicationsUpload(
         }
     }
 
-    user = (project.getSettingValue("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
-    key = (project.getSettingValue("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
+    user = (project.getSettingValue("bintrayUser") ?: System.getenv("BINTRAY_USER"))
+    key = (project.getSettingValue("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
     setPublications(*publicationNames)
     pkg(closureOf<BintrayExtension.PackageConfig> {
