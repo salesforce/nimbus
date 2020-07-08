@@ -15,6 +15,7 @@ object PublishingSettingsKey {
     const val licenseUrl = "POM_LICENSE_URL"
     const val issuesUrl = "POM_ISSUE_URL"
     const val developerName = "POM_DEVELOPER"
+    const val group = "GROUP"
 }
 
 @Suppress("UnstableApiUsage")
