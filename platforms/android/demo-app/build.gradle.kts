@@ -6,27 +6,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion(ProjectVersions.androidSdk)
-
+    setDefaults()
     defaultConfig {
         applicationId = "com.salesforce.nimbusdemoapp"
-        minSdkVersion(ProjectVersions.minSdk)
-        targetSdkVersion(ProjectVersions.androidSdk)
-        versionCode = 1
-        versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
 }
 
 dependencies {
@@ -38,9 +21,10 @@ dependencies {
     kapt(nimbusModule("compiler-webview"))
     kapt(nimbusModule("compiler-v8"))
 
-    implementation(Libs.kotlinStdlib)
-    implementation(Libs.kotlinxSerializationRuntime)
+    implementation(Libs.appcompat)
+    implementation(Libs.constraintLayout)
     implementation(Libs.j2v8)
     implementation(Libs.k2v8)
-    implementation(Libs.appcompat)
+    implementation(Libs.kotlinStdlib)
+    implementation(Libs.kotlinxSerializationRuntime)
 }

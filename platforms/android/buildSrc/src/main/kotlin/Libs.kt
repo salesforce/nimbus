@@ -54,6 +54,8 @@ object Libs {
 
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
+    const val constraintLayout: String = "androidx.constraintlayout:constraintlayout:" + Versions.constraintLayout
+
     const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
 
     const val guava: String = "com.google.guava:guava:" + Versions.guava

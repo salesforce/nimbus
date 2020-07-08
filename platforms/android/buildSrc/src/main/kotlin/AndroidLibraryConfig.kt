@@ -1,7 +1,7 @@
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
-import com.android.build.gradle.LibraryExtension as AndroidLibraryExtension
 
-fun AndroidLibraryExtension.setDefaults() {
+fun BaseExtension.setDefaults() {
     compileSdkVersion(ProjectVersions.androidSdk)
     defaultConfig {
         minSdkVersion(ProjectVersions.minSdk)

@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {

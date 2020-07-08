@@ -23,6 +23,8 @@ object Versions {
 
     const val dokkaGradlePlugin: String = "0.10.1"
 
+    const val constraintLayout : String = "1.1.3"
+
     const val espressoCore: String = "3.2.0"
 
     const val kotlinpoet: String = "1.6.0"
