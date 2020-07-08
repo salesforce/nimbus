@@ -10,6 +10,7 @@ import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import org.codehaus.groovy.runtime.ProcessGroovyMethods
 
 fun BintrayExtension.setupPublicationsUpload(
     project: Project,
@@ -24,17 +25,16 @@ fun BintrayExtension.setupPublicationsUpload(
         project.checkNoVersionRanges()
     }
 
-    // TODO: Verify this is what we want
-//    bintrayUpload.configure {
-//        doFirst {
-//            val gitTag = ProcessGroovyMethods.getText(
-//                Runtime.getRuntime().exec("git describe --dirty")
-//            ).trim()
-//            val expectedTag = "v${project.version}"
-//            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
-//        }
-//    }
-//
+    bintrayUpload.configure {
+        doFirst {
+            val gitTag = ProcessGroovyMethods.getText(
+                Runtime.getRuntime().exec("git describe --dirty")
+            ).trim()
+            val expectedTag = "v${project.version}"
+            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
+        }
+    }
+
     user = (project.getSettingValue("bintrayUser") ?: System.getenv("BINTRAY_USER")) as String?
     key = (project.getSettingValue("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY")) as String?
     val publicationNames: Array<String> = publishing.publications.map { it.name }.toTypedArray()
