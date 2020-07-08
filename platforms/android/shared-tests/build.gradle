@@ -22,7 +22,7 @@ android {
             testCoverageEnabled false
         }
         debug {
-//            testCoverageEnabled true
+            testCoverageEnabled true
         }
     }
 
