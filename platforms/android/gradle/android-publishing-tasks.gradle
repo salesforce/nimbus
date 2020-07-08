@@ -17,8 +17,7 @@ afterEvaluate {
         publications {
             mavenPublication(MavenPublication) {
                 artifact(sourcesJar)
-                // TODO: Create debug and release publications...?
-                from components.release
+                from components.debug
             }
         }
     }
