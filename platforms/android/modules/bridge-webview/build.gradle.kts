@@ -7,7 +7,6 @@ plugins {
     `maven-publish`
 //    id("com.vanniktech.android.junit.jacoco")
     id("com.jfrog.bintray")
-    id("com.jfrog.artifactory")
 }
 
 android {
@@ -48,9 +47,6 @@ afterEvaluate {
     bintray {
         setupPublicationsUpload(project, publishing)
     }
-//    artifactory {
-//        setupSnapshots(project)
-//    }
 }
 
 apply(from = rootProject.file("gradle/lint.gradle"))

@@ -2,7 +2,6 @@ plugins {
     id("kotlin")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("com.jfrog.artifactory")
 }
 
 dependencies {
@@ -23,9 +22,6 @@ afterEvaluate {
     bintray {
         setupPublicationsUpload(project, publishing)
     }
-//    artifactory {
-//        setupSnapshots(project)
-//    }
 }
 
 apply(from = rootProject.file("gradle/lint.gradle"))

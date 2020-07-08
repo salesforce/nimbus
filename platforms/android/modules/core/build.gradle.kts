@@ -5,7 +5,6 @@ plugins {
     id("org.jetbrains.dokka")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("com.jfrog.artifactory")
 }
 
 android {
@@ -23,7 +22,7 @@ dependencies {
 
 addTestDependencies()
 
- apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -33,21 +32,13 @@ afterEvaluate {
     bintray {
         setupPublicationsUpload(project, publishing)
     }
-//    artifactory {
-//        setupSnapshots(project)
-//    }
 }
-
 
 tasks {
     val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
         outputFormat = "html"
         outputDirectory = "$buildDir/dokka"
     }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 apply(from = rootProject.file("gradle/lint.gradle"))

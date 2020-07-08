@@ -57,27 +57,6 @@ fun BintrayExtension.setupPublicationsUpload(
     })
 }
 
-fun org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention.setupSnapshots(project: Project) {
-    setContextUrl("http://oss.jfrog.org")
-    publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
-        repository(delegateClosureOf<groovy.lang.GroovyObject> {
-            val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
-            setProperty("repoKey", targetRepoKey)
-            setProperty("username", project.findProperty("bintrayUser") ?: System.getenv("BINTRAY_USER"))
-            setProperty("password", project.findProperty("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
-        })
-        defaults(delegateClosureOf<groovy.lang.GroovyObject> {
-            invokeMethod("publications", arrayOf("mavenPublication"))
-            setProperty("publishArtifacts", true)
-            setProperty("publishPom", true)
-            setProperty("publishIvy", false)
-        })
-    })
-    resolve(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.ResolverConfig> {
-        setProperty("repoKey", "jcenter")
-    })
-}
-
 fun buildTagFor(version: String): String = if (isSnapshot(version)) "snapshot" else "release"
 
 fun isSnapshot(version: String): Boolean = (version.substringAfterLast('-') == "SNAPSHOT")
