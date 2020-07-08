@@ -23,8 +23,8 @@ fun MavenPublication.setupPom(project: Project) = pom {
     url.set(project.getSettingValue(PublishingSettingsKey.siteUrl))
     licenses {
         license {
-            name.set(project.getSettingValue("POM_LICENSE_NAME"))
-            url.set(project.getSettingValue("POM_LICENSE_URL"))
+            name.set(project.getSettingValue(PublishingSettingsKey.licenseName))
+            url.set(project.getSettingValue(PublishingSettingsKey.licenseUrl))
         }
     }
     developers {
@@ -41,11 +41,6 @@ fun MavenPublication.setupPom(project: Project) = pom {
 
 fun PublishingExtension.setupAllPublications(project: Project) {
     val publication = publications.getByName("mavenPublication") as MavenPublication
-
-    if (!project.isAndroidModule()) {
-
-        publication.from(project.components["java"])
-    }
 
     publication.artifactId = project.name
 

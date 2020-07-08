@@ -38,12 +38,13 @@ allprojects {
     version = parsedVersion.version.toString()
 
     junitJacoco {
-        jacocoVersion = Versions.jacoco // type String
-        ignoreProjects = [] // type String array
-        excludes // type String List
-        includeNoLocationClasses = false // type boolean
-        includeInstrumentationCoverageInMergedReport = false // type boolean
+        jacocoVersion = Versions.jacoco
+        ignoreProjects = []
+        excludes
+        includeNoLocationClasses = false
+        includeInstrumentationCoverageInMergedReport = false
     }
+
     tasks.withType(KotlinCompile).all {
         kotlinOptions {
             jvmTarget = "1.8"

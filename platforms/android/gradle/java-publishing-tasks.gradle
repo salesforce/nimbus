@@ -12,6 +12,7 @@ afterEvaluate {
     publishing {
         publications {
             mavenPublication(MavenPublication) {
+                from(project.components["java"])
             }
         }
     }
