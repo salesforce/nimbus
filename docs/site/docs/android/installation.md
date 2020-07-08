@@ -21,7 +21,7 @@ Click for details on SNAPSHOT builds
 
 Add the following to your `build.gradle` to consume a snapshot of Nimbus
 
-```kts
+```kotlin
 plugins {
     id("com.jfrog.artifactory") version "version"
 }
@@ -48,7 +48,7 @@ apply plugin: 'kotlin-kapt'
 
 or
 
-```kts
+```kotlin
 plugins {
     kotlin("kapt")
 }
@@ -56,7 +56,7 @@ plugins {
 
 #### 3. Add the Nimbus runtime dependency and annotation processor to your app's `build.gradle`:
 
-```kts
+```kotlin
 dependencies {
     // include bridge and compiler for webview or j2v8
     val bridgeType = "webview" // or "v8"
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
 1. Add NimbusJS to your app's `build.gradle`:
 
-```kts
+```kotlin
 dependencies {
     implementation("com.salesforce.nimbus:nimbusjs:$nimbusVersion")
 }
