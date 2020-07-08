@@ -59,20 +59,20 @@ android {
 
 dependencies {
     androidTestImplementation project(":modules:annotations")
-    androidTestImplementation(Libs.k2v8)
     androidTestImplementation project(":modules:bridge-v8")
     androidTestImplementation project(":modules:bridge-webview")
-    androidTestImplementation(Libs.j2v8)
-    androidTestImplementation(Libs.guava)
+    androidTestImplementation project(":modules:core")
     kaptAndroidTest project(":modules:compiler-webview")
     kaptAndroidTest project(":modules:compiler-v8")
-
-    androidTestImplementation(Libs.kotlinxSerializationRuntime)
-    androidTestImplementation(Libs.junit)
-    androidTestImplementation(Libs.espressoCore)
     androidTestImplementation(Libs.androidxTestRules, {
         exclude group: "com.android.support", module: "support-annotations"
     })
+    androidTestImplementation(Libs.espressoCore)
+    androidTestImplementation(Libs.guava)
+    androidTestImplementation(Libs.j2v8)
+    androidTestImplementation(Libs.junit)
+    androidTestImplementation(Libs.k2v8)
+    androidTestImplementation(Libs.kotlinxSerializationRuntime)
     androidTestImplementation(Libs.truth)
 }
 

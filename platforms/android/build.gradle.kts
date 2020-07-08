@@ -34,14 +34,13 @@ allprojects {
     val versionFile = file("$rootDir/../../lerna.json")
     val parsedFile = org.json.JSONObject(versionFile.readText())
     version = parsedFile.getString("version")
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
 
 junitJacoco {
     jacocoVersion = Versions.jacoco
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.register("clean", Delete::class) {
