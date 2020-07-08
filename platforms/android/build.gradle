@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -43,7 +44,11 @@ allprojects {
         includeNoLocationClasses = false // type boolean
         includeInstrumentationCoverageInMergedReport = false // type boolean
     }
-}
+    tasks.withType(KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
