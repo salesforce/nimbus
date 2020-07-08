@@ -58,21 +58,7 @@ public class WebViewConnection: Connection, CallableBinder {
      */
     func bindCallable(_ name: String, to callable: @escaping Callable) {
         bindings[name] = callable
-        let stubScript = """
-        __nimbusPluginExports = window.__nimbusPluginExports || {};
-        (function(){
-          let exports = __nimbusPluginExports["\(namespace)"];
-          if (exports === undefined) {
-            exports = [];
-            __nimbusPluginExports["\(namespace)"] = exports;
-          }
-          exports.push("\(name)");
-        }());
-        true;
-        """
-
-        let script = WKUserScript(source: stubScript, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-        webView?.configuration.userContentController.addUserScript(script)
+        scriptParts.append(name)
     }
 
     func decode<T: Decodable>(_ value: Any?, as type: T.Type) -> Result<T, Error> {
@@ -216,13 +202,46 @@ public class WebViewConnection: Connection, CallableBinder {
     }
 
     private func rejectPromise(promiseId: String, error: Error) {
-        webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        switch error {
+        case let encodableError as EncodableError:
+            let error = EncodableValue.error(encodableError)
+            if let data = try? JSONEncoder().encode(error),
+                let jsonString = String(data: data, encoding: .utf8) {
+                webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, \(jsonString).e);")
+            } else {
+                // if unable to decode then send then fallthrough to default error message
+                fallthrough
+            }
+        default:
+            webView?.evaluateJavaScript("__nimbus.resolvePromise('\(promiseId)', undefined, '\(error)');")
+        }
+    }
+
+    func userScript() -> String? {
+        guard !scriptParts.isEmpty else { return nil }
+        let exports = scriptParts.map { name in
+            "exports.push(\"\(name)\");"
+        }.joined()
+        let stubScript = """
+        __nimbusPluginExports = window.__nimbusPluginExports || {};
+        (function(){
+          let exports = __nimbusPluginExports["\(namespace)"];
+          if (exports === undefined) {
+            exports = [];
+            __nimbusPluginExports["\(namespace)"] = exports;
+          }
+        \(exports)
+        }());
+        true;
+        """
+        return stubScript
     }
 
     private let namespace: String
     private weak var webView: WKWebView?
     private var bridge: JSEvaluating?
     private var bindings: [String: Callable] = [:]
+    private var scriptParts: [String] = []
 }
 
 extension Encodable {

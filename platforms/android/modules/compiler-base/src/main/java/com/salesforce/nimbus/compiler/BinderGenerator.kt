@@ -160,6 +160,17 @@ abstract class BinderGenerator : AbstractProcessor() {
         val pluginName = pluginElement.getAnnotation(PluginOptions::class.java).name
         val pluginTypeName = pluginElement.asKotlinTypeName()
 
+        // get event type if plugin is an event publisher
+        val eventType = types.directSupertypes((pluginElement.asType()))
+            .find { it.toString().startsWith("$nimbusPackage.EventPublisher") }?.typeArguments()?.firstOrNull()
+
+        if (eventType != null && !eventType.isKotlinSerializableType()) {
+            error(
+                pluginElement,
+                "$eventType is not @Serializable. Only Events that are @Serializable are currently supported."
+            )
+        }
+
         // read kotlin metadata so we can determine which types are nullable
         val kotlinClass =
             pluginElement.getAnnotation(Metadata::class.java)?.let { metadata ->
@@ -183,8 +194,16 @@ abstract class BinderGenerator : AbstractProcessor() {
 
         // get all methods annotated with BoundMethod
         val boundMethodElements = pluginElement.enclosedElements
+            .filter { it.kind == ElementKind.METHOD }
             .filter {
-                it.kind == ElementKind.METHOD && it.getAnnotation(BoundMethod::class.java) != null
+
+                // keep bound methods
+                it.getAnnotation(BoundMethod::class.java) != null ||
+
+                    // keep event publisher methods
+                    eventType != null &&
+                        (it.toString().startsWith("addListener") ||
+                            it.toString().startsWith("removeListener"))
             }
             .map { it as ExecutableElement }
 

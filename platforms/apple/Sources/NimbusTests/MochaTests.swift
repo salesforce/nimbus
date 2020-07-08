@@ -87,6 +87,16 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         loadingExpectation?.fulfill()
     }
 
+    // This is necessary because WebViewBridge has an optimization
+    // to only add a single user script per plugin and this set of tests
+    // uses WebViewConnection without WebViewBridge
+    func addUserScript(connection: WebViewConnection) {
+        if let script = connection.userScript() {
+            let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+            webView.configuration.userContentController.addUserScript(userScript)
+        }
+    }
+
     func testExecuteMochaTests() {
         let testBridge = MochaTestBridge(webView: webView)
         let connection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: "mochaTestBridge")
@@ -94,12 +104,15 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
         connection.bind(testBridge.ready, as: "ready")
         connection.bind(testBridge.sendMessage, as: "sendMessage")
         connection.bind(testBridge.onTestFail, as: "onTestFail")
+        addUserScript(connection: connection)
         let callbackTestPlugin = CallbackTestPlugin()
         let callbackConnection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: callbackTestPlugin.namespace)
         callbackTestPlugin.bind(to: callbackConnection)
+        addUserScript(connection: callbackConnection)
         let apiTestPlugin = JSAPITestPlugin()
         let apiTestConnection = WebViewConnection(from: webView, bridge: WebViewBridge(), as: apiTestPlugin.namespace)
         apiTestPlugin.bind(to: apiTestConnection)
+        addUserScript(connection: apiTestConnection)
 
         loadWebViewAndWait()
 
@@ -228,6 +241,11 @@ struct MochaMessage: Encodable {
     var intField = 42
 }
 
+public struct TestError: Error, Encodable {
+    let code: Int
+    let message: String
+}
+
 public class CallbackTestPlugin {
     func callbackWithSingleParam(completion: @escaping (MochaMessage) -> Swift.Void) {
         let mochaMessage = MochaMessage()
@@ -252,6 +270,22 @@ public class CallbackTestPlugin {
     func callbackWithPrimitiveAndUddtParams(completion: @escaping (Int, MochaMessage) -> Swift.Void) {
         completion(777, MochaMessage())
     }
+
+    func promiseResolved() -> String {
+        return "promise"
+    }
+
+    func promiseRejectedEncoded() throws -> String {
+        throw TestError(code: 42, message: "mock promise rejection")
+    }
+
+    func promiseRejected() throws -> String {
+        throw MockError.rejectedError
+    }
+}
+
+enum MockError: Error {
+    case rejectedError
 }
 
 extension CallbackTestPlugin: Plugin {
@@ -265,6 +299,9 @@ extension CallbackTestPlugin: Plugin {
         connection.bind(callbackWithSinglePrimitiveParam, as: "callbackWithSinglePrimitiveParam")
         connection.bind(callbackWithTwoPrimitiveParams, as: "callbackWithTwoPrimitiveParams")
         connection.bind(callbackWithPrimitiveAndUddtParams, as: "callbackWithPrimitiveAndUddtParams")
+        connection.bind(promiseResolved, as: "promiseResolved")
+        connection.bind(promiseRejectedEncoded, as: "promiseRejectedEncoded")
+        connection.bind(promiseRejected, as: "promiseRejected")
     }
 }
 

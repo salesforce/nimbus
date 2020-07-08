@@ -45,6 +45,10 @@ public class WebViewBridge: NSObject, JSEvaluating {
         for plugin in plugins {
             let connection = WebViewConnection(from: webView, bridge: self, as: plugin.namespace)
             plugin.bind(to: connection)
+            if let script = connection.userScript() {
+                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+                webView.configuration.userContentController.addUserScript(userScript)
+            }
         }
     }
 

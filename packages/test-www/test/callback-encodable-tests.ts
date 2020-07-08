@@ -25,6 +25,9 @@ interface CallbackTestPlugin {
   callbackWithPrimitiveAndUddtParams(
     completion: (param0: number, param1: MochaMessage) => void
   ): void;
+  promiseResolved(): Promise<string>;
+  promiseRejected(): Promise<string>;
+  promiseRejectedEncoded(): Promise<string>;
 }
 
 declare module "nimbus-types" {
@@ -92,5 +95,23 @@ describe("Callbacks with", () => {
         done();
       }
     );
+  });
+
+  it("promise resolves and passes the value", (done) => {
+    __nimbus.plugins.callbackTestPlugin
+      .promiseResolved()
+      .then((result: string) => {
+        expect(result).to.equal("promise");
+        done();
+      });
+  });
+
+  it("promise rejects and passes the error", (done) => {
+    __nimbus.plugins.callbackTestPlugin
+      .promiseRejected()
+      .then((_) => done("unexpected completion"))
+      .catch((_) => {
+        done();
+      });
   });
 });

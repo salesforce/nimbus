@@ -7,7 +7,9 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.StructEvent
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.TestStruct
 import com.salesforce.nimbus.bridge.tests.plugin.webViewBinder
 import com.salesforce.nimbus.bridge.tests.withTimeoutInSeconds
 import com.salesforce.nimbus.bridge.tests.withinLatch
@@ -27,6 +29,7 @@ class WebViewPluginTests {
     private lateinit var webView: WebView
     private lateinit var bridge: WebViewBridge
     private lateinit var expectPlugin: ExpectPlugin
+    private lateinit var testPlugin: TestPlugin
 
     @Rule
     @JvmField
@@ -37,10 +40,11 @@ class WebViewPluginTests {
     fun setUp() {
         webView = activityRule.activity.webView
         expectPlugin = ExpectPlugin()
+        testPlugin = TestPlugin()
         runOnUiThread {
             bridge = webView.bridge {
                 bind { expectPlugin.webViewBinder() }
-                bind { TestPlugin().webViewBinder() }
+                bind { testPlugin.webViewBinder() }
             }
             webView.loadUrl("file:///android_asset/test-www/shared-tests.html")
         }
@@ -351,6 +355,59 @@ class WebViewPluginTests {
     @Test
     fun verifyBinaryIntResolvingIntCallbackReturnsInt() {
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
+
+    // endregion
+
+    // region event publishing
+
+    @Test
+    fun verifyEventPublishing() {
+        expectPlugin.testReady.withTimeoutInSeconds(30) {
+
+            // reset plugin
+            expectPlugin.reset()
+
+            // subscribe to events
+            runOnUiThread { webView.evaluateJavascript("subscribeToStructEvent()") {} }
+
+            // wait for ready
+            expectPlugin.testReady.withTimeoutInSeconds(30) {
+
+                // publish event
+                testPlugin.publishEvent(StructEvent(TestStruct()))
+
+                // ensure we received the event
+                assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+                assertThat(expectPlugin.passed).isTrue()
+
+                // reset plugin
+                expectPlugin.reset()
+
+                // publish another event
+                testPlugin.publishEvent(StructEvent(TestStruct()))
+
+                // ensure we received the event
+                assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+                assertThat(expectPlugin.passed).isTrue()
+
+                // reset plugin
+                expectPlugin.reset()
+
+                // unsubscribe
+                runOnUiThread { webView.evaluateJavascript("unsubscribeFromStructEvent()") {} }
+
+                // wait for ready
+                expectPlugin.testReady.withTimeoutInSeconds(30) {
+
+                    // publish event
+                    testPlugin.publishEvent(StructEvent(TestStruct()))
+
+                    // make sure we don't get a test finished callback
+                    assertThat(expectPlugin.testFinished.await(5, TimeUnit.SECONDS)).isFalse()
+                }
+            }
+        }
     }
 
     // endregion

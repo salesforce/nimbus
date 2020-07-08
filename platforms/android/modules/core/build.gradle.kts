@@ -18,6 +18,8 @@ dependencies {
     compileOnly(Libs.k2v8)
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
+    testImplementation(Libs.kotlinxSerializationRuntime)
+
 }
 
 addTestDependencies()

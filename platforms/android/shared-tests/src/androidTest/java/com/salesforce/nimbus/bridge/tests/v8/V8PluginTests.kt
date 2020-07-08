@@ -8,7 +8,9 @@ import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
 import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.StructEvent
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
+import com.salesforce.nimbus.bridge.tests.plugin.TestStruct
 import com.salesforce.nimbus.bridge.tests.plugin.v8Binder
 import com.salesforce.nimbus.bridge.tests.WebViewActivity
 import com.salesforce.nimbus.bridge.v8.bridge
@@ -26,6 +28,7 @@ class V8PluginTests {
     private lateinit var v8: V8
     private lateinit var bridge: V8Bridge
     private lateinit var expectPlugin: ExpectPlugin
+    private lateinit var testPlugin: TestPlugin
 
     @Rule
     @JvmField
@@ -36,9 +39,10 @@ class V8PluginTests {
     fun setUp() {
         v8 = V8.createV8Runtime()
         expectPlugin = ExpectPlugin()
+        testPlugin = TestPlugin()
         bridge = v8.bridge {
             bind { expectPlugin.v8Binder() }
-            bind { TestPlugin().v8Binder() }
+            bind { testPlugin.v8Binder() }
         }
         v8.scope {
             v8.executeScript("shared-tests".js)
@@ -290,6 +294,56 @@ class V8PluginTests {
     @Test
     fun verifyBinaryIntResolvingIntCallbackReturnsInt() {
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
+    }
+
+    @Test
+    fun verifyEventPublishing() {
+        v8.scope {
+
+            // wait for ready
+            assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
+
+            // reset plugin
+            expectPlugin.reset()
+
+            // subscribe to events
+            v8.executeScript("subscribeToStructEvent()")
+
+            // wait for ready
+            assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
+
+            // publish event
+            testPlugin.publishEvent(StructEvent(TestStruct()))
+
+            // ensure we received the event
+            assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+            assertThat(expectPlugin.passed).isTrue()
+
+            // reset plugin
+            expectPlugin.reset()
+
+            // publish another event
+            testPlugin.publishEvent(StructEvent(TestStruct()))
+
+            // ensure we received the event
+            assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
+            assertThat(expectPlugin.passed).isTrue()
+
+            // reset plugin
+            expectPlugin.reset()
+
+            // unsubscribe
+            v8.executeScript("unsubscribeFromStructEvent()")
+
+            // wait for ready
+            assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
+
+            // publish event
+            testPlugin.publishEvent(StructEvent(TestStruct()))
+
+            // make sure we don't get a test finished callback
+            assertThat(expectPlugin.testFinished.await(5, TimeUnit.SECONDS)).isFalse()
+        }
     }
 
     // endregion

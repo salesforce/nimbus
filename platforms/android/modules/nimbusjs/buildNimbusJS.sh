@@ -7,8 +7,8 @@ npm install
 
 npm run build
 
-mkdir ../../platforms/android/modules/nimbusjs/src/main/res/raw/
+mkdir ../../platforms/android/nimbusjs/src/main/assets
 
-cp dist/iife/nimbus.js ../../platforms/android/modules/nimbusjs/src/main/res/raw/nimbus.js
+cp dist/iife/nimbus.js ../../platforms/android/nimbusjs/src/main/assets/nimbus.js
 
 exit 0
