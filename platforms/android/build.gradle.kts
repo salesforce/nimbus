@@ -7,7 +7,6 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
-        maven("https://dl.bintray.com/kotlin/dokka")
     }
 
     dependencies {
