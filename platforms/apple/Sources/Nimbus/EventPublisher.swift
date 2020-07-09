@@ -32,6 +32,8 @@ public class EventPublisher<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
     private var listenerQueue: DispatchQueue = DispatchQueue(label: "EventPublisher")
 
+    public init() {}
+
     /**
      Adds a listener for the given event name. This function is bound
      in the bind method and shouldn't be called directly.
