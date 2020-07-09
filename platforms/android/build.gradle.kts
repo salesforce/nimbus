@@ -28,7 +28,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven("https://dl.bintray.com/salesforce-mobile/android")
     }
     group = getSettingValue(PublishingSettingsKey.group) ?: ""
     val versionFile = file("$rootDir/../../lerna.json")
