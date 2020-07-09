@@ -310,9 +310,7 @@ jobs:
           paths:
             - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
             - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/modules/bridge-webview/build/dokka
-            - platforms/android/modules/bridge-v8/build/dokka
-            - platforms/android/modules/core/build/dokka
+            - platforms/android/build/docs
 
   build-and-test-ts:
     docker:
@@ -390,9 +388,7 @@ jobs:
           command: |
             mkdir -p docs/dist/docs/api
             mkdir -p docs/dist/docs/api/android
-            mv doc-build/platforms/android/modules/bridge-webview/build/dokka docs/dist/docs/api/android/bridge-webview
-            mv doc-build/platforms/android/modules/bridge-v8/build/dokka docs/dist/docs/api/android/bridge-v8
-            mv doc-build/platforms/android/modules/core/build/dokka docs/dist/docs/api/android/core
+            mv doc-build/platforms/android/build/docs docs/dist/docs/api/android
             mv doc-build/platforms/apple/.build/docs docs/dist/docs/api/apple
             mv doc-build/packages/nimbus-bridge/dist/typedoc docs/dist/docs/api/ts
       - persist_to_workspace:

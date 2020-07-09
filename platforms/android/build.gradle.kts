@@ -1,11 +1,13 @@
 import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.dokka.gradle.DokkaTask
 
 buildscript {
     repositories {
         mavenCentral()
         google()
         jcenter()
+        maven("https://dl.bintray.com/kotlin/dokka")
     }
 
     dependencies {
@@ -22,6 +24,7 @@ plugins {
     id("com.jfrog.artifactory")
     id("maven-publish")
     id("com.vanniktech.android.junit.jacoco") version "0.16.0"
+    id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
 }
 
 allprojects {
@@ -45,6 +48,17 @@ junitJacoco {
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
+}
+
+tasks {
+    val dokka by getting(DokkaTask::class) {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/docs"
+        subProjects = listOf("core", "core-plugins", "bridge-webview", "bridge-v8")
+        configuration {
+            moduleName = "nimbus"
+        }
+    }
 }
 
 artifactory {

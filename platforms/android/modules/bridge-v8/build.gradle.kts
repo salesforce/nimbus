@@ -55,13 +55,6 @@ dependencies {
 
 addTestDependencies()
 
-tasks {
-    val dokka by getting(DokkaTask::class) {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/dokka"
-    }
-}
-
 apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {
