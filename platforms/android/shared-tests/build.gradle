@@ -1,0 +1,93 @@
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("kotlinx-serialization")
+}
+
+android {
+    compileSdkVersion ProjectVersions.androidSdk
+
+    defaultConfig {
+        minSdkVersion ProjectVersions.minSdk
+        targetSdkVersion ProjectVersions.androidSdk
+        versionCode 1
+        versionName version
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            testCoverageEnabled false
+        }
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    sourceSets {
+        androidTest {
+            assets.srcDirs += ["../../../packages/test-www/dist", "../../../packages/nimbus-bridge/dist/iife"]
+        }
+    }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            all {
+                useJUnitPlatform()
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    packagingOptions {
+        pickFirst("META-INF/LICENSE*")
+        pickFirst("META-INF/DEPENDENCIES")
+    }
+
+}
+
+dependencies {
+    androidTestImplementation project(":modules:annotations")
+    androidTestImplementation project(":modules:bridge-v8")
+    androidTestImplementation project(":modules:bridge-webview")
+    androidTestImplementation project(":modules:core")
+    kaptAndroidTest project(":modules:compiler-webview")
+    kaptAndroidTest project(":modules:compiler-v8")
+    androidTestImplementation(Libs.androidxTestRules, {
+        exclude group: "com.android.support", module: "support-annotations"
+    })
+    androidTestImplementation(Libs.espressoCore)
+    androidTestImplementation(Libs.guava)
+    androidTestImplementation(Libs.j2v8)
+    androidTestImplementation(Libs.junit)
+    androidTestImplementation(Libs.k2v8)
+    androidTestImplementation(Libs.kotlinxSerializationRuntime)
+    androidTestImplementation(Libs.truth)
+}
+
+/*
+ * Compile the test web app prior to assembling the androidTest app
+ */
+task buildTestWebApp(type: Exec) {
+    workingDir "../../.."
+    commandLine "npm", "install"
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name ==~ "assemble.*AndroidTest") {
+        task.dependsOn buildTestWebApp
+    }
+}
+
+apply from: rootProject.file("gradle/lint.gradle")
