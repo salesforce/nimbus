@@ -9,8 +9,7 @@ android {
     setDefaults()
 
     sourceSets.getByName("androidTest") {
-        assets.srcDir("../../../packages/test-www/dist")
-        assets.srcDir("../../../packages/nimbus-bridge/dist/iife")
+        assets.srcDirs("../../../packages/test-www/dist", "../../../packages/nimbus-bridge/dist/iife")
     }
 
     packagingOptions {
