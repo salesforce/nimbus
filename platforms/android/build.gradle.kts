@@ -61,3 +61,4 @@ artifactory {
         })
     })
 }
+apply(from = rootProject.file("gradle/test-output.gradle.kts"))
