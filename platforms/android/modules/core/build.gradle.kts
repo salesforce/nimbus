@@ -9,6 +9,11 @@ plugins {
 
 android {
     setDefaults()
+    testOptions {
+        unitTests.apply {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
