@@ -470,6 +470,7 @@ workflows:
             branches:
               only:
                 - main
+                - mkranzler/android-doc-fix
       - upload-coverage:
           requires:
             - build-and-test-ios-13
