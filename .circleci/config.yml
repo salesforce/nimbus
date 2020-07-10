@@ -469,7 +469,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - upload-coverage:
           requires:
             - build-and-test-ios-13
