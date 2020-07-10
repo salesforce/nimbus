@@ -15,7 +15,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class PrimitiveJSONEncodableTests : StringSpec({
-    "test listFromJSON String" {
+    "listFromJSON<String>" {
         forAll<String, String, String> { value1, value2, value3 ->
             val json = """
             [
@@ -32,7 +32,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test listFromJSON Int" {
+    "listFromJSON<Int>" {
         forAll<Int, Int, Int> { value1, value2, value3 ->
             val json = """
             [
@@ -49,7 +49,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test listFromJSON Any" {
+    "listFromJSON<Any>" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
             [
@@ -66,7 +66,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test listFromJSON String throws" {
+    "listFromJSON<String> from Int throws" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
             [
@@ -84,7 +84,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test mapFromJSON String String" {
+    "mapFromJSON<String, String>" {
         forAll<String, String, String> { value1, value2, value3 ->
             val json = """
             {
@@ -101,7 +101,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test mapFromJSON String Int" {
+    "mapFromJSON<String, Int>" {
         forAll<Int, Int, Int> { value1, value2, value3 ->
             val json = """
             {
@@ -118,7 +118,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test mapFromJSON String Any" {
+    "mapFromJSON<String, Any>" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
             {
@@ -135,7 +135,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test mapFromJSON String String throws" {
+    "mapFromJSON<String, String> from Int throws" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
                     {
@@ -153,7 +153,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test arrayFromJSON String" {
+    "arrayFromJSON<String>" {
         forAll<String, String, String> { value1, value2, value3 ->
             val json = """
             [
@@ -170,7 +170,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test arrayFromJSON Int" {
+    "arrayFromJSON<Int>" {
         forAll<Int, Int, Int> { value1, value2, value3 ->
             val json = """
                 [
@@ -187,7 +187,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test arrayFromJSON Any" {
+    "arrayFromJSON<Any>" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
             [
@@ -204,7 +204,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test arrayFromJSON String throws" {
+    "arrayFromJSON<String> from Int throws" {
         forAll<String, String, Int> { value1, value2, value3 ->
             val json = """
             [
@@ -222,7 +222,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test IntListToJsonEncodable" {
+    "List<Int> toJsonEncodable" {
         forAll<List<Int>> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
@@ -230,7 +230,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test JSONEncodableListToJSONEncodable" {
+    "List<String> toJSONEncodable.toJSONEncodable" {
         forAll<List<String>> { a ->
             val jsonString = a.map { it.toJSONEncodable() }.toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
@@ -238,7 +238,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test StringStringMapToJSONEncodable" {
+    "Map<String, String> toJSONEncodable" {
         forAll<Map<String, String>> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
@@ -246,7 +246,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test StringJSONEncodableMapToJSONEncodable" {
+    "Map<String, String> toJSONEncodable.toJSONEncodable" {
         forAll<Map<String, String>> { a ->
             val jsonString = a.mapValues { it.value.toJSONEncodable() }.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
@@ -254,15 +254,15 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test IntArrayToJSONEncodable" {
-        forAll<List<Int>> { a ->
-            val jsonString = a.toTypedArray().toJSONEncodable().encode()
+    "Array<Int> toJSONEncodable" {
+        forAll<Array<Int>> { a ->
+            val jsonString = a.toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
             a.indices.all { i -> a[i] == jsonArray[i] }
         }
     }
 
-    "test JSONEncodableArrayToJSONEncodable" {
+    "List<String> toJSONEncodable.toArray.toJSONEncodable" {
         forAll<List<String>> { a ->
             val jsonString = a.map { it.toJSONEncodable() }.toTypedArray().toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
@@ -270,7 +270,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test DoubleToJSON" {
+    "Double toJSONEncodable" {
         forAll<Double> { a ->
             // Comparing NaN requires a different way
             // https://stackoverflow.com/questions/37884133/comparing-nan-in-kotlin
@@ -299,7 +299,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test IntToJSON" {
+    "Int toJSONEncodable" {
         forAll<Int> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
@@ -308,7 +308,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test BooleanToJSON" {
+    "Boolean toJSONEncodable" {
         forAll<Boolean> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
@@ -317,7 +317,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test LongToJSON" {
+    "Long toJSONEncodable" {
         forAll<Long> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
@@ -326,7 +326,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
         }
     }
 
-    "test StringToJSON" {
+    "String toJSONEncodable" {
         forAll<String> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
