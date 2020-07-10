@@ -5,34 +5,12 @@ plugins {
     kotlin("android")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("com.moowork.node") version "1.3.1"
+    id("com.github.node-gradle.node") version "2.2.4"
 }
 
 android {
     setDefaults()
 }
-//fun String.runCommand(): String? {
-//    try {
-//        val parts = this.split("\\s".toRegex())
-//        val proc = ProcessBuilder(*parts.toTypedArray())
-//            .redirectOutput(ProcessBuilder.Redirect.PIPE)
-//            .redirectError(ProcessBuilder.Redirect.PIPE)
-//            .start()
-//
-//        proc.waitFor(1, TimeUnit.MINUTES)
-//        return proc.inputStream.bufferedReader().readText().trim()
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        return null
-//    }
-//}
-//
-//gradle.afterProject {
-//    if (name == "nimbusjs") {
-//        println("Building nimbus.js")
-//        "$rootDir/modules/nimbusjs/buildNimbusJS.sh".runCommand()
-//    }
-//}
 
 dependencies {
     implementation(Libs.kotlinStdlib)
@@ -51,13 +29,13 @@ node {
 tasks.named<NpmTask>("npm_install"){
     // make sure the build task is executed only when appropriate files change
     inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
-    setWorkingDir("$rootDir/../../packages/nimbus-bridge")
+    setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
 }
 
 tasks.named<NpmTask>("npm_build"){
     // make sure the build task is executed only when appropriate files change
     inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
-    setWorkingDir("$rootDir/../../packages/nimbus-bridge")
+    setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
 }
 
 apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
