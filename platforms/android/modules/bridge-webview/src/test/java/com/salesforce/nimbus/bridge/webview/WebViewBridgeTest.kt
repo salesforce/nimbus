@@ -5,7 +5,6 @@ import android.webkit.WebView
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -97,21 +96,6 @@ class WebViewBridgeTest {
         webViewBridge.detach()
         verify { mockWebView.removeJavascriptInterface("_Test") }
         verify { mockWebView.removeJavascriptInterface("_Test2") }
-    }
-
-    @Test
-    fun makeCallbackReturnsCallbackWhenWebViewAttached() {
-        val callback = webViewBridge.makeCallback("1")
-        callback.shouldNotBeNull()
-        callback.webView.shouldBe(mockWebView)
-        callback.callbackId.shouldBe("1")
-    }
-
-    @Test
-    fun makeCallbackReturnsNullWhenWebViewNotAttached() {
-        webViewBridge.detach()
-        val callback = webViewBridge.makeCallback("1")
-        callback.shouldNotBeNull()
     }
 
     @Test

@@ -132,16 +132,6 @@ class WebViewBridge : Bridge<WebView, String>,
     }
 
     /**
-     * Creates and returns a Callback object that can be passed as an argument to
-     * a subsequent JavascriptInterface bound method.
-     */
-    @Suppress("unused")
-    @JavascriptInterface
-    fun makeCallback(callbackId: String): Callback? {
-        return bridgeWebView?.let { return Callback(it, callbackId) }
-    }
-
-    /**
      * Return the names of all connected extensions so they can be processed by the
      * JavaScript runtime code.
      */

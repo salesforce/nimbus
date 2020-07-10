@@ -41,11 +41,4 @@ afterEvaluate {
     }
 }
 
-tasks {
-    val dokka by getting(org.jetbrains.dokka.gradle.DokkaTask::class) {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/dokka"
-    }
-}
-
 apply(from = rootProject.file("gradle/lint.gradle"))
