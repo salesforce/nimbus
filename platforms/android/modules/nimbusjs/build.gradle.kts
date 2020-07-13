@@ -34,13 +34,9 @@ val copyScript by tasks.registering(Copy::class) {
 
 val npmInstallTask = tasks.named<NpmTask>("npm_install"){
     // make sure the build task is executed only when appropriate files change
-//    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
-    inputs.file(file("$rootDir/../../packages/nimbus-bridge/package.json"))
+    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
     setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
-}
-
-tasks.named("assembleDebug") {
-    dependsOn(copyScript)
+    outputs.upToDateWhen {true}
 }
 
 tasks.whenTaskAdded {
