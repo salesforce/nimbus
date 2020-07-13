@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    setDefaults()
+    setDefaults(project)
 }
 
 dependencies {

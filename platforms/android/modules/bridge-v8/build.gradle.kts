@@ -11,7 +11,7 @@ plugins {
 }
 
 android {
-    setDefaults()
+    setDefaults(project)
     packagingOptions {
         excludes.add("META-INF/LICENSE.md")
         excludes.add("META-INF/LICENSE-notice.md")

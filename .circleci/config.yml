@@ -262,7 +262,7 @@ jobs:
       - run:
           name: Test Android
           working_directory: platforms/android
-          command: ./gradlew testDebugUnitTest
+          command: ./gradlew -Pcoverage testDebugUnitTest
 
       - run:
           name: Authorize gcloud and set config defaults

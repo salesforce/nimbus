@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    setDefaults()
+    setDefaults(project)
 }
 
 dependencies {
@@ -26,16 +26,27 @@ node {
     download = false
 }
 
-tasks.named<NpmTask>("npm_install"){
+val copyScript by tasks.registering(Copy::class) {
+    dependsOn(npmInstallTask)
+    from(rootProject.file("../../packages/nimbus-bridge/dist/iife/nimbus.js"))
+    into(file("src/main/assets/"))
+}
+
+val npmInstallTask = tasks.named<NpmTask>("npm_install"){
     // make sure the build task is executed only when appropriate files change
-    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
+//    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
+    inputs.file(file("$rootDir/../../packages/nimbus-bridge/package.json"))
     setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
 }
 
-tasks.named<NpmTask>("npm_build"){
-    // make sure the build task is executed only when appropriate files change
-    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
-    setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
+tasks.named("assembleDebug") {
+    dependsOn(copyScript)
+}
+
+tasks.whenTaskAdded {
+    if (name.startsWith("assemble")) {
+        dependsOn(copyScript)
+    }
 }
 
 apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
