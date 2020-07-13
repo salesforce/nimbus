@@ -255,6 +255,14 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
     }
 
+    func testVerifyReturnValueSimpleError() {
+        executeTest("verifyReturnValueSimpleError()")
+    }
+
+    func testVerifyReturnValueStructuredError() {
+        executeTest("verifyReturnValueStructuredError()")
+    }
+
     func testEventPublishing() {
         expectPlugin.readyExpectation = expectation(description: "ready")
         let subscribe = expectation(description: "subscribe")

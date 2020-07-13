@@ -221,6 +221,14 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyBinaryIntResolvingIntCallbackReturnsInt()")
     }
 
+    func testVerifyReturnValueSimpleError() {
+        executeTest("verifyReturnValueSimpleError()")
+    }
+
+    func testVerifyReturnValueStructuredError() {
+        executeTest("verifyReturnValueStructuredError()")
+    }
+
     func testEventPublishing() {
         context.evaluateScript("subscribeToStructEvent()")
         XCTAssertTrue(expectPlugin.isReady)

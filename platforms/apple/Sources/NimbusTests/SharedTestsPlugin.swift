@@ -65,6 +65,8 @@ class TestPlugin: Plugin {
         connection.bind(unaryIntResolvingToIntCallback, as: "unaryIntResolvingToIntCallback")
         connection.bind(binaryIntDoubleResolvingToIntDoubleCallback, as: "binaryIntDoubleResolvingToIntDoubleCallback")
         connection.bind(binaryIntResolvingIntCallbackReturnsInt, as: "binaryIntResolvingIntCallbackReturnsInt")
+        connection.bind(nullaryResolvingToSimpleError, as: "nullaryResolvingToSimpleError")
+        connection.bind(nullaryResolvingToStructuredError, as: "nullaryResolvingToStructuredError")
     }
 
     func nullaryResolvingToInt() -> Int {
@@ -277,6 +279,23 @@ class TestPlugin: Plugin {
         callback(param0 - 1)
         return param0 - 2
     }
+
+    func nullaryResolvingToSimpleError() throws -> String {
+        throw TestSimpleError.simpleError
+    }
+
+    func nullaryResolvingToStructuredError() throws -> String {
+        throw TestStructuredError()
+    }
+}
+
+enum TestSimpleError: Error {
+    case simpleError
+}
+
+struct TestStructuredError: Error, Encodable {
+    let stringValue = "Structured error"
+    let numberValue = 4.0
 }
 
 class ExpectPlugin: Plugin {
