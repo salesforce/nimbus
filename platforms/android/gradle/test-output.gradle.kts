@@ -16,6 +16,7 @@ allprojects {
             showExceptions = true
             showCauses  = true
             showStackTraces = true
+            showStandardStreams = true
         }
 
         ignoreFailures = true // Always try to run all tests for all modules
@@ -27,7 +28,7 @@ allprojects {
             override fun afterSuite(desc: TestDescriptor, result: TestResult) {
                 // Only summarize results for whole modules
                 if (desc.parent == null) {
-                    addResults(desc, result)
+                    addResults("${project.name}: $name", desc, result)
                 }
             }
         })
@@ -35,9 +36,9 @@ allprojects {
     }
 }
 
-fun addResults(desc: TestDescriptor, result: TestResult) {
+fun addResults(testInfo: String, desc: TestDescriptor, result: TestResult) {
     val output = result.run {
-        "Results: $resultType (" +
+        "$testInfo Results: $resultType (" +
             "$testCount tests, " +
             "$successfulTestCount successes, " +
             "$failedTestCount failures, " +
@@ -45,21 +46,21 @@ fun addResults(desc: TestDescriptor, result: TestResult) {
             ")"
     }
     val testResultLine = "|  $output  |"
-    val repeatLength = testResultLine.length
-    val seperationLine = "-".repeat(repeatLength)
-//    testResultList.add(testResultLine)
     val listOfResults = rootProject.extra.get("testResults") as MutableList<String>
     listOfResults.add(testResultLine)
     rootProject.extra.set("testResults", listOfResults)
-//    println(seperationLine)
-//    println(testResultLine)
-//    println(seperationLine)
 }
 
 gradle.buildFinished {
     val allResults = rootProject.extra.get("testResults") as List<String>
 
     if (allResults.any()) {
-        allResults.forEach{println(it)}
+        allResults.forEach {
+            val repeatLength = it.length
+            val seperationLine = "-".repeat(repeatLength)
+            println(seperationLine)
+            println(it)
+            println(seperationLine)
+        }
     }
 }
