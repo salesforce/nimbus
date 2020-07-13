@@ -1,10 +1,12 @@
 package com.salesforce.nimbus
 
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import kotlinx.serialization.Serializable
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import kotlin.properties.Delegates
 
 sealed class TestEvents : Event {
 
@@ -19,15 +21,16 @@ sealed class TestEvents : Event {
     }
 }
 
-class DefaultEventPublisherTest {
-    private lateinit var eventPublisher: DefaultEventPublisher<TestEvents>
-    private var eventOneListenerCalledWithCorrectData = false
-    private lateinit var eventOneListenerId: String
-    private var eventTwoListenerCalledWithCorrectData = false
-    private lateinit var eventTwoListenerId: String
+class DefaultEventPublisherTest : StringSpec({
+    lateinit var eventPublisher: DefaultEventPublisher<TestEvents>
+    var eventOneListenerCalledWithCorrectData by Delegates.notNull<Boolean>()
+    lateinit var eventOneListenerId: String
+    var eventTwoListenerCalledWithCorrectData by Delegates.notNull<Boolean>()
+    lateinit var eventTwoListenerId: String
 
-    @Before
-    fun setUp() {
+    beforeTest {
+        eventOneListenerCalledWithCorrectData = false
+        eventTwoListenerCalledWithCorrectData = false
         eventPublisher = DefaultEventPublisher<TestEvents>().apply {
             eventOneListenerId = addListener("testEventOne") {
                 eventOneListenerCalledWithCorrectData =
@@ -40,14 +43,13 @@ class DefaultEventPublisherTest {
         }
     }
 
-    @Test
-    fun `TestEventOne listener is invoked`() {
+    "TestEventOne listener is invoked" {
 
         // publish event
         eventPublisher.publishEvent(TestEvents.TestEventOne(message = "testMessage"))
 
         // make sure listener received correct data
-        assertTrue(eventOneListenerCalledWithCorrectData)
+        eventOneListenerCalledWithCorrectData.shouldBeTrue()
 
         // reset
         eventOneListenerCalledWithCorrectData = false
@@ -56,17 +58,16 @@ class DefaultEventPublisherTest {
         eventPublisher.publishEvent(TestEvents.TestEventOne(message = "testMessage"))
 
         // make sure listener received correct data again
-        assertTrue(eventOneListenerCalledWithCorrectData)
+        eventOneListenerCalledWithCorrectData.shouldBeTrue()
     }
 
-    @Test
-    fun `TestEventTwo listener is invoked`() {
+    "TestEventTwo listener is invoked" {
 
         // publish event
         eventPublisher.publishEvent(TestEvents.TestEventTwo(thingOne = 1, thingTwo = true))
 
         // make sure listener received correct data
-        assertTrue(eventTwoListenerCalledWithCorrectData)
+        eventTwoListenerCalledWithCorrectData.shouldBeTrue()
 
         // reset
         eventTwoListenerCalledWithCorrectData = false
@@ -75,11 +76,10 @@ class DefaultEventPublisherTest {
         eventPublisher.publishEvent(TestEvents.TestEventTwo(thingOne = 1, thingTwo = true))
 
         // make sure listener received correct data again
-        assertTrue(eventTwoListenerCalledWithCorrectData)
+        eventTwoListenerCalledWithCorrectData.shouldBeTrue()
     }
 
-    @Test
-    fun `TestEventOne listener is not invoked after removed`() {
+    "TestEventOne listener is not invoked after removed" {
 
         // remove listener
         eventPublisher.removeListener(eventOneListenerId)
@@ -91,8 +91,7 @@ class DefaultEventPublisherTest {
         assertFalse(eventOneListenerCalledWithCorrectData)
     }
 
-    @Test
-    fun `TestEventTwo listener is not invoked after removed`() {
+    "TestEventTwo listener is not invoked after removed" {
 
         // remove listener
         eventPublisher.removeListener(eventTwoListenerId)
@@ -101,6 +100,6 @@ class DefaultEventPublisherTest {
         eventPublisher.publishEvent(TestEvents.TestEventTwo(thingOne = 1, thingTwo = true))
 
         // make sure listener was never called
-        assertFalse(eventTwoListenerCalledWithCorrectData)
+        eventTwoListenerCalledWithCorrectData.shouldBeFalse()
     }
-}
+})
