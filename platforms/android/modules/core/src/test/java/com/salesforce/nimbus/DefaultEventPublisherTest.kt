@@ -4,8 +4,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlinx.serialization.Serializable
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import kotlin.properties.Delegates
 
 sealed class TestEvents : Event {
@@ -88,7 +86,7 @@ class DefaultEventPublisherTest : StringSpec({
         eventPublisher.publishEvent(TestEvents.TestEventOne(message = "testMessage"))
 
         // make sure listener was never called
-        assertFalse(eventOneListenerCalledWithCorrectData)
+        eventOneListenerCalledWithCorrectData.shouldBeFalse()
     }
 
     "TestEventTwo listener is not invoked after removed" {

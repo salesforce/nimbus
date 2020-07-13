@@ -10,7 +10,7 @@ allprojects {
 
         testLogging {
 //            events = setOf(FAILED, PASSED, SKIPPED, STANDARD_OUT, STANDARD_ERROR)
-            events = setOf(FAILED, PASSED, SKIPPED, STANDARD_ERROR)
+            events = setOf(FAILED, SKIPPED, STANDARD_ERROR)
 
             exceptionFormat = TestExceptionFormat.FULL
             showExceptions = true

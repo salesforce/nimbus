@@ -9,6 +9,8 @@ package com.salesforce.nimbus
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import org.json.JSONArray
 import org.json.JSONException
@@ -16,7 +18,7 @@ import org.json.JSONObject
 
 class PrimitiveJSONEncodableTests : StringSpec({
     "listFromJSON<String>" {
-        forAll<String, String, String> { value1, value2, value3 ->
+        checkAll<String, String, String> { value1, value2, value3 ->
             val json = """
             [
                 ${JSONObject.quote(value1)},
@@ -26,9 +28,9 @@ class PrimitiveJSONEncodableTests : StringSpec({
             """.trimIndent()
 
             val array = listFromJSON<String>(json)
-            value1 == array[0] &&
-                value2 == array[1] &&
-                value3 == array[2]
+            value1.shouldBe(array[0])
+            value2.shouldBe(array[1])
+            value3.shouldBe(array[2])
         }
     }
 
