@@ -18,7 +18,8 @@ fun BaseExtension.setDefaults(project: Project) {
             isTestCoverageEnabled = false
         }
         getByName("debug") {
-            isTestCoverageEnabled = project.hasProperty("coverage")
+            isTestCoverageEnabled = project.includeTestCoverage()
+
         }
     }
 
