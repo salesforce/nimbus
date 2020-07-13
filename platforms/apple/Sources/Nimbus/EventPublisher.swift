@@ -32,11 +32,13 @@ public class EventPublisher<Events: EventKeyPathing> {
     private var listeners: [String: ListenerMap] = [:]
     private var listenerQueue: DispatchQueue = DispatchQueue(label: "EventPublisher")
 
+    public init() {}
+
     /**
      Adds a listener for the given event name. This function is bound
      in the bind method and shouldn't be called directly.
      */
-    func addListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
+    public func addListener(name: String, listener: @escaping (Encodable) -> Void) -> String {
         let listenerId = UUID().uuidString
         listenerQueue.sync {
             var listenerMap: ListenerMap = listeners[name, default: [:]]
@@ -50,7 +52,7 @@ public class EventPublisher<Events: EventKeyPathing> {
      Removes the given listener so it won't receive future events.
      This function is bound in the bind method and shouldn't be called directly.
      */
-    func removeListener(listenerId: String) {
+    public func removeListener(listenerId: String) {
         listenerQueue.sync {
             listeners = listeners.mapValues { map in
                 var updatedListeners = map
@@ -63,7 +65,7 @@ public class EventPublisher<Events: EventKeyPathing> {
     /**
      Publishes the given event with the given payload.
      */
-    func publishEvent<V: Codable>(_ eventKeyPath: KeyPath<Events, V>, payload: V) {
+    public func publishEvent<V: Codable>(_ eventKeyPath: KeyPath<Events, V>, payload: V) {
         listenerQueue.sync {
             guard let eventName = Events.stringForKeyPath(eventKeyPath),
                 let map = listeners[eventName] else {
@@ -78,7 +80,7 @@ public class EventPublisher<Events: EventKeyPathing> {
     /**
      Call this method from your plugins bind method.
      */
-    func bind(to connection: Connection) {
+    public func bind(to connection: Connection) {
         connection.bind(addListener, as: "addListener")
         connection.bind(removeListener, as: "removeListener")
     }

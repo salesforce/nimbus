@@ -1,7 +1,8 @@
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
+import org.gradle.api.Project
 
-fun BaseExtension.setDefaults() {
+fun BaseExtension.setDefaults(project: Project) {
     compileSdkVersion(ProjectVersions.androidSdk)
     defaultConfig {
         minSdkVersion(ProjectVersions.minSdk)
@@ -17,7 +18,8 @@ fun BaseExtension.setDefaults() {
             isTestCoverageEnabled = false
         }
         getByName("debug") {
-            isTestCoverageEnabled = true
+            isTestCoverageEnabled = project.includeTestCoverage()
+
         }
     }
 

@@ -6,9 +6,12 @@ plugins {
 }
 
 android {
-    setDefaults()
+    setDefaults(project)
     defaultConfig {
         applicationId = "com.salesforce.nimbusdemoapp"
+    }
+    buildTypes.all {
+        isTestCoverageEnabled = false
     }
 }
 

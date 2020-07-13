@@ -8,12 +8,7 @@ plugins {
 }
 
 android {
-    setDefaults()
-    testOptions {
-        unitTests.apply {
-            isReturnDefaultValues = true
-        }
-    }
+    setDefaults(project)
 }
 
 dependencies {
@@ -24,7 +19,6 @@ dependencies {
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
     testImplementation(Libs.kotlinxSerializationRuntime)
-
 }
 
 addTestDependencies()
