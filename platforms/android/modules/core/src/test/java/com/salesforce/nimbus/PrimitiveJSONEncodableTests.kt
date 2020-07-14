@@ -257,8 +257,8 @@ class PrimitiveJSONEncodableTests : StringSpec({
     }
 
     "Array<Int> toJSONEncodable" {
-        forAll<Array<Int>> { a ->
-            val jsonString = a.toJSONEncodable().encode()
+        forAll<List<Int>> { a ->
+            val jsonString = a.toTypedArray().toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
             a.indices.all { i -> a[i] == jsonArray[i] }
         }

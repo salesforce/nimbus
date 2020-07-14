@@ -4,27 +4,32 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 // Container for tests summaries
 rootProject.extra.set("testResults", mutableListOf<String>())
+rootProject.extra.set("failedTests", mutableListOf<String>())
 
 allprojects {
     tasks.withType<Test> {
 
         testLogging {
-//            events = setOf(FAILED, PASSED, SKIPPED, STANDARD_OUT, STANDARD_ERROR)
             events = setOf(FAILED, SKIPPED, STANDARD_ERROR)
 
-            exceptionFormat = TestExceptionFormat.FULL
             showExceptions = true
             showCauses  = true
-            showStackTraces = true
-            showStandardStreams = true
         }
-
-        ignoreFailures = true // Always try to run all tests for all modules
 
         addTestListener(object : TestListener {
             override fun beforeTest(p0: TestDescriptor?) = Unit
             override fun beforeSuite(p0: TestDescriptor?) = Unit
-            override fun afterTest(desc: TestDescriptor, result: TestResult) = Unit
+            override fun afterTest(desc: TestDescriptor, result: TestResult) {
+                when (result.resultType) {
+                    TestResult.ResultType.FAILURE -> {
+                        val failedTests = rootProject.extra.get("failedTests") as MutableList<String>
+                        failedTests.add("${project.name} - ${desc.displayName}")
+                        rootProject.extra.set("failedTests", failedTests)
+                    }
+                    else -> Unit
+                }
+            }
+
             override fun afterSuite(desc: TestDescriptor, result: TestResult) {
                 // Only summarize results for whole modules
                 if (desc.parent == null) {
@@ -53,6 +58,7 @@ fun addResults(testInfo: String, desc: TestDescriptor, result: TestResult) {
 
 gradle.buildFinished {
     val allResults = rootProject.extra.get("testResults") as List<String>
+    val failedResults = rootProject.extra.get("failedTests") as List<String>
 
     if (allResults.any()) {
         allResults.forEach {
@@ -61,6 +67,12 @@ gradle.buildFinished {
             println(seperationLine)
             println(it)
             println(seperationLine)
+        }
+    }
+    if (failedResults.any()) {
+        println("FAILED TESTS")
+        failedResults.forEach{
+            println(it)
         }
     }
 }
