@@ -320,11 +320,11 @@ class PrimitiveJSONEncodableTests : StringSpec({
     }
 
     "Long toJSONEncodable" {
-        forAll<Long> { a ->
+        checkAll<Long> { a ->
             val jsonString = a.toJSONEncodable().encode()
             val jsonObject = JSONObject(jsonString)
             val value = jsonObject.get("")
-            a == value
+            a.shouldBe(value)
         }
     }
 
