@@ -321,4 +321,41 @@ class JSValueEncoderTests: XCTestCase {
         """
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
+
+    func testEncodableEnum() throws {
+        let testEncodable = TestEncodable(foo: 4, bar: "bar", thing: [4], double: 4.0)
+        let testValue = TestEncodableValue.value(testEncodable)
+        let encoded = try encoder.encode(testValue, context: context)
+        XCTAssertTrue(encoded.isObject)
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.value === undefined) {
+                return false;
+            }
+            if (valueToTest.value.bar !== "bar") {
+                return false;
+            }
+            return true;
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+}
+
+enum TestEncodableValue: Encodable {
+    case value(Encodable)
+
+    enum Keys: String, CodingKey {
+        case value
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Keys.self)
+        switch self {
+        case let .value(encodableValue):
+            let superContainer = container.superEncoder(forKey: .value)
+            try encodableValue.encode(to: superContainer)
+        }
+    }
 }
