@@ -7,6 +7,7 @@ import com.salesforce.nimbus.NIMBUS_BRIDGE
 import com.salesforce.nimbus.NIMBUS_PLUGINS
 import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
+import io.kotest.core.spec.style.StringSpec
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -14,29 +15,26 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.Before
-import org.junit.Test
 
 /**
  * Unit tests for [V8Bridge].
  */
-class V8BridgeTest {
+class V8BridgeTest : StringSpec({
 
-    private lateinit var v8Bridge: V8Bridge
-    private val mockV8 = mockk<V8>(relaxed = true)
-    private val mockPlugin1 = mockk<Plugin1>(relaxed = true)
-    private val mockPlugin1V8Binder = mockk<Plugin1V8Binder>(relaxed = true) {
+    lateinit var v8Bridge: V8Bridge
+    val mockV8 = mockk<V8>(relaxed = true)
+    val mockPlugin1 = mockk<Plugin1>(relaxed = true)
+    val mockPlugin1V8Binder = mockk<Plugin1V8Binder>(relaxed = true) {
         every { getPlugin() } returns mockPlugin1
         every { getPluginName() } returns "Test"
     }
-    private val mockPlugin2 = mockk<Plugin2>(relaxed = true)
-    private val mockPlugin2V8Binder = mockk<Plugin2V8Binder>(relaxed = true) {
+    val mockPlugin2 = mockk<Plugin2>(relaxed = true)
+    val mockPlugin2V8Binder = mockk<Plugin2V8Binder>(relaxed = true) {
         every { getPlugin() } returns mockPlugin2
         every { getPluginName() } returns "Test2"
     }
 
-    @Before
-    fun setUp() {
+    beforeTest {
         mockkStatic("com.salesforce.nimbus.bridge.v8.V8ExtensionsKt")
         with(mockV8) {
             every { createObject() } returns mockk {
@@ -53,8 +51,7 @@ class V8BridgeTest {
             .attach(mockV8)
     }
 
-    @Test
-    fun attachAddsNimbusBridgeObject() {
+    "attachAddsNimbusBridgeObject" {
         slot<V8Object>().let {
 
             // verify bridge object is added
@@ -66,8 +63,7 @@ class V8BridgeTest {
         }
     }
 
-    @Test
-    fun attachAddsInternalNimbusBridgeObject() {
+    "attachAddsInternalNimbusBridgeObject" {
         slot<V8Object>().let {
 
             // verify internal bridge object is added
@@ -80,27 +76,23 @@ class V8BridgeTest {
         }
     }
 
-    @Test
-    fun attachAllowsPluginsToCustomize() {
+    "attachAllowsPluginsToCustomize" {
         verify { mockPlugin1.customize(v8Bridge) }
         verify { mockPlugin2.customize(v8Bridge) }
     }
 
-    @Test
-    fun attachBindsToBinders() {
+    "attachBindsToBinders" {
         verify { mockPlugin1V8Binder.bind(v8Bridge) }
         verify { mockPlugin2V8Binder.bind(v8Bridge) }
     }
 
-    @Test
-    fun detachCleansUpPlugins() {
+    "detachCleansUpPlugins" {
         v8Bridge.detach()
         verify { mockPlugin1.cleanup(v8Bridge) }
         verify { mockPlugin2.cleanup(v8Bridge) }
     }
 
-    @Test
-    fun detachClosesObjects() {
+    "detachClosesObjects" {
 
         // capture the nimbusBridge object
         val nimbusBridgeSlot = slot<V8Object>()
@@ -122,7 +114,7 @@ class V8BridgeTest {
         verify { nimbusPlugins.close() }
         verify { internalNimbusBridge.close() }
     }
-}
+})
 
 @PluginOptions(name = "Test")
 class Plugin1 : Plugin {
