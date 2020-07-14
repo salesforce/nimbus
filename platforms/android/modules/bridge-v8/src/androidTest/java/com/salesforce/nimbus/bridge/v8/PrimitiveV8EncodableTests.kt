@@ -1,6 +1,5 @@
 package com.salesforce.nimbus.bridge.v8
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.salesforce.k2v8.scope
@@ -65,7 +64,7 @@ class PrimitiveV8EncodableTests : StringSpec({
         }
     }
 
-    "Long toV8Encodable"{
+    "Long toV8Encodable" {
         v8.scope {
             checkAll<Long> { a ->
                 val array = a.toV8Encodable(v8).encode() as V8Array
@@ -87,4 +86,3 @@ class PrimitiveV8EncodableTests : StringSpec({
         }
     }
 })
-
