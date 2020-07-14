@@ -3,7 +3,8 @@ coverage:
     project:
       default: false
       nimbus:
-        target: 75%
+        target: auto
+        threshold: 1%
         paths:
           - "platforms/apple/Sources/Nimbus"
           - "platforms/android/modules/*/src/main"

@@ -1,7 +1,5 @@
 # Nimbus
 
-[![codecov](https://codecov.io/gh/salesforce/nimbus/branch/main/graph/badge.svg)](https://codecov.io/gh/salesforce/nimbus)
-
 [![Android](https://api.bintray.com/packages/salesforce-mobile/android/nimbus/images/download.svg) ](https://bintray.com/salesforce-mobile/android/nimbus/_latestVersion)
 
 <!-- [![Snapshot](https://img.shields.io/badge/snapshot-2.0.0--SNAPSHOT-green)](https://https://oss.jfrog.org/artifactory/libs-snapshot/com/salesforce/nimbus/) -->
