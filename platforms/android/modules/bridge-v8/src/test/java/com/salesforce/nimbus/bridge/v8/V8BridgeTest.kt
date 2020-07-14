@@ -51,7 +51,7 @@ class V8BridgeTest : StringSpec({
             .attach(mockV8)
     }
 
-    "attachAddsNimbusBridgeObject" {
+    "attach adds NimbusBridge object" {
         slot<V8Object>().let {
 
             // verify bridge object is added
@@ -63,7 +63,7 @@ class V8BridgeTest : StringSpec({
         }
     }
 
-    "attachAddsInternalNimbusBridgeObject" {
+    "attach adds internal NimbusBridge object" {
         slot<V8Object>().let {
 
             // verify internal bridge object is added
@@ -76,23 +76,23 @@ class V8BridgeTest : StringSpec({
         }
     }
 
-    "attachAllowsPluginsToCustomize" {
+    "attach allows plugins to customize" {
         verify { mockPlugin1.customize(v8Bridge) }
         verify { mockPlugin2.customize(v8Bridge) }
     }
 
-    "attachBindsToBinders" {
+    "attach binds to binders" {
         verify { mockPlugin1V8Binder.bind(v8Bridge) }
         verify { mockPlugin2V8Binder.bind(v8Bridge) }
     }
 
-    "detachCleansUpPlugins" {
+    "detach cleans up plugins" {
         v8Bridge.detach()
         verify { mockPlugin1.cleanup(v8Bridge) }
         verify { mockPlugin2.cleanup(v8Bridge) }
     }
 
-    "detachClosesObjects" {
+    "detach closes objects" {
 
         // capture the nimbusBridge object
         val nimbusBridgeSlot = slot<V8Object>()

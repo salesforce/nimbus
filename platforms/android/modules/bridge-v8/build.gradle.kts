@@ -15,28 +15,33 @@ android {
 }
 
 dependencies {
-    implementation(nimbusModule("annotations"))
     api(nimbusModule("core"))
-    implementation(Libs.k2v8)
-    kapt(nimbusModule("compiler-v8"))
-
     api(Libs.j2v8)
-    implementation(Libs.kotlinxSerializationRuntime)
     api(Libs.kotlinStdlib)
 
-    androidTestImplementation(Libs.mockkAndroid)
+    implementation(nimbusModule("annotations"))
+    implementation(Libs.k2v8)
+    implementation(Libs.kotlinxSerializationRuntime)
+
+    kapt(nimbusModule("compiler-v8"))
+
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.espressoCore)
     androidTestImplementation(Libs.androidxTestRules) {
         exclude("com.android.support", "support-annotations")
     }
     androidTestImplementation(Libs.truth)
+    androidTestImplementation(Libs.kotestRunnerJUnit5){
+        exclude("io.mockk")
+        exclude("io.github.classgraph")
+    }
     androidTestImplementation(Libs.kotestProperty)
-    androidTestImplementation(Libs.mockkAndroid)
+
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
     testImplementation(Libs.mockk)
     testImplementation(Libs.truth)
+
     kaptTest(nimbusModule("compiler-v8"))
 }
 
