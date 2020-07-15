@@ -920,7 +920,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "FULL_VERSION=\"$(grep -Ei '\\\"version\\\": \\\"([.0-9]+)\\\"' ../../lerna.json)\"\nVERSION=\"$(echo ${FULL_VERSION}\\ | grep -E -o '[0-9]+.[0-9]+.[0-9]+')\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${VERSION}\" $BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\n";
+			shellScript = "FULL_VERSION=\"$(grep -Ei '\\\"version\\\": \\\"([.0-9]+)(.)*\\\"' ../../lerna.json)\"\nVERSION=\"$(echo ${FULL_VERSION}\\ | grep -E -o '[0-9]+.[0-9]+.[0-9]+')\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${VERSION}\" $BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\n";
 		};
 		CC131168242571DE002D698D /* Set Version */ = {
 			isa = PBXShellScriptBuildPhase;
