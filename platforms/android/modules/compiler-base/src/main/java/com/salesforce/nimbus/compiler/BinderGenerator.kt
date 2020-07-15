@@ -1,6 +1,7 @@
 package com.salesforce.nimbus.compiler
 
 import com.salesforce.nimbus.BoundMethod
+import com.salesforce.nimbus.BoundPlugin
 import com.salesforce.nimbus.PluginOptions
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -21,7 +22,6 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.type.TypeKind
@@ -80,7 +80,10 @@ abstract class BinderGenerator : AbstractProcessor() {
         try {
 
             // get all plugins
-            val pluginElements = env.getElementsAnnotatedWith(PluginOptions::class.java)
+            val pluginElements =
+                (env.getElementsAnnotatedWith(PluginOptions::class.java) +
+                env.getElementsAnnotatedWith(BoundPlugin::class.java))
+                    .distinctBy { it.className(processingEnv) }
 
             // get all serializable elements
             serializableElements = env.getElementsAnnotatedWith(Serializable::class.java)
@@ -92,14 +95,16 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // find any duplicate plugin names
             val duplicates =
-                pluginElements.groupingBy { it.getAnnotation(PluginOptions::class.java).name }
-                    .eachCount().filterValues { it > 1 }.keys
+                pluginElements
+                    .groupingBy { it.annotation<PluginOptions>(processingEnv)!!.name }
+                    .eachCount()
+                    .filterValues { it > 1 }.keys
 
             // if we have any duplicate plugin names then give an error
             if (duplicates.isNotEmpty()) {
                 val name = duplicates.first()
                 error(
-                    pluginElements.first { it.getAnnotation(PluginOptions::class.java).name == name },
+                    pluginElements.first { it.annotation<PluginOptions>(processingEnv)!!.name == name },
                     "A ${PluginOptions::class.java.simpleName} with name $name already exists."
                 )
             } else {
@@ -113,7 +118,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                             pluginElement,
                             "${PluginOptions::class.java.simpleName} class must extend $nimbusPackage.Plugin."
                         )
-                    } else if (shouldGenerateBinder(pluginElement)) {
+                    } else if (shouldGenerateBinder(processingEnv, pluginElement)) {
 
                         // process each plugin element to create a type spec
                         val binderTypeSpec = processPluginElement(pluginElement, serializableElements)
@@ -143,6 +148,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(
+            BoundPlugin::class.java.canonicalName,
             BoundMethod::class.java.canonicalName,
             PluginOptions::class.java.canonicalName,
             Serializable::class.java.canonicalName
@@ -156,8 +162,8 @@ abstract class BinderGenerator : AbstractProcessor() {
     private fun processPluginElement(pluginElement: Element, serializableElements: Set<Element>): TypeSpec {
 
         // the binder class name will be <PluginClass><JavascriptEngine>Binder, such as DeviceInfoPluginWebViewBinder
-        val binderTypeName = "${pluginElement.getName()}${javascriptEngine.simpleName}Binder"
-        val pluginName = pluginElement.getAnnotation(PluginOptions::class.java).name
+        val binderTypeName = "${pluginElement.className(processingEnv)}${javascriptEngine.simpleName}Binder"
+        val pluginName = pluginElement.annotation<PluginOptions>(processingEnv)!!.name
         val pluginTypeName = pluginElement.asKotlinTypeName()
 
         // get event type if plugin is an event publisher
@@ -193,8 +199,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             ClassName(nimbusPackage, "Runtime").parameterizedBy(javascriptEngine, serializedOutputType)
 
         // get all methods annotated with BoundMethod
-        val boundMethodElements = pluginElement.enclosedElements
-            .filter { it.kind == ElementKind.METHOD }
+        val boundMethodElements = pluginElement.methodElements(processingEnv)
             .filter {
 
                 // keep bound methods
@@ -337,6 +342,7 @@ abstract class BinderGenerator : AbstractProcessor() {
     }
 
     abstract fun shouldGenerateBinder(
+        environment: ProcessingEnvironment,
         pluginElement: Element
     ): Boolean
 
@@ -382,11 +388,13 @@ abstract class BinderGenerator : AbstractProcessor() {
     }
 
     protected fun TypeName.isKotlinSerializableType(): Boolean {
-        return serializableElements.map { it.asRawTypeName() }.any { it == this }
+        val typeElement = processingEnv.elementUtils.getTypeElement(toString())
+        return typeElement?.getAnnotation(Serializable::class.java) != null
     }
 
     protected fun TypeMirror.isKotlinSerializableType(): Boolean {
-        return serializableElements.map { it.asRawTypeName() }.any { it == asRawTypeName() }
+        val typeElement = processingEnv.elementUtils.getTypeElement(toString())
+        return typeElement?.getAnnotation(Serializable::class.java) != null
     }
 
     protected fun TypeMirror.isFunctionType(): Boolean {

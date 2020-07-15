@@ -23,7 +23,9 @@ import kotlinx.metadata.Flag
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmTypeProjection
 import kotlinx.metadata.KmValueParameter
+import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
+import javax.lang.model.element.ElementKind
 import javax.lang.model.type.TypeMirror
 
 /**
@@ -144,4 +146,38 @@ fun TypeName.typeArguments(): List<TypeName> {
     } else {
         emptyList()
     }
+}
+
+/**
+ * Convenience function to retrieve an [Annotation] from an [Element] by either getting it directly
+ * from the [Element] if it is a [ElementKind.CLASS] or getting it from the [ProcessingEnvironment].
+ */
+inline fun <reified T : Annotation> Element.annotation(env: ProcessingEnvironment): T? = if (kind == ElementKind.CLASS) {
+    getAnnotation(T::class.java)
+} else {
+    env.elementUtils.getTypeElement(asType().toString()).getAnnotation(T::class.java)
+}
+
+/**
+ * Convenience function to retrieve the class name of an [Element] by either getting it directly
+ * from the [Element] if it is a [ElementKind.CLASS] or getting it from the [ProcessingEnvironment].
+ */
+fun Element.className(env: ProcessingEnvironment) = if (kind == ElementKind.CLASS) {
+    getName()
+} else {
+    env.elementUtils.getTypeElement(asType().toString()).getName()
+}
+
+/**
+ * Convenience function to retrieve the [ElementKind.METHOD] [Element]s from an [Element] by either
+ * getting it directly from the [Element] if it is a [ElementKind.CLASS] or getting it from the
+ * [ProcessingEnvironment].
+ */
+fun Element.methodElements(env: ProcessingEnvironment): List<Element> {
+    val elements = if (kind == ElementKind.CLASS) {
+        enclosedElements
+    } else {
+        env.elementUtils.getTypeElement(asType().toString()).enclosedElements
+    }
+    return elements.filter { it.kind == ElementKind.METHOD }
 }

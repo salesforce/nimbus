@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.v8.V8
 import com.salesforce.nimbus.BoundMethod
+import com.salesforce.nimbus.BoundPlugin
 import com.salesforce.nimbus.DefaultEventPublisher
 import com.salesforce.nimbus.Event
 import com.salesforce.nimbus.EventPublisher
@@ -27,12 +28,12 @@ import com.salesforce.nimbus.bridge.v8.bridge
 import com.salesforce.nimbus.bridge.webview.WebViewBridge
 import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.core.plugins.DeviceInfoPlugin
-import com.salesforce.nimbus.core.plugins.v8Binder
-import com.salesforce.nimbus.core.plugins.webViewBinder
 import kotlinx.serialization.Serializable
 
 class MainActivity : AppCompatActivity() {
 
+    @BoundPlugin
+    private lateinit var deviceInfoPlugin: DeviceInfoPlugin
     private lateinit var webViewBridge: WebViewBridge
     private lateinit var v8Bridge: V8Bridge
     private lateinit var v8: V8
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.webview)
 
         // create the device info plugin
-        val deviceInfoPlugin = DeviceInfoPlugin(this)
+        deviceInfoPlugin = DeviceInfoPlugin(this)
 
         // create some other plugins
         val logPlugin = LogPlugin()
