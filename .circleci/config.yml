@@ -236,6 +236,24 @@ jobs:
           command: |
             github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} ./workspace/NimbusJS.zip
 
+  create-tagged-pre-release:
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - attach_workspace:
+          at: workspace
+
+      - run:
+          name: "Install node github release CLI"
+          command: |
+            sudo npm install -g github-release-cli
+
+      - run:
+          name: "Create GitHub Release"
+          command: |
+            github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} --prerelease=true ./workspace/NimbusJS.zip
+
   build-and-test-android:
     docker:
       - image: circleci/android:api-29-node
@@ -440,6 +458,14 @@ workflows:
               ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
+      - create-tagged-pre-release:
+          requires:
+            - build-and-test-ios-13
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+-beta\d+$/
       - upload-android-release:
           requires:
             - build-and-test-android
