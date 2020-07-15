@@ -3,13 +3,21 @@ package com.salesforce.nimbus.bridge.v8
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.salesforce.k2v8.scope
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.experimental.robolectric.RobolectricExtension
+import io.kotest.experimental.robolectric.RobolectricTest
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+class MyProjectLevelConfig : AbstractProjectConfig() {
+    override fun extensions(): List<Extension> = super.extensions() + RobolectricExtension()
+}
+
+@RobolectricTest
 class PrimitiveV8EncodableTests : StringSpec({
 
     lateinit var v8: V8

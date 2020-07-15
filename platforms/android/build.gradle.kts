@@ -16,6 +16,7 @@ buildscript {
         classpath(Libs.dokkaGradlePlugin)
         classpath(Libs.kotlinSerialization)
         classpath(Libs.buildInfoExtractorGradle)
+        classpath("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     }
 }
 
