@@ -40,10 +40,14 @@ fun V8.resolvePromise(result: Any): V8Object {
 /**
  * Rejects a Promise with the [error].
  */
-fun V8.rejectPromise(error: String): V8Object {
+fun V8.rejectPromise(error: Any): V8Object {
     return promiseGlobal().executeObjectFunction(
         "reject",
-        V8Array(this).push(error)
+        if (error is List<*>) {
+            error.toV8Array(this)
+        } else {
+            V8Array(this).push(error)
+        }
     )
 }
 

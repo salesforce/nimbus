@@ -1,5 +1,6 @@
 package com.salesforce.nimbus.bridge.v8.compiler
 
+import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.compiler.BinderGenerator
 import com.salesforce.nimbus.compiler.annotation
@@ -274,11 +275,38 @@ class V8BinderGenerator : BinderGenerator() {
         funBody
             .addStatement(")")
             .nextControlFlow("catch (throwable: Throwable)")
-            .addStatement(
+
+        val exceptions = functionElement.getAnnotation(BoundMethod::class.java)
+            ?.getExceptions() ?: emptyList()
+
+        // if we have any exceptions we will check if they are serializable
+        if (exceptions.isNotEmpty()) {
+            funBody.apply {
+                addStatement("when (throwable) {")
+                indent()
+                exceptions.filter { it.isKotlinSerializableType() }.forEach { exception ->
+                    addStatement(
+                        "is %T -> v8.%T(k2v8!!.toV8(%T.%T(), throwable))",
+                        exception,
+                        ClassName(nimbusV8Package, "rejectPromise"),
+                        exception,
+                        serializerFunctionName
+                    )
+                }
+                addStatement(
+                    "else -> v8.%T(throwable.message ?: \"Error\")",
+                    ClassName(nimbusV8Package, "rejectPromise")
+                )
+                unindent()
+                addStatement("}")
+            }
+        } else {
+            funBody.addStatement(
                 "v8.%T(throwable.message ?: \"Error\")", // TODO what default error message?
                 ClassName(nimbusV8Package, "rejectPromise")
             )
-            .endControlFlow()
+        }
+        funBody.endControlFlow()
 
         // add our function body and return a V8Object
         funSpec

@@ -24,10 +24,12 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.MirroredTypesException
 import javax.lang.model.type.TypeKind
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
+
 
 const val salesforceNamespace = "com.salesforce"
 const val nimbusPackage = "$salesforceNamespace.nimbus"
@@ -407,5 +409,18 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     protected fun TypeMirror.isArrayType(): Boolean {
         return kind == TypeKind.ARRAY
+    }
+
+    protected fun BoundMethod.getExceptions(): List<TypeMirror> {
+        try {
+
+            // this for some reason throws a MirroredTypesException
+            throwsExceptions
+        } catch (exception: MirroredTypesException) {
+
+            // but you can access the types from here
+            return exception.typeMirrors
+        }
+        return emptyList()
     }
 }
