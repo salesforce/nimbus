@@ -22,7 +22,7 @@ buildscript {
 
 plugins {
     id("com.jfrog.artifactory")
-    id("maven-publish")
+    `maven-publish`
     id("com.vanniktech.android.junit.jacoco") version "0.16.0"
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
 }
@@ -43,6 +43,7 @@ allprojects {
 
 junitJacoco {
     jacocoVersion = Versions.jacoco
+    setIgnoreProjects("demo-app", "shared-tests")
 }
 
 tasks.register("clean", Delete::class) {
