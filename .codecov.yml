@@ -7,7 +7,7 @@ coverage:
         threshold: 1%
         paths:
           - "platforms/apple/Sources/Nimbus"
-          - "platforms/android/modules/*/src/main"
+          - "platforms/android/modules/(.*)/src/main"
     patch: off
 
 ignore:
