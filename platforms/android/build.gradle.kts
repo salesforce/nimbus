@@ -70,7 +70,7 @@ tasks.register("publishSnapshot") {
     }
     doLast {
         val stringVersion = version.toString()
-        val regex = "[0-9]+.[0-9]+.[0-9]+".toRegex()
+        val regex = "[0-9]+\\.[0-9]+\\.[0-9]+".toRegex()
         val numericVersion = regex.find(stringVersion)
         if (numericVersion != null) {
             version = numericVersion.value + "-SNAPSHOT"
