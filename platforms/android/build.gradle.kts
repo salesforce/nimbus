@@ -7,6 +7,7 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+        maven ("https://jitpack.io")
     }
 
     dependencies {
@@ -17,13 +18,14 @@ buildscript {
         classpath(Libs.kotlinSerialization)
         classpath(Libs.buildInfoExtractorGradle)
         classpath("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+        classpath("com.github.jamie-houston:jacoco-android-gradle-plugin:0.1.5-alpha")
     }
 }
 
 plugins {
     id("com.jfrog.artifactory")
     `maven-publish`
-    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
+//    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
 }
 
@@ -41,10 +43,10 @@ allprojects {
     }
 }
 
-junitJacoco {
-    jacocoVersion = Versions.jacoco
-    setIgnoreProjects("demo-app", "shared-tests")
-}
+//jacoco {
+//    toolVersion = Versions.jacoco
+////    setIgnoreProjects("demo-app", "shared-tests")
+//}
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
