@@ -1,5 +1,5 @@
 package com.salesforce.nimbus
 
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class BoundMethod

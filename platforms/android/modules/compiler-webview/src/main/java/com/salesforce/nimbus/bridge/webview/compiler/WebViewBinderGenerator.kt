@@ -2,6 +2,7 @@ package com.salesforce.nimbus.bridge.webview.compiler
 
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.compiler.BinderGenerator
+import com.salesforce.nimbus.compiler.annotation
 import com.salesforce.nimbus.compiler.asKotlinTypeName
 import com.salesforce.nimbus.compiler.asRawTypeName
 import com.salesforce.nimbus.compiler.asTypeName
@@ -21,6 +22,7 @@ import com.squareup.kotlinpoet.asTypeName
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmValueParameter
+import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.VariableElement
@@ -40,8 +42,8 @@ class WebViewBinderGenerator : BinderGenerator() {
     private val toJSONEncodableFunctionName = ClassName(nimbusPackage, "toJSONEncodable")
     private val kotlinJSONEncodableClassName = ClassName(nimbusPackage, "KotlinJSONEncodable")
 
-    override fun shouldGenerateBinder(pluginElement: Element): Boolean {
-        return pluginElement.getAnnotation(PluginOptions::class.java).supportsWebView
+    override fun shouldGenerateBinder(environment: ProcessingEnvironment, pluginElement: Element): Boolean {
+        return pluginElement.annotation<PluginOptions>(processingEnv)!!.supportsWebView
     }
 
     override fun createBinderExtensionFunction(pluginElement: Element, binderClassName: ClassName): FunSpec {
