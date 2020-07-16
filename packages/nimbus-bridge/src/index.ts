@@ -131,15 +131,21 @@ let promisify = (src: any): void => {
     let func = src[key];
     dest[key] = (...args: any[]): Promise<any> => {
       args = cloneArguments(args);
-      try {
-        let result = func.call(src, ...args);
-        if (result !== undefined) {
-          result = JSON.parse(result);
+
+      return new Promise(function(resolve, reject): void {
+        var promiseId = uuidv4();
+        uuidsToPromises[promiseId] = { resolve, reject };
+        try {
+          let result = func.call(src, JSON.stringify({ promiseId }), ...args);
+          if (result !== undefined) {
+            result = JSON.parse(result);
+          }
+          delete uuidsToPromises[promiseId];
+          resolve(result);
+        } catch (error) {
+          // This space intentionally left blank, Android should call `__nimbus.rejectPromise` in this case
         }
-        return Promise.resolve(result);
-      } catch (error) {
-        return Promise.reject(error);
-      }
+      });
     };
   });
   return dest;
