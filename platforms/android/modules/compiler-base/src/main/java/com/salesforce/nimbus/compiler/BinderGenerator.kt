@@ -404,7 +404,7 @@ abstract class BinderGenerator : AbstractProcessor() {
     }
 
     protected fun TypeMirror.isUnitType(): Boolean {
-        return (asKotlinTypeName() as ClassName).simpleName == "Unit"
+        return asKotlinTypeName() is ClassName && (asKotlinTypeName() as ClassName).simpleName == "Unit"
     }
 
     protected fun TypeMirror.isArrayType(): Boolean {
