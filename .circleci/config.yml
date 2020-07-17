@@ -364,7 +364,7 @@ jobs:
           name: Upload Android coverage
           command: |
             # bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -f ./workspace/platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml -F Android
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/modules/bridge-webview/build/reports/jacoco/debug/jacoco.xml -f ./workspace/platforms/android/modules/bridge-v8/build/reports/jacoco/debug/jacoco.xml -F Android
+            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/modules/bridge-webview/build/reports/jacoco/test/debug/jacoco.xml -f ./workspace/platforms/android/modules/bridge-v8/build/reports/jacoco/test/debug/jacoco.xml -F Android
 
   upload-android-release:
     docker:
