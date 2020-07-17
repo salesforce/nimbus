@@ -412,6 +412,25 @@ class WebViewPluginTests {
 
     // endregion
 
+    // region exceptions
+
+    @Test
+    fun verifyPromiseResolvesWithNonEncodableException() {
+        executeTest("verifyPromiseResolvesWithNonEncodableException()")
+    }
+
+    @Test
+    fun verifyPromiseResolvesWithEncodableException1() {
+        executeTest("verifyPromiseResolvesWithEncodableException1()")
+    }
+
+    @Test
+    fun verifyPromiseResolvesWithEncodableException2() {
+        executeTest("verifyPromiseResolvesWithEncodableException2()")
+    }
+
+    // endregion
+
     private fun executeTest(script: String) {
         expectPlugin.testReady.withTimeoutInSeconds(30) {
             runOnUiThread { webView.evaluateJavascript(script) {} }

@@ -69,8 +69,32 @@ class StructEvent(val theStruct: TestStruct) : Event {
     override val name: String = "structEvent"
 }
 
+@Serializable
+class EncodableException1(val code: Int, override val message: String) : RuntimeException("$code: $message")
+
+@Serializable
+class EncodableException2(val code: Int, override val message: String) : RuntimeException("$code: $message")
+
 @PluginOptions(name = "testPlugin")
 class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher() {
+
+    // region exception testing
+
+    @BoundMethod
+    fun promiseResolvesWithNonEncodableException() {
+        throw Exception("This is the exception message")
+    }
+
+    @BoundMethod(EncodableException1::class, EncodableException2::class)
+    fun promiseResolvesWithEncodableException(code: Int) {
+        if (code == 1) {
+            throw EncodableException1(1, "Encodable exception 1")
+        } else if (code == 2) {
+            throw EncodableException2(2, "Encodable exception 2")
+        }
+    }
+
+    // endregion
 
     // region nullary parameters
 

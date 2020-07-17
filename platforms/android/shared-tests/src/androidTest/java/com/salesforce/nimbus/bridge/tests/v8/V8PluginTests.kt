@@ -348,6 +348,25 @@ class V8PluginTests {
 
     // endregion
 
+    // region exceptions
+
+    @Test
+    fun verifyPromiseResolvesWithNonEncodableException() {
+        executeTest("verifyPromiseResolvesWithNonEncodableException()")
+    }
+
+    @Test
+    fun verifyPromiseResolvesWithEncodableException1() {
+        executeTest("verifyPromiseResolvesWithEncodableException1()")
+    }
+
+    @Test
+    fun verifyPromiseResolvesWithEncodableException2() {
+        executeTest("verifyPromiseResolvesWithEncodableException2()")
+    }
+
+    // endregion
+
     private fun executeTest(function: String) {
         assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
         v8.scope { v8.executeScript(function) }

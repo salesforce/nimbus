@@ -30,7 +30,6 @@ import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
-
 const val salesforceNamespace = "com.salesforce"
 const val nimbusPackage = "$salesforceNamespace.nimbus"
 

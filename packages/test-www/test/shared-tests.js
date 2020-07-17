@@ -595,3 +595,42 @@ function unsubscribeFromStructEvent() {
   __nimbus.plugins.testPlugin.removeListener(listenerID);
   __nimbus.plugins.expectPlugin.ready();
 }
+
+// endregion
+
+// region exceptions
+
+function verifyPromiseResolvesWithNonEncodableException() {
+  __nimbus.plugins.testPlugin.promiseResolvesWithNonEncodableException().then((data) => {
+
+  }).catch((error) => {
+    if (error === "This is the exception message") {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyPromiseResolvesWithEncodableException1() {
+  __nimbus.plugins.testPlugin.promiseResolvesWithEncodableException(1).then((data) => {
+
+  }).catch((error) => {
+    if (error.code === 1 && error.message === "Encodable exception 1") {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyPromiseResolvesWithEncodableException2() {
+  __nimbus.plugins.testPlugin.promiseResolvesWithEncodableException(2).then((data) => {
+
+  }).catch((error) => {
+    if (error.code === 2 && error.message === "Encodable exception 2") {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+// endregion

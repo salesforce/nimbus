@@ -135,8 +135,8 @@ class JSAPITestPlugin : Plugin {
     }
 
     @BoundMethod
-    fun nullaryResolvingToIntArray(): ArrayList<Int> {
-        return arrayListOf(1, 2, 3)
+    fun nullaryResolvingToIntArray(): Array<Int> {
+        return arrayOf(1, 2, 3)
     }
 
     @BoundMethod

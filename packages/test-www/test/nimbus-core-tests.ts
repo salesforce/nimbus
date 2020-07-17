@@ -62,18 +62,18 @@ describe("Nimbus JS API", () => {
   });
   // This test is temporarily disabled until Android Array/List implementation is fixed
   // Test a binding of a nullary function that resolves to an array of Integers
-  // it("nullary function resolving to Int array", (done) => {
-  //   __nimbus.plugins.jsapiTestPlugin
-  //     .nullaryResolvingToIntArray()
-  //     .then((value: Array<number>) => {
-  //       expect(value).to.be.an("array", "result should be an array");
-  //       expect(value.length).to.deep.equal(3);
-  //       expect(value[0]).to.deep.equal(1);
-  //       expect(value[1]).to.deep.equal(2);
-  //       expect(value[2]).to.deep.equal(3);
-  //       done();
-  //     });
-  // });
+  it("nullary function resolving to Int array", (done) => {
+    __nimbus.plugins.jsapiTestPlugin
+      .nullaryResolvingToIntArray()
+      .then((value: Array<number>) => {
+        expect(value).to.be.an("array", "result should be an array");
+        expect(value.length).to.deep.equal(3);
+        expect(value[0]).to.deep.equal(1);
+        expect(value[1]).to.deep.equal(2);
+        expect(value[2]).to.deep.equal(3);
+        done();
+      });
+  });
   // Test a binding of a nullary function that resolves to an object
   it("nullary function resolving to an object", (done) => {
     __nimbus.plugins.jsapiTestPlugin
