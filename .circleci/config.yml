@@ -293,11 +293,18 @@ jobs:
           path: platforms/android/shared-tests/build/reports
           destination: reports
 
-      - store_test_results:
-          path: platforms/android/modules/bridge-webview/build/test-results
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
 
       - store_test_results:
-          path: platforms/android/modules/bridge-v8/build/test-results
+          path: ~/test-results
+
+      - store_artifacts:
+          path: ~/test-results/junit
 
       - run:
           name: Codecov Android
@@ -308,8 +315,10 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            # - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/modules/bridge-webview/build/reports/jacoco/debug/jacoco.xml
+            # - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+            - platforms/android/modules/bridge-v8/build/reports/jacoco/debug/jacoco.xml
             - platforms/android/build/docs
 
   build-and-test-ts:
