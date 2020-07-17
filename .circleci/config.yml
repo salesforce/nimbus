@@ -316,9 +316,9 @@ jobs:
           root: .
           paths:
             # - platforms/android/modules/bridge-webview/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/modules/bridge-webview/build/reports/jacoco/debug/jacoco.xml
+            - platforms/android/modules/bridge-webview/build/reports/jacoco/test/debug/jacoco.xml
             # - platforms/android/modules/bridge-v8/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
-            - platforms/android/modules/bridge-v8/build/reports/jacoco/debug/jacoco.xml
+            - platforms/android/modules/bridge-v8/build/reports/jacoco/test/debug/jacoco.xml
             - platforms/android/build/docs
 
   build-and-test-ts:
