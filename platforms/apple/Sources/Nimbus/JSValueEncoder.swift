@@ -71,9 +71,17 @@ class JSValueEncoderContainer: Encoder {
     var storage: JSValueEncoderStorage
     let context: JSContext
 
-    init(context: JSContext) {
+    init(userInfo: [CodingUserInfoKey: Any] = [:], codingPath: [CodingKey] = [], context: JSContext) {
         self.context = context
         storage = JSValueEncoderStorage(context: context)
+    }
+
+    fileprivate func encoder(for key: CodingKey) -> ReferencingEncoder {
+        return .init(referencing: self, key: key)
+    }
+
+    fileprivate func encoder(at index: Int) -> ReferencingEncoder {
+        return .init(referencing: self, at: index)
     }
 
     func resolvedValue() -> JSValue {
@@ -235,11 +243,15 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
     }
 
     func superEncoder() -> Encoder {
-        return JSValueEncoderContainer(context: JSContext())
+        return encoder(for: JSValueKey.super)
     }
 
     func superEncoder(forKey key: K) -> Encoder {
-        return JSValueEncoderContainer(context: JSContext())
+        return encoder(for: key)
+    }
+
+    private func encoder(for key: CodingKey) -> ReferencingEncoder {
+        return encoder.encoder(for: key)
     }
 
     typealias Key = K
@@ -477,6 +489,37 @@ extension JSValue {
     func append(_ value: Any, for key: String) {
         if let value = JSValue(object: value, in: context) {
             setObject(value, forKeyedSubscript: key)
+        }
+    }
+}
+
+private class ReferencingEncoder: JSValueEncoderContainer {
+    private enum Reference { case mapping(String), sequence(Int) }
+
+    private let encoder: JSValueEncoderContainer
+    private let reference: Reference
+
+    init(referencing encoder: JSValueEncoderContainer, key: CodingKey) {
+        self.encoder = encoder
+        reference = .mapping(key.stringValue)
+        super.init(userInfo: encoder.userInfo, codingPath: encoder.codingPath + [key], context: encoder.context)
+    }
+
+    init(referencing encoder: JSValueEncoderContainer, at index: Int) {
+        self.encoder = encoder
+        reference = .sequence(index)
+        super.init(userInfo: encoder.userInfo, codingPath: encoder.codingPath + [JSValueKey(index: index)], context: encoder.context)
+    }
+
+    deinit {
+        guard let appendTo = encoder.storage.jsValueContainers.last else { return }
+        let toAppend = self.storage.popContainer()
+        switch reference {
+        case let .mapping(key):
+            appendTo.setObject(toAppend, forKeyedSubscript: key)
+
+        case let .sequence(index):
+            appendTo.setValue(toAppend, at: index)
         }
     }
 }

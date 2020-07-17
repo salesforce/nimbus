@@ -573,6 +573,32 @@ function verifyBinaryIntResolvingIntCallbackReturnsInt() {
 
 // endregion
 
+// region return value errors
+
+function verifyReturnValueSimpleError() {
+  __nimbus.plugins.testPlugin.nullaryResolvingToSimpleError().then(() => {
+    __nimbus.plugins.expectPlugin.finished();
+  }).catch((error) => {
+    if (error === "simpleError") {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyReturnValueStructuredError() {
+  __nimbus.plugins.testPlugin.nullaryResolvingToStructuredError().then(() => {
+    __nimbus.plugins.expectPlugin.finished();
+  }).catch((error) => {
+    if (error.stringValue === "Structured error" && error.numberValue === 4.0) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+// endregion
+
 // region events
 
 var listenerID = "";

@@ -54,17 +54,17 @@ public class JSContextConnection: Connection, CallableBinder {
             } catch {
                 switch error {
                 case let encodableError as EncodableError:
-                    let error = EncodableValue.error(encodableError)
+                    let encodableError = EncodableValue.error(encodableError)
                     if
                         let promiseGlobal = self.promiseGlobal,
-                        let jsValue = try? JSValueEncoder().encode(error, context: promiseGlobal.context),
+                        let jsValue = try? JSValueEncoder().encode(encodableError, context: promiseGlobal.context),
                         let errorValue = jsValue.objectForKeyedSubscript("e") {
                         return promiseGlobal.invokeMethod("reject", withArguments: [errorValue])
                     } else {
                         fallthrough
                     }
                 default:
-                    return self.promiseGlobal?.invokeMethod("reject", withArguments: [error.localizedDescription])
+                    return self.promiseGlobal?.invokeMethod("reject", withArguments: [String("\(error)")])
                 }
             }
         }
