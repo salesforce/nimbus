@@ -194,7 +194,7 @@ class ExceptionPlugin : Plugin {
         }
     }
 
-    @BoundMethod(SerializableException1::class, SerializableException2::class)
+    @BoundMethod(throwsExceptions = [SerializableException1::class, SerializableException2::class])
     fun throwSerializableException(value: Int): String {
         when (value) {
             1 -> throw SerializableException1(1, "SerializableException1")
