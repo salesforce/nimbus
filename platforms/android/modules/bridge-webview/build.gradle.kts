@@ -6,7 +6,6 @@ plugins {
     id("org.jetbrains.dokka")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("jacoco-android")
 }
 
 android {

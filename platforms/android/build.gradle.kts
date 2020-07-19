@@ -1,32 +1,12 @@
-import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
-
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-        jcenter()
-        maven ("https://jitpack.io")
-    }
-
-    dependencies {
-        classpath(Libs.androidToolsBuildGradle)
-        classpath(Libs.kotlinGradlePlugin)
-        classpath(Libs.gradleBintrayPlugin)
-        classpath(Libs.dokkaGradlePlugin)
-        classpath(Libs.kotlinSerialization)
-        classpath(Libs.buildInfoExtractorGradle)
-        classpath("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
-        classpath("com.github.jamie-houston:jacoco-android-gradle-plugin:0.1.5-alpha")
-    }
-}
 
 plugins {
     id("com.jfrog.artifactory")
     `maven-publish`
-//    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.70"
+    jacoco
 }
 
 allprojects {
@@ -34,6 +14,7 @@ allprojects {
         google()
         jcenter()
     }
+
     group = getSettingValue(PublishingSettingsKey.group) ?: ""
     val versionFile = file("$rootDir/../../lerna.json")
     val parsedFile = org.json.JSONObject(versionFile.readText())
@@ -43,10 +24,10 @@ allprojects {
     }
 }
 
-//jacoco {
-//    toolVersion = Versions.jacoco
-////    setIgnoreProjects("demo-app", "shared-tests")
-//}
+jacoco {
+    toolVersion = Versions.jacoco
+//    setIgnoreProjects("demo-app", "shared-tests")
+}
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
@@ -78,4 +59,5 @@ artifactory {
         })
     })
 }
+
 apply(from = rootProject.file("gradle/test-output.gradle.kts"))

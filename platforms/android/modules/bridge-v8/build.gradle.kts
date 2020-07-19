@@ -8,7 +8,6 @@ plugins {
     id("org.jetbrains.dokka")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("jacoco-android")
 }
 
 android {
@@ -76,9 +75,6 @@ afterEvaluate {
     bintray {
         setupPublicationsUpload(project, publishing)
     }
-}
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 apply(from = rootProject.file("gradle/lint.gradle"))
