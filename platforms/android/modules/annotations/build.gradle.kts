@@ -8,10 +8,10 @@ dependencies {
     implementation(Libs.kotlinStdlib)
 }
 
-apply(from = rootProject.file("gradle/java-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
+        apply(from = rootProject.file("gradle/java-publishing-tasks.gradle.kts"))
         setupAllPublications(project)
     }
     bintray {
