@@ -41,11 +41,11 @@ node {
 /*
  * Compile the test web app prior to assembling the androidTest app
  */
-val npmInstallTask = tasks.named<com.moowork.gradle.node.npm.NpmTask>("npm_install"){
+val npmInstallTask = tasks.named<com.moowork.gradle.node.npm.NpmTask>("npm_install") {
     // make sure the build task is executed only when appropriate files change
     inputs.files(fileTree(rootProject.file("../../package.json")))
     setWorkingDir(rootProject.file("../.."))
-    outputs.upToDateWhen {true}
+    outputs.upToDateWhen { true }
 }
 
 tasks.whenTaskAdded {
@@ -53,4 +53,3 @@ tasks.whenTaskAdded {
         dependsOn(npmInstallTask)
     }
 }
-apply(from = rootProject.file("gradle/lint.gradle"))

@@ -18,5 +18,3 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
 }
-
-apply(from = rootProject.file("gradle/lint.gradle"))

@@ -1,5 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaTask
-
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -66,5 +64,3 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
 }
-
-apply(from = rootProject.file("gradle/lint.gradle"))

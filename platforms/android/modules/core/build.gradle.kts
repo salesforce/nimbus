@@ -19,12 +19,11 @@ dependencies {
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
     testImplementation(Libs.kotlinxSerializationRuntime)
-
 }
 
 addTestDependencies()
 
-apply(from= rootProject.file("gradle/android-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
 
 afterEvaluate {
     publishing {
@@ -35,5 +34,3 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
 }
-
-apply(from = rootProject.file("gradle/lint.gradle"))

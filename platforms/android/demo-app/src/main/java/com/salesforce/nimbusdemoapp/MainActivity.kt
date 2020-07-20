@@ -181,7 +181,6 @@ class SerializableException1(val code: Int, override val message: String) : Runt
 @Serializable
 class SerializableException2(val code: Int, override val message: String) : RuntimeException("$code, $message")
 
-
 @PluginOptions("ExceptionPlugin")
 class ExceptionPlugin : Plugin {
 

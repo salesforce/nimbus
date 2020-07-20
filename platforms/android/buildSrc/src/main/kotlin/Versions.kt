@@ -31,7 +31,9 @@ object Versions {
 
     const val appcompat: String = "1.1.0"
 
-    const val ktlint: String = "0.36.0" // available: "0.37.2"
+    const val ktlintGradle = "9.3.0"
+
+    const val ktlint: String = "0.36.0"
 
     const val guava: String = "29.0-android"
 

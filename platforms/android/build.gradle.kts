@@ -1,30 +1,14 @@
-import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.gradle.api.GradleException
-
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath(Libs.androidToolsBuildGradle)
-        classpath(Libs.kotlinGradlePlugin)
-        classpath(Libs.gradleBintrayPlugin)
-        classpath(Libs.dokkaGradlePlugin)
-        classpath(Libs.kotlinSerialization)
-        classpath(Libs.buildInfoExtractorGradle)
-    }
-}
 
 plugins {
     id("com.jfrog.artifactory")
     id("maven-publish")
     id("com.vanniktech.android.junit.jacoco") version "0.16.0"
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
+    id("org.jlleitschuh.gradle.ktlint") version Versions.ktlintGradle
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.70"
 }
 
 allprojects {
@@ -83,16 +67,30 @@ tasks.register("publishSnapshot") {
 
 artifactory {
     setContextUrl("http://oss.jfrog.org")
-    publish(delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
-        repository(delegateClosureOf<groovy.lang.GroovyObject> {
-            val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
-            setProperty("repoKey", targetRepoKey)
-            setProperty("username", System.getenv("BINTRAY_USER"))
-            setProperty("password", System.getenv("BINTRAY_API_KEY"))
-            setProperty("maven", true)
-        })
-        defaults(delegateClosureOf<groovy.lang.GroovyObject> {
-            invokeMethod("publications", "mavenPublication")
-        })
-    })
+    publish(
+        delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
+            repository(
+                delegateClosureOf<groovy.lang.GroovyObject> {
+                    val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
+                    setProperty("repoKey", targetRepoKey)
+                    setProperty("username", System.getenv("BINTRAY_USER"))
+                    setProperty("password", System.getenv("BINTRAY_API_KEY"))
+                    setProperty("maven", true)
+                }
+            )
+            defaults(
+                delegateClosureOf<groovy.lang.GroovyObject> {
+                    invokeMethod("publications", "mavenPublication")
+                }
+            )
+        }
+    )
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint") // Version should be inherited from parent
+
+    ktlint {
+        version.set(Versions.ktlint)
+    }
 }

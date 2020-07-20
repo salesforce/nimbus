@@ -5,7 +5,6 @@ import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.closureOf
-import org.gradle.kotlin.dsl.delegateClosureOf
 import org.gradle.kotlin.dsl.existing
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
