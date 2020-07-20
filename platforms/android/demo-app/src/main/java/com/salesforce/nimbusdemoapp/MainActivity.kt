@@ -29,6 +29,7 @@ import com.salesforce.nimbus.bridge.webview.WebViewBridge
 import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.core.plugins.DeviceInfoPlugin
 import kotlinx.serialization.Serializable
+import java.lang.RuntimeException
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         val logPlugin = LogPlugin()
         val toastPlugin = ToastPlugin(this)
         val eventPlugin = EventPlugin()
+        val exceptionPlugin = ExceptionPlugin()
 
         // create the web view bridge
         webViewBridge = webView.bridge {
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             bind { logPlugin.webViewBinder() }
             bind { toastPlugin.webViewBinder() }
             bind { eventPlugin.webViewBinder() }
+            bind { exceptionPlugin.webViewBinder() }
         }
 
         // load the demo url
@@ -72,6 +75,7 @@ class MainActivity : AppCompatActivity() {
             bind { logPlugin.v8Binder() }
             bind { toastPlugin.v8Binder() }
             bind { eventPlugin.v8Binder() }
+            bind { exceptionPlugin.v8Binder() }
         }
 
         // execute a script to get the device info plugin and then log to the console
@@ -89,6 +93,30 @@ class MainActivity : AppCompatActivity() {
 
                 __nimbus.plugins.EventPlugin.addListener("toastEvent", (event) => {
                     __nimbus.plugins.ToastPlugin.toast("V8: " + event.message);
+                });
+
+                __nimbus.plugins.ExceptionPlugin.throwException(true).then((data) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwException() returned data:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(data));
+                }).catch((error) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwException() returned error:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(error));
+                });
+
+                __nimbus.plugins.ExceptionPlugin.throwSerializableException(1).then((data) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwSerializableException() returned data:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(data));
+                }).catch((error) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwSerializableException() returned error:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(error));
+                });
+
+                __nimbus.plugins.ExceptionPlugin.throwSerializableException().then((data) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwSerializableException() returned data:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(data));
+                }).catch((error) => {
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", "ExceptionPlugin.throwSerializableException() returned error:");
+                    __nimbus.plugins.LogPlugin.debug("ExceptionPlugin", JSON.stringify(error));
                 });
             """.trimIndent()
         )
@@ -146,3 +174,32 @@ sealed class MessageEvents : Event {
 
 @PluginOptions("EventPlugin")
 class EventPlugin : Plugin, EventPublisher<MessageEvents> by DefaultEventPublisher()
+
+@Serializable
+class SerializableException1(val code: Int, override val message: String) : RuntimeException("$code, $message")
+
+@Serializable
+class SerializableException2(val code: Int, override val message: String) : RuntimeException("$code, $message")
+
+
+@PluginOptions("ExceptionPlugin")
+class ExceptionPlugin : Plugin {
+
+    @BoundMethod
+    fun throwException(throwException: Boolean): String {
+        return if (throwException) {
+            throw Exception("This is the exception")
+        } else {
+            "This is the return value"
+        }
+    }
+
+    @BoundMethod(throwsExceptions = [SerializableException1::class, SerializableException2::class])
+    fun throwSerializableException(value: Int): String {
+        when (value) {
+            1 -> throw SerializableException1(1, "SerializableException1")
+            2 -> throw SerializableException2(2, "SerializableException2")
+            else -> return "This is the return value"
+        }
+    }
+}

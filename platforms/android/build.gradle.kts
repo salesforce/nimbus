@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.gradle.api.GradleException
 
 plugins {
     id("com.jfrog.artifactory")
@@ -40,6 +41,26 @@ tasks {
         subProjects = listOf("core", "core-plugins", "bridge-webview", "bridge-v8")
         configuration {
             moduleName = "nimbus"
+        }
+    }
+}
+
+tasks.register("publishSnapshot") {
+    val publishTask = tasks.findByPath("artifactoryPublish")
+    if (publishTask != null) {
+        this.finalizedBy(publishTask)
+    } else {
+        throw GradleException("Unable to find the publish task")
+    }
+    doLast {
+        val stringVersion = version.toString()
+        val regex = "[0-9]+\\.[0-9]+\\.[0-9]+".toRegex()
+        val numericVersion = regex.find(stringVersion)
+        if (numericVersion != null) {
+            version = numericVersion.value + "-SNAPSHOT"
+        } else {
+            logger.error("Version in project is invalid")
+            throw GradleException("Version in project is invalid")
         }
     }
 }

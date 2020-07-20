@@ -1,5 +1,6 @@
 package com.salesforce.nimbus.bridge.webview.compiler
 
+import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.PluginOptions
 import com.salesforce.nimbus.compiler.BinderGenerator
 import com.salesforce.nimbus.compiler.annotation
@@ -15,10 +16,8 @@ import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmValueParameter
@@ -39,8 +38,13 @@ class WebViewBinderGenerator : BinderGenerator() {
 
     private val jsonObjectClassName = ClassName("org.json", "JSONObject")
 
+    private val jsEncodableClassName = ClassName(
+        nimbusPackage,
+        "JSEncodable"
+    ).parameterizedBy(serializedOutputType).nullable(true)
     private val toJSONEncodableFunctionName = ClassName(nimbusPackage, "toJSONEncodable")
     private val kotlinJSONEncodableClassName = ClassName(nimbusPackage, "KotlinJSONEncodable")
+    private val primitiveJSONEncodableClassName = ClassName(nimbusPackage, "PrimitiveJSONEncodable")
 
     override fun shouldGenerateBinder(environment: ProcessingEnvironment, pluginElement: Element): Boolean {
         return pluginElement.annotation<PluginOptions>(processingEnv)!!.supportsWebView
@@ -63,6 +67,7 @@ class WebViewBinderGenerator : BinderGenerator() {
         kotlinFunction: KmFunction?
     ): FunSpec {
         val functionName = functionElement.simpleName.toString()
+        val returnType = functionElement.returnType
 
         // try to find the fun from the kotlin class metadata to see if the
         // return type is nullable
@@ -74,6 +79,17 @@ class WebViewBinderGenerator : BinderGenerator() {
             // add android @JavascriptInterface annotation to function
             addAnnotation(ClassName("android.webkit", "JavascriptInterface"))
         }
+
+        // if the function has a return value we will add a promiseId arg
+        funSpec.addParameter(
+            "promiseMetadata",
+            String::class
+        )
+        funSpec.addStatement(
+            "val promiseId = %T(promiseMetadata).getString(\"promiseId\")",
+            jsonObjectClassName
+        )
+        funSpec.beginControlFlow("try")
 
         val funArgs = mutableListOf<String>()
         functionElement.parameters.forEachIndexed { argIndex, parameter ->
@@ -143,11 +159,14 @@ class WebViewBinderGenerator : BinderGenerator() {
             funArgs.add(parameter.getName())
         }
 
-        // JSON Encode the return value if necessary
         val argsString = funArgs.joinToString(", ")
-        val returnType = functionElement.returnType
         when (returnType.kind) {
-            TypeKind.VOID -> processVoidReturnType(functionElement, argsString, kotlinReturnType, funSpec)
+            TypeKind.VOID -> processVoidReturnType(
+                functionElement,
+                argsString,
+                kotlinReturnType,
+                funSpec
+            )
             TypeKind.DECLARED -> {
                 when {
                     returnType.isStringType() -> processStringReturnType(
@@ -178,11 +197,9 @@ class WebViewBinderGenerator : BinderGenerator() {
                         argsString,
                         funSpec
                     )
-                    else -> processOtherDeclaredReturnType(
+                    else -> error(
                         functionElement,
-                        argsString,
-                        kotlinReturnType,
-                        funSpec
+                        "${functionElement.returnType} is not a supported return type."
                     )
                 }
             }
@@ -192,13 +209,97 @@ class WebViewBinderGenerator : BinderGenerator() {
                 funSpec
             )
             else -> {
-                // TODO: we should whitelist types we know work rather than just hoping for the best
                 funSpec.addStatement(
-                    "return target.%N($argsString)",
+                    "val result = %T(target.%N($argsString))",
+                    primitiveJSONEncodableClassName,
                     functionElement.simpleName.toString()
-                ).returns(returnType.asKotlinTypeName())
+                )
             }
         }
+
+        funSpec.addCode(CodeBlock.Builder().apply {
+            addStatement(
+                "val args = arrayOf<%T>(",
+                jsEncodableClassName
+            )
+            indent()
+            addStatement(
+                "%T(promiseId),",
+                primitiveJSONEncodableClassName
+            )
+            addStatement("result,")
+            addStatement("null")
+            unindent()
+            addStatement(")")
+            addStatement(
+                "runtime?.invoke(%S, %N, null)",
+                "__nimbus.resolvePromise",
+                "args"
+            )
+        }.build())
+
+        funSpec.nextControlFlow("catch (throwable: Throwable)")
+
+        val exceptions = functionElement.getAnnotation(BoundMethod::class.java)
+            ?.getExceptions() ?: emptyList()
+
+        // if we have any exceptions we will check if they are serializable
+        if (exceptions.isNotEmpty()) {
+            funSpec.addCode(
+                CodeBlock.Builder().apply {
+                    addStatement("val error = when (throwable) {")
+                    indent()
+                    exceptions.filter { it.isKotlinSerializableType() }.forEach { exception ->
+                        addStatement(
+                            "is %T -> %T(throwable, %T.%T())",
+                            exception,
+                            kotlinJSONEncodableClassName,
+                            exception,
+                            serializerFunctionName
+                        )
+                    }
+                    addStatement(
+                        "else -> %T(throwable.message ?: \"Error\")",
+                        primitiveJSONEncodableClassName
+                    )
+                    unindent()
+                    addStatement("}")
+                }.build()
+            )
+        } else {
+            funSpec.addStatement(
+                "val error = %T(throwable.message ?: \"Error\")",
+                primitiveJSONEncodableClassName
+            )
+        }
+
+        funSpec.addCode(
+            CodeBlock.Builder().apply {
+                addStatement(
+                    "val args = arrayOf<%T>(",
+                    ClassName(
+                        nimbusPackage,
+                        "JSEncodable"
+                    ).parameterizedBy(serializedOutputType).nullable(true)
+                )
+                indent()
+                addStatement(
+                    "%T(promiseId),",
+                    primitiveJSONEncodableClassName
+                )
+                addStatement("null,")
+                addStatement("error")
+                unindent()
+                addStatement(")")
+                addStatement(
+                    "runtime?.invoke(%S, %N, null)",
+                    "__nimbus.resolvePromise",
+                    "args"
+                )
+            }.build()
+        )
+
+        funSpec.endControlFlow()
 
         return funSpec.build()
     }
@@ -280,10 +381,7 @@ class WebViewBinderGenerator : BinderGenerator() {
             .indent()
             .add(
                 "%T(%NId),\n",
-                ClassName(
-                    nimbusPackage,
-                    "PrimitiveJSONEncodable"
-                ),
+                primitiveJSONEncodableClassName,
                 parameter.simpleName
             )
 
@@ -304,10 +402,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                     } else {
                         "%T(arg$index)"
                     },
-                    ClassName(
-                        nimbusPackage,
-                        "PrimitiveJSONEncodable"
-                    )
+                    primitiveJSONEncodableClassName
                 )
             }
 
@@ -476,10 +571,7 @@ class WebViewBinderGenerator : BinderGenerator() {
             .indent()
             .add(
                 "%T(%NId)\n",
-                ClassName(
-                    nimbusPackage,
-                    "PrimitiveJSONEncodable"
-                ),
+                primitiveJSONEncodableClassName,
                 parameter.simpleName
             )
             .unindent()
@@ -641,7 +733,7 @@ class WebViewBinderGenerator : BinderGenerator() {
                 "target.%N($argsString)",
                 functionElement.simpleName.toString()
             )
-            returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
+            addStatement("val result = null")
         }
     }
 
@@ -653,11 +745,10 @@ class WebViewBinderGenerator : BinderGenerator() {
     ) {
         funSpec.apply {
             addStatement(
-                "return %T.quote(target.%N($argsString))",
-                jsonObjectClassName,
+                "val result = %T(target.%N($argsString))",
+                primitiveJSONEncodableClassName,
                 functionElement.simpleName.toString()
             )
-            returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
         }
     }
 
@@ -672,16 +763,13 @@ class WebViewBinderGenerator : BinderGenerator() {
             parameterType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T).stringify(%T(%T.%T()), target.%N($argsString))",
-                        jsonSerializationClassName,
-                        jsonSerializationConfigurationClassName,
+                        "val result = %T(target.%N($argsString), %T(%T.%T()))",
+                        kotlinJSONEncodableClassName,
+                        functionElement.getName(),
                         listSerializerClassName,
                         parameterType.asKotlinTypeName(),
-                        serializerFunctionName,
-                        functionElement.getName()
+                        serializerFunctionName
                     )
-                    addStatement("return json")
-                    returns(String::class)
                 }
             }
             else -> {
@@ -689,12 +777,10 @@ class WebViewBinderGenerator : BinderGenerator() {
                     addCode(
                         CodeBlock.Builder().apply {
                             addStatement(
-                                "val json = target.%N($argsString).%T().encode()",
+                                "val result = target.%N($argsString).%T()",
                                 functionElement.getName(),
                                 toJSONEncodableFunctionName
                             )
-                            addStatement("return json")
-                            returns(String::class)
                         }.build()
                     )
                 }
@@ -712,16 +798,13 @@ class WebViewBinderGenerator : BinderGenerator() {
             arrayType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T).stringify(%T(%T.%T()), target.%N($argsString))",
-                        jsonSerializationClassName,
-                        jsonSerializationConfigurationClassName,
+                        "val result = %T(target.%N($argsString), %T(%T.%T()))",
+                        kotlinJSONEncodableClassName,
+                        functionElement.getName(),
                         arraySerializerClassName,
                         arrayType,
-                        serializerFunctionName,
-                        functionElement.getName()
+                        serializerFunctionName
                     )
-                    addStatement("return json")
-                    returns(String::class)
                 }
             }
             else -> {
@@ -729,12 +812,10 @@ class WebViewBinderGenerator : BinderGenerator() {
                     addCode(
                         CodeBlock.Builder().apply {
                             addStatement(
-                                "val json = target.%N($argsString).%T().encode()",
+                                "val result = target.%N($argsString).%T()",
                                 functionElement.getName(),
                                 toJSONEncodableFunctionName
                             )
-                            addStatement("return json")
-                            returns(String::class)
                         }.build()
                     )
                 }
@@ -761,18 +842,15 @@ class WebViewBinderGenerator : BinderGenerator() {
             valueParameterType.isKotlinSerializableType() -> {
                 funSpec.apply {
                     addStatement(
-                        "val json = %T(%T).stringify(%T(%T.%T(), %T.%T()), target.%N($argsString))",
-                        jsonSerializationClassName,
-                        jsonSerializationConfigurationClassName,
+                        "val result = %T(target.%N($argsString), %T(%T.%T(), %T.%T()))",
+                        kotlinJSONEncodableClassName,
+                        functionElement.getName(),
                         mapSerializerClassName,
                         keyParameterType.asKotlinTypeName(),
                         serializerFunctionName,
                         valueParameterType.asKotlinTypeName(),
-                        serializerFunctionName,
-                        functionElement.getName()
+                        serializerFunctionName
                     )
-                    addStatement("return json")
-                    returns(String::class)
                 }
             }
             else -> {
@@ -780,12 +858,10 @@ class WebViewBinderGenerator : BinderGenerator() {
                     addCode(
                         CodeBlock.Builder().apply {
                             addStatement(
-                                "val json = target.%N($argsString).%T().encode()",
+                                "val result = target.%N($argsString).%T()",
                                 functionElement.getName(),
                                 toJSONEncodableFunctionName
                             )
-                            addStatement("return json")
-                            returns(String::class)
                         }.build()
                     )
                 }
@@ -800,11 +876,9 @@ class WebViewBinderGenerator : BinderGenerator() {
     ) {
         funSpec.apply {
             addStatement(
-                "val json = target.%N($argsString).encode()",
+                "val result = target.%N($argsString)",
                 functionElement.getName()
             )
-            addStatement("return json")
-            returns(String::class)
         }
     }
 
@@ -815,43 +889,12 @@ class WebViewBinderGenerator : BinderGenerator() {
     ) {
         funSpec.apply {
             addStatement(
-                "val json = %T(%T).stringify(%T.serializer(), target.%N($argsString))",
-                jsonSerializationClassName,
-                jsonSerializationConfigurationClassName,
+                "val result = %T(target.%N($argsString), %T.%T())",
+                kotlinJSONEncodableClassName,
+                functionElement.getName(),
                 functionElement.returnType,
-                functionElement.getName()
+                serializerFunctionName
             )
-            addStatement("return json")
-            returns(String::class)
         }
-    }
-
-    private fun processOtherDeclaredReturnType(
-        functionElement: ExecutableElement,
-        argsString: String,
-        kotlinReturnType: KmType?,
-        funSpec: FunSpec.Builder
-    ) {
-
-        // TODO: should we even allow this? what should the behavior be?
-        // Map to nullable parameters if necessary
-        if (functionElement.returnType.asTypeName() is ParameterizedTypeName) {
-            val parameterizedReturnType =
-                functionElement.returnType.asKotlinTypeName() as ParameterizedTypeName
-            val returnType =
-                parameterizedReturnType.rawType.parameterizedBy(
-                    parameterizedReturnType.typeArguments.mapIndexed { index, type ->
-                        val nullable = kotlinReturnType?.arguments?.get(index).isNullable()
-                        type.toKotlinTypeName(nullable = nullable)
-                    }
-                )
-            funSpec.returns(returnType)
-        } else {
-            funSpec.returns(functionElement.returnType.asKotlinTypeName(nullable = kotlinReturnType.isNullable()))
-        }
-        funSpec.addStatement(
-            "return target.%N($argsString)",
-            functionElement.simpleName.toString()
-        )
     }
 }

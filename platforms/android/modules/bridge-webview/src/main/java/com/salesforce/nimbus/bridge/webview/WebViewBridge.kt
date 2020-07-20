@@ -95,6 +95,9 @@ class WebViewBridge : Bridge<WebView, String>,
                 promise = Promise.reject(error);
             }
             promise.then((value) => {
+                if (value === undefined) {
+                    value = null;
+                }
                 _nimbus.resolvePromise("$promiseId", JSON.stringify({value: value}));
             }).catch((err) => {
                 _nimbus.rejectPromise("$promiseId", err.toString());
