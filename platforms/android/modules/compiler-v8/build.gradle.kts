@@ -12,7 +12,6 @@ dependencies {
     api(Libs.kotlinxMetadataJvm)
 }
 
-
 afterEvaluate {
     publishing {
         apply(from = rootProject.file("gradle/java-publishing-tasks.gradle.kts"))

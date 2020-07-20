@@ -8,7 +8,6 @@ dependencies {
     implementation(Libs.kotlinStdlib)
 }
 
-
 afterEvaluate {
     publishing {
         apply(from = rootProject.file("gradle/java-publishing-tasks.gradle.kts"))
