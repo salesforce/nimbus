@@ -1,8 +1,9 @@
-//plugins {
-//    id("com.jfrog.artifactory") version "4.16.1"
-//    java
-//}
-//
+plugins {
+    id("com.jfrog.artifactory") version "4.16.1"
+    java
+    `maven-publish`
+}
+
 configure<JavaPluginExtension> {
     withSourcesJar()
     withJavadocJar()
@@ -22,3 +23,10 @@ configure<JavaPluginExtension> {
 //        from(project.components["java"])
 //    }
 //}
+publishing {
+    publications {
+        create<MavenPublication>("mavenPublication") {
+            from(project.components["java"])
+        }
+    }
+}

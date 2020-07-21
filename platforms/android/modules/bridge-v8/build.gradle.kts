@@ -53,7 +53,7 @@ dependencies {
 
 addTestDependencies()
 
-apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
+apply(from = rootProject.file("gradle/android-publishing-tasks.gradle.kts"))
 
 afterEvaluate {
     publishing {
