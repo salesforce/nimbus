@@ -11,6 +11,9 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("org.jetbrains.dokka")
+    `maven-publish`
+    id("com.jfrog.bintray")
+    id("com.jfrog.artifactory")
 }
 
 android {
@@ -22,4 +25,22 @@ dependencies {
     implementation(nimbusModule("annotations"))
     implementation(Libs.kotlinStdlib)
     compileOnly(Libs.kotlinxSerializationRuntime)
+}
+
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
+
+afterEvaluate {
+    publishing {
+        setupAllPublications(project)
+        publications.getByName<MavenPublication>("mavenPublication") {
+            artifact(sourcesJar)
+        }
+    }
+
+    bintray {
+        setupPublicationsUpload(project, publishing)
+    }
 }
