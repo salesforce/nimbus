@@ -37,13 +37,12 @@ val sourcesJar by tasks.creating(Jar::class) {
 
 afterEvaluate {
     publishing {
-        publications {
-            create<MavenPublication>("mavenPublication") {
-                artifact(sourcesJar)
-            }
-        }
         setupAllPublications(project)
+        publications.getByName<MavenPublication>("mavenPublication") {
+            artifact(sourcesJar)
+        }
     }
+
     bintray {
         setupPublicationsUpload(project, publishing)
     }

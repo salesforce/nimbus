@@ -27,14 +27,13 @@ val sourcesJar by tasks.creating(Jar::class) {
     archiveClassifier.set("sources")
     from(android.sourceSets.getByName("main").java.srcDirs)
 }
+
 afterEvaluate {
     publishing {
-        publications {
-            create<MavenPublication>("mavenPublication") {
-                artifact(sourcesJar)
-            }
-        }
         setupAllPublications(project)
+        publications.getByName<MavenPublication>("mavenPublication") {
+            artifact(sourcesJar)
+        }
     }
 
     bintray {
