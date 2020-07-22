@@ -1,8 +1,12 @@
+import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.creating
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 
 object PublishingSettingsKey {
@@ -42,8 +46,9 @@ fun MavenPublication.setupPom(project: Project) = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-//    val publication = publications.getByName("mavenPublication") as MavenPublication
-    val publication = publications.create<MavenPublication>("mavenPublication")
+    val publication = if (project.isAndroidModule()) publications.getByName("mavenPublication") as MavenPublication
+    else publications.create<MavenPublication>("mavenPublication")
+
     if (project.isAndroidModule()) {
         publication.from(project.components["release"])
     } else {

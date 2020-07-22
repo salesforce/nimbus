@@ -12,9 +12,13 @@ dependencies {
     api(Libs.kotlinxMetadataJvm)
 }
 
+configure<JavaPluginExtension> {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 afterEvaluate {
     publishing {
-        apply(from = rootProject.file("gradle/java-publishing-tasks.gradle.kts"))
         setupAllPublications(project)
     }
 

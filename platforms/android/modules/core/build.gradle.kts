@@ -23,10 +23,17 @@ dependencies {
 
 addTestDependencies()
 
-apply(from = rootProject.file("gradle/android-publishing-tasks.gradle.kts"))
-
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
 afterEvaluate {
     publishing {
+        publications {
+            create<MavenPublication>("mavenPublication") {
+                artifact(sourcesJar)
+            }
+        }
         setupAllPublications(project)
     }
 
