@@ -28,6 +28,18 @@ allprojects {
     val versionFile = file("$rootDir/../../lerna.json")
     val parsedFile = org.json.JSONObject(versionFile.readText())
     version = parsedFile.getString("version")
+
+    if (gradle.startParameter.taskNames.contains("publishSnapshot")) {
+        val regex = "[0-9]+\\.[0-9]+\\.[0-9]+".toRegex()
+        val numericVersion = regex.find(version.toString())
+        if (numericVersion != null) {
+            version = "${numericVersion.value}-SNAPSHOT"
+        } else {
+            logger.error("Version in project is invalid")
+            throw GradleException("Version in project is invalid")
+        }
+    }
+
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -57,21 +69,12 @@ tasks {
 
 tasks.register("publishSnapshot") {
     val publishTask = tasks.findByPath("artifactoryPublish")
+
     if (publishTask != null) {
+        publishTask.dependsOn(getTasksByName("build", true))
         this.finalizedBy(publishTask)
     } else {
         throw GradleException("Unable to find the publish task")
-    }
-    doLast {
-        val stringVersion = version.toString()
-        val regex = "[0-9]+\\.[0-9]+\\.[0-9]+".toRegex()
-        val numericVersion = regex.find(stringVersion)
-        if (numericVersion != null) {
-            version = numericVersion.value + "-SNAPSHOT"
-        } else {
-            logger.error("Version in project is invalid")
-            throw GradleException("Version in project is invalid")
-        }
     }
 }
 
