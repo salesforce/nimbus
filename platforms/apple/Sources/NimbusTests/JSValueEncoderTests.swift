@@ -396,6 +396,83 @@ class JSValueEncoderTests: XCTestCase {
         """
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
+
+    func testUnkeyedContainerTypes() throws { // swiftlint:disable:this function_body_length
+        let container = JSValueEncoderContainer(context: context)
+        let storage = JSValue(newArrayIn: context)
+        let unkeyed = JSValueUnkeyedEncodingContainer(
+            encoder: container,
+            container: storage,
+            codingPath: []
+        )
+        XCTAssertEqual(storage?.length(), 0)
+        try unkeyed.encode("test")
+        XCTAssertEqual(storage?.length(), 1)
+        XCTAssertEqual(storage?.atIndex(0)?.toString(), "test")
+
+        try unkeyed.encode(2.2 as Double)
+        XCTAssertEqual(storage?.length(), 2)
+        XCTAssertEqual(storage!.atIndex(1)!.toDouble(), 2.2 as Double, accuracy: 0.01)
+
+        try unkeyed.encode(3.3 as Float)
+        XCTAssertEqual(storage?.length(), 3)
+        XCTAssertEqual(storage!.atIndex(2)!.toDouble(), 3.3 as Double, accuracy: 0.01)
+
+        try unkeyed.encode(4 as Int)
+        XCTAssertEqual(storage?.length(), 4)
+        XCTAssertEqual(storage?.atIndex(3)?.toInt32(), 4)
+
+        try unkeyed.encode(5 as Int8)
+        XCTAssertEqual(storage?.length(), 5)
+        XCTAssertEqual(storage?.atIndex(4)?.toInt32(), 5)
+
+        try unkeyed.encode(6 as Int16)
+        XCTAssertEqual(storage?.length(), 6)
+        XCTAssertEqual(storage?.atIndex(5)?.toInt32(), 6)
+
+        try unkeyed.encode(7 as Int32)
+        XCTAssertEqual(storage?.length(), 7)
+        XCTAssertEqual(storage?.atIndex(6)?.toInt32(), 7)
+
+        try unkeyed.encode(8 as Int64)
+        XCTAssertEqual(storage?.length(), 8)
+        XCTAssertEqual(storage?.atIndex(7)?.toInt32(), 8)
+
+        try unkeyed.encode(9 as UInt)
+        XCTAssertEqual(storage?.length(), 9)
+        XCTAssertEqual(storage?.atIndex(8)?.toInt32(), 9)
+
+        try unkeyed.encode(10 as UInt8)
+        XCTAssertEqual(storage?.length(), 10)
+        XCTAssertEqual(storage?.atIndex(9)?.toInt32(), 10)
+
+        try unkeyed.encode(11 as UInt16)
+        XCTAssertEqual(storage?.length(), 11)
+        XCTAssertEqual(storage?.atIndex(10)?.toInt32(), 11)
+
+        try unkeyed.encode(12 as UInt32)
+        XCTAssertEqual(storage?.length(), 12)
+        XCTAssertEqual(storage?.atIndex(11)?.toInt32(), 12)
+
+        try unkeyed.encode(13 as UInt64)
+        XCTAssertEqual(storage?.length(), 13)
+        XCTAssertEqual(storage?.atIndex(12)?.toInt32(), 13)
+
+        try unkeyed.encode(true)
+        XCTAssertEqual(storage?.length(), 14)
+        XCTAssertEqual(storage?.atIndex(13)?.toBool(), true)
+
+        let testNil: String? = nil
+        try unkeyed.encode(testNil)
+        XCTAssertEqual(storage?.length(), 15)
+        XCTAssertEqual(storage?.atIndex(14)?.isNull, true)
+    }
+}
+
+extension JSValue {
+    func length() -> Int32 {
+        return objectForKeyedSubscript("length")?.toInt32() ?? 0 as Int32
+    }
 }
 
 struct KeyedContainerTypesStruct: Encodable {

@@ -108,7 +108,7 @@ class JSValueEncoderContainer: Encoder {
     }
 }
 
-private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
+struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     let encoder: JSValueEncoderContainer
     let container: JSValue?
     var codingPath: [CodingKey]
@@ -257,7 +257,7 @@ private struct JSValueKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContain
     typealias Key = K
 }
 
-private struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
+struct JSValueUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     let encoder: JSValueEncoderContainer
     let container: JSValue?
     var codingPath: [CodingKey]
