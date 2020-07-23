@@ -34,11 +34,10 @@ allprojects {
 }
 
 junitJacoco {
-    jacocoVersion  = Versions.jacoco
-//    setIgnoreProjects("demo-app", "shared-tests")
+    jacocoVersion = Versions.jacoco
+    setIgnoreProjects("demo-app")
     includeNoLocationClasses = true
     includeInstrumentationCoverageInMergedReport = true
-
 }
 
 tasks.register("clean", Delete::class) {
