@@ -1,3 +1,10 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 import kotlin.String
 
 object Libs {
@@ -58,8 +65,6 @@ object Libs {
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
     const val constraintLayout: String = "androidx.constraintlayout:constraintlayout:" + Versions.constraintLayout
-
-    const val ktlint: String = "com.pinterest:ktlint:" + Versions.ktlint
 
     const val guava: String = "com.google.guava:guava:" + Versions.guava
 

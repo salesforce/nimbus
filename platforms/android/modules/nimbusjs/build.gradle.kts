@@ -1,3 +1,10 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 import com.moowork.gradle.node.npm.NpmTask
 
 plugins {
@@ -32,11 +39,11 @@ val copyScript by tasks.registering(Copy::class) {
     into(file("src/main/assets/"))
 }
 
-val npmInstallTask = tasks.named<NpmTask>("npm_install"){
+val npmInstallTask = tasks.named<NpmTask>("npm_install") {
     // make sure the build task is executed only when appropriate files change
     inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
     setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
-    outputs.upToDateWhen {true}
+    outputs.upToDateWhen { true }
 }
 
 tasks.whenTaskAdded {
@@ -45,12 +52,18 @@ tasks.whenTaskAdded {
     }
 }
 
-apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
-
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
 afterEvaluate {
     publishing {
         setupAllPublications(project)
+        publications.getByName<MavenPublication>("mavenPublication") {
+            artifact(sourcesJar)
+        }
     }
+
     bintray {
         setupPublicationsUpload(project, publishing)
     }

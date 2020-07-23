@@ -1,6 +1,14 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 rootProject.name = "Nimbus"
 
-arrayOf(":bridge-webview", ":annotations", ":compiler-webview", ":nimbusjs", ":core",
+arrayOf(
+    ":bridge-webview", ":annotations", ":compiler-webview", ":nimbusjs", ":core",
     ":compiler-base", ":bridge-v8", ":compiler-v8", ":core-plugins"
 ).forEach { include(":modules$it") }
 

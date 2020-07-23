@@ -1,3 +1,10 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 import kotlin.String
 
 object Versions {
@@ -31,7 +38,9 @@ object Versions {
 
     const val appcompat: String = "1.1.0"
 
-    const val ktlint: String = "0.36.0" // available: "0.37.2"
+    const val ktlintGradle = "9.3.0"
+
+    const val ktlint: String = "0.36.0"
 
     const val guava: String = "29.0-android"
 

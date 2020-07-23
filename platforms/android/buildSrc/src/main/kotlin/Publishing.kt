@@ -1,6 +1,14 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
 
@@ -41,7 +49,13 @@ fun MavenPublication.setupPom(project: Project) = pom {
 }
 
 fun PublishingExtension.setupAllPublications(project: Project) {
-    val publication = publications.getByName("mavenPublication") as MavenPublication
+    val publication = publications.create<MavenPublication>("mavenPublication")
+
+    if (project.isAndroidModule()) {
+        publication.from(project.components["release"])
+    } else {
+        publication.from(project.components["java"])
+    }
 
     publication.artifactId = project.name
 

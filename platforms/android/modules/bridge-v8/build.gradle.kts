@@ -1,4 +1,9 @@
-import org.jetbrains.dokka.gradle.DokkaTask
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
 
 plugins {
     id("com.android.library")
@@ -65,16 +70,19 @@ dependencies {
 
 addTestDependencies()
 
-apply(from = rootProject.file("gradle/android-publishing-tasks.gradle"))
-
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
 afterEvaluate {
     publishing {
         setupAllPublications(project)
+        publications.getByName<MavenPublication>("mavenPublication") {
+            artifact(sourcesJar)
+        }
     }
 
     bintray {
         setupPublicationsUpload(project, publishing)
     }
 }
-
-apply(from = rootProject.file("gradle/lint.gradle"))

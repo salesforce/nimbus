@@ -1,3 +1,10 @@
+//
+// Copyright (c) 2020, Salesforce.com, inc.
+// All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+// For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+//
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -42,11 +49,11 @@ node {
 /*
  * Compile the test web app prior to assembling the androidTest app
  */
-val npmInstallTask = tasks.named<com.moowork.gradle.node.npm.NpmTask>("npm_install"){
+val npmInstallTask = tasks.named<com.moowork.gradle.node.npm.NpmTask>("npm_install") {
     // make sure the build task is executed only when appropriate files change
     inputs.files(fileTree(rootProject.file("../../package.json")))
     setWorkingDir(rootProject.file("../.."))
-    outputs.upToDateWhen {true}
+    outputs.upToDateWhen { true }
 }
 
 tasks.whenTaskAdded {
@@ -54,4 +61,3 @@ tasks.whenTaskAdded {
         dependsOn(npmInstallTask)
     }
 }
-apply(from = rootProject.file("gradle/lint.gradle"))
