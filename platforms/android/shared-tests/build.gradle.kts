@@ -11,7 +11,6 @@ plugins {
     id("kotlin-kapt")
     id("kotlinx-serialization")
     id("com.github.node-gradle.node") version "2.2.4"
-//    id("jacoco-android")
 }
 
 android {

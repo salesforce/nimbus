@@ -13,7 +13,7 @@ plugins {
     id("com.jfrog.artifactory")
     `maven-publish`
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
-    jacoco
+    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
     id("org.jlleitschuh.gradle.ktlint") version Versions.ktlintGradle
     id("org.jetbrains.kotlin.plugin.serialization") version "1.3.70"
 }
@@ -33,9 +33,12 @@ allprojects {
     }
 }
 
-jacoco {
-    toolVersion = Versions.jacoco
+junitJacoco {
+    jacocoVersion  = Versions.jacoco
 //    setIgnoreProjects("demo-app", "shared-tests")
+    includeNoLocationClasses = true
+    includeInstrumentationCoverageInMergedReport = true
+
 }
 
 tasks.register("clean", Delete::class) {

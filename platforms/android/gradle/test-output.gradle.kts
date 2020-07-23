@@ -10,7 +10,8 @@ allprojects {
     tasks.withType<Test> {
 
         testLogging {
-            events = setOf(FAILED, SKIPPED, STANDARD_ERROR)
+//            events = setOf(FAILED, SKIPPED, STANDARD_ERROR)
+            events = setOf(FAILED, SKIPPED)
 
             showExceptions = true
             showCauses  = true
