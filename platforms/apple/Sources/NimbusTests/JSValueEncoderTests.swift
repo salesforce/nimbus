@@ -6,7 +6,7 @@
 // root or https://opensource.org/licenses/BSD-3-Clause
 //
 
-// swiftlint:disable type_body_length
+// swiftlint:disable type_body_length file_length
 
 import JavaScriptCore
 import XCTest
@@ -341,6 +341,78 @@ class JSValueEncoderTests: XCTestCase {
         """
         XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
     }
+
+    func testKeyedContainerTypes() throws { // swiftlint:disable:this function_body_length
+        let test = KeyedContainerTypesStruct()
+        let encoded = try encoder.encode(test, context: context)
+        XCTAssertTrue(encoded.isObject)
+        let assertScript = """
+        function testValue() {
+            if (valueToTest.boolType !== true) {
+                return false;
+            }
+            if (valueToTest.stringType !== "test") {
+                return false;
+            }
+            if (valueToTest.doubleType !== 2.0) {
+                return false;
+            }
+            if (valueToTest.floatType !== 3.0) {
+                return false;
+            }
+            if (valueToTest.intType !== 4) {
+                return false;
+            }
+            if (valueToTest.intEightType !== 5) {
+                return false;
+            }
+            if (valueToTest.intSixteenType !== 6) {
+                return false;
+            }
+            if (valueToTest.intThirtyTwoType !== 7) {
+                return false;
+            }
+            if (valueToTest.intSixtyFourType !== 8) {
+                return false;
+            }
+            if (valueToTest.uintType !== 9) {
+                return false;
+            }
+            if (valueToTest.uintEightType !== 10) {
+                return false;
+            }
+            if (valueToTest.uintSixteenType !== 11) {
+                return false;
+            }
+            if (valueToTest.uintThirtyTwoType !== 12) {
+                return false;
+            }
+            if (valueToTest.uintSixtyFourType !== 13) {
+                return false;
+            }
+            return true;
+        }
+        testValue();
+        """
+        XCTAssertTrue(executeAssertionScript(assertScript, testValue: encoded, key: "valueToTest"))
+    }
+}
+
+struct KeyedContainerTypesStruct: Encodable {
+    let boolType = true
+    let stringType = "test"
+    let doubleType: Double = 2.0
+    let floatType: Float = 3.0
+    let intType: Int = 4
+    let intEightType: Int8 = 5
+    let intSixteenType: Int16 = 6
+    let intThirtyTwoType: Int32 = 7
+    let intSixtyFourType: Int64 = 8
+    let uintType: UInt = 9
+    let uintEightType: UInt8 = 10
+    let uintSixteenType: UInt16 = 11
+    let uintThirtyTwoType: UInt32 = 12
+    let uintSixtyFourType: UInt64 = 13
 }
 
 enum TestEncodableValue: Encodable {
