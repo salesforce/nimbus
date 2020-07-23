@@ -21,9 +21,6 @@ object Libs {
     const val kotlinStdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:" +
             Versions.kotlin
 
-    const val kotestCore: String = "io.kotest:kotest-core-jvm:" +
-        Versions.kotest
-
     const val kotestAssertions: String = "io.kotest:kotest-assertions-core-jvm:" +
             Versions.kotest
 

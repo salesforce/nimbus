@@ -13,7 +13,7 @@ plugins {
     `maven-publish`
     id("com.jfrog.bintray")
     id("com.jfrog.artifactory")
-    id("com.github.node-gradle.node") version "2.2.4"
+    id("com.github.node-gradle.node") version Versions.nodeGradle
 }
 
 android {

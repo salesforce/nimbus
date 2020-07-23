@@ -12,6 +12,8 @@ object Versions {
 
     const val kotlin: String = "1.3.72"
 
+    const val jacocoAndroid: String = "0.16.0"
+
     const val jacoco: String = "0.8.4"
 
     const val kotest: String = "4.1.1"
@@ -39,6 +41,8 @@ object Versions {
     const val appcompat: String = "1.1.0"
 
     const val ktlintGradle = "9.3.0"
+
+    const val nodeGradle: String = "2.2.4"
 
     const val ktlint: String = "0.36.0"
 

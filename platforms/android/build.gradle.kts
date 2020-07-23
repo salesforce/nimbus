@@ -13,9 +13,9 @@ plugins {
     id("com.jfrog.artifactory")
     `maven-publish`
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
-    id("com.vanniktech.android.junit.jacoco") version "0.16.0"
+    id("com.vanniktech.android.junit.jacoco") version Versions.jacocoAndroid
     id("org.jlleitschuh.gradle.ktlint") version Versions.ktlintGradle
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.70"
+    id("org.jetbrains.kotlin.plugin.serialization") version Versions.kotlin
 }
 
 allprojects {
@@ -101,7 +101,7 @@ artifactory {
 }
 
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint") // Version should be inherited from parent
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     ktlint {
         version.set(Versions.ktlint)

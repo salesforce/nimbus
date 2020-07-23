@@ -10,7 +10,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("kotlinx-serialization")
-    id("com.github.node-gradle.node") version "2.2.4"
+    id("com.github.node-gradle.node") version Versions.nodeGradle
 }
 
 android {
