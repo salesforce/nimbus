@@ -1,13 +1,16 @@
 coverage:
   status:
     project:
-      default: false
-      nimbus:
+      default: false # disable the default status that measures entire project
+      android:
         target: auto
         threshold: 1%
         paths:
-          - "platforms/apple/Sources/Nimbus"
           - "platforms/android/modules/(.*)/src/main"
+      ios:
+        target: 75
+        paths:
+          - "platforms/apple/Sources/(.*)"
     patch: off
 
 ignore:
