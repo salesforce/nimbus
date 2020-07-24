@@ -8,7 +8,8 @@ coverage:
         paths:
           - "platforms/android/modules/(.*)/src/main"
       ios:
-        target: 75
+        target: auto
+        threshold: 1%
         paths:
           - "platforms/apple/Sources/(.*)"
     patch: off
