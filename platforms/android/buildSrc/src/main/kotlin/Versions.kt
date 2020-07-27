@@ -56,6 +56,5 @@ object Versions {
 
     const val json: String = "20190722"
 
-    const val k2v8: String = "0.0.2"
+    const val k2v8: String = "0.0.3"
 }
-
