@@ -48,3 +48,7 @@ afterEvaluate {
         setupPublicationsUpload(project, publishing)
     }
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.serialization.UnstableDefault"
+}
