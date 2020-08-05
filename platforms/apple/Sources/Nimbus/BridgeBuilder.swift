@@ -19,12 +19,10 @@ public class BridgeBuilder {
     public static func createBridge(for bridgeType: BridgeType, plugins: [Plugin]) -> Bridge {
         switch bridgeType {
         case .webView(let webView):
-            print("THIS IS A WEBVIEW BRIDGE")
             let bridge = WebViewBridge(webView: webView)
             attach(bridge: bridge, webView: webView, plugins: plugins)
             return bridge
         case .jsContext(let context):
-            print("THIS IS JSCONTEXT BRIDGE")
             let bridge = JSContextBridge(context: context)
             attach(bridge: bridge, context: context, plugins: plugins)
             return Bridge()
