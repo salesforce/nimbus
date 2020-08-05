@@ -25,7 +25,7 @@ public class BridgeBuilder {
         case .jsContext(let context):
             let bridge = JSContextBridge(context: context)
             attach(bridge: bridge, context: context, plugins: plugins)
-            return Bridge()
+            return bridge
         }
     }
     
