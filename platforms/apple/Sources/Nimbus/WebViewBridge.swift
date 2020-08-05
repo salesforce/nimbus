@@ -14,9 +14,10 @@ import WebKit
 
  Plugins attached to this instance can interact with javascript executing in the attached `WKWebView`.
  */
-public class WebViewBridge: Bridge, JSEvaluating {
-    init(webView: WKWebView) {
-        super.init()
+public class WebViewBridge: NSObject, JSEvaluating {
+    var plugins: [Plugin]
+    
+    init(webView: WKWebView, plugins: [Plugin]) {
         self.webView = webView
         self.plugins = plugins
     }

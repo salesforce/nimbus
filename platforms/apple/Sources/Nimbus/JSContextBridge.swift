@@ -32,9 +32,10 @@ enum JSContextBridgeError: Error {
 
  Plugins attached to this instance can interact with javascript executing in the attached `JSContext`.
  */
-public class JSContextBridge: Bridge, JSEvaluating {
-    init(context: JSContext?) {
-        super.init()
+public class JSContextBridge: NSObject, JSEvaluating {
+    var plugins: [Plugin]
+    
+    init(context: JSContext?, plugins: [Plugin]) {
         self.context = context
         self.plugins = plugins
     }

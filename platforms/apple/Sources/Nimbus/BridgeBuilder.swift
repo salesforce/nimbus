@@ -16,20 +16,20 @@ public enum BridgeType {
 }
 
 public class BridgeBuilder {
-    public static func createBridge(for bridgeType: BridgeType, plugins: [Plugin]) -> Bridge {
+    public static func createBridge(for bridgeType: BridgeType, plugins: [Plugin]) -> NSObject {
         switch bridgeType {
         case .webView(let webView):
-            let bridge = WebViewBridge(webView: webView)
+            let bridge = WebViewBridge(webView: webView, plugins: plugins)
             attach(bridge: bridge, webView: webView, plugins: plugins)
             return bridge
         case .jsContext(let context):
-            let bridge = JSContextBridge(context: context)
+            let bridge = JSContextBridge(context: context, plugins: plugins)
             attach(bridge: bridge, context: context, plugins: plugins)
             return bridge
         }
     }
 }
 
-public class Bridge: NSObject {
-    var plugins: [Plugin] = []
+protocol Bridge {
+    var plugins: [Plugin] { get }
 }
