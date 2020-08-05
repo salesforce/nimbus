@@ -32,40 +32,11 @@ enum JSContextBridgeError: Error {
 
  Plugins attached to this instance can interact with javascript executing in the attached `JSContext`.
  */
-public class JSContextBridge: JSEvaluating {
-    public init() {
-        plugins = []
-    }
-
-    /**
-     Add the plugin to this `JSContextBridge` instance.
-
-     This plugin will be bound to the `JSContext` when one is attached.
-     */
-    public func addPlugin<T: Plugin>(_ plugin: T) {
-        plugins.append(plugin)
-    }
-
-    /**
-     Attach this instance to the given `JSContext`.
-
-     All plugins added to this `JSContextBridge` will be bound to the `JSContext`. If this `JSContextBridge` has already been attached to a `JSContext`, this function does nothing.
-     */
-    public func attach(to context: JSContext) {
-        guard self.context == nil else {
-            return
-        }
-
+public class JSContextBridge: Bridge, JSEvaluating {
+    init(context: JSContext?) {
+        super.init()
         self.context = context
-        let nimbusDeclaration = """
-        __nimbus = {"plugins": {}};
-        true;
-        """
-        context.evaluateScript(nimbusDeclaration)
-        for plugin in plugins {
-            let connection = JSContextConnection(from: context, bridge: self, as: plugin.namespace)
-            plugin.bind(to: connection)
-        }
+        self.plugins = plugins
     }
 
     func invoke(
@@ -140,6 +111,5 @@ public class JSContextBridge: JSEvaluating {
         }
     }
 
-    var plugins: [Plugin]
     var context: JSContext?
 }

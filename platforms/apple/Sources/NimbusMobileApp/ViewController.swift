@@ -16,9 +16,6 @@ class ViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         title = "Nimbus"
-        bridge.addPlugin(DeviceInfoPlugin())
-        jsBridge.addPlugin(DeviceInfoPlugin())
-        jsBridge.addPlugin(ConsolePlugin())
     }
 
     override func loadView() {
@@ -30,20 +27,20 @@ class ViewController: UIViewController {
             .flatMap { URL(string: "http://\($0):3000") }
             ?? URL(string: "http://localhost:3000")!
 
-        bridge.attach(to: webView)
+        let webBridge = BridgeBuilder.createBridge(for: .webView(webView), plugins: webViewPlugins)
+        
         webView.load(URLRequest(url: url))
 
-        if let context = self.context {
-            jsBridge.attach(to: context)
-        }
+        let jsBridge = BridgeBuilder.createBridge(for: .jsContext(context), plugins: jsContextPlugins)
+
         if let demoPath = Bundle.main.path(forResource: "JSCoreDemo", ofType: "js"),
-            let demoJS = try? String(contentsOfFile: demoPath), let context = self.context {
+            let demoJS = try? String(contentsOfFile: demoPath) {
             context.evaluateScript(demoJS)
         }
     }
 
     lazy var webView = WKWebView(frame: .zero)
-    lazy var context = JSContext()
-    let bridge = WebViewBridge()
-    let jsBridge = JSContextBridge()
+    lazy var context: JSContext = JSContext()
+    let webViewPlugins: [Plugin] = [DeviceInfoPlugin()]
+    let jsContextPlugins: [Plugin] = [DeviceInfoPlugin(), ConsolePlugin()]
 }

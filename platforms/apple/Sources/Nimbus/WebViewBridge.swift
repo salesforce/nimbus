@@ -14,42 +14,11 @@ import WebKit
 
  Plugins attached to this instance can interact with javascript executing in the attached `WKWebView`.
  */
-public class WebViewBridge: NSObject, JSEvaluating {
-    /**
-     Add the plugin to this `WebViewBridge` instance.
-
-     This plugin will be bound to the `WKWebView` when one is attached.
-     */
-    public func addPlugin<T: Plugin>(_ plugin: T) {
-        plugins.append(plugin)
-    }
-
-    /**
-     Attach this instance to the given `WKWebView`.
-
-     All plugins added to this `WebViewBridge` will be bound to the `WKWebView`. If this `WebViewBridge` has already been attached to a `WKWebView`, this function does nothing.
-     */
-    public func attach(to webView: WKWebView) {
-        guard self.webView == nil else {
-            return
-        }
-
+public class WebViewBridge: Bridge, JSEvaluating {
+    init(webView: WKWebView) {
+        super.init()
         self.webView = webView
-        let configuration = webView.configuration
-        configuration.userContentController.add(self, name: "_nimbus")
-        configuration.preferences.javaScriptEnabled = true
-        #if DEBUG
-            configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
-        #endif
-
-        for plugin in plugins {
-            let connection = WebViewConnection(from: webView, bridge: self, as: plugin.namespace)
-            plugin.bind(to: connection)
-            if let script = connection.userScript() {
-                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-                webView.configuration.userContentController.addUserScript(userScript)
-            }
-        }
+        self.plugins = plugins
     }
 
     /**
@@ -150,7 +119,6 @@ public class WebViewBridge: NSObject, JSEvaluating {
         invoke(identifierSegments, with: args, callback: callback)
     }
 
-    var plugins: [Plugin] = []
     private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
     typealias PromiseCallback = (Error?, Any?) -> Void
     private var promises: [String: PromiseCallback] = [:]
