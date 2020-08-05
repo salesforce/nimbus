@@ -113,3 +113,18 @@ public class JSContextBridge: Bridge, JSEvaluating {
 
     var context: JSContext?
 }
+
+extension BridgeBuilder {
+    static func attach(bridge: JSContextBridge, context: JSContext, plugins: [Plugin]) {
+        let nimbusDeclaration = """
+            __nimbus = {"plugins": {}};
+            true;
+            """
+        context.evaluateScript(nimbusDeclaration)
+        
+        for plugin in plugins {
+            let connection = JSContextConnection(from: context, bridge: bridge, as: plugin.namespace)
+            plugin.bind(to: connection)
+        }
+    }
+}

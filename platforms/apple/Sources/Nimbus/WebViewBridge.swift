@@ -166,6 +166,26 @@ extension WebViewBridge: WKScriptMessageHandler {
     }
 }
 
+extension BridgeBuilder {
+    static func attach(bridge: WebViewBridge, webView: WKWebView, plugins: [Plugin]) {
+        let configuration = webView.configuration
+        configuration.userContentController.add(bridge, name: "_nimbus")
+        configuration.preferences.javaScriptEnabled = true
+        #if DEBUG
+        configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
+        #endif
+        
+        for plugin in plugins {
+            let connection = WebViewConnection(from: webView, bridge: bridge, as: plugin.namespace)
+            plugin.bind(to: connection)
+            if let script = connection.userScript() {
+                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+                webView.configuration.userContentController.addUserScript(userScript)
+            }
+        }
+    }
+}
+
 public enum PromiseError: Error, Equatable {
     case pageUnloaded
     case message(_ message: String)
