@@ -48,7 +48,7 @@ val npmInstallTask = tasks.named<NpmTask>("npm_install") {
 }
 
 tasks.whenTaskAdded {
-    if (name.startsWith("assemble")) {
+    if (name.startsWith("generate") && name.endsWith("Assets")) {
         dependsOn(copyScript)
     }
 }
