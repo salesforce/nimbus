@@ -27,11 +27,11 @@ class ViewController: UIViewController {
             .flatMap { URL(string: "http://\($0):3000") }
             ?? URL(string: "http://localhost:3000")!
 
-        let webBridge = BridgeBuilder.createBridge(for: .webView(webView), plugins: webViewPlugins)
+        let webBridge = BridgeBuilder.createBridge(for: webView, plugins: webViewPlugins)
         
         webView.load(URLRequest(url: url))
 
-        let jsBridge = BridgeBuilder.createBridge(for: .jsContext(context), plugins: jsContextPlugins)
+        let jsBridge = BridgeBuilder.createBridge(for: context, plugins: jsContextPlugins)
 
         if let demoPath = Bundle.main.path(forResource: "JSCoreDemo", ofType: "js"),
             let demoJS = try? String(contentsOfFile: demoPath) {
