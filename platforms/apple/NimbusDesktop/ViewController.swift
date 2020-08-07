@@ -14,22 +14,19 @@ class ViewController: NSViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         title = "Nimbus"
-        bridge.addPlugin(DeviceInfoPlugin())
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         title = "Nimbus"
-        bridge.addPlugin(DeviceInfoPlugin())
     }
 
     override func loadView() {
         view = webView
         view.frame = NSRect(x: 0, y: 0, width: 800, height: 600)
-        bridge.attach(to: webView)
+        let bridge = BridgeBuilder.createBridge(for: webView, plugins: [DeviceInfoPlugin()])
         webView.load(URLRequest(url: URL(string: "http://localhost:3000/")!))
     }
 
     lazy var webView = WKWebView(frame: .zero)
-    let bridge = WebViewBridge()
 }

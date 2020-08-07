@@ -16,7 +16,7 @@ import WebKit
  */
 public class WebViewBridge: NSObject, JSEvaluating {
     public var plugins: [Plugin]
-    
+
     init(webView: WKWebView, plugins: [Plugin]) {
         self.webView = webView
         self.plugins = plugins
@@ -173,9 +173,9 @@ extension BridgeBuilder {
         configuration.userContentController.add(bridge, name: "_nimbus")
         configuration.preferences.javaScriptEnabled = true
         #if DEBUG
-        configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
+            configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
-        
+
         for plugin in plugins {
             let connection = WebViewConnection(from: webView, bridge: bridge, as: plugin.namespace)
             plugin.bind(to: connection)

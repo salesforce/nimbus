@@ -28,7 +28,7 @@ class ViewController: UIViewController {
             ?? URL(string: "http://localhost:3000")!
 
         let webBridge = BridgeBuilder.createBridge(for: webView, plugins: webViewPlugins)
-        
+
         webView.load(URLRequest(url: url))
 
         let jsBridge = BridgeBuilder.createBridge(for: context, plugins: jsContextPlugins)

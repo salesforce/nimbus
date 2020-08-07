@@ -16,7 +16,7 @@ public class BridgeBuilder {
         attach(bridge: bridge, webView: webView, plugins: plugins)
         return bridge
     }
-    
+
     public static func createBridge(for context: JSContext, plugins: [Plugin]) -> JSContextBridge {
         let bridge = JSContextBridge(context: context, plugins: plugins)
         attach(bridge: bridge, context: context, plugins: plugins)

@@ -15,7 +15,7 @@ import XCTest
 class InvocationTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
-    var bridge: WebViewBridge? //= WebViewBridge()
+    var bridge: WebViewBridge? // = WebViewBridge()
 
     override func setUp() {
         webView = WKWebView()

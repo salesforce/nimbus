@@ -34,7 +34,7 @@ enum JSContextBridgeError: Error {
  */
 public class JSContextBridge: JSEvaluating {
     public var plugins: [Plugin]
-    
+
     init(context: JSContext?, plugins: [Plugin]) {
         self.context = context
         self.plugins = plugins
@@ -118,11 +118,11 @@ public class JSContextBridge: JSEvaluating {
 extension BridgeBuilder {
     static func attach(bridge: JSContextBridge, context: JSContext, plugins: [Plugin]) {
         let nimbusDeclaration = """
-            __nimbus = {"plugins": {}};
-            true;
-            """
+        __nimbus = {"plugins": {}};
+        true;
+        """
         context.evaluateScript(nimbusDeclaration)
-        
+
         for plugin in plugins {
             let connection = JSContextConnection(from: context, bridge: bridge, as: plugin.namespace)
             plugin.bind(to: connection)
