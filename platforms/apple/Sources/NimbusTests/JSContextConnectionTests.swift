@@ -14,7 +14,7 @@ import XCTest
 
 class JSContextConnectionTests: XCTestCase {
     var context: JSContext = JSContext()
-    var bridge: JSContextBridge = JSContextBridge()
+    var bridge: JSContextBridge?
     var expectationPlugin: ExpectationPlugin = ExpectationPlugin()
     var testPlugin: ConnectionTestPlugin = ConnectionTestPlugin()
 
@@ -22,15 +22,12 @@ class JSContextConnectionTests: XCTestCase {
         expectationPlugin = ExpectationPlugin()
         testPlugin = ConnectionTestPlugin()
         context = JSContext()
-        bridge = JSContextBridge()
-        bridge.addPlugin(testPlugin)
-        bridge.addPlugin(expectationPlugin)
+        bridge = BridgeBuilder.createBridge(for: context, plugins: [expectationPlugin, testPlugin])
     }
 
     func beginPluginTest() {
         let current = expectation(description: name)
         expectationPlugin.currentExpectation = current
-        bridge.attach(to: context)
     }
 
     class ConnectionTestPlugin: Plugin {
@@ -304,7 +301,6 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testCallJSWithParams() throws {
-        bridge.attach(to: context)
         let expect = expectation(description: "call js")
         let fixtureScript = """
         function testFunctionWithArgs(...args) {
@@ -321,7 +317,6 @@ class JSContextConnectionTests: XCTestCase {
     }
 
     func testCallJSWithStruct() throws {
-        bridge.attach(to: context)
         let expect = expectation(description: "call js")
         let fixtureScript = """
         function testStruct(foo, bar) {

@@ -12,7 +12,7 @@ import XCTest
 
 class SharedTestsJSCore: XCTestCase {
     var context = JSContext()!
-    var bridge = JSContextBridge()
+    var bridge: JSContextBridge?
     var expectPlugin = ExpectPlugin()
     var testPlugin = TestPlugin()
 
@@ -21,10 +21,7 @@ class SharedTestsJSCore: XCTestCase {
         expectPlugin.finishedExpectation = expectation(description: "expectPlugin")
         testPlugin = TestPlugin()
         context = JSContext()!
-        bridge = JSContextBridge()
-        bridge.addPlugin(expectPlugin)
-        bridge.addPlugin(testPlugin)
-        bridge.attach(to: context)
+        bridge = BridgeBuilder.createBridge(for: context, plugins: [expectPlugin, testPlugin])
 
         if let jsURL = Bundle(for: SharedTestsJSCore.self).url(forResource: "shared-tests", withExtension: "js", subdirectory: "test-www"),
             let jsString = try? String(contentsOf: jsURL) {

@@ -20,12 +20,11 @@ class UserDefinedType: Encodable {
 class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
-    var bridge: WebViewBridge!
+    var bridge: WebViewBridge?
 
     override func setUp() {
         webView = WKWebView()
-        bridge = WebViewBridge()
-        bridge.attach(to: webView)
+        bridge = BridgeBuilder.createBridge(for: webView, plugins: [])
         webView.navigationDelegate = self
     }
 
@@ -57,7 +56,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var returnValue = false
-        bridge.invoke(["testFunction"], with: []) { (_, result: Any?) -> Void in
+        bridge!.invoke(["testFunction"], with: []) { (_, result: Any?) -> Void in
             if let result = result as? Bool {
                 returnValue = result
             }
@@ -72,7 +71,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var error: Error?
-        bridge.invoke(["methodThatDoesntExist"], with: []) { (callError, _: Any?) in
+        bridge!.invoke(["methodThatDoesntExist"], with: []) { (callError, _: Any?) in
             error = callError
             expect.fulfill()
         }
@@ -98,7 +97,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "js result")
         let optional: Int? = nil
         var result: String?
-        bridge.invoke(
+        bridge!.invoke(
             ["testFunctionWithArgs"],
             with: [true, 42, optional, "hello\nworld", UserDefinedType()]
         ) { (_, callResult: Any?) in
@@ -129,7 +128,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
         let expect = expectation(description: "js result")
         var resultValue: String?
-        bridge.invoke(["testObject", "getName"], with: []) { (_, result: Any?) in
+        bridge!.invoke(["testObject", "getName"], with: []) { (_, result: Any?) in
             if let result = result as? String {
                 resultValue = result
             }
@@ -142,19 +141,18 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
 
 class CallJSContextTests: XCTestCase {
     var context: JSContext = JSContext()
-    var bridge: JSContextBridge = JSContextBridge()
+    var bridge: JSContextBridge?
 
     override func setUp() {
         context = JSContext()
-        bridge = JSContextBridge()
-        bridge.attach(to: context)
+        bridge = BridgeBuilder.createBridge(for: context, plugins: [])
         context.evaluateScript(fixtureScript)
     }
 
     func testCallFunction() throws {
         let expect = expectation(description: "test call function")
         var resultValue: Bool?
-        bridge.invoke(["testFunction"]) { _, result in
+        bridge!.invoke(["testFunction"]) { _, result in
             if let result = result, result.isBoolean {
                 resultValue = result.toBool()
             }
@@ -168,7 +166,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "non existent function")
         var result: JSValue?
         var error: Error?
-        bridge.invoke(["somethingthatdoesntexist"]) { theError, theResult in
+        bridge!.invoke(["somethingthatdoesntexist"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()
@@ -182,7 +180,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "multiple arguments")
         var result: JSValue?
         var error: Error?
-        bridge.invoke(["testFunctionWithArgs"], with: [5, "athing", 15]) { theError, theResult in
+        bridge!.invoke(["testFunctionWithArgs"], with: [5, "athing", 15]) { theError, theResult in
             result = theResult
             error = theError
             expect.fulfill()
@@ -200,7 +198,7 @@ class CallJSContextTests: XCTestCase {
         let expect = expectation(description: "call function on object")
         var error: Error?
         var result: JSValue?
-        bridge.invoke(["testObject", "getName"]) { theError, theResult in
+        bridge!.invoke(["testObject", "getName"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()

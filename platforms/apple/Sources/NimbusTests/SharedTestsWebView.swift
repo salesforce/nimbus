@@ -12,7 +12,7 @@ import XCTest
 
 class SharedTestsWebView: XCTestCase {
     var webView = WKWebView()
-    var bridge = WebViewBridge()
+    var bridge: WebViewBridge?
     var expectPlugin = ExpectPlugin()
     var testPlugin = TestPlugin()
 
@@ -20,7 +20,7 @@ class SharedTestsWebView: XCTestCase {
         expectPlugin = ExpectPlugin()
         testPlugin = TestPlugin()
         webView = WKWebView()
-        bridge = WebViewBridge()
+        bridge = BridgeBuilder.createBridge(for: webView, plugins: [expectPlugin, testPlugin])
         loadWebViewAndWait()
         XCTAssertTrue(expectPlugin.isReady)
     }
@@ -28,9 +28,6 @@ class SharedTestsWebView: XCTestCase {
     func loadWebViewAndWait() {
         let readyExpectation = expectation(description: "ready")
         expectPlugin.readyExpectation = readyExpectation
-        bridge.addPlugin(expectPlugin)
-        bridge.addPlugin(testPlugin)
-        bridge.attach(to: webView)
 
         // load nimbus.js
         if let jsURL = Bundle(for: SharedTestsWebView.self).url(forResource: "nimbus", withExtension: "js", subdirectory: "iife"),

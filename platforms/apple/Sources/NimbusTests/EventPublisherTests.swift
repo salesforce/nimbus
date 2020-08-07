@@ -44,7 +44,8 @@ class EventPublisherTests: XCTestCase {
 
     func testBinding() {
         // Verify that EventTarget actually binds its methods to a connection
-        let connection = TestConnection(from: JSContext(), bridge: JSContextBridge(), as: "test")
+        let bridge = BridgeBuilder.createBridge(for: JSContext(), plugins: [])
+        let connection = TestConnection(from: JSContext(), bridge: bridge, as: "test")
         target.bind(to: connection)
         XCTAssertEqual(connection.boundNames.count, 2)
         XCTAssertTrue(connection.boundNames.contains("addListener"))

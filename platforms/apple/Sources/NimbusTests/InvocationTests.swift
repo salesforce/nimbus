@@ -15,12 +15,12 @@ import XCTest
 class InvocationTests: XCTestCase, WKNavigationDelegate {
     var webView: WKWebView!
     var loadingExpectation: XCTestExpectation?
-    var bridge = WebViewBridge()
+    var bridge: WebViewBridge? //= WebViewBridge()
 
     override func setUp() {
         webView = WKWebView()
         webView.navigationDelegate = self
-        bridge.attach(to: webView)
+        bridge = BridgeBuilder.createBridge(for: webView, plugins: [])
     }
 
     override func tearDown() {
@@ -79,7 +79,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge!.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -105,7 +105,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge!.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -137,7 +137,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Int?
-        bridge.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
+        bridge!.invoke(["promiseFunc"], with: []) { (error, result: Int?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -165,7 +165,7 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
         let expect = expectation(description: "invocation result")
         var rejectedError: Error?
         var resolvedValue: Void?
-        bridge.invoke(["promiseFunc"], with: []) { (error, result: Void?) in
+        bridge!.invoke(["promiseFunc"], with: []) { (error, result: Void?) in
             rejectedError = error
             resolvedValue = result
             expect.fulfill()
@@ -181,13 +181,12 @@ class InvocationTests: XCTestCase, WKNavigationDelegate {
 
 class JSContextInvocationTests: XCTestCase {
     var context: JSContext = JSContext()
-    var bridge: JSContextBridge = JSContextBridge()
+    var bridge: JSContextBridge?
 
     override func setUp() {
         context = JSContext()
         context.evaluateScript(fixtureScript)
-        bridge = JSContextBridge()
-        bridge.attach(to: context)
+        bridge = BridgeBuilder.createBridge(for: context, plugins: [])
     }
 
     func testInvokePromiseResolved() throws {
@@ -195,7 +194,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke(["promiseFunc"]) { (theError, theResult: JSValue?) in
+        bridge!.invoke(["promiseFunc"]) { (theError, theResult: JSValue?) in
             error = theError
             result = theResult
             expect.fulfill()
@@ -210,7 +209,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke(["promiseFuncReject"]) { theError, theResult in
+        bridge!.invoke(["promiseFuncReject"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()
@@ -225,7 +224,7 @@ class JSContextInvocationTests: XCTestCase {
         var result: JSValue?
         var error: Error?
 
-        bridge.invoke(["resolveToVoid"]) { theError, theResult in
+        bridge!.invoke(["resolveToVoid"]) { theError, theResult in
             error = theError
             result = theResult
             expect.fulfill()
