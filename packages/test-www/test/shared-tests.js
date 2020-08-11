@@ -358,6 +358,15 @@ function verifyNullaryResolvingToIntCallback() {
   }).then(() => { });
 }
 
+function verifyNullaryResolvingToNullableIntCallback() {
+  __nimbus.plugins.testPlugin.nullaryResolvingToNullableIntCallback((result) => {
+    if (result == null) {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  }).then(() => { });
+}
+
 function verifyNullaryResolvingToLongCallback() {
   __nimbus.plugins.testPlugin.nullaryResolvingToLongCallback((result) => {
     if (result === 2) {

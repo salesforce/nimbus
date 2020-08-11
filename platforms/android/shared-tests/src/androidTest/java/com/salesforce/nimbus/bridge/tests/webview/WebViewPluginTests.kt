@@ -275,6 +275,11 @@ class WebViewPluginTests {
     }
 
     @Test
+    fun verifyNullaryResolvingToNullableIntCallback() {
+        executeTest("verifyNullaryResolvingToNullableIntCallback()")
+    }
+
+    @Test
     fun verifyNullaryResolvingToLongCallback() {
         executeTest("verifyNullaryResolvingToLongCallback()")
     }

@@ -214,6 +214,11 @@ class V8PluginTests {
     }
 
     @Test
+    fun verifyNullaryResolvingToNullableIntCallback() {
+        executeTest("verifyNullaryResolvingToNullableIntCallback()")
+    }
+
+    @Test
     fun verifyNullaryResolvingToLongCallback() {
         executeTest("verifyNullaryResolvingToLongCallback()")
     }

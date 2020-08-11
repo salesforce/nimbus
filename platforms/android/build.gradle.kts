@@ -46,9 +46,9 @@ allprojects {
 }
 
 junitJacoco {
+    includeNoLocationClasses = false
     jacocoVersion = Versions.jacoco
     setIgnoreProjects("demo-app")
-    includeNoLocationClasses = true
     includeInstrumentationCoverageInMergedReport = true
 }
 

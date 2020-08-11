@@ -270,6 +270,11 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
     }
 
     @BoundMethod
+    fun nullaryResolvingToNullableIntCallback(callback: (Int?) -> Unit) {
+        callback(null)
+    }
+
+    @BoundMethod
     fun nullaryResolvingToLongCallback(callback: (Long) -> Unit) {
         callback(2L)
     }

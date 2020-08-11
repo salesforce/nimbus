@@ -190,7 +190,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
         // read kotlin metadata so we can determine which types are nullable
         val kotlinClass =
-            pluginElement.getAnnotation(Metadata::class.java)?.let { metadata ->
+            pluginElement.annotation<Metadata>(processingEnv)?.let { metadata ->
                 (KotlinClassMetadata.read(
                     KotlinClassHeader(
                         metadata.kind,
