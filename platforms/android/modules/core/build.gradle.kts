@@ -27,6 +27,7 @@ dependencies {
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
     testImplementation(Libs.kotlinxSerializationRuntime)
+    testImplementation(Libs.truth)
 }
 
 addTestDependencies()
