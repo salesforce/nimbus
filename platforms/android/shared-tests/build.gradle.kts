@@ -17,7 +17,7 @@ android {
     setDefaults(project)
 
     sourceSets.getByName("androidTest") {
-        assets.srcDirs("../../../packages/test-www/dist", "../../../packages/nimbus-bridge/dist/iife")
+        assets.srcDirs("../../../packages/test-www/dist", "../../../packages/@nimbus-js/runtime/dist/iife")
     }
 }
 
