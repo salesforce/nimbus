@@ -200,12 +200,6 @@ jobs:
           command: ./Pods/SwiftLint/swiftlint lint --path Sources
 
       - run:
-          name: Build NimbusJS
-          command: |
-            npm install
-            ./create-nimbus-js.sh
-
-      - run:
           name: Build Swift Docs
           working_directory: platforms/apple
           command: |
@@ -214,7 +208,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - NimbusJS.zip
             - platforms/apple/cobertura.xml
             - platforms/apple/.build/docs
 
@@ -234,7 +227,7 @@ jobs:
       - run:
           name: "Create GitHub Release"
           command: |
-            github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} ./workspace/NimbusJS.zip
+            github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG}
 
   create-tagged-pre-release:
     docker:
@@ -252,7 +245,7 @@ jobs:
       - run:
           name: "Create GitHub Release"
           command: |
-            github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} --prerelease=true ./workspace/NimbusJS.zip
+            github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} --prerelease=true
 
   build-and-test-android:
     docker:
