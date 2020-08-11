@@ -4,12 +4,12 @@
 rm NimbusJS.zip
 
 # compile nimbus.js
-cd packages/nimbus-bridge
+pushd packages/@nimbus-js/runtime
 npm run build
-cd ../../
+popd
 
 # zip nimbus.js
-zip -j NimbusJS.zip packages/nimbus-bridge/dist/iife/nimbus.js
+zip -j NimbusJS.zip packages/@nimbus-js/runtime/dist/iife/nimbus.js
 
 # zip the webview extension
 zip -j NimbusJS.zip platforms/apple/Sources/NimbusJS/WebView+NimbusJS.swift
