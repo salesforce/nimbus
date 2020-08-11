@@ -3,6 +3,7 @@
     "version": "2.0.0-beta3",
     "description": "",
     "license": "BSD-3-Clause",
+    "private": true,
     "browser": "dist/test-www/bundle.js",
     "scripts": {
         "prepare": "npm run build",
@@ -11,7 +12,7 @@
         "serve": "cross-env rollup -c ./rollup.config.js --watch"
     },
     "dependencies": {
-        "nimbus-types": "^2.0.0-beta3"
+        "@nimbus-js/api": "^2.0.0-beta3"
     },
     "devDependencies": {
         "@types/chai": "^4.1.7",

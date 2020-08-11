@@ -2,13 +2,14 @@
     "name": "root",
     "private": true,
     "devDependencies": {
-        "lerna": "^3.15.0"
+        "lerna": "^3.22.1"
     },
     "scripts": {
         "prepare": "lerna bootstrap",
-        "bump": "lerna version --no-git-tag-version --no-push",
+        "build": "lerna run build",
+        "clean": "lerna run clean",
         "lint": "lerna run lint",
-        "serve:demo": "lerna run serve --scope demo-www --stream",
-        "clean": "lerna run clean"
+        "bump": "lerna version --no-git-tag-version --no-push",
+        "serve:demo": "lerna run serve --scope demo-www --stream"
     }
 }

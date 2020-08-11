@@ -26,6 +26,7 @@
 		2944334B2200FA3700E6D084 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433462200FA3700E6D084 /* Connection.swift */; };
 		294433572200FD8D00E6D084 /* Nimbus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A860321E530BC00510832 /* Nimbus.framework */; };
 		294433722202012F00E6D084 /* NimbusAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294433712202012F00E6D084 /* NimbusAppUITests.swift */; };
+		294ED9BE24E1A53E00F52D7F /* iife in Resources */ = {isa = PBXBuildFile; fileRef = 294ED9BD24E1A53E00F52D7F /* iife */; };
 		2970E432224F0A05008DC004 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2970E431224F0A05008DC004 /* AppDelegate.swift */; };
 		2970E434224F0A05008DC004 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2970E433224F0A05008DC004 /* ViewController.swift */; };
 		2970E436224F0A06008DC004 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2970E435224F0A06008DC004 /* Assets.xcassets */; };
@@ -55,7 +56,6 @@
 		CC64245F244619D400604279 /* JSContextConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64245E244619D400604279 /* JSContextConnectionTests.swift */; };
 		CC64246924479C0400604279 /* JSValueCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64246824479C0400604279 /* JSValueCallback.swift */; };
 		CC7214CB2474605B00FCCC2D /* SharedTestsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */; };
-		CC8169582458BCA200E5C0FA /* iife in Resources */ = {isa = PBXBuildFile; fileRef = CC8169562458BB3900E5C0FA /* iife */; };
 		CC88CA232472DF6A009D809F /* JSCoreDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = CC88CA222472DF6A009D809F /* JSCoreDemo.js */; };
 		CC88CA272472E048009D809F /* ConsolePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC88CA262472E048009D809F /* ConsolePlugin.swift */; };
 		CC97224623E4834400F899E7 /* NimbusJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC97223D23E4834400F899E7 /* NimbusJS.framework */; };
@@ -188,6 +188,7 @@
 		2944336F2202012F00E6D084 /* NimbusAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NimbusAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		294433712202012F00E6D084 /* NimbusAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbusAppUITests.swift; sourceTree = "<group>"; };
 		294433732202012F00E6D084 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		294ED9BD24E1A53E00F52D7F /* iife */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iife; path = "../../../../packages/@nimbus-js/runtime/dist/iife"; sourceTree = "<group>"; };
 		2961103021E54872007058EA /* NimbusApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NimbusApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		2970E42F224F0A05008DC004 /* NimbusDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NimbusDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2970E431224F0A05008DC004 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -223,7 +224,6 @@
 		CC64245E244619D400604279 /* JSContextConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSContextConnectionTests.swift; sourceTree = "<group>"; };
 		CC64246824479C0400604279 /* JSValueCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueCallback.swift; sourceTree = "<group>"; };
 		CC7214CA2474605B00FCCC2D /* SharedTestsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestsWebView.swift; sourceTree = "<group>"; };
-		CC8169562458BB3900E5C0FA /* iife */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iife; path = "../../../../packages/nimbus-bridge/dist/iife"; sourceTree = "<group>"; };
 		CC88CA222472DF6A009D809F /* JSCoreDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = JSCoreDemo.js; sourceTree = "<group>"; };
 		CC88CA262472E048009D809F /* ConsolePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsolePlugin.swift; sourceTree = "<group>"; };
 		CC97223D23E4834400F899E7 /* NimbusJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NimbusJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -396,7 +396,7 @@
 		294433532200FD8D00E6D084 /* NimbusTests */ = {
 			isa = PBXGroup;
 			children = (
-				CC8169562458BB3900E5C0FA /* iife */,
+				294ED9BD24E1A53E00F52D7F /* iife */,
 				29245EE5220CE18100F9EEAF /* test-www */,
 				294433562200FD8D00E6D084 /* Info.plist */,
 				68B855F1233EE7FD00D1F243 /* BinderTests.swift */,
@@ -798,7 +798,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29245EE6220CE18100F9EEAF /* test-www in Resources */,
-				CC8169582458BCA200E5C0FA /* iife in Resources */,
+				294ED9BE24E1A53E00F52D7F /* iife in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

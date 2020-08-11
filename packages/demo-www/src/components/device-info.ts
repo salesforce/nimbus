@@ -1,4 +1,4 @@
-import { DeviceInfo } from "nimbus-types";
+import { DeviceInfo } from "@nimbus-js/api";
 
 const template = document.createElement("template");
 template.innerHTML = `

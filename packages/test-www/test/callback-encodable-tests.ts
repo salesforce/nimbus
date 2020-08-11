@@ -30,42 +30,42 @@ interface CallbackTestPlugin {
   promiseRejectedEncoded(): Promise<string>;
 }
 
-declare module "nimbus-types" {
+declare module "@nimbus-js/api" {
   interface NimbusPlugins {
     callbackTestPlugin: CallbackTestPlugin;
   }
 }
 
 describe("Callbacks with", () => {
-  it("single user defined data type is called", (done) => {
+  it("single user defined data type is called", done => {
     __nimbus.plugins.callbackTestPlugin.callbackWithSingleParam(
       (param0: MochaMessage) => {
         expect(param0).to.deep.equal({
           intField: 42,
-          stringField: "This is a string",
+          stringField: "This is a string"
         });
         done();
       }
     );
   });
 
-  it("two user defined data types is called", (done) => {
+  it("two user defined data types is called", done => {
     __nimbus.plugins.callbackTestPlugin.callbackWithTwoParams(
       (param0: MochaMessage, param1: MochaMessage) => {
         expect(param0).to.deep.equal({
           intField: 42,
-          stringField: "This is a string",
+          stringField: "This is a string"
         });
         expect(param1).to.deep.equal({
           intField: 6,
-          stringField: "int param is 6",
+          stringField: "int param is 6"
         });
         done();
       }
     );
   });
 
-  it("single primitive type is called", (done) => {
+  it("single primitive type is called", done => {
     __nimbus.plugins.callbackTestPlugin.callbackWithSinglePrimitiveParam(
       (param0: number) => {
         expect(param0).to.equal(777);
@@ -74,7 +74,7 @@ describe("Callbacks with", () => {
     );
   });
 
-  it("two primitive types is called", (done) => {
+  it("two primitive types is called", done => {
     __nimbus.plugins.callbackTestPlugin.callbackWithTwoPrimitiveParams(
       (param0: number, param1: number) => {
         expect(param0).to.equal(777);
@@ -84,20 +84,20 @@ describe("Callbacks with", () => {
     );
   });
 
-  it("one primitive types and one user defined data typeis called", (done) => {
+  it("one primitive types and one user defined data typeis called", done => {
     __nimbus.plugins.callbackTestPlugin.callbackWithPrimitiveAndUddtParams(
       (param0: number, param1: MochaMessage) => {
         expect(param0).to.equal(777);
         expect(param1).to.deep.equal({
           intField: 42,
-          stringField: "This is a string",
+          stringField: "This is a string"
         });
         done();
       }
     );
   });
 
-  it("promise resolves and passes the value", (done) => {
+  it("promise resolves and passes the value", done => {
     __nimbus.plugins.callbackTestPlugin
       .promiseResolved()
       .then((result: string) => {
@@ -106,11 +106,11 @@ describe("Callbacks with", () => {
       });
   });
 
-  it("promise rejects and passes the error", (done) => {
+  it("promise rejects and passes the error", done => {
     __nimbus.plugins.callbackTestPlugin
       .promiseRejected()
-      .then((_) => done("unexpected completion"))
-      .catch((_) => {
+      .then(_ => done("unexpected completion"))
+      .catch(_ => {
         done();
       });
   });

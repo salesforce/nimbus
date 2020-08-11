@@ -40,14 +40,14 @@ fs.copySync(
 
 export default {
   input: "test/index.ts",
-  external: ["mocha", "chai", "nimbus-types"],
+  external: ["mocha", "chai", "@nimbus-js/api"],
   output: {
     file: output,
     format: "iife",
     globals: {
       chai: "chai",
-      "nimbus-types": "__nimbus",
-    },
+      "@nimbus-js/api": "__nimbus"
+    }
   },
-  plugins: [resolve(), typescript()],
+  plugins: [resolve(), typescript()]
 };

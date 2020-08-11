@@ -1,71 +1,12 @@
 //
-// Copyright (c) 2019, Salesforce.com, inc.
+// Copyright (c) 2020, Salesforce.com, inc.
 // All rights reserved.
 // SPDX-License-Identifier: BSD-3-Clause
 // For full license text, see the LICENSE file in the repo root or
 // https://opensource.org/licenses/BSD-3-Clause
 //
 
-export { DeviceInfoPlugin, DeviceInfo } from "./plugins/device";
-export { EventPublisher } from "./EventPublisher";
-
-export interface NimbusPlugins {
-  [s: string]: any;
-}
-
-export interface Nimbus {
-  // Store any plugins injected by the native app here.
-  plugins: NimbusPlugins;
-
-  // Called by native code to execute a pending callback function.
-  callCallback(callbackId: string, args: any[]): void;
-
-  // Called by native code to execute a pending callback function.
-  callCallback2(callbackId: string, ...args: any[]): void;
-
-  // Called by native code to relese a pending callback function.
-  releaseCallback(callbackId: string): void;
-
-  // Called by native code to fulfill a pending promise.
-  resolvePromise(promiseUuid: string, data: any, error: any): void;
-
-  /**
-   * Broadcast a message to subscribed listeners.  Listeners
-   * can receive data associated with the message for more
-   * processing.
-   *
-   * @param message String message that is uniquely
-   *     registered as a key in the listener map.
-   *     Multiple listeners can get triggered from a message.
-   * @param arg Swift encodable type.
-   * @return Number of listeners that were called by the
-   *     message.
-   */
-  broadcastMessage(message: string, arg: any): number;
-
-  /**
-   * Subscribe a listener to message.
-   *
-   * @param message String message that is uniquely registered as a key
-   *     in the listener map.  Multiple listeners can get triggered
-   *     from a message.
-   * @param listener A method that should be triggered when a message is
-   *     broadcasted.
-   */
-  subscribeMessage(message: string, listener: Function): void;
-
-  /**
-   * Unsubscribe a listener from a message. Unsubscribed listener
-   * will not be triggered.
-   *
-   * @param message String message that is uniquely registered as a
-   *     key in the listener map.  Multiple listeners can get
-   *     triggered from a message.
-   * @param listener A method that should be triggered when a
-   *     message is broadcasted.
-   */
-  unsubscribeMessage(message: string, listener: Function): void;
-}
+import { Nimbus } from "@nimbus-js/api";
 
 declare global {
   interface NimbusNative {
@@ -132,7 +73,7 @@ let promisify = (src: any): void => {
     dest[key] = (...args: any[]): Promise<any> => {
       args = cloneArguments(args);
 
-      return new Promise(function(resolve, reject): void {
+      return new Promise(function (resolve, reject): void {
         var promiseId = uuidv4();
         uuidsToPromises[promiseId] = { resolve, reject };
         try {
@@ -221,7 +162,7 @@ if (typeof _nimbus !== "undefined" && _nimbus.nativePluginNames !== undefined) {
       [extension]: Object.assign(
         plugins[`${extension}`] || {},
         promisify(window[`_${extension}`])
-      )
+      ),
     });
   });
 }
@@ -232,49 +173,49 @@ if (typeof __nimbusPluginExports !== "undefined") {
     let plugin = {};
     __nimbusPluginExports[pluginName].forEach((method: string): void => {
       Object.assign(plugin, {
-        [method]: function(): Promise<any> {
+        [method]: function (): Promise<any> {
           let functionArgs = cloneArguments(Array.from(arguments));
-          return new Promise(function(resolve, reject): void {
+          return new Promise(function (resolve, reject): void {
             var promiseId = uuidv4();
             uuidsToPromises[promiseId] = { resolve, reject };
             window.webkit.messageHandlers[pluginName].postMessage({
               method: method,
               args: functionArgs,
-              promiseId: promiseId
+              promiseId: promiseId,
             });
           });
-        }
+        },
       });
     });
     Object.assign(plugins, {
-      [pluginName]: plugin
+      [pluginName]: plugin,
     });
   });
 }
 
 let nimbusBuilder = {
-  plugins: plugins
+  plugins: plugins,
 };
 
 Object.defineProperties(nimbusBuilder, {
   callCallback: {
-    value: callCallback
+    value: callCallback,
   },
   releaseCallback: {
-    value: releaseCallback
+    value: releaseCallback,
   },
   resolvePromise: {
-    value: resolvePromise
+    value: resolvePromise,
   },
   broadcastMessage: {
-    value: broadcastMessage
+    value: broadcastMessage,
   },
   subscribeMessage: {
-    value: subscribeMessage
+    value: subscribeMessage,
   },
   unsubscribeMessage: {
-    value: unsubscribeMessage
-  }
+    value: unsubscribeMessage,
+  },
 });
 
 let nimbus: Nimbus = nimbusBuilder as Nimbus;
@@ -285,15 +226,14 @@ window.addEventListener("unload", (): void => {
     _nimbus.pageUnloaded();
   } else if (typeof window.webkit !== "undefined") {
     window.webkit.messageHandlers._nimbus.postMessage({
-      method: "pageUnloaded"
+      method: "pageUnloaded",
     });
   }
 });
 
-declare global {
-  var __nimbus: Nimbus;
-}
-
 window.__nimbus = nimbus;
 
 export default nimbus;
+
+// TODO:
+// var __nimbus = (function () {})();
