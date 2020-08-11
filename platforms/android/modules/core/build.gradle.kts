@@ -28,6 +28,7 @@ dependencies {
     testImplementation(Libs.json)
     testImplementation(Libs.kotlinxSerializationRuntime)
     testImplementation(Libs.truth)
+    testImplementation("org.robolectric:robolectric:4.0")
 }
 
 addTestDependencies()
