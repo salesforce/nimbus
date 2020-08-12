@@ -144,9 +144,10 @@ class V8BinderGenerator : BinderGenerator() {
         builder.addStatement("pluginBridge?.close()")
     }
 
-    override fun createBinderExtensionFunction(pluginElement: Element, binderClassName: ClassName): FunSpec {
+    override fun createBinderExtensionFunction(pluginElement: Element, classModifiers: Set<KModifier>, binderClassName: ClassName): FunSpec {
         return FunSpec.builder("v8Binder")
             .receiver(pluginElement.asTypeName())
+            .addModifiers(classModifiers.asIterable())
             .addStatement(
                 "return %T(this)",
                 binderClassName
@@ -164,8 +165,12 @@ class V8BinderGenerator : BinderGenerator() {
 
         // create the binder function
         val parameters = "parameters"
+
+        var funModifiers = mutableSetOf<KModifier>(KModifier.PUBLIC)
+        kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
+
         val funSpec = FunSpec.builder(functionName)
-            .addModifiers(KModifier.PRIVATE)
+            .addModifiers(funModifiers.asIterable())
             .addParameter(
                 parameters,
                 v8ArrayClassName
