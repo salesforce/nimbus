@@ -23,8 +23,9 @@ import com.salesforce.nimbus.compiler.typeArguments
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmType
 import kotlinx.metadata.KmValueParameter
@@ -57,9 +58,10 @@ class WebViewBinderGenerator : BinderGenerator() {
         return pluginElement.annotation<PluginOptions>(processingEnv)!!.supportsWebView
     }
 
-    override fun createBinderExtensionFunction(pluginElement: Element, binderClassName: ClassName): FunSpec {
+    override fun createBinderExtensionFunction(pluginElement: Element, classModifiers: Set<KModifier>, binderClassName: ClassName): FunSpec {
         return FunSpec.builder("webViewBinder")
             .receiver(pluginElement.asTypeName())
+            .addModifiers(classModifiers.asIterable())
             .addStatement(
                 "return %T(this)",
                 binderClassName
@@ -80,8 +82,13 @@ class WebViewBinderGenerator : BinderGenerator() {
         // return type is nullable
         val kotlinReturnType = kotlinFunction?.returnType
 
+        var funModifiers = mutableSetOf<KModifier>(KModifier.PUBLIC)
+        kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
+
         // create the binder function
         val funSpec = FunSpec.builder(functionName).apply {
+
+            addModifiers(funModifiers.asIterable())
 
             // add android @JavascriptInterface annotation to function
             addAnnotation(ClassName("android.webkit", "JavascriptInterface"))
