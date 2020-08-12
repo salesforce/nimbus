@@ -19,6 +19,9 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import kotlinx.metadata.Flag
+import kotlinx.metadata.Flags
+import kotlinx.metadata.KmClass
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.jvm.KotlinClassHeader
 import kotlinx.metadata.jvm.KotlinClassMetadata
@@ -140,7 +143,7 @@ abstract class BinderGenerator : AbstractProcessor() {
                             binderName
                         )
                             .addType(binderTypeSpec)
-                            .addFunction(createBinderExtensionFunction(pluginElement, binderClassName))
+                            .addFunction(createBinderExtensionFunction(pluginElement, binderTypeSpec.modifiers, binderClassName))
                             .indent("    ")
                             .build()
                             .writeTo(processingEnv.filer)
@@ -173,6 +176,8 @@ abstract class BinderGenerator : AbstractProcessor() {
         val binderTypeName = "${pluginElement.className(processingEnv)}${javascriptEngine.simpleName}Binder"
         val pluginName = pluginElement.annotation<PluginOptions>(processingEnv)!!.name
         val pluginTypeName = pluginElement.asKotlinTypeName()
+        // Add default class modifier as Public
+        var classModifiers = mutableSetOf<KModifier>(KModifier.PUBLIC)
 
         // get event type if plugin is an event publisher
         val eventType = types.directSupertypes((pluginElement.asType()))
@@ -220,6 +225,8 @@ abstract class BinderGenerator : AbstractProcessor() {
             }
             .map { it as ExecutableElement }
 
+        kotlinClass?.let { classModifiers = processClassModifierTypes(it) }
+
         val binderClassName = ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
 
         // the binder needs to capture the bound target to pass through calls to it
@@ -227,7 +234,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // the Binder implements Binder<JavascriptEngine>
             .addSuperinterface(binderClassName)
-            .addModifiers(KModifier.PUBLIC)
+            .addModifiers(classModifiers.asIterable())
 
             // add the <PluginClass> as a constructor property
             .primaryConstructor(
@@ -356,6 +363,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
     abstract fun createBinderExtensionFunction(
         pluginElement: Element,
+        classModifiers: Set<KModifier>,
         binderClassName: ClassName
     ): FunSpec
 
@@ -429,4 +437,37 @@ abstract class BinderGenerator : AbstractProcessor() {
         }
         return emptyList()
     }
+
+
+    protected fun processClassModifierTypes(kmClass: KmClass): MutableSet<KModifier> {
+        val classModifiers = mutableSetOf<KModifier>()
+        listOf(kmClass.flags).forEach { flag ->
+            classModifiers.add(getKotlinModifiers(flag))
+        }
+        return classModifiers
+    }
+
+    protected fun processFunctionModifierTypes(kmFunction: KmFunction): MutableSet<KModifier> {
+        val funModifiers = mutableSetOf<KModifier>()
+        listOf(kmFunction.flags).forEach { flag ->
+            funModifiers.add(getKotlinModifiers(flag))
+        }
+        return funModifiers
+    }
+
+    // Convert KotlinMetadata Flags to KModifiers
+    private fun getKotlinModifiers(flag: Flags): KModifier {
+        return when {
+            Flag.IS_PUBLIC(flag) -> KModifier.PUBLIC
+            Flag.IS_INTERNAL(flag) -> KModifier.INTERNAL
+            Flag.IS_PROTECTED(flag) -> KModifier.PROTECTED
+            Flag.IS_PRIVATE(flag) -> KModifier.PRIVATE
+            Flag.IS_OPEN(flag) -> KModifier.OPEN
+            Flag.IS_SEALED(flag) -> KModifier.SEALED
+            Flag.IS_ABSTRACT(flag) ->KModifier.ABSTRACT
+            Flag.IS_FINAL(flag) -> KModifier.FINAL
+            else -> KModifier.PUBLIC
+        }
+    }
+
 }
