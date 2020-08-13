@@ -257,6 +257,47 @@ jobs:
           command: |
             github-release upload -T ${HYPE_GITHUB_TOKEN} -o ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n ${CIRCLE_TAG} -t ${CIRCLE_TAG} --prerelease=true
 
+  push-to-cocoapods-trunk:
+    macos:
+      xcode: "11.5.0"
+
+    shell: /bin/bash --login -eo pipefail
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
+            - v1-pods
+
+      - restore_cache:
+          keys:
+            - v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
+            - v1-bundler
+
+      - run:
+          name: CocoaPods
+          working_directory: platforms/apple
+          command: |
+            bundle install
+            bundle exec pod install
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/Pods
+          key: v1-pods-{{ checksum "platforms/apple/Podfile.lock" }}
+
+      - save_cache:
+          paths:
+            - ./platforms/apple/.bundle
+          key: v1-bundler-{{ checksum "platforms/apple/Gemfile.lock" }}
+
+      - run:
+          name: Push to trunk
+          working_directory: platforms/apple
+          command: bundle exec pod trunk push --allow-warnings ../../NimbusBridge.podspec
+
   build-and-test-android:
     docker:
       - image: circleci/android:api-29-node
@@ -485,6 +526,22 @@ workflows:
       - create-tagged-pre-release:
           requires:
             - build-and-test-ios-13
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+-beta\d+$/
+      - push-to-cocoapods-trunk:
+          requires:
+            - create-tagged-release
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+      - push-to-cocoapods-trunk:
+          requires:
+            - create-tagged-pre-release
           filters:
             branches:
               ignore: /.*/
