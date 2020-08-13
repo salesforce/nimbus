@@ -12,8 +12,9 @@ import com.salesforce.nimbus.Plugin
 import com.salesforce.nimbus.PluginOptions
 import java.util.concurrent.CountDownLatch
 
+// ExpectPlugin is marked internal so we can test with visibility other than "public"
 @PluginOptions("expectPlugin")
-class ExpectPlugin : Plugin {
+internal class ExpectPlugin : Plugin {
 
     var testReady = CountDownLatch(1)
         private set
