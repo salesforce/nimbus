@@ -177,7 +177,7 @@ abstract class BinderGenerator : AbstractProcessor() {
         val pluginName = pluginElement.annotation<PluginOptions>(processingEnv)!!.name
         val pluginTypeName = pluginElement.asKotlinTypeName()
         // Add default class modifier as Public
-        var classModifiers = mutableSetOf<KModifier>(KModifier.PUBLIC)
+        var classModifier = KModifier.PUBLIC
 
         // get event type if plugin is an event publisher
         val eventType = types.directSupertypes((pluginElement.asType()))
@@ -225,7 +225,7 @@ abstract class BinderGenerator : AbstractProcessor() {
             }
             .map { it as ExecutableElement }
 
-        kotlinClass?.let { classModifiers = processClassModifierTypes(it) }
+        kotlinClass?.let { classModifier = processClassModifierTypes(it) }
 
         val binderClassName = ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
 
@@ -234,7 +234,7 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // the Binder implements Binder<JavascriptEngine>
             .addSuperinterface(binderClassName)
-            .addModifiers(classModifiers.asIterable())
+            .addModifiers(classModifier)
 
             // add the <PluginClass> as a constructor property
             .primaryConstructor(
@@ -439,20 +439,12 @@ abstract class BinderGenerator : AbstractProcessor() {
     }
 
 
-    protected fun processClassModifierTypes(kmClass: KmClass): MutableSet<KModifier> {
-        val classModifiers = mutableSetOf<KModifier>()
-        listOf(kmClass.flags).forEach { flag ->
-            classModifiers.add(getKotlinModifiers(flag))
-        }
-        return classModifiers
+    protected fun processClassModifierTypes(kmClass: KmClass): KModifier {
+        return getKotlinModifiers(kmClass.flags)
     }
 
-    protected fun processFunctionModifierTypes(kmFunction: KmFunction): MutableSet<KModifier> {
-        val funModifiers = mutableSetOf<KModifier>()
-        listOf(kmFunction.flags).forEach { flag ->
-            funModifiers.add(getKotlinModifiers(flag))
-        }
-        return funModifiers
+    protected fun processFunctionModifierTypes(kmFunction: KmFunction): KModifier {
+        return getKotlinModifiers(kmFunction.flags)
     }
 
     // Convert KotlinMetadata Flags to KModifiers

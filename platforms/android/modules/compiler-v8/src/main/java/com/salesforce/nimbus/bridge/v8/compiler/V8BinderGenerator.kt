@@ -166,11 +166,12 @@ class V8BinderGenerator : BinderGenerator() {
         // create the binder function
         val parameters = "parameters"
 
-        var funModifiers = mutableSetOf<KModifier>(KModifier.PUBLIC)
+        // Setting Default Function modifier to Public
+        var funModifiers = KModifier.PUBLIC
         kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
 
         val funSpec = FunSpec.builder(functionName)
-            .addModifiers(funModifiers.asIterable())
+            .addModifiers(funModifiers)
             .addParameter(
                 parameters,
                 v8ArrayClassName
