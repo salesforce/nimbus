@@ -147,7 +147,7 @@ class V8BinderGenerator : BinderGenerator() {
     override fun createBinderExtensionFunction(pluginElement: Element, classModifiers: Set<KModifier>, binderClassName: ClassName): FunSpec {
         return FunSpec.builder("v8Binder")
             .receiver(pluginElement.asTypeName())
-            .addModifiers(classModifiers.asIterable())
+            .addModifiers(classModifiers)
             .addStatement(
                 "return %T(this)",
                 binderClassName
@@ -166,8 +166,8 @@ class V8BinderGenerator : BinderGenerator() {
         // create the binder function
         val parameters = "parameters"
 
-        // Setting Default Function modifier to Public
-        var funModifiers = KModifier.PUBLIC
+        // Setting Default Function modifier to Private for V8Binder
+        var funModifiers = KModifier.PRIVATE
         kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
 
         val funSpec = FunSpec.builder(functionName)

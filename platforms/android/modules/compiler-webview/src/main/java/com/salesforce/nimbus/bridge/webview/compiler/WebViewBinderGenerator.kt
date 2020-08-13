@@ -61,7 +61,7 @@ class WebViewBinderGenerator : BinderGenerator() {
     override fun createBinderExtensionFunction(pluginElement: Element, classModifiers: Set<KModifier>, binderClassName: ClassName): FunSpec {
         return FunSpec.builder("webViewBinder")
             .receiver(pluginElement.asTypeName())
-            .addModifiers(classModifiers.asIterable())
+            .addModifiers(classModifiers)
             .addStatement(
                 "return %T(this)",
                 binderClassName
