@@ -438,7 +438,6 @@ abstract class BinderGenerator : AbstractProcessor() {
         return emptyList()
     }
 
-
     protected fun processClassModifierTypes(kmClass: KmClass): KModifier {
         return getKotlinModifiers(kmClass.flags)
     }
@@ -456,10 +455,9 @@ abstract class BinderGenerator : AbstractProcessor() {
             Flag.IS_PRIVATE(flag) -> KModifier.PRIVATE
             Flag.IS_OPEN(flag) -> KModifier.OPEN
             Flag.IS_SEALED(flag) -> KModifier.SEALED
-            Flag.IS_ABSTRACT(flag) ->KModifier.ABSTRACT
+            Flag.IS_ABSTRACT(flag) -> KModifier.ABSTRACT
             Flag.IS_FINAL(flag) -> KModifier.FINAL
             else -> KModifier.PUBLIC
         }
     }
-
 }
