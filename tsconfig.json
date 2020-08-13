@@ -1,18 +1,19 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "es2015",
-    "lib": ["es2015", "dom"],
-    "sourceMap": true,
-    "declaration": true,
-    "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true
-  }
+    "compilerOptions": {
+        "target": "es6",
+        "module": "es2015",
+        "moduleResolution": "Node",
+        "lib": ["es2015", "dom"],
+        "sourceMap": true,
+        "declaration": true,
+        "strict": true /* Enable all strict type-checking options. */,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true
+    }
 }

@@ -1,4 +1,10 @@
 {
     "extends": "../../../tsconfig.json",
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+
+    "compilerOptions": {
+        "noEmit": true,
+        "allowJs": true,
+        "typeRoots": ["./src/", "./node_modules/@types", "./node_modules/**"]
+    }
 }

@@ -1,4 +1,4 @@
-import nimbus from "@nimbus-js/runtime";
+import "@nimbus-js/api";
 import "../plugins/log";
 import "../plugins/toast";
 import "../plugins/events";
@@ -16,7 +16,7 @@ class NimbusDemoApp extends HTMLElement {
   }
 
   public connectedCallback(): void {
-    console.log(`component connected ${nimbus}`);
+    console.log(`component connected ${__nimbus}`);
 
     if (__nimbus.plugins.EventPlugin !== undefined) {
       // listen for log events and then log the message using the log plugin
