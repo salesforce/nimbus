@@ -4,18 +4,14 @@
     "private": true,
     "description": "Nimbus is a bridge for hybrid app development.",
     "license": "BSD-3-Clause",
-    "main": "dist/iife/nimbus.js",
-    "module": "dist/es/nimbus.js",
-    "types": "dist/es/nimbus.d.ts",
+    "main": "src/nimbus.js",
     "files": [
-        "/dist"
+        "/src/nimbus.js"
     ],
     "scripts": {
-        "build": "rollup -c rollup.config.js",
-        "build-docs": "typedoc --out dist/typedoc --tsconfig ./tsconfig.json ./src",
+        "build": "tsc",
         "clean": "rm -rf dist",
         "lint": "eslint 'src/**/*.{ts,js}'",
-        "prepare": "npm run build",
         "prettier": "prettier --write 'src/**/*.{js,ts}'"
     },
     "repository": {
@@ -31,12 +27,7 @@
         "eslint": "^5.16.0",
         "eslint-config-prettier": "^4.3.0",
         "eslint-plugin-prettier": "^3.1.2",
-        "fs-extra": "^8.0.1",
         "prettier": "^1.19.1",
-        "rollup": "^1.32.1",
-        "rollup-plugin-serve": "^1.0.1",
-        "rollup-plugin-typescript2": "^0.26.0",
-        "typedoc": "^0.17.3",
         "typescript": "^3.8.0"
     }
 }

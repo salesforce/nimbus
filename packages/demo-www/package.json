@@ -25,7 +25,6 @@
         "typescript": "^3.5.2"
     },
     "dependencies": {
-        "@nimbus-js/api": "^2.0.0-beta5",
-        "@nimbus-js/runtime": "^2.0.0-beta5"
+        "@nimbus-js/api": "^2.0.0-beta5"
     }
 }
