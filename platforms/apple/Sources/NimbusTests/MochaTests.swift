@@ -129,7 +129,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             }
         }
 
-        wait(for: [testBridge.expectation], timeout: 30)
+        wait(for: [testBridge.expectation], timeout: 120)
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
 }
