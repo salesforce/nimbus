@@ -167,11 +167,10 @@ class V8BinderGenerator : BinderGenerator() {
         val parameters = "parameters"
 
         // Setting Default Function modifier to Private for V8Binder
-        var funModifiers = KModifier.PRIVATE
-        kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
+        val funModifier = kotlinFunction?.let(::processFunctionModifierTypes) ?: KModifier.PRIVATE
 
         val funSpec = FunSpec.builder(functionName)
-            .addModifiers(funModifiers)
+            .addModifiers(funModifier)
             .addParameter(
                 parameters,
                 v8ArrayClassName

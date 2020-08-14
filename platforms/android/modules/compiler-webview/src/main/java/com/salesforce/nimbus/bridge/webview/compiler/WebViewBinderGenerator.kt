@@ -83,13 +83,12 @@ class WebViewBinderGenerator : BinderGenerator() {
         val kotlinReturnType = kotlinFunction?.returnType
 
         // Set default Function modifier to Public
-        var funModifiers = KModifier.PUBLIC
-        kotlinFunction?.let { funModifiers = processFunctionModifierTypes(it) }
+        val funModifier = kotlinFunction?.let(::processFunctionModifierTypes) ?: KModifier.PUBLIC
 
         // create the binder function
         val funSpec = FunSpec.builder(functionName).apply {
 
-            addModifiers(funModifiers)
+            addModifiers(funModifier)
 
             // add android @JavascriptInterface annotation to function
             addAnnotation(ClassName("android.webkit", "JavascriptInterface"))

@@ -176,8 +176,6 @@ abstract class BinderGenerator : AbstractProcessor() {
         val binderTypeName = "${pluginElement.className(processingEnv)}${javascriptEngine.simpleName}Binder"
         val pluginName = pluginElement.annotation<PluginOptions>(processingEnv)!!.name
         val pluginTypeName = pluginElement.asKotlinTypeName()
-        // Add default class modifier as Public
-        var classModifier = KModifier.PUBLIC
 
         // get event type if plugin is an event publisher
         val eventType = types.directSupertypes((pluginElement.asType()))
@@ -225,7 +223,8 @@ abstract class BinderGenerator : AbstractProcessor() {
             }
             .map { it as ExecutableElement }
 
-        kotlinClass?.let { classModifier = processClassModifierTypes(it) }
+        // Add default class modifier as Public
+        val classModifier = kotlinClass?.let(::processClassModifierTypes) ?: KModifier.PUBLIC
 
         val binderClassName = ClassName(nimbusPackage, "Binder").parameterizedBy(javascriptEngine, serializedOutputType)
 
