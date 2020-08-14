@@ -184,6 +184,7 @@ extension BridgeBuilder {
                 webView.configuration.userContentController.addUserScript(userScript)
             }
         }
+        try? webView.injectNimbusJavascript()
     }
 }
 
