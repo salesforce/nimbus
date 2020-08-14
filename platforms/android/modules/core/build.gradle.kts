@@ -17,6 +17,10 @@ plugins {
 
 android {
     setDefaults(project)
+
+    sourceSets.getByName("main") {
+        assets.srcDirs("../../../../packages/@nimbus-js/runtime/src")
+    }
 }
 
 dependencies {
@@ -32,17 +36,6 @@ dependencies {
 }
 
 addTestDependencies()
-
-val copyScript by tasks.registering(Copy::class) {
-    from(rootProject.file("../../packages/@nimbus-js/runtime/src/nimbus.js"))
-    into(file("src/main/assets/"))
-}
-
-tasks.whenTaskAdded {
-    if (name.startsWith("generate") && name.endsWith("Assets")) {
-        dependsOn(copyScript)
-    }
-}
 
 val sourcesJar by tasks.creating(Jar::class) {
     archiveClassifier.set("sources")
