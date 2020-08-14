@@ -11,9 +11,9 @@ import JavaScriptCore
 import WebKit
 
 public class BridgeBuilder {
-    public static func createBridge(for webView: WKWebView, plugins: [Plugin]) -> WebViewBridge {
+    public static func createBridge(for webView: WKWebView, plugins: [Plugin], injectRuntime: Bool = true) -> WebViewBridge {
         let bridge = WebViewBridge(webView: webView, plugins: plugins)
-        attach(bridge: bridge, webView: webView, plugins: plugins)
+        attach(bridge: bridge, webView: webView, plugins: plugins, injectRuntime: injectRuntime)
         return bridge
     }
 

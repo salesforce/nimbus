@@ -168,7 +168,7 @@ extension WebViewBridge: WKScriptMessageHandler {
 }
 
 extension BridgeBuilder {
-    static func attach(bridge: WebViewBridge, webView: WKWebView, plugins: [Plugin]) {
+    static func attach(bridge: WebViewBridge, webView: WKWebView, plugins: [Plugin], injectRuntime: Bool = true) {
         let configuration = webView.configuration
         configuration.userContentController.add(bridge, name: "_nimbus")
         configuration.preferences.javaScriptEnabled = true
@@ -184,7 +184,9 @@ extension BridgeBuilder {
                 webView.configuration.userContentController.addUserScript(userScript)
             }
         }
-        try? webView.injectNimbusJavascript()
+        if injectRuntime == true {
+            try? webView.injectNimbusJavascript()
+        }
     }
 }
 

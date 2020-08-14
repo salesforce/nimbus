@@ -20,9 +20,16 @@ public extension WKWebView {
         } else {
             bundlesToSearch = Bundle.allFrameworks
         }
-        let foundPath = bundlesToSearch.compactMap { mapBundle in
+        var foundPath = bundlesToSearch.compactMap { mapBundle in
             mapBundle.path(forResource: scriptName, ofType: "js")
         }.first
+        if foundPath == nil {
+            let basepath = URL(fileURLWithPath: #file)
+            let url = URL(fileURLWithPath: "../../../../packages/@nimbus-js/runtime/src/\(scriptName).js", relativeTo: basepath)
+            if FileManager().fileExists(atPath: url.absoluteURL.path) {
+                foundPath = url.absoluteURL.path
+            }
+        }
         guard let sourcePath = foundPath else {
             throw NimbusJSError.sourceNotFound
         }

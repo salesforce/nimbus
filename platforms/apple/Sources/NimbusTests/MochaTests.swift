@@ -56,19 +56,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
     func loadWebViewAndWait() {
         loadingExpectation = expectation(description: "web view loaded")
         loadingExpectation?.assertForOverFulfill = false
-        if let path = Bundle(for: MochaTests.self).url(forResource: "nimbus", withExtension: "js", subdirectory: "iife"),
-            let nimbus = try? String(contentsOf: path) {
-            let userScript = WKUserScript(source: nimbus, injectionTime: .atDocumentStart, forMainFrameOnly: true)
-            webView.configuration.userContentController.addUserScript(userScript)
-        } else {
-            // when running from swiftpm, look for the file relative to the source root
-            let basepath = URL(fileURLWithPath: #file)
-            let url = URL(fileURLWithPath: "../../../../packages/nimbus-bridge/dist/iife/nimbus.js", relativeTo: basepath)
-            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
-                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
-                webView.configuration.userContentController.addUserScript(userScript)
-            }
-        }
+        try? webView.injectNimbusJavascript()
 
         if let url = Bundle(for: MochaTests.self).url(forResource: "index", withExtension: "html", subdirectory: "test-www") {
             webView.loadFileURL(url, allowingReadAccessTo: url)
@@ -99,7 +87,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
 
     func testExecuteMochaTests() {
         let testBridge = MochaTestBridge(webView: webView)
-        let webBridge = BridgeBuilder.createBridge(for: webView, plugins: [])
+        let webBridge = BridgeBuilder.createBridge(for: webView, plugins: [], injectRuntime: false)
         let connection = WebViewConnection(from: webView, bridge: webBridge, as: "mochaTestBridge")
         connection.bind(testBridge.testsCompleted, as: "testsCompleted")
         connection.bind(testBridge.ready, as: "ready")
@@ -129,7 +117,7 @@ class MochaTests: XCTestCase, WKNavigationDelegate {
             }
         }
 
-        wait(for: [testBridge.expectation], timeout: 120)
+        wait(for: [testBridge.expectation], timeout: 30)
         XCTAssertEqual(testBridge.failures, 0, "Mocha tests failed: \(testBridge.failures)")
     }
 }
