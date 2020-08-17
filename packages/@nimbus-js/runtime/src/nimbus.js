@@ -78,7 +78,7 @@ var __nimbus = (function() {
    * @returns {Object}
    */
   let promisify = src => {
-    /** @type { {[s: string]: function(...any[]): void} } */
+    /** @type { {[s: string]: function(...any[]): Promise<any>} } */
     let dest = {};
     Object.keys(src).forEach(key => {
       let func = src[key];
