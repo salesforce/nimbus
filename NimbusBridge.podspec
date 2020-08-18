@@ -17,6 +17,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Hybrid Platform Team' => 'hybridplatform@salesforce.com' }
   s.license          = 'BSD-3-Clause'
   s.source_files     = 'platforms/apple/Sources/Nimbus/**/*.swift'
+  s.resource         = 'packages/@nimbus-js/runtime/src/nimbus.js'
   s.swift_version    = '4.2'
 
   s.ios.deployment_target = '11.0'

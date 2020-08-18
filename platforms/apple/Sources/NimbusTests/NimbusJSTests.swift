@@ -8,15 +8,14 @@
 
 import WebKit
 import XCTest
-@testable import NimbusJS
+@testable import Nimbus
 
 class NimbusJSTests: XCTestCase {
     func testInjectingJS() {
         let webView = WKWebView()
-        let testBundle = Bundle(for: type(of: self))
         let userContentController = webView.configuration.userContentController
         XCTAssertEqual(userContentController.userScripts.count, 0)
-        XCTAssertNoThrow(try webView.injectNimbusJavascript(scriptName: "testJSSource", bundle: testBundle))
+        XCTAssertNoThrow(try webView.injectNimbusJavascript())
         XCTAssertEqual(userContentController.userScripts.count, 1)
     }
 

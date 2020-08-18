@@ -30,19 +30,7 @@ class SharedTestsWebView: XCTestCase {
         expectPlugin.readyExpectation = readyExpectation
 
         // load nimbus.js
-        if let jsURL = Bundle(for: SharedTestsWebView.self).url(forResource: "nimbus", withExtension: "js", subdirectory: "iife"),
-            let jsString = try? String(contentsOf: jsURL) {
-            let userScript = WKUserScript(source: jsString, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-            webView.configuration.userContentController.addUserScript(userScript)
-        } else {
-            // when running from swiftpm, look for the file relative to the source root
-            let basepath = URL(fileURLWithPath: #file)
-            let url = URL(fileURLWithPath: "../../../../packages/nimbus-bridge/dist/iife/nimbus.js", relativeTo: basepath)
-            if FileManager().fileExists(atPath: url.absoluteURL.path), let script = try? String(contentsOf: url) {
-                let userScript = WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
-                webView.configuration.userContentController.addUserScript(userScript)
-            }
-        }
+        try? webView.injectNimbusJavascript()
 
         // load shared-tests.js
         if let jsURL = Bundle(for: SharedTestsWebView.self).url(forResource: "shared-tests", withExtension: "js", subdirectory: "test-www"),

@@ -17,6 +17,10 @@ plugins {
 
 android {
     setDefaults(project)
+
+    sourceSets.getByName("main") {
+        assets.srcDirs("../../../../packages/@nimbus-js/runtime/src")
+    }
 }
 
 dependencies {
@@ -27,6 +31,8 @@ dependencies {
     testImplementation(Libs.junit)
     testImplementation(Libs.json)
     testImplementation(Libs.kotlinxSerializationRuntime)
+    testImplementation(Libs.truth)
+    testImplementation("org.robolectric:robolectric:4.0")
 }
 
 addTestDependencies()
