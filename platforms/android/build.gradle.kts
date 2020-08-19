@@ -52,11 +52,6 @@ junitJacoco {
     includeInstrumentationCoverageInMergedReport = true
 }
 
-tasks.withType<Test> {
-    junitJacoco.includeNoLocationClasses = true
-    junitJacoco.excludes = listOf("jdk.internal.*")
-}
-
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
