@@ -49,7 +49,9 @@ junitJacoco {
     includeNoLocationClasses = false
     jacocoVersion = Versions.jacoco
     setIgnoreProjects("demo-app")
+    includeNoLocationClasses = true
     includeInstrumentationCoverageInMergedReport = true
+    excludes = listOf("jdk.internal.*")
 }
 
 tasks.register("clean", Delete::class) {
