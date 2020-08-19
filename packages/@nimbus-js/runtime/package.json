@@ -1,6 +1,6 @@
 {
     "name": "@nimbus-js/runtime",
-    "version": "2.0.0-beta3",
+    "version": "2.0.0-beta4",
     "private": true,
     "description": "Nimbus is a bridge for hybrid app development.",
     "license": "BSD-3-Clause",
@@ -23,7 +23,7 @@
         "url": "git@github.com:salesforce/nimbus.git"
     },
     "dependencies": {
-        "@nimbus-js/api": "^2.0.0-beta3"
+        "@nimbus-js/api": "^2.0.0-beta4"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^1.13.0",
