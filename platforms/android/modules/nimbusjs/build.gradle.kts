@@ -36,14 +36,14 @@ node {
 
 val copyScript by tasks.registering(Copy::class) {
     dependsOn(npmInstallTask)
-    from(rootProject.file("../../packages/nimbus-bridge/dist/iife/nimbus.js"))
+    from(rootProject.file("../../packages/@nimbus-js/runtime/dist/iife/nimbus.js"))
     into(file("src/main/assets/"))
 }
 
 val npmInstallTask = tasks.named<NpmTask>("npm_install") {
     // make sure the build task is executed only when appropriate files change
-    inputs.files(fileTree("$rootDir/../../packages/nimbus-bridge"))
-    setWorkingDir(rootProject.file("../../packages/nimbus-bridge"))
+    inputs.files(fileTree("$rootDir/../../packages/@nimbus-js/runtime"))
+    setWorkingDir(rootProject.file("../.."))
     outputs.upToDateWhen { true }
 }
 
