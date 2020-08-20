@@ -295,8 +295,7 @@ jobs:
             sudo gcloud firebase test android run \
               --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
               --test shared-tests/build/outputs/apk/androidTest/debug/shared-tests-debug-androidTest.apk \
-              --results-bucket cloud-test-${GOOGLE_PROJECT_ID} \
-              --timeout 20m
+              --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
 
       - run:
           name: Lint Android
