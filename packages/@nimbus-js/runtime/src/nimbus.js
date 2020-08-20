@@ -10,6 +10,7 @@
 
 /**
  * @typedef { import("@nimbus-js/api").NimbusPlugins } NimbusPlugins
+ * @typedef { {[s: string]: function(...any[]): Promise<any>} } PluginObject
  */
 
 var __nimbus = (function() {
@@ -30,7 +31,7 @@ var __nimbus = (function() {
   /**
    * @type  { { [s: string]: Function } }
    */
-  var uuidsToCallbacks = {};
+  let uuidsToCallbacks = {};
 
   // Store event listener functions for later invocation
   /**
@@ -43,7 +44,7 @@ var __nimbus = (function() {
   /**
    * @returns {string}
    */
-  let uuidv4 = () => {
+  const uuidv4 = () => {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => {
       const asNumber = Number(c);
       return (
@@ -57,7 +58,7 @@ var __nimbus = (function() {
    * @param {any[]} args
    * @returns {any[]}
    */
-  let cloneArguments = args => {
+  const cloneArguments = args => {
     let clonedArgs = [];
     for (var i = 0; i < args.length; ++i) {
       if (typeof args[i] === "function") {
@@ -74,11 +75,11 @@ var __nimbus = (function() {
   };
 
   /**
-   * @param {*} src
-   * @returns {Object}
+   * @param {any} src
+   * @returns { PluginObject }
    */
-  let promisify = src => {
-    /** @type { {[s: string]: function(...any[]): Promise<any>} } */
+  const promisify = src => {
+    /** @type { PluginObject } */
     let dest = {};
     Object.keys(src).forEach(key => {
       let func = src[key];
@@ -104,7 +105,7 @@ var __nimbus = (function() {
    * @param {string} callbackId
    * @param {...any[]} args
    */
-  let callCallback = (callbackId, ...args) => {
+  const callCallback = (callbackId, ...args) => {
     if (uuidsToCallbacks[callbackId]) {
       uuidsToCallbacks[callbackId](...args);
     }
@@ -113,7 +114,7 @@ var __nimbus = (function() {
   /**
    * @param {string} callbackId
    */
-  let releaseCallback = callbackId => {
+  const releaseCallback = callbackId => {
     delete uuidsToCallbacks[callbackId];
   };
 
@@ -121,10 +122,10 @@ var __nimbus = (function() {
   // in the storage
   /**
    * @param {string} promiseUuid
-   * @param {*} data
-   * @param {*} error
+   * @param {any} data
+   * @param {any} error
    */
-  let resolvePromise = (promiseUuid, data, error) => {
+  const resolvePromise = (promiseUuid, data, error) => {
     if (error) {
       uuidsToPromises[promiseUuid].reject(error);
     } else {
@@ -136,10 +137,10 @@ var __nimbus = (function() {
 
   /**
    * @param {string} message
-   * @param {*} arg
+   * @param {any} arg
    * @returns {number}
    */
-  let broadcastMessage = (message, arg) => {
+  const broadcastMessage = (message, arg) => {
     let messageListeners = eventNameToListeners[message];
     var handlerCallCount = 0;
     if (messageListeners) {
@@ -159,7 +160,7 @@ var __nimbus = (function() {
    * @param {string} message
    * @param {Function} listener
    */
-  let subscribeMessage = (message, listener) => {
+  const subscribeMessage = (message, listener) => {
     let messageListeners = eventNameToListeners[message];
     if (!messageListeners) {
       messageListeners = [];
@@ -172,7 +173,7 @@ var __nimbus = (function() {
    * @param {string} message
    * @param {Function} listener
    */
-  let unsubscribeMessage = (message, listener) => {
+  const unsubscribeMessage = (message, listener) => {
     let messageListeners = eventNameToListeners[message];
     if (messageListeners) {
       let counter = 0;
@@ -189,8 +190,6 @@ var __nimbus = (function() {
       }
     }
   };
-
-  // { import("global.d.ts") }
 
   // Android plugin import
   if (
@@ -240,7 +239,7 @@ var __nimbus = (function() {
   };
 
   /** @type { import("@nimbus-js/api").Nimbus } */
-  let nimbus = Object.defineProperties(nimbusBuilder, {
+  const nimbus = Object.defineProperties(nimbusBuilder, {
     callCallback: {
       value: callCallback
     },
