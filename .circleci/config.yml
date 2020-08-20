@@ -296,7 +296,7 @@ jobs:
               --app demo-app/build/outputs/apk/debug/demo-app-debug.apk \
               --test shared-tests/build/outputs/apk/androidTest/debug/shared-tests-debug-androidTest.apk \
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
-              --timeout=20m
+              --timeout 20m
 
       - run:
           name: Lint Android
