@@ -281,7 +281,6 @@ jobs:
           working_directory: platforms/apple
           command: |
             bundle install
-            bundle exec pod install
 
       - save_cache:
           paths:
