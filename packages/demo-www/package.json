@@ -1,6 +1,6 @@
 {
     "name": "demo-www",
-    "version": "2.0.0-beta4",
+    "version": "2.0.1-beta1",
     "description": "A demo hybrid app for nimbus",
     "license": "BSD-3-Clause",
     "private": true,
@@ -25,7 +25,7 @@
         "typescript": "^3.5.2"
     },
     "dependencies": {
-        "@nimbus-js/api": "^2.0.0-beta4",
-        "@nimbus-js/runtime": "^2.0.0-beta4"
+        "@nimbus-js/api": "^2.0.1-beta1",
+        "@nimbus-js/runtime": "^2.0.1-beta1"
     }
 }

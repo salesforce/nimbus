@@ -1,6 +1,6 @@
 {
     "name": "@nimbus-js/api",
-    "version": "2.0.0-beta4",
+    "version": "2.0.1-beta1",
     "description": "Nimbus is a bridge for hybrid app development.",
     "license": "BSD-3-Clause",
     "main": "dist/iife/nimbus.js",
