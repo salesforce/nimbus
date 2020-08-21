@@ -465,12 +465,6 @@ workflows:
               ignore: /.*/
             tags:
               only: /.*/
-      - build-and-test-android:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /.*/
       - create-tagged-release:
           requires:
             - build-and-test-ios-13
