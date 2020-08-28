@@ -13,3 +13,9 @@ arrayOf(
 ).forEach { include(":modules$it") }
 
 include(":demo-app", ":shared-tests")
+
+if (file("../../../k2v8").exists()) {
+    logger.lifecycle("Detected local nimbus-plugin-lds, building from source.")
+    includeBuild("../../../k2v8")
+}
+
