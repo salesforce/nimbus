@@ -75,8 +75,8 @@ public class WebViewConnection: Connection, CallableBinder {
                 if let decodingError = error as? DecodingError {
                     // This is a special case we need to catch&handle where the input is a string that
                     // contains JSON but not of a particular user defined data type.
-                    if case .typeMismatch(let incomingType, let context) = decodingError {
-                        if incomingType is String.Type &&
+                    if case let .typeMismatch(incomingType, context) = decodingError {
+                        if incomingType is String.Type,
                             context.debugDescription == "Expected to decode String but found a dictionary instead." {
                             return .failure(error)
                         }
