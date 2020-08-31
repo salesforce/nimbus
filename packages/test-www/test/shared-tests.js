@@ -669,3 +669,175 @@ function verifyPromiseResolvesWithEncodableException2() {
 }
 
 // endregion
+
+// region decoder
+
+function verifyStringDecoderRejectsInt() {
+  __nimbus.plugins.testPlugin.takesString(5).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyStringDecoderRejectsBool() {
+  __nimbus.plugins.testPlugin.takesString(true).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyStringDecoderRejectsObject() {
+  __nimbus.plugins.testPlugin.takesString({ aaa: "bbb" }).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyStringDecoderRejectsNull() {
+  __nimbus.plugins.testPlugin.takesString(null).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyStringDecoderRejectsUndefined() {
+  var und;
+  __nimbus.plugins.testPlugin.takesString(und).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyNumberDecoderRejectsString() {
+  __nimbus.plugins.testPlugin.takesNumber("number").catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyNumberDecoderRejectsObject() {
+  __nimbus.plugins.testPlugin.takesNumber({ aaa: "bbb" }).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyNumberDecoderRejectsNull() {
+  __nimbus.plugins.testPlugin.takesNumber(null).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyNumberDecoderRejectsUndefined() {
+  var und;
+  __nimbus.plugins.testPlugin.takesNumber(und).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyBoolDecoderRejectsString() {
+  __nimbus.plugins.testPlugin.takesBool("number").catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyBoolDecoderRejectsObject() {
+  __nimbus.plugins.testPlugin.takesBool({ aaa: "bbb" }).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyBoolDecoderRejectsNull() {
+  __nimbus.plugins.testPlugin.takesBool(null).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyBoolDecoderRejectsUndefined() {
+  var und;
+  __nimbus.plugins.testPlugin.takesBool(und).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyDictionaryDecoderRejectsString() {
+  __nimbus.plugins.testPlugin.takesDictionary("test").catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyDictionaryDecoderRejectsInt() {
+  __nimbus.plugins.testPlugin.takesDictionary(5).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyDictionaryDecoderRejectsBool() {
+  __nimbus.plugins.testPlugin.takesDictionary(true).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyDictionaryDecoderRejectsNull() {
+  __nimbus.plugins.testPlugin.takesDictionary(null).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyDictionaryDecoderRejectsUndefined() {
+  var und;
+  __nimbus.plugins.testPlugin.takesDictionary(und).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyTestStructDecoderRejectsString() {
+  __nimbus.plugins.testPlugin.takesTestStruct("test").catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyTestStructDecoderRejectsInt() {
+  __nimbus.plugins.testPlugin.takesTestStruct(5).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyTestStructDecoderRejectsBool() {
+  __nimbus.plugins.testPlugin.takesTestStruct(true).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyTestStructDecoderRejectsNull() {
+  __nimbus.plugins.testPlugin.takesTestStruct(null).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+function verifyTestStructDecoderRejectsUndefined() {
+  var und;
+  __nimbus.plugins.testPlugin.takesTestStruct(und).catch((error) => {
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
+// endregion

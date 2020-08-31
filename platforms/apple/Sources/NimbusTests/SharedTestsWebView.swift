@@ -248,6 +248,98 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyReturnValueStructuredError()")
     }
 
+    func testVerifyStringDecoderRejectsInt() {
+        executeTest("verifyStringDecoderRejectsInt()")
+    }
+
+    func testVerifyStringDecoderRejectsBool() {
+        executeTest("verifyStringDecoderRejectsBool()")
+    }
+
+    func testVerifyStringDecoderRejectsObject() {
+        executeTest("verifyStringDecoderRejectsObject()")
+    }
+
+    func testVerifyStringDecoderRejectsNull() {
+        executeTest("verifyStringDecoderRejectsNull()")
+    }
+
+    func testVerifyStringDecoderRejectsUndefined() {
+        executeTest("verifyStringDecoderRejectsUndefined()")
+    }
+
+    func testVerifyNumberDecoderRejectsString() {
+        executeTest("verifyNumberDecoderRejectsString()")
+    }
+
+    func testVerifyNumberDecoderRejectsObject() {
+        executeTest("verifyNumberDecoderRejectsObject()")
+    }
+
+    func testVerifyNumberDecoderRejectsNull() {
+        executeTest("verifyNumberDecoderRejectsNull()")
+    }
+
+    func testVerifyNumberDecoderRejectsUndefined() {
+        executeTest("verifyNumberDecoderRejectsUndefined()")
+    }
+
+    func testVerifyBoolDecoderRejectsString() {
+        executeTest("verifyBoolDecoderRejectsString()")
+    }
+
+    func testVerifyBoolDecoderRejectsObject() {
+        executeTest("verifyBoolDecoderRejectsObject()")
+    }
+
+    func testVerifyBoolDecoderRejectsNull() {
+        executeTest("verifyBoolDecoderRejectsNull()")
+    }
+
+    func testVerifyBoolDecoderRejectsUndefined() {
+        executeTest("verifyBoolDecoderRejectsUndefined()")
+    }
+
+    func testVerifyDictionaryDecoderRejectsString() {
+        executeTest("verifyDictionaryDecoderRejectsString()")
+    }
+
+    func testVerifyDictionaryDecoderRejectsInt() {
+        executeTest("verifyDictionaryDecoderRejectsInt()")
+    }
+
+    func testVerifyDictionaryDecoderRejectsBool() {
+        executeTest("verifyDictionaryDecoderRejectsBool()")
+    }
+
+    func testVerifyDictionaryDecoderRejectsNull() {
+        executeTest("verifyDictionaryDecoderRejectsNull()")
+    }
+
+    func testVerifyDictionaryDecoderRejectsUndefined() {
+        executeTest("verifyDictionaryDecoderRejectsUndefined()")
+    }
+
+    func testVerifyTestStructDecoderRejectsString() {
+        executeTest("verifyTestStructDecoderRejectsString()")
+    }
+
+    func testVerifyTestStructDecoderRejectsInt() {
+        executeTest("verifyTestStructDecoderRejectsInt()")
+    }
+
+    func testVerifyTestStructDecoderRejectsBool() {
+        executeTest("verifyTestStructDecoderRejectsBool()")
+    }
+
+    func testVerifyTestStructDecoderRejectsNull() {
+        executeTest("verifyTestStructDecoderRejectsNull()")
+    }
+
+    func testVerifyTestStructDecoderRejectsUndefined() {
+        executeTest("verifyTestStructDecoderRejectsUndefined()")
+    }
+
     func testEventPublishing() {
         expectPlugin.readyExpectation = expectation(description: "ready")
         let subscribe = expectation(description: "subscribe")

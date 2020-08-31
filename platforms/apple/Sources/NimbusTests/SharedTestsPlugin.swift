@@ -67,7 +67,18 @@ class TestPlugin: Plugin {
         connection.bind(binaryIntResolvingIntCallbackReturnsInt, as: "binaryIntResolvingIntCallbackReturnsInt")
         connection.bind(nullaryResolvingToSimpleError, as: "nullaryResolvingToSimpleError")
         connection.bind(nullaryResolvingToStructuredError, as: "nullaryResolvingToStructuredError")
+        connection.bind(takesString, as: "takesString")
+        connection.bind(takesNumber, as: "takesNumber")
+        connection.bind(takesBool, as: "takesBool")
+        connection.bind(takesDictionary, as: "takesDictionary")
+        connection.bind(takesTestStruct, as: "takesTestStruct")
     }
+
+    func takesString(stringParam: String) {}
+    func takesNumber(numberParam: Double) {}
+    func takesBool(boolParam: Bool) {}
+    func takesDictionary(dictionaryParam: [String: String]) {}
+    func takesTestStruct(testStructParam: TestStruct) {}
 
     func nullaryResolvingToInt() -> Int {
         return 5
