@@ -81,9 +81,22 @@ public class WebViewConnection: Connection, CallableBinder {
                             return .failure(error)
                         }
                     }
-                    // Another special case to handle where the input is null.
-                    if case .valueNotFound = decodingError {
-                        return .failure(error)
+                    if #available(iOS 13, macOS 10.15, *) {
+                        // Another special case to handle where the input is null.
+                        if case .valueNotFound = decodingError {
+                            return .failure(error)
+                        }
+                    } else {
+                        if let value = value {
+                            let valueStringified = "\(value)"
+
+                            // Special case to handle where the input is null, for iOS 12 and below.
+                            if valueStringified == "null" {
+                                if case .dataCorrupted = decodingError {
+                                    return .failure(error)
+                                }
+                            }
+                        }
                     }
                 }
             }
