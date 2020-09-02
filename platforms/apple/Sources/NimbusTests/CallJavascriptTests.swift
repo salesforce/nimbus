@@ -76,7 +76,7 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         wait(for: [setup], timeout: 10)
 
         let expect = expectation(description: "js result")
-        bridge!.invoke(["testFunction"], with: []) { _ -> Void in
+        bridge!.invoke(["testFunction"], with: []) { (_, _: Void?) -> Void in
             expect.fulfill()
         }
         wait(for: [expect], timeout: 5)

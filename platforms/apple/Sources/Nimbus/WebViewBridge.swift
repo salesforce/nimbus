@@ -26,7 +26,7 @@ public class WebViewBridge: NSObject, JSEvaluating {
      Invokes a Promise-returning Javascript function and call the specified
      promiseCompletion when that Promise resolves or rejects.
      */
-    func invoke<R>(
+    func invoke<R>( // swiftlint:disable:this function_body_length
         _ identifierSegments: [String],
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
@@ -56,51 +56,15 @@ public class WebViewBridge: NSObject, JSEvaluating {
         let idSegmentString: String
         let argString: String
         do {
-            (argString, idSegmentString) = try encodeArgsAndIdSegments(args: args, identifierSegments: identifierSegments)
+            let data = try JSONEncoder().encode(args.map(EncodableValue.value))
+            argString = String(data: data, encoding: .utf8)!
+
+            let idData = try JSONEncoder().encode(identifierSegments)
+            idSegmentString = String(data: idData, encoding: .utf8)!
         } catch {
             return callback(error, nil)
         }
 
-        evaluateJavaScript(promiseId: promiseId, idSegmentString: idSegmentString, argString: argString)
-    }
-
-    /**
-     Overloaded version of invoke that is used to call a Javascript function that doesn't have a return value.
-     */
-    func invoke(
-        _ identifierSegments: [String],
-        with args: [Encodable],
-        callback: @escaping (Error?) -> Void
-    ) {
-        let promiseId = UUID().uuidString
-        promisesQueue.sync {
-            self.promises[promiseId] = { error, _ in
-                callback(error)
-            }
-        }
-
-        let idSegmentString: String
-        let argString: String
-        do {
-            (argString, idSegmentString) = try encodeArgsAndIdSegments(args: args, identifierSegments: identifierSegments)
-        } catch {
-            return callback(error)
-        }
-
-        evaluateJavaScript(promiseId: promiseId, idSegmentString: idSegmentString, argString: argString)
-    }
-
-    func encodeArgsAndIdSegments(args: [Encodable], identifierSegments: [String]) throws -> (String, String) {
-        let data = try JSONEncoder().encode(args.map(EncodableValue.value))
-        let argString = String(data: data, encoding: .utf8)!
-
-        let idData = try JSONEncoder().encode(identifierSegments)
-        let idSegmentString = String(data: idData, encoding: .utf8)!
-
-        return (argString, idSegmentString)
-    }
-
-    func evaluateJavaScript(promiseId: String, idSegmentString: String, argString: String) {
         let script = """
         {
             let idSegments = \(idSegmentString);
@@ -165,7 +129,10 @@ public class WebViewBridge: NSObject, JSEvaluating {
         callback: @escaping (Error?) -> Void
     ) {
         let identifierSegments = identifierPath.split(separator: ".").map(String.init)
-        invoke(identifierSegments, with: args, callback: callback)
+        let myCallback = { (error: Error?, _: Void?) in
+            callback(error)
+        }
+        invoke(identifierSegments, with: args, callback: myCallback)
     }
 
     private let promisesQueue = DispatchQueue(label: "Nimbus.promisesQueue")
