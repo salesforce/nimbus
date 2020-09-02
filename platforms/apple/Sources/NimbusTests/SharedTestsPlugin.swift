@@ -74,7 +74,7 @@ class TestPlugin: Plugin {
         connection.bind(takesTestStruct, as: "takesTestStruct")
     }
 
-    func takesString(stringParam: String) {}
+    func takesString(stringParam: String) -> String { return stringParam }
     func takesNumber(numberParam: Double) {}
     func takesBool(boolParam: Bool) {}
     func takesDictionary(dictionaryParam: [String: String]) {}

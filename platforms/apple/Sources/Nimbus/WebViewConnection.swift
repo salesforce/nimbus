@@ -72,32 +72,12 @@ public class WebViewConnection: Connection, CallableBinder {
                 let value = try JSONDecoder().decode(type, from: data)
                 return .success(value)
             } catch {
-                if let decodingError = error as? DecodingError {
-                    // This is a special case we need to catch&handle where the input is a string that
-                    // contains JSON but not of a particular user defined data type.
-                    if case let .typeMismatch(incomingType, context) = decodingError {
-                        if incomingType is String.Type,
-                            context.debugDescription == "Expected to decode String but found a dictionary instead." {
-                            return .failure(error)
-                        }
-                    }
-                    if #available(iOS 13, macOS 10.15, *) {
-                        // Another special case to handle where the input is null.
-                        if case .valueNotFound = decodingError {
-                            return .failure(error)
-                        }
-                    } else {
-                        if let value = value {
-                            let valueStringified = "\(value)"
-
-                            // Special case to handle where the input is null, for iOS 12 and below.
-                            if valueStringified == "null" {
-                                if case .dataCorrupted = decodingError {
-                                    return .failure(error)
-                                }
-                            }
-                        }
-                    }
+                // This is a special case we need to catch&handle where the input is a string that
+                // contains JSON but not of a particular user defined data type.
+                if let decodingError = error as? DecodingError,
+                    case let .typeMismatch(incomingType, _) = decodingError,
+                    incomingType is String.Type {
+                    return .failure(error)
                 }
             }
         }

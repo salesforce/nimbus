@@ -246,6 +246,10 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyStringDecoderRejectsUndefined()")
     }
 
+    func testVerifyStringDecoderResolvesStringNull() {
+        executeTest("verifyStringDecoderResolvesStringNull()")
+    }
+
     func testVerifyNumberDecoderRejectsString() {
         executeTest("verifyNumberDecoderRejectsString()")
     }

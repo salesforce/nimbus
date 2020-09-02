@@ -708,6 +708,15 @@ function verifyStringDecoderRejectsUndefined() {
   });
 }
 
+function verifyStringDecoderResolvesStringNull() {
+  __nimbus.plugins.testPlugin.takesString("null").then((result) => {
+    if (result === "null") {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 function verifyNumberDecoderRejectsString() {
   __nimbus.plugins.testPlugin.takesNumber("number").catch((error) => {
     __nimbus.plugins.expectPlugin.pass();

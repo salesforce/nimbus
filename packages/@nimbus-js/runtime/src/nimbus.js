@@ -65,6 +65,8 @@ var __nimbus = (function() {
         const callbackId = uuidv4();
         uuidsToCallbacks[callbackId] = args[i];
         clonedArgs.push(callbackId);
+      } else if (args[i] === null) {
+        clonedArgs.push(null);
       } else if (typeof args[i] === "object") {
         clonedArgs.push(JSON.stringify(args[i]));
       } else {
