@@ -18,4 +18,13 @@ public protocol JSEvaluating {
         with args: [Encodable],
         callback: @escaping (Error?, R?) -> Void
     )
+
+    /**
+     Call the function described by the identifierPath with the given args. Error is passed as a parameter to the callback.
+     */
+    func evaluate(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?) -> Void
+    )
 }

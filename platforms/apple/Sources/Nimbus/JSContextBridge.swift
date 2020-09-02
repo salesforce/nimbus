@@ -112,6 +112,22 @@ public class JSContextBridge: JSEvaluating {
         }
     }
 
+    /**
+     The implementation of the `JSEvaluating` protocol.
+
+     This overload function is used to call Javascript function that doesn't have a return value.
+     */
+    public func evaluate(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?) -> Void
+    ) {
+        let identifierSegments = identifierPath.split(separator: ".").map(String.init)
+        invoke(identifierSegments, with: args) { error, _ in
+            callback(error)
+        }
+    }
+
     var context: JSContext?
 }
 

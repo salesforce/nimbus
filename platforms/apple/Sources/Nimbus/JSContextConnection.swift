@@ -139,6 +139,14 @@ public class JSContextConnection: Connection, CallableBinder {
         bridge?.evaluate(identifierPath, with: args, callback: callback)
     }
 
+    public func evaluate(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?) -> Void
+    ) {
+        bridge?.evaluate(identifierPath, with: args, callback: callback)
+    }
+
     private let namespace: String
     private weak var context: JSContext?
     private var bridge: JSEvaluating?

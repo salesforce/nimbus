@@ -160,6 +160,14 @@ public class WebViewConnection: Connection, CallableBinder {
         bridge?.evaluate(identifierPath, with: args, callback: callback)
     }
 
+    public func evaluate(
+        _ identifierPath: String,
+        with args: [Encodable],
+        callback: @escaping (Error?) -> Void
+    ) {
+        bridge?.evaluate(identifierPath, with: args, callback: callback)
+    }
+
     /**
      Called by the ConnectionMessageHandler when JS in the webview invokes a function of a native extension..
      */
