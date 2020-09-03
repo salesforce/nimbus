@@ -11,8 +11,6 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.utils.MemoryManager
-import com.salesforce.k2v8.scope
 import com.salesforce.k2v8.toV8Array
 import java.util.concurrent.ExecutorService
 

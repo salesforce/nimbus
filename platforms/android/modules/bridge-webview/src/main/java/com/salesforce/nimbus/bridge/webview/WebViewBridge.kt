@@ -21,7 +21,6 @@ import org.json.JSONObject
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 private const val BRIDGE_NAME = "_nimbus"
 
@@ -155,7 +154,8 @@ class WebViewBridge(private val executorService: ExecutorService) : Bridge<WebVi
         if (!javascriptEngine.settings.javaScriptEnabled) {
             javascriptEngine.settings.javaScriptEnabled = true
         }
-        javascriptEngine.addJavascriptInterface(this,
+        javascriptEngine.addJavascriptInterface(
+            this,
             BRIDGE_NAME
         )
         initialize(javascriptEngine, binders)
@@ -207,5 +207,4 @@ class WebViewBridge(private val executorService: ExecutorService) : Bridge<WebVi
             }
         }
     }
-
 }

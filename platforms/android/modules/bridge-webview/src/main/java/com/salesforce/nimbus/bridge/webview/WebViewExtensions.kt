@@ -47,5 +47,5 @@ fun WebView.broadcastMessage(name: String, arg: JSEncodable<String>? = null, com
  * and then attaches to the [WebView] instance.
  */
 fun WebView.bridge(executorService: ExecutorService = Executors.newSingleThreadExecutor(), builder: WebViewBridge.Builder.() -> Unit): WebViewBridge {
-    return WebViewBridge.Builder().apply(builder).attach(executorService , this)
+    return WebViewBridge.Builder().apply(builder).attach(executorService, this)
 }

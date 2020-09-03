@@ -22,6 +22,7 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
+import java.util.concurrent.Executors
 
 /**
  * Unit tests for [V8Bridge].
@@ -52,10 +53,10 @@ class V8BridgeTest : StringSpec({
             every { add(any(), any<V8Object>()) } returns this
         }
 
-        v8Bridge = V8Bridge.Builder()
-            .bind(mockPlugin1V8Binder)
-            .bind(mockPlugin2V8Binder)
-            .attach(mockV8)
+        v8Bridge = mockV8.bridge(Executors.newSingleThreadExecutor()) {
+            bind(mockPlugin1V8Binder)
+            bind(mockPlugin2V8Binder)
+        }
     }
 
     "attach adds NimbusBridge object" {

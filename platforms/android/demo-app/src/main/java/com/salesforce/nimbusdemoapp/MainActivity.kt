@@ -8,14 +8,12 @@
 package com.salesforce.nimbusdemoapp
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.v8.V8
 import com.salesforce.nimbus.BoundMethod
@@ -31,7 +29,6 @@ import com.salesforce.nimbus.bridge.webview.WebViewBridge
 import com.salesforce.nimbus.bridge.webview.bridge
 import com.salesforce.nimbus.core.plugins.DeviceInfoPlugin
 import kotlinx.serialization.Serializable
-import java.lang.RuntimeException
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
