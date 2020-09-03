@@ -15,6 +15,7 @@ import com.salesforce.k2v8.K2V8
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import java.util.concurrent.ExecutorService
 
 /**
  * Defines an object which will be a runtime for a [JavascriptEngine] with a [EncodedType]
@@ -35,6 +36,8 @@ interface Runtime<JavascriptEngine, EncodedType> {
         args: Array<JSEncodable<EncodedType>?> = emptyArray(),
         callback: ((String?, Any?) -> Unit)?
     )
+
+    fun getExecutorService(): ExecutorService
 }
 
 /**

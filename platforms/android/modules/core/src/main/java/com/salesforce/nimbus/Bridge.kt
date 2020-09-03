@@ -7,6 +7,9 @@
 
 package com.salesforce.nimbus
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 /**
  * Defines an object which will be a bridge between a native [Plugin] and a [JavascriptEngine],
  * such as an Android WebView or V8. [EncodedType] represents the encoded type the
@@ -44,6 +47,6 @@ interface Bridge<JavascriptEngine, EncodedType> {
         /**
          * Attaches the [Bridge] to a [JavascriptEngine].
          */
-        abstract fun attach(javascriptEngine: JavascriptEngine): B
+        abstract fun attach(executorService: ExecutorService = Executors.newSingleThreadExecutor(), javascriptEngine: JavascriptEngine): B
     }
 }

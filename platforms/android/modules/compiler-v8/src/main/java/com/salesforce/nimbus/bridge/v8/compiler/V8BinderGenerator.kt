@@ -405,6 +405,7 @@ class V8BinderGenerator : BinderGenerator() {
 
         // create the callback function body
         val argBlock = CodeBlock.builder()
+            .beginControlFlow("runtime!!.getExecutorService().submit {")
             .add("val params = listOf(")
 
         // loop through each argument (except for last)
@@ -497,6 +498,7 @@ class V8BinderGenerator : BinderGenerator() {
                 "callback$parameterIndex.call(v8, params.%T(v8))",
                 ClassName(k2v8Package, "toV8Array")
             )
+            .endControlFlow()
 
         // get the type args for the lambda function
         val lambdaTypeArgs =

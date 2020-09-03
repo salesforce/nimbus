@@ -11,7 +11,10 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.MemoryManager
+import com.salesforce.k2v8.scope
 import com.salesforce.k2v8.toV8Array
+import java.util.concurrent.ExecutorService
 
 /**
  * Cleans up the [V8Object.registerJavaMethod] function a bit to move the method to first parameter.
@@ -67,6 +70,8 @@ fun V8.createObject() = V8Object(this)
  * Creates a [V8Bridge.Builder] and passes it to the [builder] function, allowing any binders to be added
  * and then attaches to the [V8Bridge] instance.
  */
-fun V8.bridge(builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
-    return V8Bridge.Builder().apply(builder).attach(this)
+fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
+    return V8Bridge.Builder()
+        .apply(builder)
+        .attach(executorService, this)
 }

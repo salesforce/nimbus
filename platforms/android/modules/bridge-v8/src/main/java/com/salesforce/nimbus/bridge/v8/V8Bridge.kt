@@ -10,6 +10,7 @@ package com.salesforce.nimbus.bridge.v8
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.utils.MemoryManager
 import com.salesforce.k2v8.toV8Array
 import com.salesforce.nimbus.Binder
 import com.salesforce.nimbus.Bridge
@@ -20,10 +21,11 @@ import com.salesforce.nimbus.Runtime
 import java.io.Closeable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutorService
 
 const val INTERNAL_NIMBUS_BRIDGE = "_nimbus"
 
-class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
+class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
 
     private var bridgeV8: V8? = null
     internal val binders = mutableListOf<Binder<V8, V8Object>>()
@@ -33,23 +35,33 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
     override fun detach() {
-        cleanup(binders)
-        nimbusBridge?.close()
-        nimbusPlugins?.close()
-        internalNimbusBridge?.close()
-        bridgeV8 = null
+        executorService.submit {
+            cleanup(binders)
+            nimbusBridge?.close()
+            nimbusPlugins?.close()
+            internalNimbusBridge?.close()
+            bridgeV8?.close()
+            bridgeV8 = null
+        }.get()
     }
 
     override fun getJavascriptEngine(): V8? {
         return bridgeV8
     }
 
+    /**
+     * Return [ExecutorService] of the [Runtime]
+     */
+    override fun getExecutorService(): ExecutorService = executorService
+
     override fun invoke(
         functionName: String,
         args: Array<JSEncodable<V8Object>?>,
         callback: ((String?, Any?) -> Unit)?
     ) {
-        invokeInternal(functionName.split('.').toTypedArray(), args, callback)
+        executorService.submit {
+            invokeInternal(functionName.split('.').toTypedArray(), args, callback)
+        }.get()
     }
 
     private fun invokeInternal(
@@ -163,11 +175,26 @@ class V8Bridge : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
      * Builder class to create instances of [V8Bridge] and attach to a [V8] runtime.
      */
     class Builder : Bridge.Builder<V8, V8Object, V8Bridge>() {
-        override fun attach(javascriptEngine: V8): V8Bridge {
-            return V8Bridge().apply {
+        override fun attach(executorService: ExecutorService, javascriptEngine: V8): V8Bridge {
+            return V8Bridge(executorService).apply {
                 binders.addAll(builderBinders)
-                attachInternal(javascriptEngine)
+                executorService.submit {
+                    attachInternal(javascriptEngine)
+                }.get()
             }
         }
+    }
+
+    fun <T> executorScope(executorService: ExecutorService, body: () -> T): T {
+        val scope = executorService.submit<MemoryManager> { MemoryManager(bridgeV8) }.get()
+        try {
+            return body()
+        } finally {
+            executorService.submit { scope.release() }.get()
+        }
+    }
+
+    fun executeScriptOnExecutor(script: String) {
+        bridgeV8?.let { executorService.submit { it.executeScript(script) }.get() }
     }
 }

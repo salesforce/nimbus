@@ -9,6 +9,8 @@ package com.salesforce.nimbus.bridge.webview
 
 import android.webkit.WebView
 import com.salesforce.nimbus.JSEncodable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Asynchronously broadcast a message to subscribers listening on Javascript side.  Message can be
@@ -44,6 +46,6 @@ fun WebView.broadcastMessage(name: String, arg: JSEncodable<String>? = null, com
  * Creates a [WebViewBridge.Builder] and passes it to the [builder] function, allowing any binders to be added
  * and then attaches to the [WebView] instance.
  */
-fun WebView.bridge(builder: WebViewBridge.Builder.() -> Unit): WebViewBridge {
-    return WebViewBridge.Builder().apply(builder).attach(this)
+fun WebView.bridge(executorService: ExecutorService = Executors.newSingleThreadExecutor(), builder: WebViewBridge.Builder.() -> Unit): WebViewBridge {
+    return WebViewBridge.Builder().apply(builder).attach(executorService , this)
 }
