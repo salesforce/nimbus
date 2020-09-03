@@ -20,6 +20,7 @@ import io.kotest.properties.long
 import io.kotest.properties.string
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -69,6 +70,7 @@ class PrimitiveV8EncodableTests {
     }
 
     @Test
+    @Ignore
     fun testBooleanToV8() = v8.scope {
         forAll(Gen.bool()) { a ->
             val array = a.toV8Encodable(v8).encode() as V8Array

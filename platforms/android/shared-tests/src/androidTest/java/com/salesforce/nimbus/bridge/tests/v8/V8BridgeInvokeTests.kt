@@ -10,7 +10,6 @@ package com.salesforce.nimbus.bridge.tests.v8
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
-import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.withinLatch
 import com.salesforce.nimbus.bridge.v8.V8Bridge
 import com.salesforce.nimbus.bridge.v8.bridge
@@ -21,6 +20,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Tests the [V8Bridge.invoke] function.
@@ -39,25 +40,27 @@ class V8BridgeInvokeTests {
         function intAddOneFunc(int) { return int + 1; };
     """.trimIndent()
 
+    private lateinit var executorService: ExecutorService
+
     @Serializable
     data class SomeClass(val someString: String, val someInt: Int)
 
     @Before
     fun setUp() {
-        v8 = V8.createV8Runtime()
-        v8.executeScript(fixtureScript)
-        bridge = v8.bridge()
+        executorService = Executors.newSingleThreadExecutor()
+        v8 = executorService.submit<V8> { V8.createV8Runtime() }.get()
+        bridge = v8.bridge(executorService)
+        bridge.executeScriptOnExecutor(fixtureScript)
     }
 
     @After
     fun tearDown() {
         bridge.detach()
-        v8.close()
     }
 
     @Test
     fun testInvokePromiseResolvedWithPromise() {
-        v8.scope {
+        bridge.executorScope(executorService) {
             withinLatch {
                 bridge.invoke("promiseFunc", emptyArray()) { error, result ->
                     assertThat(error).isNull()
@@ -70,7 +73,7 @@ class V8BridgeInvokeTests {
 
     @Test
     fun testInvokePromiseResolvedWithInt() {
-        v8.scope {
+        bridge.executorScope(executorService) {
             withinLatch {
                 bridge.invoke("intFunc", emptyArray()) { error, result ->
                     assertThat(error).isNull()
@@ -83,7 +86,7 @@ class V8BridgeInvokeTests {
 
     @Test
     fun testInvokePromiseResolvedWithObject() {
-        v8.scope {
+        bridge.executorScope(executorService) {
             withinLatch {
                 bridge.invoke(
                     "objectFunc",
@@ -106,9 +109,9 @@ class V8BridgeInvokeTests {
 
     @Test
     fun testInvokeWithIntParameterResolvedWithInt() {
-        v8.scope {
+        bridge.executorScope(executorService) {
             withinLatch {
-                bridge.invoke("intAddOneFunc", arrayOf(1.toV8Encodable(v8))) { error, result ->
+                bridge.invoke("intAddOneFunc", arrayOf(1.toV8Encodable(v8, executorService))) { error, result ->
                     assertThat(error).isNull()
                     assertThat(result).isEqualTo(2)
                     countDown()
@@ -119,7 +122,7 @@ class V8BridgeInvokeTests {
 
     @Test
     fun testInvokePromiseRejected() {
-        v8.scope {
+        bridge.executorScope(executorService) {
             withinLatch {
                 bridge.invoke("promiseFuncReject", emptyArray()) { error, result ->
                     assertThat(error).isEqualTo("epic fail")

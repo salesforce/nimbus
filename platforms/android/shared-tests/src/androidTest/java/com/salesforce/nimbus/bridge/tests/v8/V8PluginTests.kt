@@ -13,7 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.eclipsesource.v8.V8
 import com.google.common.truth.Truth.assertThat
-import com.salesforce.k2v8.scope
 import com.salesforce.nimbus.bridge.tests.plugin.ExpectPlugin
 import com.salesforce.nimbus.bridge.tests.plugin.StructEvent
 import com.salesforce.nimbus.bridge.tests.plugin.TestPlugin
@@ -27,6 +26,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
@@ -36,6 +37,8 @@ class V8PluginTests {
     private lateinit var bridge: V8Bridge
     private lateinit var expectPlugin: ExpectPlugin
     private lateinit var testPlugin: TestPlugin
+    private lateinit var executorService: ExecutorService
+
 
     @Rule
     @JvmField
@@ -44,23 +47,23 @@ class V8PluginTests {
 
     @Before
     fun setUp() {
-        v8 = V8.createV8Runtime()
+        executorService = Executors.newSingleThreadExecutor()
+        v8 = executorService.submit<V8> { V8.createV8Runtime() }.get()
         expectPlugin = ExpectPlugin()
         testPlugin = TestPlugin()
-        bridge = v8.bridge {
+        bridge = v8.bridge(executorService) {
             bind { expectPlugin.v8Binder() }
             bind { testPlugin.v8Binder() }
         }
-        v8.scope {
-            v8.executeScript("shared-tests".js)
-            v8.executeScript("__nimbus.plugins.expectPlugin.ready();")
+        bridge.executorScope(executorService) {
+            bridge.executeScriptOnExecutor("shared-tests".js)
+            bridge.executeScriptOnExecutor("__nimbus.plugins.expectPlugin.ready();")
         }
     }
 
     @After
     fun tearDown() {
         bridge.detach()
-        v8.close()
     }
 
     // region nullary parameters
@@ -310,7 +313,7 @@ class V8PluginTests {
 
     @Test
     fun verifyEventPublishing() {
-        v8.scope {
+        bridge.executorScope(executorService) {
 
             // wait for ready
             assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
@@ -319,7 +322,7 @@ class V8PluginTests {
             expectPlugin.reset()
 
             // subscribe to events
-            v8.executeScript("subscribeToStructEvent()")
+            bridge.executeScriptOnExecutor("subscribeToStructEvent()")
 
             // wait for ready
             assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
@@ -345,7 +348,7 @@ class V8PluginTests {
             expectPlugin.reset()
 
             // unsubscribe
-            v8.executeScript("unsubscribeFromStructEvent()")
+            bridge.executeScriptOnExecutor("unsubscribeFromStructEvent()")
 
             // wait for ready
             assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
@@ -381,7 +384,7 @@ class V8PluginTests {
 
     private fun executeTest(function: String) {
         assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
-        v8.scope { v8.executeScript(function) }
+        bridge.executorScope(executorService) { bridge.executeScriptOnExecutor(function) }
         assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
         assertThat(expectPlugin.passed).isTrue()
     }

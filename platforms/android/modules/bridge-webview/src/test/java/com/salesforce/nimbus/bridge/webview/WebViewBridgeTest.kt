@@ -42,10 +42,10 @@ class WebViewBridgeTest : StringSpec({
     }
 
     beforeTest {
-        webViewBridge = WebViewBridge.Builder()
-            .bind(mockPlugin1WebViewBinder)
-            .bind(mockPlugin2WebViewBinder)
-            .attach(mockWebView)
+        webViewBridge = mockWebView.bridge {
+            bind(mockPlugin1WebViewBinder)
+            bind(mockPlugin2WebViewBinder)
+        }
     }
 
     "attach enables Javascript" {
