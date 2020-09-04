@@ -10,8 +10,6 @@ import WebKit
 import XCTest
 @testable import Nimbus
 
-// swiftlint:disable type_body_length
-
 class SharedTestsWebView: XCTestCase {
     var webView = WKWebView()
     var bridge: WebViewBridge?
@@ -256,10 +254,6 @@ class SharedTestsWebView: XCTestCase {
 
     func testVerifyStringDecoderRejectsBool() {
         executeTest("verifyStringDecoderRejectsBool()")
-    }
-
-    func testVerifyStringDecoderRejectsObject() {
-        executeTest("verifyStringDecoderRejectsObject()")
     }
 
     func testVerifyStringDecoderRejectsNull() {

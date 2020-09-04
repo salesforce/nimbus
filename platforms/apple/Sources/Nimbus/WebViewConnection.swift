@@ -67,19 +67,9 @@ public class WebViewConnection: Connection, CallableBinder {
             let string = value as? String {
             data = string.data(using: .utf8)
         }
-        if let data = data {
-            do {
-                let value = try JSONDecoder().decode(type, from: data)
-                return .success(value)
-            } catch {
-                // This is a special case we need to catch&handle where the input is a string that
-                // contains JSON but not of a particular user defined data type.
-                if let decodingError = error as? DecodingError,
-                    case let .typeMismatch(incomingType, _) = decodingError,
-                    incomingType is String.Type {
-                    return .failure(error)
-                }
-            }
+        if let data = data,
+            let value = try? JSONDecoder().decode(type, from: data) {
+            return .success(value)
         }
         if let value = value as? T {
             return .success(value)

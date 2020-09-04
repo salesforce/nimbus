@@ -234,10 +234,6 @@ class SharedTestsJSCore: XCTestCase {
         executeTest("verifyStringDecoderRejectsBool()")
     }
 
-    func testVerifyStringDecoderRejectsObject() {
-        executeTest("verifyStringDecoderRejectsObject()")
-    }
-
     func testVerifyStringDecoderRejectsNull() {
         executeTest("verifyStringDecoderRejectsNull()")
     }
