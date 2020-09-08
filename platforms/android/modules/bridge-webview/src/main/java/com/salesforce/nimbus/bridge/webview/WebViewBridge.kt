@@ -200,7 +200,7 @@ class WebViewBridge(private val executorService: ExecutorService) : Bridge<WebVi
      * Builder class to create instances of [WebViewBridge] and attach to a [WebView].
      */
     class Builder : Bridge.Builder<WebView, String, WebViewBridge>() {
-        override fun attach(executorService: ExecutorService, javascriptEngine: WebView): WebViewBridge {
+        override fun attach(javascriptEngine: WebView, executorService: ExecutorService): WebViewBridge {
             return WebViewBridge(executorService).apply {
                 binders.addAll(builderBinders)
                 attachInternal(javascriptEngine)

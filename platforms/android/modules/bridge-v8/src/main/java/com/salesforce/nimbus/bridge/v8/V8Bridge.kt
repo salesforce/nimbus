@@ -175,7 +175,7 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
      * Builder class to create instances of [V8Bridge] and attach to a [V8] runtime.
      */
     class Builder : Bridge.Builder<V8, V8Object, V8Bridge>() {
-        override fun attach(executorService: ExecutorService, javascriptEngine: V8): V8Bridge {
+        override fun attach(javascriptEngine: V8, executorService: ExecutorService): V8Bridge {
             return V8Bridge(executorService).apply {
                 binders.addAll(builderBinders)
                 executorService.submit {
