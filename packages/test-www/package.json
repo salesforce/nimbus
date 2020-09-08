@@ -1,6 +1,6 @@
 {
     "name": "test-www",
-    "version": "2.0.0-beta8",
+    "version": "2.0.0-beta9",
     "description": "",
     "license": "BSD-3-Clause",
     "private": true,
@@ -12,7 +12,7 @@
         "serve": "cross-env rollup -c ./rollup.config.js --watch"
     },
     "dependencies": {
-        "@nimbus-js/api": "^2.0.0-beta8"
+        "@nimbus-js/api": "^2.0.0-beta9"
     },
     "devDependencies": {
         "@types/chai": "^4.1.7",
