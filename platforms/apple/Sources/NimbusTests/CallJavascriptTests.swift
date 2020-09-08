@@ -76,10 +76,13 @@ class CallJavascriptTests: XCTestCase, WKNavigationDelegate {
         wait(for: [setup], timeout: 10)
 
         let expect = expectation(description: "js result")
-        bridge!.invoke(["testFunction"], with: []) { (_, _: Void?) -> Void in
+        var error: Error?
+        bridge!.evaluate("testFunction", with: []) { theError in
+            error = theError
             expect.fulfill()
         }
         wait(for: [expect], timeout: 5)
+        XCTAssertNil(error)
     }
 
     func testCallNonExistingMethodReturnsAnError() {
@@ -181,7 +184,7 @@ class CallJSContextTests: XCTestCase {
     func testCallFunctionWithoutReturn() throws {
         let expect = expectation(description: "test call function without return")
         var error: Error?
-        bridge!.invoke(["testFunctionWithoutReturn"]) { theError, _ in
+        bridge!.evaluate("testFunctionWithoutReturn", with: []) { theError in
             error = theError
             expect.fulfill()
         }
