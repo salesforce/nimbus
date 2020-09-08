@@ -71,5 +71,5 @@ fun V8.createObject() = V8Object(this)
 fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
     return V8Bridge.Builder()
         .apply(builder)
-        .attach(executorService, this)
+        .attach(this, executorService)
 }

@@ -47,6 +47,6 @@ interface Bridge<JavascriptEngine, EncodedType> {
         /**
          * Attaches the [Bridge] to a [JavascriptEngine].
          */
-        abstract fun attach(executorService: ExecutorService = Executors.newSingleThreadExecutor(), javascriptEngine: JavascriptEngine): B
+        abstract fun attach(javascriptEngine: JavascriptEngine, executorService: ExecutorService = Executors.newSingleThreadExecutor()): B
     }
 }
