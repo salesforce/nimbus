@@ -686,6 +686,9 @@ function verifyStringDecoderRejectsBool() {
   });
 }
 
+// TODO: This function is not tested from native iOS code yet. When a simple JSON notation object
+// {aaa:"bbb"} crosses the bridge it is first stringified. The stringified JSON object can't be
+// decoded by Swift to generic Dictionary.
 function verifyStringDecoderRejectsObject() {
   __nimbus.plugins.testPlugin.takesString({ aaa: "bbb" }).catch((error) => {
     __nimbus.plugins.expectPlugin.pass();
