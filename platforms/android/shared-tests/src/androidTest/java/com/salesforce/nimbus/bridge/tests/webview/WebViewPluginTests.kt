@@ -443,6 +443,125 @@ class WebViewPluginTests {
 
     // endregion
 
+    // region parameter errors
+
+    @Test
+    fun testVerifyStringDecoderRejectsInt() {
+        executeTest("verifyStringDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsBool() {
+        executeTest("verifyStringDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsNull() {
+        executeTest("verifyStringDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsUndefined() {
+        executeTest("verifyStringDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderResolvesStringNull() {
+        executeTest("verifyStringDecoderResolvesStringNull()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsString() {
+        executeTest("verifyNumberDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsObject() {
+        executeTest("verifyNumberDecoderRejectsObject()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsNull() {
+        executeTest("verifyNumberDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsUndefined() {
+        executeTest("verifyNumberDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsString() {
+        executeTest("verifyBoolDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsObject() {
+        executeTest("verifyBoolDecoderRejectsObject()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsNull() {
+        executeTest("verifyBoolDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsUndefined() {
+        executeTest("verifyBoolDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsString() {
+        executeTest("verifyDictionaryDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsInt() {
+        executeTest("verifyDictionaryDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsBool() {
+        executeTest("verifyDictionaryDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsNull() {
+        executeTest("verifyDictionaryDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsUndefined() {
+        executeTest("verifyDictionaryDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsString() {
+        executeTest("verifyTestStructDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsInt() {
+        executeTest("verifyTestStructDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsBool() {
+        executeTest("verifyTestStructDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsNull() {
+        executeTest("verifyTestStructDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsUndefined() {
+        executeTest("verifyTestStructDecoderRejectsUndefined()")
+    }
+
+    // endregion
+
     private fun executeTest(script: String) {
         expectPlugin.testReady.withTimeoutInSeconds(30) {
             runOnUiThread { webView.evaluateJavascript(script) {} }

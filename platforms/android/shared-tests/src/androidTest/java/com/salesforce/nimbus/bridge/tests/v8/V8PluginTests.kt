@@ -381,9 +381,128 @@ class V8PluginTests {
 
     // endregion
 
-    private fun executeTest(function: String) {
+    // region parameter errors
+
+    @Test
+    fun testVerifyStringDecoderRejectsInt() {
+        executeTest("verifyStringDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsBool() {
+        executeTest("verifyStringDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsNull() {
+        executeTest("verifyStringDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderRejectsUndefined() {
+        executeTest("verifyStringDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyStringDecoderResolvesStringNull() {
+        executeTest("verifyStringDecoderResolvesStringNull()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsString() {
+        executeTest("verifyNumberDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsObject() {
+        executeTest("verifyNumberDecoderRejectsObject()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsNull() {
+        executeTest("verifyNumberDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyNumberDecoderRejectsUndefined() {
+        executeTest("verifyNumberDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsString() {
+        executeTest("verifyBoolDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsObject() {
+        executeTest("verifyBoolDecoderRejectsObject()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsNull() {
+        executeTest("verifyBoolDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyBoolDecoderRejectsUndefined() {
+        executeTest("verifyBoolDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsString() {
+        executeTest("verifyDictionaryDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsInt() {
+        executeTest("verifyDictionaryDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsBool() {
+        executeTest("verifyDictionaryDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsNull() {
+        executeTest("verifyDictionaryDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyDictionaryDecoderRejectsUndefined() {
+        executeTest("verifyDictionaryDecoderRejectsUndefined()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsString() {
+        executeTest("verifyTestStructDecoderRejectsString()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsInt() {
+        executeTest("verifyTestStructDecoderRejectsInt()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsBool() {
+        executeTest("verifyTestStructDecoderRejectsBool()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsNull() {
+        executeTest("verifyTestStructDecoderRejectsNull()")
+    }
+
+    @Test
+    fun testVerifyTestStructDecoderRejectsUndefined() {
+        executeTest("verifyTestStructDecoderRejectsUndefined()")
+    }
+
+    // endregion
+
+    private fun executeTest(funtion: String) {
         assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
-        bridge.executorScope(executorService) { bridge.executeScriptOnExecutor(function) }
+        bridge.executorScope(executorService) { bridge.executeScriptOnExecutor(funtion) }
         assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
         assertThat(expectPlugin.passed).isTrue()
     }
