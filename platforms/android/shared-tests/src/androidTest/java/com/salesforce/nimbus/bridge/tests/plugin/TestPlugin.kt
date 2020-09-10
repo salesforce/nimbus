@@ -29,9 +29,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonInput
 import kotlinx.serialization.json.JsonOutput
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
 
 @Serializable
 data class TestStruct(
@@ -398,4 +396,21 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
         callback(param0 - 1)
         return param0 - 2
     }
+
+    @BoundMethod
+    fun takesString(stringParam: String): String {
+        return stringParam
+    }
+
+    @BoundMethod
+    fun takesNumber(numberParam: Double) {}
+
+    @BoundMethod
+    fun takesBool(boolParam: Boolean) {}
+
+    @BoundMethod
+    fun takesDictionary(dictionaryParam: Map<String, String>) {}
+
+    @BoundMethod
+    fun takesTestStruct(testStructParam: TestStruct) {}
 }
