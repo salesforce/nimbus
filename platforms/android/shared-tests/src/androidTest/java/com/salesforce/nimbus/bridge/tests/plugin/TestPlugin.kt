@@ -29,7 +29,9 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonInput
 import kotlinx.serialization.json.JsonOutput
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 @Serializable
 data class TestStruct(
