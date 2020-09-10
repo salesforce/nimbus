@@ -445,81 +445,81 @@ class WebViewPluginTests {
 
     // region parameter errors
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyStringDecoderRejectsInt() {
-//        executeTest("verifyStringDecoderRejectsInt()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyStringDecoderRejectsInt() {
+        executeTest("verifyStringDecoderRejectsInt()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyStringDecoderRejectsBool() {
-//        executeTest("verifyStringDecoderRejectsBool()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyStringDecoderRejectsBool() {
+        executeTest("verifyStringDecoderRejectsBool()")
+    }
 
     @Test
     fun testVerifyStringDecoderRejectsNull() {
         executeTest("verifyStringDecoderRejectsNull()")
     }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyStringDecoderRejectsUndefined() {
-//        executeTest("verifyStringDecoderRejectsUndefined()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyStringDecoderRejectsUndefined() {
+        executeTest("verifyStringDecoderRejectsUndefined()")
+    }
 
     @Test
     fun testVerifyStringDecoderResolvesStringNull() {
         executeTest("verifyStringDecoderResolvesStringNull()")
     }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyNumberDecoderRejectsString() {
-//        executeTest("verifyNumberDecoderRejectsString()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyNumberDecoderRejectsString() {
+        executeTest("verifyNumberDecoderRejectsString()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyNumberDecoderRejectsObject() {
-//        executeTest("verifyNumberDecoderRejectsObject()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyNumberDecoderRejectsObject() {
+        executeTest("verifyNumberDecoderRejectsObject()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyNumberDecoderRejectsNull() {
-//        executeTest("verifyNumberDecoderRejectsNull()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyNumberDecoderRejectsNull() {
+        executeTest("verifyNumberDecoderRejectsNull()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyNumberDecoderRejectsUndefined() {
-//        executeTest("verifyNumberDecoderRejectsUndefined()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyNumberDecoderRejectsUndefined() {
+        executeTest("verifyNumberDecoderRejectsUndefined()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyBoolDecoderRejectsString() {
-//        executeTest("verifyBoolDecoderRejectsString()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyBoolDecoderRejectsString() {
+        executeTest("verifyBoolDecoderRejectsString()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyBoolDecoderRejectsObject() {
-//        executeTest("verifyBoolDecoderRejectsObject()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyBoolDecoderRejectsObject() {
+        executeTest("verifyBoolDecoderRejectsObject()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyBoolDecoderRejectsNull() {
-//        executeTest("verifyBoolDecoderRejectsNull()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyBoolDecoderRejectsNull() {
+        executeTest("verifyBoolDecoderRejectsNull()")
+    }
 
-    // TODO: Currently not possible on Android
-//    @Test
-//    fun testVerifyBoolDecoderRejectsUndefined() {
-//        executeTest("verifyBoolDecoderRejectsUndefined()")
-//    }
+    @Ignore("Currently not possible on Android - W-8067673")
+    @Test
+    fun testVerifyBoolDecoderRejectsUndefined() {
+        executeTest("verifyBoolDecoderRejectsUndefined()")
+    }
 
     @Test
     fun testVerifyDictionaryDecoderRejectsString() {

@@ -500,9 +500,9 @@ class V8PluginTests {
 
     // endregion
 
-    private fun executeTest(funtion: String) {
+    private fun executeTest(function: String) {
         assertThat(expectPlugin.testReady.await(30, TimeUnit.SECONDS)).isTrue()
-        bridge.executorScope(executorService) { bridge.executeScriptOnExecutor(funtion) }
+        bridge.executorScope(executorService) { bridge.executeScriptOnExecutor(function) }
         assertThat(expectPlugin.testFinished.await(30, TimeUnit.SECONDS)).isTrue()
         assertThat(expectPlugin.passed).isTrue()
     }
