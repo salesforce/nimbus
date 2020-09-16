@@ -21,6 +21,7 @@ class SharedTestsJSCore: XCTestCase {
         expectPlugin.finishedExpectation = expectation(description: "expectPlugin")
         testPlugin = TestPlugin()
         context = JSContext()!
+        JSContextGlobals.setupGlobals(context: context)
         bridge = BridgeBuilder.createBridge(for: context, plugins: [expectPlugin, testPlugin])
 
         if let jsURL = Bundle(for: SharedTestsJSCore.self).url(forResource: "shared-tests", withExtension: "js", subdirectory: "test-www"),
@@ -41,7 +42,7 @@ class SharedTestsJSCore: XCTestCase {
     func executeTest(_ testName: String) {
         XCTAssertTrue(expectPlugin.isReady)
         context.evaluateScript(testName)
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
         XCTAssertTrue(expectPlugin.isFinished)
         XCTAssertTrue(expectPlugin.passed)
     }
@@ -334,5 +335,21 @@ class SharedTestsJSCore: XCTestCase {
         XCTAssert(expectPlugin.isReady)
         testPlugin.publishStructEvent()
         waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testVerifyTestSetTimeout() {
+        executeTest("verifyTestSetTimeout()")
+    }
+
+    func testVerifyTestClearTimeout() {
+        executeTest("verifyTestClearTimeout()")
+    }
+
+    func testVerifyTestClearTimeoutFailsWithRandomId() {
+        executeTest("verifyTestClearTimeoutFailsWithRandomId()")
+    }
+
+    func testVerifySetIntervalAndClearInterval() {
+        executeTest("verifySetIntervalAndClearInterval()")
     }
 }

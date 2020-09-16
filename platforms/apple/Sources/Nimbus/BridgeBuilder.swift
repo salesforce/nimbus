@@ -19,6 +19,7 @@ public class BridgeBuilder {
 
     public static func createBridge(for context: JSContext, plugins: [Plugin]) -> JSContextBridge {
         let bridge = JSContextBridge(context: context, plugins: plugins)
+        JSContextGlobals.setupGlobals(context: context)
         attach(bridge: bridge, context: context, plugins: plugins)
         return bridge
     }

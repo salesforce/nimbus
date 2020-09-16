@@ -853,3 +853,53 @@ function verifyTestStructDecoderRejectsUndefined() {
 }
 
 // endregion
+
+// region headless JS global
+
+function verifyTestSetTimeout() {
+  setTimeout(()=>{
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  }, 1000);
+}
+
+function verifyTestClearTimeout() {
+  let timeoutFuncCalled = false;
+  const timeoutId = setTimeout(()=>{
+    timeoutFuncCalled = true
+  }, 2000);
+  clearTimeout(timeoutId);
+  testPlugin.wait(3000).then(()=>{
+    if (!timeoutFuncCalled) {
+      __nimbus.plugins.expectPlugin.pass();
+      __nimbus.plugins.expectPlugin.finished();
+    }
+  });
+}
+
+function verifyTestClearTimeoutFailsWithRandomId() {
+  let timeoutFuncCalled = false;
+  setTimeout(()=>{
+    __nimbus.plugins.expectPlugin.pass();
+    __nimbus.plugins.expectPlugin.finished();
+  }, 2000);
+  clearTimeout("random id");
+}
+
+function verifySetIntervalAndClearInterval() {
+  let called = 0
+  const timeoutId = setInterval(()=>{
+    called++
+  }, 1000);
+  testPlugin.wait(3200).then(()=>{
+    clearInterval(timeoutId);
+  });
+  testPlugin.wait(5000).then(()=>{
+    if (called == 3) {
+      __nimbus.plugins.expectPlugin.pass();
+      __nimbus.plugins.expectPlugin.finished();
+    }
+  });
+}
+
+// endregion

@@ -127,13 +127,12 @@ public class JSContextMochaTests: XCTestCase {
 
     class JSContextMochaTestBridge {
         let context: JSContext
-        let globals: JavaScriptCoreGlobalsProvider
         let expectation = XCTestExpectation(description: "testsCompleted")
         var failures: Int = -1
 
         init(context: JSContext) {
             self.context = context
-            globals = JavaScriptCoreGlobalsProvider(context: context)
+            JSContextGlobals.setupGlobals(context: context)
             let nimbusDeclaration = """
             __nimbus = {"plugins": {}};
             true;
