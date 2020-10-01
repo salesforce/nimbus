@@ -13,7 +13,6 @@ plugins {
     id("org.jetbrains.dokka")
     `maven-publish`
     id("com.jfrog.bintray")
-    id("com.jfrog.artifactory")
 }
 
 android {

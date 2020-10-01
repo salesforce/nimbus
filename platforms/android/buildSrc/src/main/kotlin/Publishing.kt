@@ -11,6 +11,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
+import java.net.URI
 
 object PublishingSettingsKey {
     const val bintrayRepo = "BINTRAY_REPO"
@@ -61,4 +62,15 @@ fun PublishingExtension.setupAllPublications(project: Project) {
 
     val publications = publications.withType<MavenPublication>()
     publications.all { setupPom(project) }
+    repositories {
+        maven {
+            name = "artifactory"
+            val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
+            url = URI("http://oss.jfrog.org/$name/$targetRepoKey")
+            credentials {
+                username = System.getenv("BINTRAY_USER")
+                password = System.getenv("BINTRAY_API_KEY")
+            }
+        }
+    }
 }

@@ -10,7 +10,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.gradle.api.GradleException
 
 plugins {
-    id("com.jfrog.artifactory")
     `maven-publish`
     id("org.jetbrains.dokka") version Versions.dokkaGradlePlugin
     id("com.vanniktech.android.junit.jacoco") version Versions.jacocoAndroid
@@ -69,6 +68,8 @@ tasks {
 
 tasks.register("publishSnapshot") {
     val publishTask = tasks.findByPath("artifactoryPublish")
+    publishTask?.onlyIf { false } ; // NOT documented
+
 
     if (publishTask != null) {
         publishTask.dependsOn(getTasksByName("build", true))
@@ -78,34 +79,28 @@ tasks.register("publishSnapshot") {
     }
 }
 
-artifactory {
-    setContextUrl("http://oss.jfrog.org")
-    publish(
-        delegateClosureOf<org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig> {
-            repository(
-                delegateClosureOf<groovy.lang.GroovyObject> {
-                    val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
-                    setProperty("repoKey", targetRepoKey)
-                    setProperty("username", System.getenv("BINTRAY_USER"))
-                    setProperty("password", System.getenv("BINTRAY_API_KEY"))
-                    setProperty("maven", true)
-                }
-            )
-            defaults(
-                delegateClosureOf<groovy.lang.GroovyObject> {
-                    invokeMethod("publications", "mavenPublication")
-                }
-            )
-        }
-    )
-}
-
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     ktlint {
         version.set(Versions.ktlint)
     }
+
+//    afterEvaluate {
+//        publishing {
+//            repositories {
+//                maven {
+//                    name = "artifactory"
+//                    val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
+//                    url = uri("http://oss.jfrog.org/$name/$targetRepoKey")
+//                    credentials {
+//                        username = System.getenv("BINTRAY_USER")
+//                        password = System.getenv("BINTRAY_API_KEY")
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 apply(from = rootProject.file("gradle/test-output.gradle.kts"))
