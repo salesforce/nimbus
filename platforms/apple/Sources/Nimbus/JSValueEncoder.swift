@@ -13,7 +13,9 @@ import JavaScriptCore
 /**
  An `Encoder` class for encoding `Encodable` types to `JSValue` instances.
  */
-class JSValueEncoder {
+public class JSValueEncoder {
+    public init() {}
+
     /**
      Attempt to encode the given object to a `JSValue`.
      */
