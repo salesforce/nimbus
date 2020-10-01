@@ -1,6 +1,6 @@
 {
     "name": "demo-www",
-    "version": "2.0.0-beta10",
+    "version": "2.0.0-beta11",
     "description": "A demo hybrid app for nimbus",
     "license": "BSD-3-Clause",
     "private": true,
