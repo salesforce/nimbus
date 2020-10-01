@@ -72,5 +72,15 @@ fun PublishingExtension.setupAllPublications(project: Project) {
                 password = System.getenv("BINTRAY_API_KEY")
             }
         }
+        maven {
+            name = "MyNexus"
+            val releasesRepoUrl = URI("http://localhost:8081/nexus/content/repositories/releases")
+            val snapshotsRepoUrl = URI("http://localhost:8081/nexus/content/repositories/snapshots")
+            url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            credentials {
+                username = "deployment"
+                password = "deployment123"
+            }
+        }
     }
 }

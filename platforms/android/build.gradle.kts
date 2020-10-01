@@ -67,9 +67,9 @@ tasks {
 }
 
 tasks.register("publishSnapshot") {
-    val publishTask = tasks.findByPath("artifactoryPublish")
+//    val publishTask = tasks.findByPath("publishAllPublicationsToArtifactoryRepository")
+    val publishTask = tasks.findByPath("publishAllPublicationsToMyNexusRepository")
     publishTask?.onlyIf { false } ; // NOT documented
-
 
     if (publishTask != null) {
         publishTask.dependsOn(getTasksByName("build", true))
