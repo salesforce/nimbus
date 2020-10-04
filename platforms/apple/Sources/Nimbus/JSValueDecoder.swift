@@ -11,7 +11,9 @@ import JavaScriptCore
 /**
  A `Decoder` class for converting from `JSValue` to a `Decodable` type.
  */
-class JSValueDecoder {
+public class JSValueDecoder {
+    public init() {}
+
     /**
      Attempt to decode the value to an instace of the given type.
      */
