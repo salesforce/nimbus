@@ -83,4 +83,11 @@ fun PublishingExtension.setupAllPublications(project: Project) {
             }
         }
     }
+    val publishSnapshot = project.tasks.findByName("publishSnapshot")
+    val artifactoryTask = project.tasks.findByName("publishAllPublicationsToArtifactoryRepository")
+    if (artifactoryTask != null && publishSnapshot != null) {
+        publishSnapshot.finalizedBy(artifactoryTask)
+    } else{
+        println("Couldn't find publishing task")
+    }
 }

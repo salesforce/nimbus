@@ -66,17 +66,8 @@ tasks {
     }
 }
 
-tasks.register("publishSnapshot") {
-//    val publishTask = tasks.findByPath("publishAllPublicationsToArtifactoryRepository")
-    val publishTask = tasks.findByPath("publishAllPublicationsToMyNexusRepository")
-    publishTask?.onlyIf { false } ; // NOT documented
-
-    if (publishTask != null) {
-        publishTask.dependsOn(getTasksByName("build", true))
-        this.finalizedBy(publishTask)
-    } else {
-        throw GradleException("Unable to find the publish task")
-    }
+val publishSnapshot = tasks.register("publishSnapshot") {
+    dependsOn(getTasksByName("build", true))
 }
 
 subprojects {
@@ -85,22 +76,22 @@ subprojects {
     ktlint {
         version.set(Versions.ktlint)
     }
+    if (path.contains("modules")) {
+        tasks.register("publishSnapshot")
 
-//    afterEvaluate {
-//        publishing {
-//            repositories {
-//                maven {
-//                    name = "artifactory"
-//                    val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
-//                    url = uri("http://oss.jfrog.org/$name/$targetRepoKey")
-//                    credentials {
-//                        username = System.getenv("BINTRAY_USER")
-//                        password = System.getenv("BINTRAY_API_KEY")
-//                    }
-//                }
-//            }
-//        }
-//    }
+        tasks.withType<PublishToMavenRepository>().configureEach {
+            doLast {
+                logger.lifecycle("Successfully uploaded ${publication.groupId}:${publication.artifactId}:${publication.version} to ${repository.name}")
+            }
+        }
+
+        tasks.withType<PublishToMavenLocal>().configureEach {
+            doLast {
+                logger.lifecycle("Successfully uploaded ${publication.groupId}:${publication.artifactId}:${publication.version} to MavenLocal.")
+            }
+        }
+
+    }
 }
 
 apply(from = rootProject.file("gradle/test-output.gradle.kts"))
