@@ -90,7 +90,6 @@ subprojects {
                 logger.lifecycle("Successfully uploaded ${publication.groupId}:${publication.artifactId}:${publication.version} to MavenLocal.")
             }
         }
-
     }
 }
 
