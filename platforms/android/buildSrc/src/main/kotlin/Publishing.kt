@@ -64,7 +64,7 @@ fun PublishingExtension.setupAllPublications(project: Project) {
     publications.all { setupPom(project) }
     repositories {
         maven {
-            name = "artifactory"
+            name = "jfrogArtifactory"
             val targetRepoKey = "oss-${buildTagFor(project.version as String)}-local"
             url = URI("http://oss.jfrog.org/$name/$targetRepoKey")
             credentials {
@@ -74,7 +74,7 @@ fun PublishingExtension.setupAllPublications(project: Project) {
         }
     }
     val publishSnapshot = project.tasks.findByName("publishSnapshot")
-    val artifactoryTask = project.tasks.findByName("publishAllPublicationsToArtifactoryRepository")
+    val artifactoryTask = project.tasks.findByName("publishAllPublicationsToJfrogArtifactoryRepository")
     if (artifactoryTask != null && publishSnapshot != null) {
         publishSnapshot.finalizedBy(artifactoryTask)
     } else{
