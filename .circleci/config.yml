@@ -541,7 +541,7 @@ workflows:
               ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
-      - push-to-cocoapods-trunk:
+      - push-to-cocoapods-trunk-pre-release:
           requires:
             - create-tagged-pre-release
           filters:
