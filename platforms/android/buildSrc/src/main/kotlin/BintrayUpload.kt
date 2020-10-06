@@ -36,7 +36,7 @@ fun BintrayExtension.setupPublicationsUpload(
             val gitTag = ProcessGroovyMethods.getText(
                 Runtime.getRuntime().exec("git describe --dirty")
             ).trim()
-            val expectedTag = "v${project.version}"
+            val expectedTag = "${project.version}"
             if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
         }
     }
