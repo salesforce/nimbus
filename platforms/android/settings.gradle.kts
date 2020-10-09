@@ -12,4 +12,4 @@ arrayOf(
     ":compiler-base", ":bridge-v8", ":compiler-v8", ":core-plugins"
 ).forEach { include(":modules$it") }
 
-include(":demo-app", ":shared-tests")
+// include(":demo-app", ":shared-tests")
