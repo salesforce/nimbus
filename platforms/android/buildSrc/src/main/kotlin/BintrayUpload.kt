@@ -56,7 +56,7 @@ fun BintrayExtension.setupPublicationsUpload(
         publicDownloadNumbers = true
         githubRepo = project.getSettingValue(PublishingSettingsKey.githubRepo)
         publish = true
-        dryRun = false
+        dryRun = true
         version(closureOf<BintrayExtension.VersionConfig> {
             name = project.version.toString()
         })
