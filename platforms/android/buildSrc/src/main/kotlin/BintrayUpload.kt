@@ -31,15 +31,15 @@ fun BintrayExtension.setupPublicationsUpload(
         project.checkNoVersionRanges()
     }
 
-//    bintrayUpload.configure {
-//        doFirst {
-//            val gitTag = ProcessGroovyMethods.getText(
-//                Runtime.getRuntime().exec("git describe --dirty")
-//            ).trim()
-//            val expectedTag = "${project.version}"
-//            if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
-//        }
-//    }
+   bintrayUpload.configure {
+       doFirst {
+           val gitTag = ProcessGroovyMethods.getText(
+               Runtime.getRuntime().exec("git describe --dirty")
+           ).trim()
+           val expectedTag = "${project.version}"
+           if (gitTag != expectedTag) error("Expected git tag '$expectedTag' but got '$gitTag'")
+       }
+   }
 
     user = (project.getSettingValue("bintrayUser") ?: System.getenv("BINTRAY_USER"))
     key = (project.getSettingValue("bintrayApiKey") ?: System.getenv("BINTRAY_API_KEY"))
@@ -55,7 +55,7 @@ fun BintrayExtension.setupPublicationsUpload(
         issueTrackerUrl = project.getSettingValue(PublishingSettingsKey.issuesUrl)
         publicDownloadNumbers = true
         githubRepo = project.getSettingValue(PublishingSettingsKey.githubRepo)
-        publish = false
+        publish = true
         dryRun = false
         version(closureOf<BintrayExtension.VersionConfig> {
             name = project.version.toString()
