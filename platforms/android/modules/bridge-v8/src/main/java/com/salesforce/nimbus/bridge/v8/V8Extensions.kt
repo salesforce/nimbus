@@ -84,7 +84,9 @@ fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> 
 }
 
 /**
- * Creates a scope around the function [body] releasing any objects after the [body] is invoked.
+ * Creates a memory scope around the function [body].
+ * After the [body] is invoked, any V8Value objects created in the body will be released
+ * except the V8Value object is returned to caller for consumption.
  */
 inline fun <T> V8.memoryScope(body: () -> T): T {
     val scope = MemoryManager(this)
