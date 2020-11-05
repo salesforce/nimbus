@@ -34,6 +34,7 @@ dependencies {
     androidTestImplementation(Libs.espressoCore)
     androidTestImplementation(Libs.junit)
     androidTestImplementation(Libs.truth)
+    androidTestImplementation(Libs.mockkAndroid)
 
     androidTestImplementation(Libs.kotestProperty)
     androidTestImplementation(Libs.kotestAssertions)

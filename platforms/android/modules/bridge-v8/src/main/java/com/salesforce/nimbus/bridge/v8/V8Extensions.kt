@@ -11,6 +11,8 @@ import com.eclipsesource.v8.JavaCallback
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.eclipsesource.v8.V8Object
+import com.eclipsesource.v8.V8Value
+import com.eclipsesource.v8.utils.MemoryManager
 import com.salesforce.k2v8.toV8Array
 import java.util.concurrent.ExecutorService
 
@@ -35,28 +37,35 @@ fun V8.promiseGlobal(): V8Object = getObject("Promise")
  * Resolves a Promise with the [result].
  */
 fun V8.resolvePromise(result: Any): V8Object {
-    return promiseGlobal().executeObjectFunction(
-        "resolve",
-        if (result is List<*>) {
-            result.toV8Array(this)
-        } else {
-            V8Array(this).push(result)
-        }
-    )
+    return memoryScope {
+        promiseGlobal().executeObjectFunction(
+            "resolve",
+            convertAnyToV8Array(this, result)
+        )
+    }
 }
 
 /**
  * Rejects a Promise with the [error].
  */
 fun V8.rejectPromise(error: Any): V8Object {
-    return promiseGlobal().executeObjectFunction(
-        "reject",
-        if (error is List<*>) {
-            error.toV8Array(this)
-        } else {
-            V8Array(this).push(error)
+    return memoryScope {
+        promiseGlobal().executeObjectFunction(
+            "reject",
+            convertAnyToV8Array(this, error))
+    }
+}
+
+private fun convertAnyToV8Array(v8: V8, data: Any): V8Array {
+    return if (data is List<*>) {
+        data.toV8Array(v8)
+    } else {
+        V8Array(v8).apply {
+            if (data != Unit) {
+                push(data)
+            }
         }
-    )
+    }
 }
 
 /**
@@ -72,4 +81,16 @@ fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> 
     return V8Bridge.Builder()
         .apply(builder)
         .attach(this, executorService)
+}
+
+/**
+ * Creates a scope around the function [body] releasing any objects after the [body] is invoked.
+ */
+inline fun <T> V8.memoryScope(body: () -> T): T {
+    val scope = MemoryManager(this)
+    try {
+       return body().apply { if (this is V8Value) { scope.persist(this) }}
+    } finally {
+        scope.release()
+    }
 }

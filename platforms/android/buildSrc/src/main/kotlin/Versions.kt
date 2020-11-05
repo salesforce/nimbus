@@ -18,7 +18,7 @@ object Versions {
 
     const val kotest: String = "4.1.1"
 
-    const val mockk: String = "1.10.0"
+    const val mockk: String = "1.10.2"
 
     const val androidToolsBuildGradle: String = "4.0.1"
 
