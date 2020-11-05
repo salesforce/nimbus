@@ -113,4 +113,3 @@ class V8ExtensionsTest {
         Assert.assertEquals(0, mV8.objectReferenceCount)
     }
 }
-

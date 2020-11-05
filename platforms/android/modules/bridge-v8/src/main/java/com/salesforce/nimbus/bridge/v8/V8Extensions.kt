@@ -89,7 +89,11 @@ fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> 
 inline fun <T> V8.memoryScope(body: () -> T): T {
     val scope = MemoryManager(this)
     try {
-       return body().apply { if (this is V8Value) { scope.persist(this) }}
+        return body().apply {
+            if (this is V8Value) {
+                scope.persist(this)
+            }
+        }
     } finally {
         scope.release()
     }
