@@ -37,7 +37,7 @@ fun V8.promiseGlobal(): V8Object = getObject("Promise")
  * Resolves a Promise with the [result].
  */
 fun V8.resolvePromise(result: Any): V8Object {
-    promiseGlobal().executeObjectFunction(
+    return promiseGlobal().executeObjectFunction(
         "resolve",
         convertAnyToV8Array(this, result)
     )
@@ -47,7 +47,7 @@ fun V8.resolvePromise(result: Any): V8Object {
  * Rejects a Promise with the [error].
  */
 fun V8.rejectPromise(error: Any): V8Object {
-    promiseGlobal().executeObjectFunction(
+    return promiseGlobal().executeObjectFunction(
         "reject",
         convertAnyToV8Array(this, error))
 }
