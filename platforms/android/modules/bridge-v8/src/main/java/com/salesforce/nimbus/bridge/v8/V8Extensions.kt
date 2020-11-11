@@ -37,23 +37,19 @@ fun V8.promiseGlobal(): V8Object = getObject("Promise")
  * Resolves a Promise with the [result].
  */
 fun V8.resolvePromise(result: Any): V8Object {
-    return memoryScope {
-        promiseGlobal().executeObjectFunction(
-            "resolve",
-            convertAnyToV8Array(this, result)
-        )
-    }
+    promiseGlobal().executeObjectFunction(
+        "resolve",
+        convertAnyToV8Array(this, result)
+    )
 }
 
 /**
  * Rejects a Promise with the [error].
  */
 fun V8.rejectPromise(error: Any): V8Object {
-    return memoryScope {
-        promiseGlobal().executeObjectFunction(
-            "reject",
-            convertAnyToV8Array(this, error))
-    }
+    promiseGlobal().executeObjectFunction(
+        "reject",
+        convertAnyToV8Array(this, error))
 }
 
 private fun convertAnyToV8Array(v8: V8, data: Any): V8Array {
