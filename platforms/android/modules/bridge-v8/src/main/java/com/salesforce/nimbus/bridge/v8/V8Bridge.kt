@@ -31,7 +31,6 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
     internal val binders = mutableListOf<Binder<V8, V8Object>>()
     private var nimbusBridge: V8Object? = null
     private var nimbusPlugins: V8Object? = null
-    private var internalNimbusBridge: V8Object? = null
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
     override fun detach() {
@@ -39,7 +38,6 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
             cleanup(binders)
             nimbusBridge?.close()
             nimbusPlugins?.close()
-            internalNimbusBridge?.close()
             bridgeV8?.close()
             bridgeV8 = null
         }.get()
@@ -127,7 +125,7 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
         javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
 
         // create an internal nimbus to resolve promises
-        internalNimbusBridge = javascriptEngine.createObject()
+        javascriptEngine.createObject()
             .registerVoidCallback("resolvePromise") { parameters ->
                 val result = parameters.get(1)
                 promises.remove(parameters.getString(0))?.invoke(null, result)
@@ -136,9 +134,10 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
             .registerVoidCallback("rejectPromise") { parameters ->
                 promises.remove(parameters.getString(0))?.invoke(parameters.getString(1), null)
             }
-
-        // add the internal bridge to the v8 engine
-        javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, internalNimbusBridge)
+            .use {
+                // add the internal bridge to the v8 engine
+                javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, it)
+            }
 
         // initialize plugins
         initialize(binders)

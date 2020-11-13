@@ -36,20 +36,21 @@ fun V8.promiseGlobal(): V8Object = getObject("Promise")
 /**
  * Resolves a Promise with the [result].
  */
-fun V8.resolvePromise(result: Any): V8Object {
-    return promiseGlobal().executeObjectFunction(
-        "resolve",
-        convertAnyToV8Array(this, result)
-    )
-}
+fun V8.resolvePromise(result: Any) = handlePromise(this, "resolve", result)
 
 /**
  * Rejects a Promise with the [error].
  */
-fun V8.rejectPromise(error: Any): V8Object {
-    return promiseGlobal().executeObjectFunction(
-        "reject",
-        convertAnyToV8Array(this, error))
+fun V8.rejectPromise(error: Any) = handlePromise(this, "reject", error)
+
+private fun handlePromise(v8: V8, method: String, data: Any): V8Object {
+    val promise = v8.promiseGlobal()
+    var param = convertAnyToV8Array(v8, data)
+    return promise.use {
+        param.use {
+            promise.executeObjectFunction(method, param)
+        }
+    }
 }
 
 private fun convertAnyToV8Array(v8: V8, data: Any): V8Array {
@@ -73,7 +74,10 @@ fun V8.createObject() = V8Object(this)
  * Creates a [V8Bridge.Builder] and passes it to the [builder] function, allowing any binders to be added
  * and then attaches to the [V8Bridge] instance.
  */
-fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
+fun V8.bridge(
+    executorService: ExecutorService,
+    builder: V8Bridge.Builder.() -> Unit = {}
+): V8Bridge {
     return V8Bridge.Builder()
         .apply(builder)
         .attach(this, executorService)
@@ -96,3 +100,4 @@ inline fun <T> V8.memoryScope(body: () -> T): T {
         scope.release()
     }
 }
+

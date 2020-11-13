@@ -51,7 +51,10 @@ class V8BinderGenerator : BinderGenerator() {
     private val v8FunctionClassName = ClassName(v8Package, "V8Function")
     private val k2V8ClassName = ClassName(k2v8Package, "K2V8")
 
-    override fun shouldGenerateBinder(environment: ProcessingEnvironment, pluginElement: Element): Boolean {
+    override fun shouldGenerateBinder(
+        environment: ProcessingEnvironment,
+        pluginElement: Element
+    ): Boolean {
         return pluginElement.annotation<PluginOptions>(processingEnv)!!.supportsV8
     }
 
@@ -63,14 +66,6 @@ class V8BinderGenerator : BinderGenerator() {
                 PropertySpec.builder(
                     "k2v8",
                     k2V8ClassName.copy(nullable = true),
-                    KModifier.PRIVATE
-                )
-                    .mutable()
-                    .initializer("null")
-                    .build(),
-                PropertySpec.builder(
-                    "pluginBridge",
-                    v8ObjectClassName.copy(nullable = true),
                     KModifier.PRIVATE
                 )
                     .mutable()
@@ -109,7 +104,7 @@ class V8BinderGenerator : BinderGenerator() {
 
             // create our plugin bridge and add our callback methods
             .beginControlFlow(
-                "pluginBridge = %T(v8).apply {",
+                "%T(v8).use {",
                 v8ObjectClassName
             )
 
@@ -117,17 +112,16 @@ class V8BinderGenerator : BinderGenerator() {
             .apply {
                 boundMethodElements.forEach { boundMethod ->
                     addStatement(
-                        "%T(\"%N\", ::%N)",
+                        "it.%T(\"%N\", ::%N)",
                         ClassName(nimbusV8Package, "registerJavaCallback"),
                         boundMethod.getName(),
                         boundMethod.getName()
                     )
                 }
+                // add the plugin to the nimbus plugins
+                this.addStatement("plugins.add(\"\$pluginName\", it)")
             }
             .endControlFlow()
-
-            // add the plugin to the nimbus plugins
-            .addStatement("plugins.add(\"\$pluginName\", pluginBridge)")
 
             // need to close the nimbus object
             .addStatement("nimbus.close()")
@@ -141,10 +135,13 @@ class V8BinderGenerator : BinderGenerator() {
     }
 
     override fun processUnbindFunction(builder: FunSpec.Builder) {
-        builder.addStatement("pluginBridge?.close()")
     }
 
-    override fun createBinderExtensionFunction(pluginElement: Element, classModifiers: Set<KModifier>, binderClassName: ClassName): FunSpec {
+    override fun createBinderExtensionFunction(
+        pluginElement: Element,
+        classModifiers: Set<KModifier>,
+        binderClassName: ClassName
+    ): FunSpec {
         return FunSpec.builder("v8Binder")
             .receiver(pluginElement.asTypeName())
             .addModifiers(classModifiers)
@@ -200,7 +197,10 @@ class V8BinderGenerator : BinderGenerator() {
                 TypeKind.DECLARED -> {
                     val declaredType = parameter.asType() as DeclaredType
                     when {
-                        declaredType.isStringType() -> processStringParameter(parameter, parameterIndex)
+                        declaredType.isStringType() -> processStringParameter(
+                            parameter,
+                            parameterIndex
+                        )
                         declaredType.isKotlinSerializableType() -> processSerializableParameter(
                             parameter,
                             parameterIndex,
@@ -218,10 +218,20 @@ class V8BinderGenerator : BinderGenerator() {
                                     )
                                     return@forEachIndexed
                                 }
-                                else -> processFunctionParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                                else -> processFunctionParameter(
+                                    declaredType,
+                                    parameter,
+                                    kotlinParameter,
+                                    parameterIndex
+                                )
                             }
                         }
-                        declaredType.isListType() -> processListParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                        declaredType.isListType() -> processListParameter(
+                            declaredType,
+                            parameter,
+                            kotlinParameter,
+                            parameterIndex
+                        )
                         declaredType.isMapType() -> {
                             val parameterKeyType = declaredType.typeArguments[0]
 
@@ -233,7 +243,12 @@ class V8BinderGenerator : BinderGenerator() {
                                         "value type for Map. Currently only String is supported."
                                 )
                                 return@forEachIndexed
-                            } else processMapParameter(declaredType, parameter, kotlinParameter, parameterIndex)
+                            } else processMapParameter(
+                                declaredType,
+                                parameter,
+                                kotlinParameter,
+                                parameterIndex
+                            )
                         }
                         else -> {
                             error(
@@ -274,18 +289,12 @@ class V8BinderGenerator : BinderGenerator() {
                 functionElement.getName()
             )
 
-            // wrap return result in a promise
-            .add(
-                "v8.%T(",
-                ClassName(nimbusV8Package, "resolvePromise")
-            )
+            // process the result (may need to serialize)
+            .add(processResult(functionElement))
 
-        // process the result (may need to serialize)
-        funBody.add(processResult(functionElement))
 
         // close out the try {} catch and reject the promise if we encounter an exception
         funBody
-            .addStatement(")")
             .nextControlFlow("catch (throwable: Throwable)")
 
         val exceptions = functionElement.getAnnotation(BoundMethod::class.java)
@@ -375,7 +384,7 @@ class V8BinderGenerator : BinderGenerator() {
         declaredType: DeclaredType
     ): CodeBlock {
         return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T.%T(), it) }",
+            "val ${parameter.getName()} = parameters.getObject($parameterIndex).use { k2v8!!.fromV8(%T.%T(), it) }",
             declaredType,
             serializerFunctionName
         )
@@ -421,7 +430,8 @@ class V8BinderGenerator : BinderGenerator() {
 
                 when (functionParameterType.kind) {
                     TypeKind.WILDCARD -> {
-                        val wildcardParameterType = (functionParameterType as WildcardType).superBound
+                        val wildcardParameterType =
+                            (functionParameterType as WildcardType).superBound
                         when {
                             wildcardParameterType.isKotlinSerializableType() -> {
                                 val statement =
@@ -492,13 +502,19 @@ class V8BinderGenerator : BinderGenerator() {
             }
 
         // finish (close) the array
+        argBlock.addStatement(")")
+
         argBlock
-            .addStatement(")")
+            .beginControlFlow("try")
             .addStatement(
-                "callback$parameterIndex.call(v8, params.%T(v8))",
+                "params.%T(v8).use { callback$parameterIndex.call(v8, it) }",
                 ClassName(k2v8Package, "toV8Array")
             )
+            .nextControlFlow("finally")
+            .addStatement("params.forEach { (it as? V8Object)?.close() }")
             .endControlFlow()
+
+        argBlock.endControlFlow()
 
         // get the type args for the lambda function
         val lambdaTypeArgs =
@@ -522,11 +538,13 @@ class V8BinderGenerator : BinderGenerator() {
 
         val lambda = CodeBlock.builder()
             .beginControlFlow(
-                "val ${parameter.getName()}: %T = { ${declaredType.typeArguments.dropLast(
-                    1
-                ).mapIndexed { index, _ -> "p$index" }.joinToString(
-                    separator = ", "
-                )} ->",
+                "val ${parameter.getName()}: %T = { ${
+                    declaredType.typeArguments.dropLast(
+                        1
+                    ).mapIndexed { index, _ -> "p$index" }.joinToString(
+                        separator = ", "
+                    )
+                } ->",
                 lambdaType
             )
             .add("%L", argBlock.build())
@@ -546,7 +564,7 @@ class V8BinderGenerator : BinderGenerator() {
     ): CodeBlock {
         val parameterValueType = declaredType.typeArguments.first()
         return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T()), it) }",
+            "val ${parameter.getName()} = parameters.getObject($parameterIndex).use { k2v8!!.fromV8(%T(%T.%T()), it) }",
             listSerializerClassName,
             parameterValueType.asKotlinTypeName(kotlinParameter.isNullable()),
             serializerFunctionName
@@ -562,7 +580,7 @@ class V8BinderGenerator : BinderGenerator() {
         val parameterKeyType = declaredType.typeArguments[0]
         val parameterValueType = declaredType.typeArguments[1]
         return CodeBlock.of(
-            "val ${parameter.getName()} = parameters.getObject($parameterIndex).let { k2v8!!.fromV8(%T(%T.%T(), %T.%T()), it) }",
+            "val ${parameter.getName()} = parameters.getObject($parameterIndex).use { k2v8!!.fromV8(%T(%T.%T(), %T.%T()), it) }",
             mapSerializerClassName,
             parameterKeyType.asKotlinTypeName(kotlinParameter.isNullable()),
             serializerFunctionName,
@@ -574,19 +592,25 @@ class V8BinderGenerator : BinderGenerator() {
     private fun processResult(
         functionElement: ExecutableElement
     ): CodeBlock {
-        return when (val returnType = functionElement.returnType) {
+        val builder = CodeBlock.Builder()
+        var v8Result = true
+        when (val returnType = functionElement.returnType) {
             is DeclaredType -> {
                 when {
-                    returnType.isStringType() -> CodeBlock.of("result")
-                    returnType.isKotlinSerializableType() -> CodeBlock.of(
-                        "k2v8!!.toV8(%T.%T(), result)",
-                        returnType,
-                        serializerFunctionName
-                    )
+                    returnType.isStringType() -> {
+                        v8Result = false
+                    }
+                    returnType.isKotlinSerializableType() -> {
+                        builder.addStatement(
+                            "val v8Result = k2v8!!.toV8(%T.%T(), result)",
+                            returnType,
+                            serializerFunctionName
+                        )
+                    }
                     returnType.isListType() -> {
                         val parameterType = returnType.typeArguments.first().asKotlinTypeName()
-                        CodeBlock.of(
-                            "k2v8!!.toV8(%T(%T.%T()), result)",
+                        builder.addStatement(
+                            "val v8Result = k2v8!!.toV8(%T(%T.%T()), result)",
                             listSerializerClassName,
                             parameterType,
                             serializerFunctionName
@@ -595,8 +619,8 @@ class V8BinderGenerator : BinderGenerator() {
                     returnType.isMapType() -> {
                         val keyParameterType = returnType.typeArguments[0].asKotlinTypeName()
                         val valueParameterType = returnType.typeArguments[1].asKotlinTypeName()
-                        CodeBlock.of(
-                            "k2v8!!.toV8(%T(%T.%T(), %T.%T()), result)",
+                        builder.addStatement(
+                            "val v8Result = k2v8!!.toV8(%T(%T.%T(), %T.%T()), result)",
                             mapSerializerClassName,
                             keyParameterType,
                             serializerFunctionName,
@@ -615,8 +639,8 @@ class V8BinderGenerator : BinderGenerator() {
             }
             is ArrayType -> {
                 val arrayType = returnType.typeArguments().first()
-                CodeBlock.of(
-                    "k2v8!!.toV8(%T(%T.%T()), result)",
+                builder.addStatement(
+                    "val v8Result = k2v8!!.toV8(%T(%T.%T()), result)",
                     arraySerializerClassName,
                     arrayType,
                     serializerFunctionName
@@ -624,7 +648,18 @@ class V8BinderGenerator : BinderGenerator() {
             }
 
             // if a primitive type just return the result
-            else -> CodeBlock.of("result")
+            else -> {
+                v8Result = false
+            }
         }
+
+        // resolve result into promise
+        builder
+            .addStatement(
+                if (v8Result) "v8Result.use { v8.%T(result) }" else "v8.%T(result)",
+                ClassName(nimbusV8Package, "resolvePromise")
+            )
+
+        return builder.build()
     }
 }
