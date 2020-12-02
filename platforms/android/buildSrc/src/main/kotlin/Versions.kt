@@ -8,9 +8,9 @@
 import kotlin.String
 
 object Versions {
-    const val kotlinxSerialization: String = "0.20.0"
+    const val kotlinxSerialization: String = "1.0.0-RC"
 
-    const val kotlin: String = "1.3.72"
+    const val kotlin: String = "1.4.0"
 
     const val jacocoAndroid: String = "0.16.0"
 

@@ -9,7 +9,7 @@ import kotlin.String
 
 object Libs {
     const val kotlinxSerializationRuntime: String =
-            "org.jetbrains.kotlinx:kotlinx-serialization-runtime:" +
+            "org.jetbrains.kotlinx:kotlinx-serialization-core:" +
             Versions.kotlinxSerialization
 
     const val kotlinGradlePlugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
