@@ -38,7 +38,7 @@ dependencies {
 
     androidTestImplementation(Libs.kotestProperty)
     androidTestImplementation(Libs.kotestAssertions)
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8-1.4.0-rc")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
 
     kaptAndroidTest(nimbusModule("compiler-v8"))
 
