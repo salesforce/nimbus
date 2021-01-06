@@ -8,7 +8,6 @@
 package com.salesforce.nimbus
 
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.HashMap
@@ -33,7 +32,7 @@ class PrimitiveJSONEncodable(val value: Any) : JSONEncodable {
  */
 class KotlinJSONEncodable<T>(private val value: T, private val serializer: KSerializer<T>) : JSONEncodable {
     override fun encode(): String {
-        return Json(NIMBUS_JSON_CONFIGURATION).stringify(serializer, value)
+        return NIMBUS_JSON_TYPE.encodeToString(serializer, value)
     }
 }
 

@@ -12,9 +12,8 @@ import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Object
 import com.salesforce.k2v8.Configuration
 import com.salesforce.k2v8.K2V8
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import java.util.concurrent.ExecutorService
 
 /**
@@ -43,6 +42,7 @@ interface Runtime<JavascriptEngine, EncodedType> {
 /**
  * Calls [Runtime.invoke] and decodes the return value with the provided [kSerializer].
  */
+@InternalSerializationApi
 inline fun <DecodedType : Any, JavascriptEngine, reified EncodedType> Runtime<JavascriptEngine, EncodedType>.invoke(
     functionName: String,
     args: Array<JSEncodable<EncodedType>?>,
@@ -69,7 +69,7 @@ inline fun <DecodedType : Any, JavascriptEngine, reified EncodedType> Runtime<Ja
                         is WebView -> {
                             callback(
                                 null,
-                                Json(JsonConfiguration.Stable).parse(kSerializer, result as String)
+                                NIMBUS_JSON_DEFAULT.decodeFromString(kSerializer, result as String)
                             )
                         }
                     }

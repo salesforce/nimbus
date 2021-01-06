@@ -7,10 +7,11 @@
 
 package com.salesforce.nimbus
 
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.Json
 
 const val NIMBUS_BRIDGE = "__nimbus"
 const val NIMBUS_PLUGINS = "plugins"
 const val NIMBUS_CLASS_DISCRIMINATOR = "__type"
 @Suppress("EXPERIMENTAL_API_USAGE")
-val NIMBUS_JSON_CONFIGURATION = JsonConfiguration(classDiscriminator = NIMBUS_CLASS_DISCRIMINATOR)
+val NIMBUS_JSON_TYPE = Json { classDiscriminator = NIMBUS_CLASS_DISCRIMINATOR }
+val NIMBUS_JSON_DEFAULT = Json { Json.Default }
