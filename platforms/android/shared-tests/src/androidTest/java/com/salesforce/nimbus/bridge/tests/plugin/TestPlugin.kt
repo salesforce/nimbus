@@ -9,25 +9,16 @@ package com.salesforce.nimbus.bridge.tests.plugin
 
 import com.salesforce.k2v8.V8ObjectDecoder
 import com.salesforce.k2v8.V8ObjectEncoder
-import com.salesforce.nimbus.BoundMethod
-import com.salesforce.nimbus.DefaultEventPublisher
-import com.salesforce.nimbus.Event
-import com.salesforce.nimbus.EventPublisher
-import com.salesforce.nimbus.Plugin
-import com.salesforce.nimbus.PluginOptions
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
+import com.salesforce.nimbus.*
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PrimitiveDescriptor
-import kotlinx.serialization.PrimitiveKind
-import kotlinx.serialization.SerialDescriptor
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonInput
-import kotlinx.serialization.json.JsonOutput
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -51,21 +42,21 @@ data class DateWrapper(
 
 @Serializer(forClass = Date::class)
 object DateSerializer : KSerializer<Date> {
-    override val descriptor: SerialDescriptor = PrimitiveDescriptor("java.util.Date", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("java.util.Date", PrimitiveKind.STRING)
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         .apply { timeZone = TimeZone.getTimeZone("UTC") }
 
     override fun serialize(encoder: Encoder, value: Date) {
         when (encoder) {
-            is V8ObjectEncoder, is JsonOutput -> encoder.encodeString(dateFormat.format(value))
+            is V8ObjectEncoder, is JsonEncoder -> encoder.encodeString(dateFormat.format(value))
             else -> throw SerializationException("Unknown encoder type")
         }
     }
 
     override fun deserialize(decoder: Decoder): Date {
         return when (decoder) {
-            is V8ObjectDecoder, is JsonInput -> dateFormat.parse(decoder.decodeString())
+            is V8ObjectDecoder, is JsonDecoder -> dateFormat.parse(decoder.decodeString())
             else -> throw SerializationException("Unknown decoder type")
         }
     }
@@ -206,12 +197,12 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
 
     @BoundMethod
     fun unaryStructResolvingToJsonString(param: TestStruct): String {
-        return Json(JsonConfiguration.Stable).stringify(TestStruct.serializer(), param)
+        return NIMBUS_JSON_DEFAULT.encodeToString(TestStruct.serializer(), param)
     }
 
     @BoundMethod
     fun unaryDateWrapperResolvingToJsonString(param: DateWrapper): String {
-        return Json(JsonConfiguration.Stable).stringify(DateWrapper.serializer(),
+        return NIMBUS_JSON_DEFAULT.encodeToString(DateWrapper.serializer(),
             param.copy(date = Calendar.getInstance().apply {
                 time = param.date
                 add(Calendar.DAY_OF_YEAR, 1)
