@@ -16,6 +16,7 @@ import com.salesforce.nimbus.bridge.v8.bridge
 import com.salesforce.nimbus.bridge.v8.toV8Encodable
 import com.salesforce.nimbus.invoke
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.InternalSerializationApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors
  * Tests the [V8Bridge.invoke] function.
  */
 @RunWith(AndroidJUnit4::class)
+@InternalSerializationApi
 class V8BridgeInvokeTests {
 
     private lateinit var v8: V8

@@ -42,7 +42,7 @@ class WebViewBinderGenerator : BinderGenerator() {
     override val serializedOutputType = ClassName("kotlin", "String")
 
     private val jsonSerializationClassName = ClassName("kotlinx.serialization.json", "Json")
-    private val jsonSerializationConfigurationClassName = ClassName(nimbusPackage, "NIMBUS_JSON_CONFIGURATION")
+    private val jsonSerializationConfigurationClassName = ClassName(nimbusPackage, "NIMBUS_JSON_TYPE")
 
     private val jsonObjectClassName = ClassName("org.json", "JSONObject")
 
@@ -618,9 +618,8 @@ class WebViewBinderGenerator : BinderGenerator() {
                 String::class
             )
             funSpec.addStatement(
-                "val %N = %T(%T).parse(%T(%T.serializer()), %NString)",
+                "val %N = %T.decodeFromString(%T(%T.serializer()), %NString)",
                 parameter.simpleName,
-                jsonSerializationClassName,
                 jsonSerializationConfigurationClassName,
                 listSerializerClassName,
                 listType.asKotlinTypeName(),
@@ -662,9 +661,8 @@ class WebViewBinderGenerator : BinderGenerator() {
                 String::class
             )
             funSpec.addStatement(
-                "val %N = %T(%T).parse(%T(%T.serializer(), %T.serializer()), %NString)",
+                "val %N = %T.decodeFromString(%T(%T.serializer(), %T.serializer()), %NString)",
                 parameter.simpleName,
-                jsonSerializationClassName,
                 jsonSerializationConfigurationClassName,
                 mapSerializerClassName,
                 String::class,
@@ -725,9 +723,8 @@ class WebViewBinderGenerator : BinderGenerator() {
                     String::class
                 )
                 funSpec.addStatement(
-                    "val %N = %T(%T).parse(%T.serializer(), %NString)",
+                    "val %N = %T.decodeFromString(%T.serializer(), %NString)",
                     parameter.simpleName,
-                    jsonSerializationClassName,
                     jsonSerializationConfigurationClassName,
                     parameter.asKotlinTypeName(),
                     parameter.simpleName
