@@ -13,5 +13,5 @@ const val NIMBUS_BRIDGE = "__nimbus"
 const val NIMBUS_PLUGINS = "plugins"
 const val NIMBUS_CLASS_DISCRIMINATOR = "__type"
 @Suppress("EXPERIMENTAL_API_USAGE")
-val NIMBUS_JSON_TYPE = Json { classDiscriminator = NIMBUS_CLASS_DISCRIMINATOR }
-val NIMBUS_JSON_DEFAULT = Json { Json.Default }
+val NIMBUS_JSON_TYPE = Json { classDiscriminator = NIMBUS_CLASS_DISCRIMINATOR; encodeDefaults = true }
+val NIMBUS_JSON_DEFAULT = Json { encodeDefaults = true }
