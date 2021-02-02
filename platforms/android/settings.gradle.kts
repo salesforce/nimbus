@@ -14,8 +14,7 @@ arrayOf(
 
 include(":demo-app", ":shared-tests")
 
-//if (file("../../../k2v8").exists()) {
-//    logger.lifecycle("Detected local nimbus-plugin-lds, building from source.")
-//    includeBuild("../../../k2v8")
-//}
-
+// if (file("../../../k2v8").exists()) {
+//     logger.lifecycle("Detected local k2v8, building from source.")
+//     includeBuild("../../../k2v8")
+// }
