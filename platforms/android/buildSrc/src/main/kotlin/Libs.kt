@@ -24,12 +24,12 @@ object Libs {
     const val kotestAssertions: String = "io.kotest:kotest-assertions-core-jvm:" +
             Versions.kotest
 
-    const val kotestProperty: String = "io.kotest:kotest-property-jvm:" + Versions.kotest
+    const val kotestProperty: String = "io.kotest:kotest-property:" + Versions.kotest
 
-    const val kotestRunnerJUnit5: String = "io.kotest:kotest-runner-junit5-jvm:" +
+    const val kotestRunnerJUnit5: String = "io.kotest:kotest-runner-junit5:" +
             Versions.kotest
 
-    const val kotestRunnerConsole: String = "io.kotest:kotest-runner-console-jvm:" +
+    const val kotestRunnerConsole: String = "io.kotest:kotest-runner-console:" +
         Versions.kotest
 
     const val mockk: String = "io.mockk:mockk:" + Versions.mockk

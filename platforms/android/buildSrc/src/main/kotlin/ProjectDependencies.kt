@@ -20,7 +20,7 @@ fun Project.isAndroidModule(): Boolean {
 }
 
 fun Project.addTestDependencies() = dependencies {
-    listOf("runner-junit5", "assertions-core", "runner-console", "property").forEach {
-        add("testImplementation", "io.kotest:kotest-$it-jvm:${Versions.kotest}")
+    listOf("runner-junit5", "assertions-core", "property").forEach {
+        add("testImplementation", "io.kotest:kotest-$it:${Versions.kotest}")
     }
 }
