@@ -9,12 +9,20 @@ package com.salesforce.nimbus.bridge.tests.plugin
 
 import com.salesforce.k2v8.V8ObjectDecoder
 import com.salesforce.k2v8.V8ObjectEncoder
-import com.salesforce.nimbus.*
+import com.salesforce.nimbus.BoundMethod
+import com.salesforce.nimbus.DefaultEventPublisher
+import com.salesforce.nimbus.Event
+import com.salesforce.nimbus.EventPublisher
+import com.salesforce.nimbus.NIMBUS_JSON_DEFAULT
+import com.salesforce.nimbus.Plugin
+import com.salesforce.nimbus.PluginOptions
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializer
-import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
@@ -118,9 +126,11 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
 
     @BoundMethod
     fun nullaryResolvingToDateWrapper(): DateWrapper {
-        return DateWrapper(Calendar.getInstance().apply {
-            set(2020, 5, 4, 12, 24, 48)
-        }.time)
+        return DateWrapper(
+            Calendar.getInstance().apply {
+                set(2020, 5, 4, 12, 24, 48)
+            }.time
+        )
     }
 
     @BoundMethod
@@ -202,11 +212,15 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
 
     @BoundMethod
     fun unaryDateWrapperResolvingToJsonString(param: DateWrapper): String {
-        return NIMBUS_JSON_DEFAULT.encodeToString(DateWrapper.serializer(),
-            param.copy(date = Calendar.getInstance().apply {
-                time = param.date
-                add(Calendar.DAY_OF_YEAR, 1)
-            }.time))
+        return NIMBUS_JSON_DEFAULT.encodeToString(
+            DateWrapper.serializer(),
+            param.copy(
+                date = Calendar.getInstance().apply {
+                    time = param.date
+                    add(Calendar.DAY_OF_YEAR, 1)
+                }.time
+            )
+        )
     }
 
     @BoundMethod
@@ -283,9 +297,11 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
     @BoundMethod
     fun nullaryResolvingToDateWrapperCallback(callback: (DateWrapper) -> Unit) {
         callback(
-            DateWrapper(Calendar.getInstance().apply {
-                set(2020, 5, 4, 0, 0, 0)
-            }.time)
+            DateWrapper(
+                Calendar.getInstance().apply {
+                    set(2020, 5, 4, 0, 0, 0)
+                }.time
+            )
         )
     }
 

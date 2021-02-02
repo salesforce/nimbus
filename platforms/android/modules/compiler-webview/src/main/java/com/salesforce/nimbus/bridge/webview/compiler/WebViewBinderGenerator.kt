@@ -231,26 +231,28 @@ class WebViewBinderGenerator : BinderGenerator() {
             }
         }
 
-        funSpec.addCode(CodeBlock.Builder().apply {
-            addStatement(
-                "val args = arrayOf<%T>(",
-                jsEncodableClassName
-            )
-            indent()
-            addStatement(
-                "%T(promiseId),",
-                primitiveJSONEncodableClassName
-            )
-            addStatement("result,")
-            addStatement("null")
-            unindent()
-            addStatement(")")
-            addStatement(
-                "runtime?.invoke(%S, %N, null)",
-                "__nimbus.resolvePromise",
-                "args"
-            )
-        }.build())
+        funSpec.addCode(
+            CodeBlock.Builder().apply {
+                addStatement(
+                    "val args = arrayOf<%T>(",
+                    jsEncodableClassName
+                )
+                indent()
+                addStatement(
+                    "%T(promiseId),",
+                    primitiveJSONEncodableClassName
+                )
+                addStatement("result,")
+                addStatement("null")
+                unindent()
+                addStatement(")")
+                addStatement(
+                    "runtime?.invoke(%S, %N, null)",
+                    "__nimbus.resolvePromise",
+                    "args"
+                )
+            }.build()
+        )
 
         funSpec.nextControlFlow("catch (throwable: Throwable)")
 

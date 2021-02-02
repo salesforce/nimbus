@@ -143,7 +143,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
                         "key2": ${JSONObject.quote(value2)},
                         "key3": $value3
                     }
-                    """.trimIndent()
+            """.trimIndent()
 
             shouldThrow<JSONException> {
                 mapFromJSON<String, String>(json)
@@ -176,7 +176,7 @@ class PrimitiveJSONEncodableTests : StringSpec({
                     $value2,
                     $value3
                 ]
-                """.trimIndent()
+            """.trimIndent()
 
             val array = arrayFromJSON<Int>(json)
             value1.shouldBe(array[0])
@@ -223,7 +223,8 @@ class PrimitiveJSONEncodableTests : StringSpec({
             val jsonString = a.toJSONEncodable().encode()
             val jsonArray = JSONArray(jsonString)
             a.indices.forEach {
-                a[it].shouldBe(jsonArray[it]) }
+                a[it].shouldBe(jsonArray[it])
+            }
         }
     }
 

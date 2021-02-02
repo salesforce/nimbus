@@ -24,7 +24,8 @@ class NimbusJSUtilities {
                 if (html.contains(it)) {
                     return ByteArrayInputStream(
                         html.replace(it, "$it<script>\n$jsString\n</script>")
-                            .toByteArray(StandardCharsets.UTF_8))
+                            .toByteArray(StandardCharsets.UTF_8)
+                    )
                 }
             }
             throw Exception("Can't find any of <html> or <head> to inject nimbus")

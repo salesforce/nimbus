@@ -42,7 +42,8 @@ class V8PluginTests {
     @Rule
     @JvmField
     val activityRule: ActivityTestRule<WebViewActivity> = ActivityTestRule(
-        WebViewActivity::class.java, false, true)
+        WebViewActivity::class.java, false, true
+    )
 
     @Before
     fun setUp() {

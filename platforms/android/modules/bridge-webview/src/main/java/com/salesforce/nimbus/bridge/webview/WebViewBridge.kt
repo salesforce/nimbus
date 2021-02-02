@@ -25,7 +25,8 @@ import java.util.concurrent.ExecutorService
 private const val BRIDGE_NAME = "_nimbus"
 
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
-class WebViewBridge(private val executorService: ExecutorService) : Bridge<WebView, String>,
+class WebViewBridge(private val executorService: ExecutorService) :
+    Bridge<WebView, String>,
     Runtime<WebView, String> {
 
     private var bridgeWebView: WebView? = null

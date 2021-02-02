@@ -92,8 +92,10 @@ abstract class BinderGenerator : AbstractProcessor() {
 
             // get all plugins
             val pluginElements =
-                (env.getElementsAnnotatedWith(PluginOptions::class.java) +
-                env.getElementsAnnotatedWith(BoundPlugin::class.java))
+                (
+                    env.getElementsAnnotatedWith(PluginOptions::class.java) +
+                        env.getElementsAnnotatedWith(BoundPlugin::class.java)
+                    )
                     .distinctBy { it.className(processingEnv) }
 
             // get all serializable elements
@@ -191,18 +193,20 @@ abstract class BinderGenerator : AbstractProcessor() {
         // read kotlin metadata so we can determine which types are nullable
         val kotlinClass =
             pluginElement.annotation<Metadata>(processingEnv)?.let { metadata ->
-                (KotlinClassMetadata.read(
-                    KotlinClassHeader(
-                        metadata.kind,
-                        metadata.metadataVersion,
-                        metadata.bytecodeVersion,
-                        metadata.data1,
-                        metadata.data2,
-                        metadata.extraString,
-                        metadata.packageName,
-                        metadata.extraInt
-                    )
-                ) as KotlinClassMetadata.Class).toKmClass()
+                (
+                    KotlinClassMetadata.read(
+                        KotlinClassHeader(
+                            metadata.kind,
+                            metadata.metadataVersion,
+                            metadata.bytecodeVersion,
+                            metadata.data1,
+                            metadata.data2,
+                            metadata.extraString,
+                            metadata.packageName,
+                            metadata.extraInt
+                        )
+                    ) as KotlinClassMetadata.Class
+                    ).toKmClass()
             }
 
         val stringClassName = String::class.asClassName()
@@ -218,8 +222,10 @@ abstract class BinderGenerator : AbstractProcessor() {
 
                     // keep event publisher methods
                     eventType != null &&
-                        (it.toString().startsWith("addListener") ||
-                            it.toString().startsWith("removeListener"))
+                    (
+                        it.toString().startsWith("addListener") ||
+                            it.toString().startsWith("removeListener")
+                        )
             }
             .map { it as ExecutableElement }
 
@@ -387,7 +393,7 @@ abstract class BinderGenerator : AbstractProcessor() {
     protected fun TypeMirror.isListType(): Boolean {
         return toString().startsWith("java.util.List") ||
             processingEnv.typeUtils.directSupertypes(this).map { it.toString() }
-            .any { it.startsWith("java.util.List") }
+                .any { it.startsWith("java.util.List") }
     }
 
     protected fun TypeMirror.isMapType(): Boolean {

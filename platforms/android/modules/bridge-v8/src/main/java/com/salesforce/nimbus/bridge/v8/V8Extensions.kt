@@ -49,7 +49,8 @@ fun V8.resolvePromise(result: Any): V8Object {
 fun V8.rejectPromise(error: Any): V8Object {
     return promiseGlobal().executeObjectFunction(
         "reject",
-        convertAnyToV8Array(this, error))
+        convertAnyToV8Array(this, error)
+    )
 }
 
 private fun convertAnyToV8Array(v8: V8, data: Any): V8Array {

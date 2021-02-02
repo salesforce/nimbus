@@ -105,7 +105,7 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
                 }).catch((err) => {
                     _nimbus.rejectPromise("$promiseId", err.toString());
                 });
-            """.trimIndent()
+        """.trimIndent()
 
         // execute the script
         v8.executeScript(script)

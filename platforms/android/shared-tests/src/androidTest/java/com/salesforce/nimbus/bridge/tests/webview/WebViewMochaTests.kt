@@ -85,7 +85,8 @@ class WebViewMochaTests {
     @Rule
     @JvmField
     val activityRule: ActivityTestRule<WebViewActivity> = ActivityTestRule<WebViewActivity>(
-        WebViewActivity::class.java, false, true)
+        WebViewActivity::class.java, false, true
+    )
 
     @Test
     fun runMochaTests() {
@@ -109,12 +110,14 @@ class WebViewMochaTests {
         assertTrue(testBridge.readyLatch.await(30, TimeUnit.SECONDS))
 
         runOnUiThread {
-            webView.evaluateJavascript("""
-            const titleFor = x => x.parent ? (titleFor(x.parent) + " " + x.title) : x.title
-            mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
-                 .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
-            true;
-            """.trimIndent()) {}
+            webView.evaluateJavascript(
+                """
+                const titleFor = x => x.parent ? (titleFor(x.parent) + " " + x.title) : x.title
+                mocha.run(failures => { __nimbus.plugins.mochaTestBridge.testsCompleted(failures); })
+                  .on('fail', (test, err) => __nimbus.plugins.mochaTestBridge.onTestFail(titleFor(test), err.message));
+                true;
+                """.trimIndent()
+            ) {}
         }
 
         assertTrue(testBridge.completionLatch.await(30, TimeUnit.SECONDS))
