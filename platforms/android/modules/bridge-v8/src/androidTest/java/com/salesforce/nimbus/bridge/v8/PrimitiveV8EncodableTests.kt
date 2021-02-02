@@ -11,13 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.eclipsesource.v8.V8
 import com.eclipsesource.v8.V8Array
 import com.salesforce.k2v8.scope
-import io.kotest.properties.Gen
-import io.kotest.properties.bool
-import io.kotest.properties.double
-import io.kotest.properties.forAll
-import io.kotest.properties.int
-import io.kotest.properties.long
-import io.kotest.properties.string
+import io.kotest.property.forAll
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -40,60 +35,70 @@ class PrimitiveV8EncodableTests {
 
     @Test
     fun testDoubleToV8() = v8.scope {
-        forAll(Gen.double()) { a ->
-            // Comparing NaN requires a different way
-            // https://stackoverflow.com/questions/37884133/comparing-nan-in-kotlin
-            if (a == Double.POSITIVE_INFINITY || a == Double.NEGATIVE_INFINITY || a.equals(Double.NaN as Number)) {
-                var sameExceptionMessage = false
-                try {
-                    a.toV8Encodable(v8)
-                } catch (e: Exception) {
-                    sameExceptionMessage = e.message.equals("Double value should be finite.")
+        runBlocking {
+            forAll<Double> { a ->
+                // Comparing NaN requires a different way
+                // https://stackoverflow.com/questions/37884133/comparing-nan-in-kotlin
+                if (a == Double.POSITIVE_INFINITY || a == Double.NEGATIVE_INFINITY || a.equals(Double.NaN as Number)) {
+                    var sameExceptionMessage = false
+                    try {
+                        a.toV8Encodable(v8)
+                    } catch (e: Exception) {
+                        sameExceptionMessage = e.message.equals("Double value should be finite.")
+                    }
+                    sameExceptionMessage
+                } else {
+                    val array = a.toV8Encodable(v8).encode() as V8Array
+                    val value = array.getDouble(0)
+                    a == value
                 }
-                sameExceptionMessage
-            } else {
-                val array = a.toV8Encodable(v8).encode() as V8Array
-                val value = array.getDouble(0)
-                a == value
             }
         }
     }
 
     @Test
     fun testIntToV8() = v8.scope {
-        forAll(Gen.int()) { a ->
-            val array = a.toV8Encodable(v8).encode() as V8Array
-            val value = array.getInteger(0)
-            a == value
+        runBlocking {
+            forAll<Int> { a ->
+                val array = a.toV8Encodable(v8).encode() as V8Array
+                val value = array.getInteger(0)
+                a == value
+            }
         }
     }
 
     @Test
     fun testBooleanToV8() = v8.scope {
-        forAll(Gen.bool()) { a ->
-            val array = a.toV8Encodable(v8).encode() as V8Array
-            val value = array.getBoolean(0)
-            a == value
+        runBlocking {
+            forAll<Boolean> { a ->
+                val array = a.toV8Encodable(v8).encode() as V8Array
+                val value = array.getBoolean(0)
+                a == value
+            }
         }
     }
 
     @Test
     fun testLongToV8() = v8.scope {
-        forAll(Gen.long()) { a ->
-            val array = a.toV8Encodable(v8).encode() as V8Array
-            val value = array.getDouble(0)
+        runBlocking {
+            forAll<Long> { a ->
+                val array = a.toV8Encodable(v8).encode() as V8Array
+                val value = array.getDouble(0)
 
-            // v8 doesn't support long so must convert to double for comparison
-            a.toDouble() == value
+                // v8 doesn't support long so must convert to double for comparison
+                a.toDouble() == value
+            }
         }
     }
 
     @Test
     fun testStringToV8() = v8.scope {
-        forAll(Gen.string()) { a ->
-            val array = a.toV8Encodable(v8).encode() as V8Array
-            val value = array.getString(0)
-            a == value
+        runBlocking {
+            forAll<String> { a ->
+                val array = a.toV8Encodable(v8).encode() as V8Array
+                val value = array.getString(0)
+                a == value
+            }
         }
     }
 }
