@@ -317,6 +317,7 @@ jobs:
           name: Build Android
           working_directory: platforms/android
           command: ./gradlew assembleDebug assembleAndroidTest
+          no_output_timeout: 20m
 
       - run:
           name: Test Android
