@@ -305,6 +305,7 @@ jobs:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      NODE_OPTIONS: "--max_old_space_size=4096"
 
     steps:
       - checkout
