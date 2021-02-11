@@ -213,6 +213,11 @@ class WebViewPluginTests {
     }
 
     @Test
+    fun verifyUnaryUint8ArrayResolvingToString() {
+        executeTest("verifyUnaryUint8ArrayResolvingToString()")
+    }
+
+    @Test
     fun verifyUnaryStringResolvingToInt() {
         executeTest("verifyUnaryStringResolvingToInt()")
     }

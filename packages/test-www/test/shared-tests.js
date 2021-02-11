@@ -193,6 +193,16 @@ function verifyUnaryDoubleResolvingToDouble() {
   });
 }
 
+function verifyUnaryUint8ArrayResolvingToString() {
+  let bytes = new Uint8Array([104, 101, 108, 108, 111, 44, 32, 110, 105, 109, 98, 117, 115, 33]);
+  __nimbus.plugins.testPlugin.unaryUint8ArrayResolvingToString(bytes).then((result) => {
+    if (result === 'aGVsbG8sIG5pbWJ1cyE=') {
+      __nimbus.plugins.expectPlugin.pass();
+    }
+    __nimbus.plugins.expectPlugin.finished();
+  });
+}
+
 function verifyUnaryStringResolvingToInt() {
   __nimbus.plugins.testPlugin.unaryStringResolvingToInt('some string').then((result) => {
     if (result === 11) {

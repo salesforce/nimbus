@@ -38,6 +38,7 @@ class TestPlugin: Plugin {
         connection.bind(unaryIntResolvingToInt, as: "unaryIntResolvingToInt")
         connection.bind(unaryDoubleResolvingToDouble, as: "unaryDoubleResolvingToDouble")
         connection.bind(unaryStringResolvingToInt, as: "unaryStringResolvingToInt")
+        connection.bind(unaryUint8ArrayResolvingToString, as: "unaryUint8ArrayResolvingToString")
         connection.bind(unaryStructResolvingToJsonString, as: "unaryStructResolvingToJsonString")
         connection.bind(unaryStringListResolvingToString, as: "unaryStringListResolvingToString")
         connection.bind(unaryIntListResolvingToString, as: "unaryIntListResolvingToString")
@@ -150,6 +151,10 @@ class TestPlugin: Plugin {
 
     func unaryStringResolvingToInt(param: String) -> Int {
         return param.count
+    }
+
+    func unaryUint8ArrayResolvingToString(param: String) -> String {
+        return param
     }
 
     func unaryStructResolvingToJsonString(param: TestStruct) -> String {

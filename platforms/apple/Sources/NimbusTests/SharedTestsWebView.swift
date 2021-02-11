@@ -128,6 +128,10 @@ class SharedTestsWebView: XCTestCase {
         executeTest("verifyUnaryDoubleResolvingToDouble()")
     }
 
+    func testVerifyUnaryUint8ArrayResolvingToString() {
+        executeTest("verifyUnaryUint8ArrayResolvingToString()")
+    }
+
     func testVerifyUnaryStringResolvingToInt() {
         executeTest("verifyUnaryStringResolvingToInt()")
     }

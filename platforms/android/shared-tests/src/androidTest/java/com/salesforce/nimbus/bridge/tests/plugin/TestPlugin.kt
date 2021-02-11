@@ -201,6 +201,11 @@ class TestPlugin : Plugin, EventPublisher<StructEvent> by DefaultEventPublisher(
     }
 
     @BoundMethod
+    fun unaryUint8ArrayResolvingToString(param: String): String {
+        return param
+    }
+
+    @BoundMethod
     fun unaryStringResolvingToInt(param: String): Int {
         return param.length
     }

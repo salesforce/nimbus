@@ -68,7 +68,16 @@ var __nimbus = (function() {
       } else if (args[i] === null) {
         clonedArgs.push(null);
       } else if (typeof args[i] === "object") {
-        clonedArgs.push(JSON.stringify(args[i]));
+        // Uint8Arrays will be passed across as base64 strings
+        // Nimbus does not yet support other typed arrays
+        if (args[i] instanceof Uint8Array) {
+          // NOTE: this may not be the most efficient way, but it is sufficient for now
+          const str = String.fromCharCode.apply(null, args[i]);
+          const base64str = btoa(str);
+          clonedArgs.push(base64str);
+        } else {
+          clonedArgs.push(JSON.stringify(args[i]));
+        }
       } else {
         clonedArgs.push(args[i]);
       }
