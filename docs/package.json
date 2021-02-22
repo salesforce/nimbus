@@ -1,7 +1,7 @@
 {
   "name": "nimbus-doc",
   "description": "Documentation for Nimbus hybrid framework.",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "scripts": {
     "build": "eleventy",
