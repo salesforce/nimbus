@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nimbus</title>
+        <link rel="stylesheet" href="/nimbus/css/normalize.css">
+        <link rel="stylesheet" href="/nimbus/css/main.css">
+    </head>
+    <body>
+        <header>
+    <h1><a href="/nimbus/">Nimbus</a></h1>
+    <nav>
+    <ul>
+        <li><a href="/nimbus/">Home</a></li>
+        <li><a href="/nimbus/docs/overview/">Docs</a></li>
+    </ul>
+</nav>
+
+</header>
+
+        <main>
+        
+<div class="docs">
+    <nav>
+        <ul>
+            <li>
+                <h3>Overview</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/overview">Introduction</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/nimbus/docs/architecture"
+                            >Architecture</a
+                        >
+                    </li> -->
+                    <li>
+                        <a href="/nimbus/docs/overview/getting-started"
+                            >Getting Started</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Guides</h3>
+                <ul></ul>
+            </li>
+            <li>
+                <h3>iOS</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/ios/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/plugin-testing"
+                            >Testing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Android</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/android/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/android/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>API Reference</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/api/ts/">Typescript</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/apple/">iOS / macOS</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/android/nimbus">Android</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h1>Nimbus Bridge Design</h1>
+<p>Both iOS and Android provide facilities for communicating between
+native code and JavaScript in their SDKs, but each works differently.
+Lack of a consistent pattern to follow increases the difficulty of
+writing JavaScript code for mobile that works on either platform. An
+examination of the standard platform approaches is below, followed by
+a design for a thin, consistent abstraction on top of these
+platform-provided APIs.</p>
+<h2>Platform Default Bridging APIs</h2>
+<h3>Android</h3>
+<p>Android's <a href="https://developer.android.com/reference/android/webkit/WebView"><code>WebView</code></a> is the standard way of embedding a web
+application into an Android app. <code>WebView</code> supports binding Java code
+to JavaScript via the <a href="https://developer.android.com/reference/android/webkit/JavascriptInterface"><code>@JavascriptInterface</code></a>
+annotation on methods to be exposed to JavaScript and the
+<a href="https://developer.android.com/reference/android/webkit/WebView#addJavascriptInterface(java.lang.Object,%20java.lang.String)"><code>addJavascriptInterface()</code></a> method on
+<code>WebView</code>. Documentation on the <code>@JavascriptInterface</code> annotation and
+details around how parameter and return types are converted to
+JavaScript is sparse.</p>
+<p>Use of this API is very straightforward both from the Java and
+JavaScript sides:</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token annotation builtin">@JavascriptInterface</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">hello</span><span class="token punctuation">(</span>name<span class="token operator">:</span> String<span class="token punctuation">)</span><span class="token operator">:</span> String <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">return</span> <span class="token string">"Hello, "</span> <span class="token operator">+</span> name</span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">webView<span class="token punctuation">.</span><span class="token function">addJavascriptInterface</span><span class="token punctuation">(</span><span class="token function">Bridge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"bridge"</span><span class="token punctuation">)</span></span></code></pre>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span> bridge<span class="token punctuation">.</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token string">"world"</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>Using this binding interface makes it possible to both accept
+parameters and return results to JavaScript in a synchronous manner.</p>
+<h3>iOS</h3>
+<p>On iOS <a href="https://developer.apple.com/documentation/webkit/wkwebview"><code>WKWebView</code></a> is currently the standard and
+recommended way of embedding a web application into a native app.
+<code>WKWebView</code> supports only asynchronous message passing between
+JavaScript and native code due to <code>WKWebView</code> executing in a separate
+process for isolation. It is possible for native code to register as a
+message handler via the
+<a href="https://developer.apple.com/documentation/webkit/wkscriptmessagehandler"><code>WKScriptMessageHandler</code></a> protocol and
+<a href="https://developer.apple.com/documentation/webkit/wkusercontentcontroller"><code>WKUserContentController</code></a> class.</p>
+<p>Use of this API is fairly straightforward, but more cumbersome than
+the Android example due to everything being an asynchronous message:</p>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">Bridge</span> <span class="token punctuation">:</span> <span class="token builtin">WKScriptMessageHandler</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token comment">// ... WKWebView setup elided</span></span><br><span class="highlight-line">        <span class="token keyword">let</span> userContentController <span class="token operator">=</span> <span class="token function">WKUserContentController</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        userContentController<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token string">"hello"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">userContentController</span><span class="token punctuation">(</span><span class="token number">_</span> userContentController<span class="token punctuation">:</span> <span class="token builtin">WKUserContentController</span><span class="token punctuation">,</span> didReceive message<span class="token punctuation">:</span> <span class="token builtin">WKScriptMessage</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">switch</span> <span class="token punctuation">(</span>message<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">case</span> <span class="token string">"hello"</span><span class="token punctuation">:</span></span><br><span class="highlight-line">            <span class="token keyword">let</span> name <span class="token operator">=</span> message<span class="token punctuation">.</span>body <span class="token keyword">as</span><span class="token operator">?</span> <span class="token builtin">String</span></span><br><span class="highlight-line">            <span class="token keyword">let</span> greeting <span class="token operator">=</span> <span class="token string">"Hello, <span class="token interpolation"><span class="token delimiter variable">\(</span>name<span class="token delimiter variable">)</span></span>"</span></span><br><span class="highlight-line">            webview<span class="token punctuation">.</span><span class="token function">evaluateJavascript</span><span class="token punctuation">(</span><span class="token string">"window.HelloCallback('<span class="token interpolation"><span class="token delimiter variable">\(</span>greeting<span class="token delimiter variable">)</span></span>')"</span><span class="token punctuation">,</span> callback<span class="token punctuation">:</span><span class="token constant">nil</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token keyword">default</span><span class="token punctuation">:</span></span><br><span class="highlight-line">            <span class="token keyword">break</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span><br><span class="highlight-line"></span></code></pre>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">window<span class="token punctuation">.</span><span class="token function-variable function">HelloCallback</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">text</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span><br><span class="highlight-line">window<span class="token punctuation">.</span>webkit<span class="token punctuation">.</span>messageHandlers<span class="token punctuation">.</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token string">"world"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>Immediately some limitations of the iOS approach are apparent. There
+is no ability to directly return a value from a script message
+handler. Only one argument is accepted, which is the message body.
+&quot;Returning&quot; a value to JavaScript must be accomplished by evaluating a
+new chunk of JavaScript code and embedding the result into that
+string. Nowhere in the <code>Bridge</code> interface is it readily apparently
+what the signature of the bridge <code>hello</code> method is.</p>
+<p>Nimbus aims to address these issues and provide a consistent
+cross-platform bridging system.</p>
+<h2>Bridgeable Function Call Patterns</h2>
+<p>Nimbus's primary purpose is making native code callable from
+JavaScript, with the ability to return results and execute callbacks.
+Exposing JavaScript code as a native API is currently not within the
+scope of this project.</p>
+<p>There are several function calling patterns that will be supported.</p>
+<h3>Function call with no return value</h3>
+<p>The most basic function calling pattern is one with zero or more
+arguments and no return value. This pattern maps directly onto message
+passing.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">foo</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">foo</span><span class="token punctuation">(</span>p0<span class="token operator">:</span> String<span class="token punctuation">,</span> p1<span class="token operator">:</span> Int<span class="token punctuation">,</span> p2<span class="token operator">:</span> Int<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">..</span><span class="token punctuation">.</span> <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">Bridge</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">foo</span><span class="token punctuation">(</span>p0<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> p1<span class="token punctuation">:</span> <span class="token builtin">Int</span><span class="token punctuation">,</span> p2<span class="token punctuation">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>The Android bridge supports this binding style already. iOS would need only
+to insert a shim function into Javascript under the correct name that
+would forward a call to <code>webkit.messageHandlers</code>. In Android this call
+would execute synchronously but on iOS it would execute
+asynchronously. It may be desirable to write code that waits until
+execution of the function is complete which would involve returning a
+<code>Thenable</code> that could be used from the calling code. This would align
+well with the next binding style where a return value is expected from
+the function.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">foo</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token comment">/* done! */</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line"><span class="token comment">// or</span></span><br><span class="highlight-line"><span class="token keyword">await</span> bridge<span class="token punctuation">.</span><span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<h3>Function call with return value</h3>
+<p>The next calling pattern is one that takes zero or more arguments and
+returns a result value.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line"><span class="token keyword">let</span> result <span class="token operator">=</span> bridge<span class="token punctuation">.</span><span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> String <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"yo"</span> <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">Bridge</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"yo"</span> <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>This pattern is also supported directly by Android, however the async
+message passing on iOS makes this impossible to implement directly.
+Instead, native functions that return a value will need to map to
+JavaScript <code>Promise</code>s. On Android we can use a lightweight <code>Thenable</code>
+to simply pass back the synchronous return value, and use actual
+promises on iOS to wrap the async return.</p>
+<p>Note that the native functions in this scenario are still written to
+return a value synchronously, the use of a <code>Thenable</code> or <code>Promise</code> is
+hidden inside the bridge code.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line"><span class="token comment">// or</span></span><br><span class="highlight-line"><span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token keyword">await</span> bridge<span class="token punctuation">.</span><span class="token function">bar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<h3>Function call with function arguments (aka callbacks)</h3>
+<p>Some functions need to perform asynchronous execution, such as making
+a network call or database query, and return a result once it is
+available.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">baz</span><span class="token punctuation">(</span>callback<span class="token operator">:</span> Callback<span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token comment">// do some stuff</span></span><br><span class="highlight-line">        <span class="token function">callback</span><span class="token punctuation">(</span><span class="token string">"yo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">Bridge</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">baz</span><span class="token punctuation">(</span>callback<span class="token punctuation">:</span> <span class="token builtin">Callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token comment">// do some stuff</span></span><br><span class="highlight-line">        <span class="token function">callback</span><span class="token punctuation">(</span><span class="token string">"yo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>Neither the Android nor iOS web view APIs support this pattern
+directly. The Nimbus bridge will provide a means to register the
+JavaScript callback and pass a proxy object into native functions that
+can be used to invoke the callback as desired.</p>
+<h3>Function call with Observable return [maybe]</h3>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span></span><br><span class="highlight-line">  <span class="token punctuation">(</span><span class="token parameter">next</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>next<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">,</span></span><br><span class="highlight-line">  <span class="token punctuation">(</span><span class="token parameter">err</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">err</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">,</span></span><br><span class="highlight-line">  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"done!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Observable <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token comment">// do some stuff</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">"yo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">"hey"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">Bridge</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">baz</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">Observable</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token comment">// do some stuff</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">"yo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">"hey"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">        observable<span class="token punctuation">.</span><span class="token function">completed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<h2>Bridging Callbacks</h2>
+<p>Since neither Android nor iOS support sending a callback function
+across the bridge it is necessary to device a technique for storing a
+callback in JavaScript, passing a unique identifier across the bridge,
+and later using that token to look up and invoke the callback.</p>
+<p>This pattern is simple to implement, similar to the following:</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line"><span class="token keyword">let</span> callbacks <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span></span><br><span class="highlight-line"><span class="token keyword">let</span> token <span class="token operator">=</span> <span class="token string">"callback_"</span> <span class="token operator">+</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">callbacks<span class="token punctuation">[</span>token<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'callback!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">method</span><span class="token punctuation">(</span>arg1<span class="token punctuation">,</span> arg2<span class="token punctuation">,</span> token<span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">method</span><span class="token punctuation">(</span>arg1<span class="token operator">:</span> String<span class="token punctuation">,</span> arg2<span class="token operator">:</span> String<span class="token punctuation">,</span> cbToken<span class="token operator">:</span> String<span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">val</span> result <span class="token operator">=</span> <span class="token string">"something"</span></span><br><span class="highlight-line">        webView<span class="token punctuation">.</span><span class="token function">evaluateJavascript</span><span class="token punctuation">(</span><span class="token string">"callbacks[<span class="token interpolation variable">$cbToken</span>]('<span class="token interpolation variable">$result</span>');"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>This exposes the details of how callbacks are bridged to both the
+implementor of the native code and to the javascript code calling it.
+Ideally the bridge will generate the necessary stubs when bindings are
+created so that the code would look more like the following example:</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">bridge<span class="token punctuation">.</span><span class="token function">method</span><span class="token punctuation">(</span>arg1<span class="token punctuation">,</span> arg2<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> Bridge <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">fun</span> <span class="token function">method</span><span class="token punctuation">(</span>arg1<span class="token operator">:</span> String<span class="token punctuation">,</span> arg2<span class="token operator">:</span> String<span class="token punctuation">,</span> callback<span class="token operator">:</span> <span class="token operator">?</span><span class="token operator">?</span><span class="token operator">?</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">val</span> result <span class="token operator">=</span> <span class="token string">"something"</span></span><br><span class="highlight-line">        <span class="token function">callback</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<h3>Lifetime and Memory Management</h3>
+<p>Because callback functions passed from JavaScript to native are being
+held in a global map, care must be taken not to leak the callback
+object. The token passed across the bridge should be owned by an
+object in the native code that will delete the callback from
+JavaScript at the end of its lifetime to ensure cleanup happens.</p>
+<h2>Publish-subscribe Pattern</h2>
+<p>Nimbus provides publish-subscribe pattern where native code can raise
+an event.  That event will be bridged over to javascript code and all listeners
+that have subscribed for that particular event can have their callback functions called.</p>
+<p>To subscribe to an event pass a name of the event to listen to and a callback.
+Callback can optionally expect a single parameter passed back from the event publisher:</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line"><span class="token keyword">let</span> <span class="token function-variable function">callback</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">dataFromPublisher</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token comment">// Handle event raised.  dataFromPublisher is data returned from</span></span><br><span class="highlight-line">    <span class="token comment">// the publisher and can be used for further processing.</span></span><br><span class="highlight-line"><span class="token punctuation">}</span><span class="token punctuation">;</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">nimbus<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token string">"someEventName"</span><span class="token punctuation">,</span> callback<span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>To publish an event from the native code so that javascript code can listen to, do similar
+to the following:</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line">    webView<span class="token punctuation">.</span><span class="token function">broadcastMessage</span><span class="token punctuation">(</span><span class="token string">"someEventName"</span><span class="token punctuation">,</span> dataToSendToSubscribers<span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>where dataToSendToSubscribers needs to be an object or primitive that is serializable to
+JSON.</p>
+<p>Listener to an event can unsubscribe itself by:</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="highlight-line">    nimbus<span class="token punctuation">.</span><span class="token function">unsubscribeMessage</span><span class="token punctuation">(</span><span class="token string">'someEventName'</span><span class="token punctuation">,</span> callback<span class="token punctuation">)</span><span class="token punctuation">;</span></span></code></pre>
+<p>See the native API docs for respective platform for more information.</p>
+<h2>Android Native API</h2>
+<p>TBD</p>
+
+    </article>
+</div>
+
+        </main>
+    </body>
+</html>

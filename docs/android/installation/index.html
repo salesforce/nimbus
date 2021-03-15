@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nimbus</title>
+        <link rel="stylesheet" href="/nimbus/css/normalize.css">
+        <link rel="stylesheet" href="/nimbus/css/main.css">
+    </head>
+    <body>
+        <header>
+    <h1><a href="/nimbus/">Nimbus</a></h1>
+    <nav>
+    <ul>
+        <li><a href="/nimbus/">Home</a></li>
+        <li><a href="/nimbus/docs/overview/">Docs</a></li>
+    </ul>
+</nav>
+
+</header>
+
+        <main>
+        
+<div class="docs">
+    <nav>
+        <ul>
+            <li>
+                <h3>Overview</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/overview">Introduction</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/nimbus/docs/architecture"
+                            >Architecture</a
+                        >
+                    </li> -->
+                    <li>
+                        <a href="/nimbus/docs/overview/getting-started"
+                            >Getting Started</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Guides</h3>
+                <ul></ul>
+            </li>
+            <li>
+                <h3>iOS</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/ios/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/plugin-testing"
+                            >Testing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Android</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/android/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/android/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>API Reference</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/api/ts/">Typescript</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/apple/">iOS / macOS</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/android/nimbus">Android</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h1>Android Installation Guide</h1>
+<h4>1. Add the maven repository to your project's <code>build.gradle</code>:</h4>
+<pre class="language-groovy"><code class="language-groovy"><span class="highlight-line">allprojects <span class="token punctuation">{</span></span><br><span class="highlight-line">    repositories <span class="token punctuation">{</span></span><br><span class="highlight-line">        maven <span class="token punctuation">{</span> url  <span class="token string gstring">"https://dl.bintray.com/salesforce-mobile/android"</span> <span class="token punctuation">}</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<details>
+<summary>
+Click for details on SNAPSHOT builds
+</summary>
+<p>Add the following to your <code>build.gradle</code> to consume a snapshot of Nimbus</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line">plugins <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token function">id</span><span class="token punctuation">(</span><span class="token string">"com.jfrog.artifactory"</span><span class="token punctuation">)</span> version <span class="token string">"version"</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span><br><span class="highlight-line">allprojects <span class="token punctuation">{</span></span><br><span class="highlight-line">    apply plugin<span class="token operator">:</span> <span class="token string">"com.jfrog.artifactory"</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span><br><span class="highlight-line">artifactory <span class="token punctuation">{</span></span><br><span class="highlight-line">    contextUrl <span class="token operator">=</span> <span class="token string">'http://oss.jfrog.org'</span></span><br><span class="highlight-line">    resolve <span class="token punctuation">{</span></span><br><span class="highlight-line">        repository <span class="token punctuation">{</span></span><br><span class="highlight-line">            repoKey <span class="token operator">=</span> <span class="token string">'libs-snapshot'</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+</details>
+<h4>2. Add the <code>kotlin-kapt</code> plugin to your app's <code>build.gradle</code>:</h4>
+<pre class="language-groovy"><code class="language-groovy"><span class="highlight-line">apply plugin<span class="token punctuation">:</span> <span class="token string">'kotlin-kapt'</span></span></code></pre>
+<p>or</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line">plugins <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token function">kotlin</span><span class="token punctuation">(</span><span class="token string">"kapt"</span><span class="token punctuation">)</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<h4>3. Add the Nimbus runtime dependency and annotation processor to your app's <code>build.gradle</code>:</h4>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line">dependencies <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token comment">// include bridge and compiler for webview or j2v8</span></span><br><span class="highlight-line">    <span class="token keyword">val</span> bridgeType <span class="token operator">=</span> <span class="token string">"webview"</span> <span class="token comment">// or "v8"</span></span><br><span class="highlight-line">    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">"com.salesforce.nimbus:bridge-<span class="token interpolation variable">$bridgeType</span>:<span class="token interpolation variable">$nimbusVersion</span>"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token function">kapt</span><span class="token punctuation">(</span><span class="token string">"com.salesforce.nimbus:compiler-<span class="token interpolation variable">$bridgeType</span>:<span class="token interpolation variable">$nimbusVersion</span>"</span><span class="token punctuation">)</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token comment">// optionally add core plugins</span></span><br><span class="highlight-line">    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">"com.salesforce.nimbus:core-plugins:<span class="token interpolation variable">$nimbusVersion</span>"</span><span class="token punctuation">)</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<h4>4. Initialize the Nimbus Bridge and attach it to your <code>WebView</code>:</h4>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token keyword">class</span> MainActivity <span class="token operator">:</span> <span class="token function">AppCompatActivity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">private</span> <span class="token keyword">lateinit</span> <span class="token keyword">var</span> bridge<span class="token operator">:</span> WebViewBridge <span class="token comment">// or V8Bridge</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">override</span> <span class="token keyword">fun</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token operator">:</span> Bundle<span class="token operator">?</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_main<span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token keyword">val</span> webView <span class="token operator">=</span> findViewById<span class="token operator">&lt;</span>WebView<span class="token operator">></span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>webview<span class="token punctuation">)</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">        <span class="token comment">// create instance of core plugin</span></span><br><span class="highlight-line">        <span class="token keyword">val</span> deviceInfoPlugin <span class="token operator">=</span> <span class="token function">DeviceInfoPlugin</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">        bridge <span class="token operator">=</span> webView<span class="token punctuation">.</span><span class="token function">bridge</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            bind <span class="token punctuation">{</span></span><br><span class="highlight-line">                deviceInfoPlugin<span class="token punctuation">.</span><span class="token function">webViewBinder</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">                <span class="token comment">// or deviceInfoPlugin.v8Binder()</span></span><br><span class="highlight-line">            <span class="token punctuation">}</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">        webView<span class="token punctuation">.</span><span class="token function">loadUrl</span><span class="token punctuation">(</span><span class="token string">"http://10.0.2.2:3000"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token comment">// or create v8 and executeScript</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">override</span> <span class="token keyword">fun</span> <span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        bridge<span class="token punctuation">.</span><span class="token function">detach</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<h1>NimbusJS</h1>
+<ol>
+<li>Add NimbusJS to your app's <code>build.gradle</code>:</li>
+</ol>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line">dependencies <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string">"com.salesforce.nimbus:nimbusjs:<span class="token interpolation variable">$nimbusVersion</span>"</span><span class="token punctuation">)</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<ol start="2">
+<li>Inject nimbus.js:</li>
+</ol>
+<p>You can refer directly to the nimbus.js source included as a resource in the NimbusJS AAR or you can use <code>NimbusJSUtilities.injectedNimbusStream(...)</code> to inject nimbus.js into a page load stream intercepted in your webview.</p>
+
+    </article>
+</div>
+
+        </main>
+    </body>
+</html>

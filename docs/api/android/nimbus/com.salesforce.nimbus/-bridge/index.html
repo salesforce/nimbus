@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Bridge - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus</a>&nbsp;/&nbsp;<a href="./index.html">Bridge</a><br/>
+<br/>
+<h1>Bridge</h1>
+<code><span class="keyword">interface </span><span class="identifier">Bridge</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span></code>
+<p>Defines an object which will be a bridge between a native <a href="../-plugin/index.html">Plugin</a> and a <a href="index.html#JavascriptEngine">JavascriptEngine</a>,
+such as an Android WebView or V8. <a href="index.html#EncodedType">EncodedType</a> represents the encoded type the
+<a href="index.html#JavascriptEngine">JavascriptEngine</a> expects.</p>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-builder/index.html">Builder</a></h4>
+</td>
+<td>
+<p>Abstract builder class for the <a href="./index.html">Bridge</a> implementation to implement in order to build a <a href="./index.html">Bridge</a> instance.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">, </span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Bridge</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="detach.html">detach</a></h4>
+</td>
+<td>
+<p>Detaches the <a href="./index.html">Bridge</a> from a <a href="index.html#JavascriptEngine">JavascriptEngine</a>.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">detach</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../com.salesforce.nimbus.bridge.v8/-v8-bridge/index.html">V8Bridge</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">V8Bridge</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Bridge</span></a><span class="symbol">&lt;</span><span class="identifier">V8</span><span class="symbol">,</span>&nbsp;<span class="identifier">V8Object</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">V8</span><span class="symbol">,</span>&nbsp;<span class="identifier">V8Object</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../com.salesforce.nimbus.bridge.webview/-web-view-bridge/index.html">WebViewBridge</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">WebViewBridge</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Bridge</span></a><span class="symbol">&lt;</span><span class="identifier">WebView</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">WebView</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

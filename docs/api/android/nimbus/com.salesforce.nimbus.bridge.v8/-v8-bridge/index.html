@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>V8Bridge - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus.bridge.v8</a>&nbsp;/&nbsp;<a href="./index.html">V8Bridge</a><br/>
+<br/>
+<h1>V8Bridge</h1>
+<code><span class="keyword">class </span><span class="identifier">V8Bridge</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../com.salesforce.nimbus/-bridge/index.html"><span class="identifier">Bridge</span></a><span class="symbol">&lt;</span><span class="identifier">V8</span><span class="symbol">,</span>&nbsp;<span class="identifier">V8Object</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../../com.salesforce.nimbus/-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">V8</span><span class="symbol">,</span>&nbsp;<span class="identifier">V8Object</span><span class="symbol">&gt;</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-builder/index.html">Builder</a></h4>
+</td>
+<td>
+<p>Builder class to create instances of <a href="./index.html">V8Bridge</a> and attach to a <a href="#">V8</a> runtime.</p>
+<code><span class="keyword">class </span><span class="identifier">Builder</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">V8</span><span class="symbol">,</span>&nbsp;<span class="identifier">V8Object</span><span class="symbol">,</span>&nbsp;<a href="./index.html"><span class="identifier">V8Bridge</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">V8Bridge</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$<init>(java.util.concurrent.ExecutorService)/executorService">executorService</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html"><span class="identifier">ExecutorService</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="detach.html">detach</a></h4>
+</td>
+<td>
+<p>Detaches the <a href="../../com.salesforce.nimbus/-bridge/index.html">Bridge</a> from a <a href="../../com.salesforce.nimbus/-bridge/index.html#JavascriptEngine">JavascriptEngine</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">detach</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="execute-script-on-executor.html">executeScriptOnExecutor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">executeScriptOnExecutor</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$executeScriptOnExecutor(kotlin.String)/script">script</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="executor-scope.html">executorScope</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">executorScope</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$executorScope(java.util.concurrent.ExecutorService, kotlin.Function0((com.salesforce.nimbus.bridge.v8.V8Bridge.executorScope.T)))/executorService">executorService</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html"><span class="identifier">ExecutorService</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$executorScope(java.util.concurrent.ExecutorService, kotlin.Function0((com.salesforce.nimbus.bridge.v8.V8Bridge.executorScope.T)))/body">body</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="finalize.html">finalize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">finalize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-executor-service.html">getExecutorService</a></h4>
+</td>
+<td>
+<p>Return <a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a> of the <a href="../../com.salesforce.nimbus/-runtime/index.html">Runtime</a></p>
+<code><span class="keyword">fun </span><span class="identifier">getExecutorService</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html"><span class="identifier">ExecutorService</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-javascript-engine.html">getJavascriptEngine</a></h4>
+</td>
+<td>
+<p>Get the <a href="../../com.salesforce.nimbus/-runtime/index.html#JavascriptEngine">JavascriptEngine</a> powering the <a href="../../com.salesforce.nimbus/-runtime/index.html">Runtime</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">getJavascriptEngine</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">V8</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="invoke.html">invoke</a></h4>
+</td>
+<td>
+<p>Invokes a <a href="../../com.salesforce.nimbus/-runtime/invoke.html#com.salesforce.nimbus.Runtime$invoke(kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.Runtime.EncodedType)))), kotlin.Function2((kotlin.String, kotlin.Any, kotlin.Unit)))/functionName">functionName</a> in the <a href="../../com.salesforce.nimbus/-runtime/index.html#JavascriptEngine">JavascriptEngine</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">invoke</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$invoke(kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.eclipsesource.v8.V8Object)))), kotlin.Function2((kotlin.String, kotlin.Any, kotlin.Unit)))/functionName">functionName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$invoke(kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.eclipsesource.v8.V8Object)))), kotlin.Function2((kotlin.String, kotlin.Any, kotlin.Unit)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../com.salesforce.nimbus/-j-s-encodable/index.html"><span class="identifier">JSEncodable</span></a><span class="symbol">&lt;</span><span class="identifier">V8Object</span><span class="symbol">&gt;</span><span class="symbol">?</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.v8.V8Bridge$invoke(kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.eclipsesource.v8.V8Object)))), kotlin.Function2((kotlin.String, kotlin.Any, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../com.salesforce.nimbus/invoke.html">invoke</a></h4>
+</td>
+<td>
+<p>Calls <a href="../../com.salesforce.nimbus/-runtime/invoke.html">Runtime.invoke</a> and decodes the return value with the provided <a href="../../com.salesforce.nimbus/invoke.html#com.salesforce.nimbus$invoke(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.invoke.JavascriptEngine, com.salesforce.nimbus.invoke.EncodedType)), kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.invoke.EncodedType)))), kotlinx.serialization.KSerializer((com.salesforce.nimbus.invoke.DecodedType)), kotlin.Function2((kotlin.String, com.salesforce.nimbus.invoke.DecodedType, kotlin.Unit)))/kSerializer">kSerializer</a>.</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">DecodedType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span> <a href="../../com.salesforce.nimbus/-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">invoke</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus$invoke(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.invoke.JavascriptEngine, com.salesforce.nimbus.invoke.EncodedType)), kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.invoke.EncodedType)))), kotlinx.serialization.KSerializer((com.salesforce.nimbus.invoke.DecodedType)), kotlin.Function2((kotlin.String, com.salesforce.nimbus.invoke.DecodedType, kotlin.Unit)))/functionName">functionName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus$invoke(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.invoke.JavascriptEngine, com.salesforce.nimbus.invoke.EncodedType)), kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.invoke.EncodedType)))), kotlinx.serialization.KSerializer((com.salesforce.nimbus.invoke.DecodedType)), kotlin.Function2((kotlin.String, com.salesforce.nimbus.invoke.DecodedType, kotlin.Unit)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../com.salesforce.nimbus/-j-s-encodable/index.html"><span class="identifier">JSEncodable</span></a><span class="symbol">&lt;</span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">?</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus$invoke(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.invoke.JavascriptEngine, com.salesforce.nimbus.invoke.EncodedType)), kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.invoke.EncodedType)))), kotlinx.serialization.KSerializer((com.salesforce.nimbus.invoke.DecodedType)), kotlin.Function2((kotlin.String, com.salesforce.nimbus.invoke.DecodedType, kotlin.Unit)))/kSerializer">kSerializer</span><span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><span class="identifier">DecodedType</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus$invoke(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.invoke.JavascriptEngine, com.salesforce.nimbus.invoke.EncodedType)), kotlin.String, kotlin.Array((com.salesforce.nimbus.JSEncodable((com.salesforce.nimbus.invoke.EncodedType)))), kotlinx.serialization.KSerializer((com.salesforce.nimbus.invoke.DecodedType)), kotlin.Function2((kotlin.String, com.salesforce.nimbus.invoke.DecodedType, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">,</span>&nbsp;<span class="identifier">DecodedType</span><span class="symbol">?</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

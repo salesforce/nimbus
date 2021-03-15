@@ -1,0 +1,30 @@
+$dokka.format:html
+$dokka.linkExtension:html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.Array((com.salesforce.nimbus.toJSONEncodable.V)))com.salesforce.nimbus/kotlin.-array/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.Boolean)com.salesforce.nimbus/kotlin.-boolean/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.Double)com.salesforce.nimbus/kotlin.-double/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.Int)com.salesforce.nimbus/kotlin.-int/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.Long)com.salesforce.nimbus/kotlin.-long/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.String)com.salesforce.nimbus/kotlin.-string/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.collections.List((com.salesforce.nimbus.toJSONEncodable.V)))com.salesforce.nimbus/kotlin.collections.-list/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus$toJSONEncodable(kotlin.collections.Map((kotlin.String, com.salesforce.nimbus.toJSONEncodable.V)))com.salesforce.nimbus/kotlin.collections.-map/to-j-s-o-n-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$bridge(com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService, kotlin.Function1((com.salesforce.nimbus.bridge.v8.V8Bridge.Builder, kotlin.Unit)))com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/bridge.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$createObject(com.eclipsesource.v8.V8)com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/create-object.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/memory-scope.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$promiseGlobal(com.eclipsesource.v8.V8)com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/promise-global.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$registerJavaCallback(com.eclipsesource.v8.V8Object, kotlin.String, kotlin.Function1((com.eclipsesource.v8.V8Array, kotlin.Any)))com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8-object/register-java-callback.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$registerVoidCallback(com.eclipsesource.v8.V8Object, kotlin.String, kotlin.Function1((com.eclipsesource.v8.V8Array, kotlin.Unit)))com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8-object/register-void-callback.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$rejectPromise(com.eclipsesource.v8.V8, kotlin.Any)com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/reject-promise.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$resolvePromise(com.eclipsesource.v8.V8, kotlin.Any)com.salesforce.nimbus.bridge.v8/com.eclipsesource.v8.-v8/resolve-promise.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$toV8Encodable(kotlin.Boolean, com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService)com.salesforce.nimbus.bridge.v8/kotlin.-boolean/to-v8-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$toV8Encodable(kotlin.Double, com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService)com.salesforce.nimbus.bridge.v8/kotlin.-double/to-v8-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$toV8Encodable(kotlin.Int, com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService)com.salesforce.nimbus.bridge.v8/kotlin.-int/to-v8-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$toV8Encodable(kotlin.Long, com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService)com.salesforce.nimbus.bridge.v8/kotlin.-long/to-v8-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.v8$toV8Encodable(kotlin.String, com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService)com.salesforce.nimbus.bridge.v8/kotlin.-string/to-v8-encodable.html
+$dokka.location:com.salesforce.nimbus.bridge.webview$bridge(android.webkit.WebView, java.util.concurrent.ExecutorService, kotlin.Function1((com.salesforce.nimbus.bridge.webview.WebViewBridge.Builder, kotlin.Unit)))com.salesforce.nimbus.bridge.webview/android.webkit.-web-view/bridge.html
+$dokka.location:com.salesforce.nimbus.bridge.webview$broadcastMessage(android.webkit.WebView, kotlin.String, com.salesforce.nimbus.JSEncodable((kotlin.String)), kotlin.Function1((kotlin.Int, kotlin.Unit)))com.salesforce.nimbus.bridge.webview/android.webkit.-web-view/broadcast-message.html
+$dokka.location:com.salesforce.nimbus.bridge.webview$fromStream(kotlin.String.Companion, java.io.InputStream)com.salesforce.nimbus.bridge.webview/kotlin.-string/from-stream.html
+com.salesforce.nimbus
+com.salesforce.nimbus.bridge.v8
+com.salesforce.nimbus.bridge.webview
+com.salesforce.nimbus.core.plugins

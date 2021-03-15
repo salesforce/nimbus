@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Plugin - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus</a>&nbsp;/&nbsp;<a href="./index.html">Plugin</a><br/>
+<br/>
+<h1>Plugin</h1>
+<code><span class="keyword">interface </span><span class="identifier">Plugin</span></code>
+<p>Defines a plugin which will be bound to the <a href="../-bridge/index.html">Bridge</a>. Implementations of this interface
+must also be annotated with <a href="#">PluginOptions</a>.</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="cleanup.html">cleanup</a></h4>
+</td>
+<td>
+<p>Do any cleanup of the <a href="cleanup.html#JavascriptEngine">JavascriptEngine</a> necessary for this plugin. Do not remove any javascript
+interfaces from the <a href="cleanup.html#JavascriptEngine">JavascriptEngine</a> here. They will be removed by the <a href="../-bridge/index.html">Bridge</a>.</p>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span> <span class="identifier">cleanup</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.Plugin$cleanup(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.Plugin.cleanup.JavascriptEngine, com.salesforce.nimbus.Plugin.cleanup.EncodedType)))/runtime">runtime</span><span class="symbol">:</span>&nbsp;<a href="../-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="customize.html">customize</a></h4>
+</td>
+<td>
+<p>Customize the <a href="customize.html#JavascriptEngine">JavascriptEngine</a> prior to the plugin being initialized. Do not add any javascript
+interfaces to the <a href="customize.html#JavascriptEngine">JavascriptEngine</a> here. They will be added by the <a href="../-bridge/index.html">Bridge</a>.</p>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span> <span class="identifier">customize</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.Plugin$customize(com.salesforce.nimbus.Runtime((com.salesforce.nimbus.Plugin.customize.JavascriptEngine, com.salesforce.nimbus.Plugin.customize.EncodedType)))/runtime">runtime</span><span class="symbol">:</span>&nbsp;<a href="../-runtime/index.html"><span class="identifier">Runtime</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../com.salesforce.nimbus.core.plugins/-device-info-plugin/index.html">DeviceInfoPlugin</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">DeviceInfoPlugin</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Plugin</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

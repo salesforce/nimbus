@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Bridge.Builder - nimbus</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../../index.html">com.salesforce.nimbus</a>&nbsp;/&nbsp;<a href="../index.html">Bridge</a>&nbsp;/&nbsp;<a href="./index.html">Builder</a><br/>
+<br/>
+<h1>Builder</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier">EncodedType</span><span class="symbol">, </span><span class="identifier">B</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">Bridge</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Abstract builder class for the <a href="../index.html">Bridge</a> implementation to implement in order to build a <a href="../index.html">Bridge</a> instance.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<p>Abstract builder class for the <a href="../index.html">Bridge</a> implementation to implement in order to build a <a href="../index.html">Bridge</a> instance.</p>
+<code><span class="identifier">Builder</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="builder-binders.html">builderBinders</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">builderBinders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../../-binder/index.html"><span class="identifier">Binder</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="attach.html">attach</a></h4>
+</td>
+<td>
+<p>Attaches the <a href="../index.html">Bridge</a> to a <a href="index.html#JavascriptEngine">JavascriptEngine</a>.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">attach</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.Bridge.Builder$attach(com.salesforce.nimbus.Bridge.Builder.JavascriptEngine, java.util.concurrent.ExecutorService)/javascriptEngine">javascriptEngine</span><span class="symbol">:</span>&nbsp;<span class="identifier">JavascriptEngine</span><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.Bridge.Builder$attach(com.salesforce.nimbus.Bridge.Builder.JavascriptEngine, java.util.concurrent.ExecutorService)/executorService">executorService</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html"><span class="identifier">ExecutorService</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Executors.newSingleThreadExecutor()<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">B</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind.html">bind</a></h4>
+</td>
+<td>
+<p>Adds a plugin <a href="../../-binder/index.html">Binder</a> to the <a href="../index.html">Bridge</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.Bridge.Builder$bind(com.salesforce.nimbus.Binder((com.salesforce.nimbus.Bridge.Builder.JavascriptEngine, com.salesforce.nimbus.Bridge.Builder.EncodedType)))/binder">binder</span><span class="symbol">:</span>&nbsp;<a href="../../-binder/index.html"><span class="identifier">Binder</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">,</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.Bridge.Builder$bind(kotlin.Function1((com.salesforce.nimbus.Bridge.Builder((com.salesforce.nimbus.Bridge.Builder.JavascriptEngine, com.salesforce.nimbus.Bridge.Builder.EncodedType, com.salesforce.nimbus.Bridge.Builder.B)), com.salesforce.nimbus.Binder((, )))))/builder">builder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">,</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../../-binder/index.html"><span class="identifier">Binder</span></a><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Builder</span><span class="symbol">&lt;</span><span class="identifier">JavascriptEngine</span><span class="symbol">,</span>&nbsp;<span class="identifier">EncodedType</span><span class="symbol">,</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

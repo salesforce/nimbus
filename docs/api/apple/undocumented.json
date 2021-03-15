@@ -1,0 +1,593 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Binder.swift",
+      "line": 13,
+      "symbol": "Binder",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Binder.swift",
+      "line": 476,
+      "symbol": "Binder",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/BridgeBuilder.swift",
+      "line": 13,
+      "symbol": "BridgeBuilder",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/BridgeBuilder.swift",
+      "line": 14,
+      "symbol": "BridgeBuilder.createBridge(for:plugins:injectRuntime:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/BridgeBuilder.swift",
+      "line": 20,
+      "symbol": "BridgeBuilder.createBridge(for:plugins:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/BridgeBuilder.swift",
+      "line": 27,
+      "symbol": "Bridge",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/BridgeBuilder.swift",
+      "line": 28,
+      "symbol": "Bridge.plugins",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 53,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 63,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 73,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 85,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 97,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 109,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 121,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 133,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 145,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 158,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 171,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 184,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 197,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 210,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 223,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 236,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 249,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 263,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 277,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 291,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 305,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 319,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 333,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 347,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 361,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 376,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 391,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 406,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 421,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 436,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 451,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 466,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 481,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 497,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 513,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 529,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 545,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 561,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 577,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 593,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 609,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 618,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 628,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 639,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 651,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 664,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 676,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 689,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 703,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 718,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 734,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 747,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 760,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 774,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 788,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 803,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 818,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/CallableBinder.swift",
+      "line": 834,
+      "symbol": "CallableBinder.bind(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EncodableValue.swift",
+      "line": 21,
+      "symbol": "EncodableValue",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EncodableValue.swift",
+      "line": 22,
+      "symbol": "EncodableValue.void",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EncodableValue.swift",
+      "line": 23,
+      "symbol": "EncodableValue.value(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EncodableValue.swift",
+      "line": 24,
+      "symbol": "EncodableValue.error(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EventPublisher.swift",
+      "line": 16,
+      "symbol": "EventKeyPathing.stringForKeyPath(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/EventPublisher.swift",
+      "line": 35,
+      "symbol": "EventPublisher.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/JSContextBridge.swift",
+      "line": 36,
+      "symbol": "JSContextBridge.plugins",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/JSValueDecoder.swift",
+      "line": 15,
+      "symbol": "JSValueDecoder.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/JSValueEncoder.swift",
+      "line": 17,
+      "symbol": "JSValueEncoder.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Plugin/DeviceInfoPlugin.swift",
+      "line": 57,
+      "symbol": "DeviceInfoPlugin",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Plugin/DeviceInfoPlugin.swift",
+      "line": 58,
+      "symbol": "DeviceInfoPlugin.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Plugin/DeviceInfoPlugin.swift",
+      "line": 67,
+      "symbol": "DeviceInfoPlugin",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/Plugin.swift",
+      "line": 13,
+      "symbol": "Plugin.namespace",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebView+NimbusJS.swift",
+      "line": 16,
+      "symbol": "WKWebView.injectNimbusJavascript(scriptName:bundle:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebViewBridge.swift",
+      "line": 18,
+      "symbol": "WebViewBridge.plugins",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebViewBridge.swift",
+      "line": 145,
+      "symbol": "WebViewBridge.userContentController(_:didReceive:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebViewBridge.swift",
+      "line": 208,
+      "symbol": "PromiseError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebViewBridge.swift",
+      "line": 209,
+      "symbol": "PromiseError.pageUnloaded",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/distiller/project/platforms/apple/Sources/Nimbus/WebViewBridge.swift",
+      "line": 210,
+      "symbol": "PromiseError.message(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/distiller/project/platforms/apple"
+}

@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>JSEncodable - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus</a>&nbsp;/&nbsp;<a href="./index.html">JSEncodable</a><br/>
+<br/>
+<h1>JSEncodable</h1>
+<code><span class="keyword">interface </span><span class="identifier">JSEncodable</span><span class="symbol">&lt;</span><span class="identifier">EncodedType</span><span class="symbol">&gt;</span></code>
+<p>Defines an object that can be encoded to a javascript representation where the
+<a href="index.html#EncodedType">EncodedType</a> is the encoded type the javascript engine expects</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="encode.html">encode</a></h4>
+</td>
+<td>
+<p>Encodes the value to the <a href="index.html#EncodedType">EncodedType</a></p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">encode</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">EncodedType</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-j-s-o-n-encodable.html">JSONEncodable</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">JSONEncodable</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">JSEncodable</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../com.salesforce.nimbus.bridge.v8/-v8-encodable.html">V8Encodable</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">V8Encodable</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">JSEncodable</span></a><span class="symbol">&lt;</span><span class="identifier">V8Object</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nimbus</title>
+        <link rel="stylesheet" href="/nimbus/css/normalize.css">
+        <link rel="stylesheet" href="/nimbus/css/main.css">
+    </head>
+    <body>
+        <header>
+    <h1><a href="/nimbus/">Nimbus</a></h1>
+    <nav>
+    <ul>
+        <li><a href="/nimbus/">Home</a></li>
+        <li><a href="/nimbus/docs/overview/">Docs</a></li>
+    </ul>
+</nav>
+
+</header>
+
+        <main>
+        
+<div class="docs">
+    <nav>
+        <ul>
+            <li>
+                <h3>Overview</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/overview">Introduction</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/nimbus/docs/architecture"
+                            >Architecture</a
+                        >
+                    </li> -->
+                    <li>
+                        <a href="/nimbus/docs/overview/getting-started"
+                            >Getting Started</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Guides</h3>
+                <ul></ul>
+            </li>
+            <li>
+                <h3>iOS</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/ios/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/plugin-testing"
+                            >Testing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Android</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/android/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/android/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>API Reference</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/api/ts/">Typescript</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/apple/">iOS / macOS</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/android/nimbus">Android</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h1>Integrating Nimbus into a Web App</h1>
+<p>The Nimbus web runtime provides both the integration hooks for using Nimbus
+in a hybrid app container as well as support for web-platform plugins.</p>
+<p>There are two ways to integrate Nimbus into your web app:</p>
+<ul>
+<li>Including the Nimbus runtime in your web app bundle (preferred)</li>
+<li>Injecting the Nimbus runtime when your web app is loaded in the hybrid container</li>
+</ul>
+<h2>Including Nimbus in the Web App bundle</h2>
+<p>The preferred method is to include Nimbus in your web app bundle. This way
+you have a single version of your web app that will run in any supported
+Nimbus app container or the browser.</p>
+<p>Start by adding Nimbus as a dependency:</p>
+<pre class="language-bash"><code class="language-bash"><span class="highlight-line"><span class="token function">npm</span> <span class="token function">install</span> --save @salesforce/nimbus</span></code></pre>
+<p>Once Nimbus has been added to the project it can be imported as a module:</p>
+<pre class="language-typescript"><code class="language-typescript"><span class="highlight-line"><span class="token keyword">import</span> <span class="token punctuation">{</span> Nimbus <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@salesforce/nimbus"</span><span class="token punctuation">;</span></span></code></pre>
+<h2>Injecting Nimbus from a hybrid app container</h2>
+<p>In some cases it may be impractical to bundle Nimbus with the web app. A secondary way of loading Nimbus is to inject its runtime javascript bundle from the hybrid app container. This means that the Nimbus web runtime is bundled as a resource in the hybrid app and loaded into the web view during app bootstrap.</p>
+<p>Refer to the platform-specific documentation to learn how to inject the Nimbus runtime from the hybrid app container.</p>
+
+    </article>
+</div>
+
+        </main>
+    </body>
+</html>

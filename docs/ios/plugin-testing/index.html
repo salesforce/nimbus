@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nimbus</title>
+        <link rel="stylesheet" href="/nimbus/css/normalize.css">
+        <link rel="stylesheet" href="/nimbus/css/main.css">
+    </head>
+    <body>
+        <header>
+    <h1><a href="/nimbus/">Nimbus</a></h1>
+    <nav>
+    <ul>
+        <li><a href="/nimbus/">Home</a></li>
+        <li><a href="/nimbus/docs/overview/">Docs</a></li>
+    </ul>
+</nav>
+
+</header>
+
+        <main>
+        
+<div class="docs">
+    <nav>
+        <ul>
+            <li>
+                <h3>Overview</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/overview">Introduction</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/nimbus/docs/architecture"
+                            >Architecture</a
+                        >
+                    </li> -->
+                    <li>
+                        <a href="/nimbus/docs/overview/getting-started"
+                            >Getting Started</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Guides</h3>
+                <ul></ul>
+            </li>
+            <li>
+                <h3>iOS</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/ios/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/plugin-testing"
+                            >Testing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Android</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/android/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/android/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>API Reference</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/api/ts/">Typescript</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/apple/">iOS / macOS</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/android/nimbus">Android</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h1>Plugin Testing Best Practices</h1>
+<p>Testing your Nimbus plugins, like all code, is important. Since plugins should, ideally, be well contained and have a single responsibility, this makes them ideal for good unit testing. Since Nimbus is simply binding existing functions to a webview, plugin business logic can be tested independently with <code>XCTest</code> and don't, necessarily, need to be tested over the Nimbus bridge. This means that all of your tests can be focused and isolated and you can test your plugins unique logic without having to do so across the bridge.</p>
+<p>The focus of your testing across the Nimbus bridge should be on verifying the shape of parameters and return values, which will be serialized to json automatically by Nimbus. Combining that with other tests verifying business logic should give your plugins good coverage.</p>
+<p>This guide will give an example of testing with <code>XCTest</code> and a purpose-built Nimbus plugin to relay results to your code from the webview.</p>
+<h1>XCTest</h1>
+<p>The basic strategy for testing with <code>XCTest</code> is as follows:</p>
+<ol>
+<li>Prepare a Nimbus Bridge
+<ul>
+<li>Load the plugin you wish to test</li>
+<li>Load a shim plugin that you can use to receive test results</li>
+</ul>
+</li>
+<li>Prepare a <code>WKWebView</code> instance with nimbus js</li>
+<li>Attach the prepared Nimbus Bridge to the prepared <code>WKWebView</code> instance</li>
+<li>Execute javascript in the <code>WKWebView</code> instance to call the plugin you wish to test and then redirect its results to your shim plugin</li>
+<li>Wait for the result and assert all values are expected</li>
+</ol>
+<p>Steps 1 through 3 are common and generic enough that they may be useful to extract into a convenience method or subclass of <code>XCTestCase</code>. Then each of your individual tests can focus on Step 4 and 5, which will be unique to each test. Your test case classes would look similar to the below:</p>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">DharmaPluginTests</span><span class="token punctuation">:</span> <span class="token builtin">NimbusPluginTestsBase</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> plugin <span class="token operator">=</span> <span class="token function">DharmaPlugin</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">override</span> <span class="token keyword">func</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        plugin <span class="token operator">=</span> <span class="token function">DharmaPlugin</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        nimbus<span class="token punctuation">.</span><span class="token function">addplugin</span><span class="token punctuation">(</span>plugin<span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token function">loadWebViewAndWait</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">testTheNumbers</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">let</span> jsExpectation <span class="token operator">=</span> <span class="token function">expectation</span><span class="token punctuation">(</span>description<span class="token punctuation">:</span> <span class="token string">"js"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        testBridge<span class="token punctuation">.</span>currentExpectation <span class="token operator">=</span> jsExpectation</span><br><span class="highlight-line">        <span class="token keyword">let</span> js <span class="token operator">=</span> <span class="token string">""</span>"</span><br><span class="highlight-line">                __nimbus<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span>dharmaPlugin<span class="token punctuation">.</span><span class="token function">theNumbers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token function">function</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">                        testBridge<span class="token punctuation">.</span><span class="token function">receiveResult</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">                    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><br><span class="highlight-line">                <span class="token string">""</span>"</span><br><span class="highlight-line">        webView<span class="token punctuation">.</span><span class="token function">evaluateJavaScript</span><span class="token punctuation">(</span>js<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token number">_</span><span class="token punctuation">,</span> <span class="token number">_</span> <span class="token keyword">in</span><span class="token punctuation">}</span></span><br><span class="highlight-line">        <span class="token function">wait</span><span class="token punctuation">(</span><span class="token keyword">for</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>jsExpectation<span class="token punctuation">]</span><span class="token punctuation">,</span> timeout<span class="token punctuation">:</span> <span class="token number">5</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token keyword">if</span> <span class="token keyword">let</span> currentResult <span class="token operator">=</span> testBridge<span class="token punctuation">.</span>currentResult <span class="token keyword">as</span><span class="token operator">?</span> <span class="token punctuation">[</span><span class="token builtin">Int</span><span class="token punctuation">]</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            <span class="token function">XCTAssertEqual</span><span class="token punctuation">(</span>currentResult<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">23</span><span class="token punctuation">,</span> <span class="token number">42</span><span class="token punctuation">]</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            <span class="token function">XCTFail</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>In the above example, the <code>testBridge</code> referenced in the javascript executed on the web view is the result of binding the below shim plugin to the bridge:</p>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">NimbusTestBridge</span><span class="token punctuation">:</span> <span class="token builtin">Plugin</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> currentExpectation<span class="token punctuation">:</span> <span class="token builtin">XCTestExpectation</span><span class="token operator">?</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> currentResult<span class="token punctuation">:</span> <span class="token builtin">Any</span><span class="token operator">?</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">receiveResult</span><span class="token punctuation">(</span>result<span class="token punctuation">:</span> <span class="token builtin">Any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        currentResult <span class="token operator">=</span> result</span><br><span class="highlight-line">        currentExpectation<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">fulfill</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">bindToWebView</span><span class="token punctuation">(</span>webView<span class="token punctuation">:</span> <span class="token builtin">WKWebView</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">let</span> testConnection <span class="token operator">=</span> webView<span class="token punctuation">.</span><span class="token function">addConnection</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> <span class="token keyword">self</span><span class="token punctuation">,</span> <span class="token keyword">as</span><span class="token punctuation">:</span> <span class="token string">"testBridge"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        testConnection<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">.</span>receiveResult<span class="token punctuation">,</span> <span class="token keyword">as</span><span class="token punctuation">:</span> <span class="token string">"receiveResult"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>Combine that with the following implementation of <code>NimbusPluginTestsBase</code> which instantiates the shim plugin and holds the actual <code>NimbusBridge</code> instance. This base class also has affordances for injecting the nimbus js source into the test webview:</p>
+<pre class="language-swift"><code class="language-swift"><span class="highlight-line"><span class="token keyword">class</span> <span class="token class-name">NimbusPluginTestsBase</span><span class="token punctuation">:</span> <span class="token builtin">XCTestCase</span><span class="token punctuation">,</span> <span class="token builtin">WKNavigationDelegate</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> nimbus <span class="token operator">=</span> <span class="token function">WebViewBridge</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> testBridge <span class="token operator">=</span> <span class="token function">NimbusTestBridge</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> webView<span class="token punctuation">:</span> <span class="token builtin">WKWebView</span><span class="token operator">!</span></span><br><span class="highlight-line">    <span class="token keyword">var</span> loadingExpectation<span class="token punctuation">:</span> <span class="token builtin">XCTestExpectation</span><span class="token operator">?</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">override</span> <span class="token keyword">func</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        nimbus <span class="token operator">=</span> <span class="token function">WebViewBridge</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        testBridge <span class="token operator">=</span> <span class="token function">NimbusTestBridge</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        nimbus<span class="token punctuation">.</span><span class="token function">addPlugin</span><span class="token punctuation">(</span>testBridge<span class="token punctuation">)</span></span><br><span class="highlight-line">        webView <span class="token operator">=</span> <span class="token function">WKWebView</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        webView<span class="token punctuation">.</span>navigationDelegate <span class="token operator">=</span> <span class="token keyword">self</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">override</span> <span class="token keyword">func</span> <span class="token function">tearDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        webView<span class="token punctuation">.</span>navigationDelegate <span class="token operator">=</span> <span class="token constant">nil</span></span><br><span class="highlight-line">        webView <span class="token operator">=</span> <span class="token constant">nil</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">loadWebViewAndWait</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        <span class="token keyword">guard</span> <span class="token keyword">let</span> nimbusPath <span class="token operator">=</span> <span class="token builtin">Bundle</span><span class="token punctuation">.</span>main<span class="token punctuation">.</span><span class="token function">path</span><span class="token punctuation">(</span>forResource<span class="token punctuation">:</span> <span class="token string">"nimbus"</span><span class="token punctuation">,</span> ofType<span class="token punctuation">:</span> <span class="token string">"js"</span><span class="token punctuation">)</span> <span class="token keyword">else</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            <span class="token function">XCTFail</span><span class="token punctuation">(</span><span class="token string">"couldn't find nimbus js"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">            <span class="token keyword">return</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">        <span class="token keyword">if</span> <span class="token keyword">let</span> nimbusScript <span class="token operator">=</span> <span class="token keyword">try</span><span class="token operator">?</span> <span class="token function">String</span><span class="token punctuation">(</span>contentsOfFile<span class="token punctuation">:</span> nimbusPath<span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            <span class="token keyword">let</span> userScript <span class="token operator">=</span> <span class="token function">WKUserScript</span><span class="token punctuation">(</span>source<span class="token punctuation">:</span> nimbusScript<span class="token punctuation">,</span> injectionTime<span class="token punctuation">:</span> <span class="token punctuation">.</span>atDocumentStart<span class="token punctuation">,</span> forMainFrameOnly<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">)</span></span><br><span class="highlight-line">            nimbus<span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> webView<span class="token punctuation">)</span></span><br><span class="highlight-line">            webView<span class="token punctuation">.</span>configuration<span class="token punctuation">.</span>userContentController<span class="token punctuation">.</span><span class="token function">addUserScript</span><span class="token punctuation">(</span>userScript<span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">            <span class="token function">XCTFail</span><span class="token punctuation">(</span><span class="token string">"unable to make nimbus js string"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">        <span class="token keyword">let</span> html <span class="token operator">=</span> <span class="token string">"&lt;html>&lt;body>&lt;/body>&lt;/html>"</span></span><br><span class="highlight-line">        loadingExpectation <span class="token operator">=</span> <span class="token function">expectation</span><span class="token punctuation">(</span>description<span class="token punctuation">:</span> <span class="token string">"web view load"</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        webView<span class="token punctuation">.</span><span class="token function">loadHTMLString</span><span class="token punctuation">(</span>html<span class="token punctuation">,</span> baseURL<span class="token punctuation">:</span> <span class="token constant">nil</span><span class="token punctuation">)</span></span><br><span class="highlight-line">        <span class="token function">wait</span><span class="token punctuation">(</span><span class="token keyword">for</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>loadingExpectation<span class="token operator">!</span><span class="token punctuation">]</span><span class="token punctuation">,</span> timeout<span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line">    <span class="token keyword">func</span> <span class="token function">webView</span><span class="token punctuation">(</span><span class="token number">_</span><span class="token punctuation">:</span> <span class="token builtin">WKWebView</span><span class="token punctuation">,</span> didFinish <span class="token number">_</span><span class="token punctuation">:</span> <span class="token builtin">WKNavigation</span><span class="token operator">!</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span><br><span class="highlight-line">        loadingExpectation<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">fulfill</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><br><span class="highlight-line">    <span class="token punctuation">}</span></span><br><span class="highlight-line"></span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>This combination allows you to inherit from this base test case class, and call any of the functions that your plugin publishes and allow them to do any sort of asynchronous work and then receive the result via the shim plugin implementation. This also allows you to keep the actual tests fairly succinct and easy to read.</p>
+<p>This is merely an example implementation and should/could be reduced or extended depending on your specific needs.</p>
+
+    </article>
+</div>
+
+        </main>
+    </body>
+</html>

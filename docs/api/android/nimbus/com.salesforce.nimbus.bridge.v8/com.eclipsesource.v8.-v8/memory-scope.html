@@ -1,0 +1,17 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>memoryScope - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus.bridge.v8</a>&nbsp;/&nbsp;<a href="index.html">com.eclipsesource.v8.V8</a>&nbsp;/&nbsp;<a href="./memory-scope.html">memoryScope</a><br/>
+<br/>
+<h1>memoryScope</h1>
+<a name="com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))"></a>
+<code><span class="keyword">inline</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">memoryScope</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Creates a memory scope around the function <a href="memory-scope.html#com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</a>.
+After the <a href="memory-scope.html#com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</a> is invoked, any V8Value objects created in the body will be released
+except the V8Value object is returned to caller for consumption.</p>
+</BODY>
+</HTML>

@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>EventPublisher - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus</a>&nbsp;/&nbsp;<a href="./index.html">EventPublisher</a><br/>
+<br/>
+<h1>EventPublisher</h1>
+<code><span class="keyword">interface </span><span class="identifier">EventPublisher</span><span class="symbol">&lt;</span><span class="identifier">E</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-event/index.html"><span class="identifier">Event</span></a><span class="symbol">&gt;</span></code>
+<p>Defines a <a href="../-plugin/index.html">Plugin</a> which can publish <a href="../-event/index.html">Event</a>s of type <a href="index.html#E">E</a> to a listener who has subscribed to those events.</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-listener.html">addListener</a></h4>
+</td>
+<td>
+<p>Add a listener for events with the <a href="add-listener.html#com.salesforce.nimbus.EventPublisher$addListener(kotlin.String, kotlin.Function1((com.salesforce.nimbus.EventPublisher.E, kotlin.Unit)))/eventName">eventName</a> specified.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addListener</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.EventPublisher$addListener(kotlin.String, kotlin.Function1((com.salesforce.nimbus.EventPublisher.E, kotlin.Unit)))/eventName">eventName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.EventPublisher$addListener(kotlin.String, kotlin.Function1((com.salesforce.nimbus.EventPublisher.E, kotlin.Unit)))/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">E</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="publish-event.html">publishEvent</a></h4>
+</td>
+<td>
+<p>Publishes an event <a href="index.html#E">E</a> to any listeners which are subscribed to the <a href="../-event/name.html">Event.name</a>.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">publishEvent</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.EventPublisher$publishEvent(com.salesforce.nimbus.EventPublisher.E)/event">event</span><span class="symbol">:</span>&nbsp;<span class="identifier">E</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-listener.html">removeListener</a></h4>
+</td>
+<td>
+<p>Removes a listener using the UUID returned from <a href="add-listener.html">addListener</a>.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">removeListener</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.EventPublisher$removeListener(kotlin.String)/listenerId">listenerId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-default-event-publisher/index.html">DefaultEventPublisher</a></h4>
+</td>
+<td>
+<p>Default implementation of <a href="./index.html">EventPublisher</a>.</p>
+<code><span class="keyword">class </span><span class="identifier">DefaultEventPublisher</span><span class="symbol">&lt;</span><span class="identifier">E</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-event/index.html"><span class="identifier">Event</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventPublisher</span></a><span class="symbol">&lt;</span><span class="identifier">E</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

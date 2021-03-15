@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>com.salesforce.nimbus.bridge.v8.com.eclipsesource.v8.V8 - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus.bridge.v8</a>&nbsp;/&nbsp;<a href="./index.html">com.eclipsesource.v8.V8</a><br/>
+<br/>
+<h3>Extensions for com.eclipsesource.v8.V8</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bridge.html">bridge</a></h4>
+</td>
+<td>
+<p>Creates a <a href="../-v8-bridge/-builder/index.html">V8Bridge.Builder</a> and passes it to the <a href="bridge.html#com.salesforce.nimbus.bridge.v8$bridge(com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService, kotlin.Function1((com.salesforce.nimbus.bridge.v8.V8Bridge.Builder, kotlin.Unit)))/builder">builder</a> function, allowing any binders to be added
+and then attaches to the <a href="../-v8-bridge/index.html">V8Bridge</a> instance.</p>
+<code><span class="keyword">fun </span><span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">bridge</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$bridge(com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService, kotlin.Function1((com.salesforce.nimbus.bridge.v8.V8Bridge.Builder, kotlin.Unit)))/executorService">executorService</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutorService.html"><span class="identifier">ExecutorService</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$bridge(com.eclipsesource.v8.V8, java.util.concurrent.ExecutorService, kotlin.Function1((com.salesforce.nimbus.bridge.v8.V8Bridge.Builder, kotlin.Unit)))/builder">builder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Builder</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;{}<span class="symbol">)</span><span class="symbol">: </span><a href="../-v8-bridge/index.html"><span class="identifier">V8Bridge</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-object.html">createObject</a></h4>
+</td>
+<td>
+<p>Helper function to create a <a href="#">V8Object</a> which aids in testability.</p>
+<code><span class="keyword">fun </span><span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">createObject</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">V8Object</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="memory-scope.html">memoryScope</a></h4>
+</td>
+<td>
+<p>Creates a memory scope around the function <a href="memory-scope.html#com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</a>.
+After the <a href="memory-scope.html#com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</a> is invoked, any V8Value objects created in the body will be released
+except the V8Value object is returned to caller for consumption.</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">memoryScope</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$memoryScope(com.eclipsesource.v8.V8, kotlin.Function0((com.salesforce.nimbus.bridge.v8.memoryScope.T)))/body">body</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="promise-global.html">promiseGlobal</a></h4>
+</td>
+<td>
+<p>Returns the global Promise object.</p>
+<code><span class="keyword">fun </span><span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">promiseGlobal</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">V8Object</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="reject-promise.html">rejectPromise</a></h4>
+</td>
+<td>
+<p>Rejects a Promise with the <a href="reject-promise.html#com.salesforce.nimbus.bridge.v8$rejectPromise(com.eclipsesource.v8.V8, kotlin.Any)/error">error</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">rejectPromise</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$rejectPromise(com.eclipsesource.v8.V8, kotlin.Any)/error">error</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">V8Object</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve-promise.html">resolvePromise</a></h4>
+</td>
+<td>
+<p>Resolves a Promise with the <a href="resolve-promise.html#com.salesforce.nimbus.bridge.v8$resolvePromise(com.eclipsesource.v8.V8, kotlin.Any)/result">result</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">V8</span><span class="symbol">.</span><span class="identifier">resolvePromise</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.v8$resolvePromise(com.eclipsesource.v8.V8, kotlin.Any)/result">result</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">V8Object</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

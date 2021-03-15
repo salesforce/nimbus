@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nimbus</title>
+        <link rel="stylesheet" href="/nimbus/css/normalize.css">
+        <link rel="stylesheet" href="/nimbus/css/main.css">
+    </head>
+    <body>
+        <header>
+    <h1><a href="/nimbus/">Nimbus</a></h1>
+    <nav>
+    <ul>
+        <li><a href="/nimbus/">Home</a></li>
+        <li><a href="/nimbus/docs/overview/">Docs</a></li>
+    </ul>
+</nav>
+
+</header>
+
+        <main>
+        
+<div class="docs">
+    <nav>
+        <ul>
+            <li>
+                <h3>Overview</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/overview">Introduction</a>
+                    </li>
+                    <!-- <li>
+                        <a href="/nimbus/docs/architecture"
+                            >Architecture</a
+                        >
+                    </li> -->
+                    <li>
+                        <a href="/nimbus/docs/overview/getting-started"
+                            >Getting Started</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Guides</h3>
+                <ul></ul>
+            </li>
+            <li>
+                <h3>iOS</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/ios/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/ios/plugin-testing"
+                            >Testing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>Android</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/android/installation"
+                            >Installation</a
+                        >
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/android/writing-a-plugin"
+                            >Writing a Plugin</a
+                        >
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>API Reference</h3>
+                <ul>
+                    <li>
+                        <a href="/nimbus/docs/api/ts/">Typescript</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/apple/">iOS / macOS</a>
+                    </li>
+                    <li>
+                        <a href="/nimbus/docs/api/android/nimbus">Android</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <article>
+        <h1>Writing a Nimbus Plugin</h1>
+<p>Plugins are how native functionality is exposed to hybrid features. Typically, plugins are small and have a single responsibility. Plugins are intended to be composable and you should keep this in mind while building your own plugins.</p>
+<p>Making a plugin means building a class in Kotlin that implements the <code>Plugin</code> interface and is annotated properly. Annotations are used to provide binding options, and to express which functions in the native class should be bound to the webview.</p>
+<hr>
+<p>The class declaration should include implementing the <code>Plugin</code> interface as well as the <code>PluginOptions</code> annotation.</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token annotation builtin">@PluginOptions</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"DeviceInfoPlugin"</span><span class="token punctuation">)</span></span><br><span class="highlight-line"><span class="token keyword">class</span> <span class="token function">DeviceInfoPlugin</span><span class="token punctuation">(</span>context<span class="token operator">:</span> Context<span class="token punctuation">)</span> <span class="token operator">:</span> Plugin <span class="token punctuation">{</span> <span class="token operator">..</span><span class="token punctuation">.</span> <span class="token punctuation">}</span></span></code></pre>
+<p>The <code>name</code> parameter in the <code>PluginOptions</code> annotation will be the name of the object this plugin will be bound as when attached to a webview.</p>
+<hr>
+<p>Then annotate each function you'd like to bind to the webview with the <code>BoundMethod</code> annotation.</p>
+<pre class="language-kotlin"><code class="language-kotlin"><span class="highlight-line"><span class="token annotation builtin">@BoundMethod</span></span><br><span class="highlight-line"><span class="token keyword">fun</span> <span class="token function">getDeviceInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> DeviceInfo <span class="token punctuation">{</span></span><br><span class="highlight-line">    <span class="token keyword">return</span> cachedDeviceInfo</span><br><span class="highlight-line"><span class="token punctuation">}</span></span></code></pre>
+<p>Each bound function will be available in the webview with an equivalent function name. For example, the above function will be available as <code>getDeviceInfo</code>.</p>
+
+    </article>
+</div>
+
+        </main>
+    </body>
+</html>

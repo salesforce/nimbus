@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>broadcastMessage - nimbus</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nimbus</a>&nbsp;/&nbsp;<a href="../index.html">com.salesforce.nimbus.bridge.webview</a>&nbsp;/&nbsp;<a href="index.html">android.webkit.WebView</a>&nbsp;/&nbsp;<a href="./broadcast-message.html">broadcastMessage</a><br/>
+<br/>
+<h1>broadcastMessage</h1>
+<a name="com.salesforce.nimbus.bridge.webview$broadcastMessage(android.webkit.WebView, kotlin.String, com.salesforce.nimbus.JSEncodable((kotlin.String)), kotlin.Function1((kotlin.Int, kotlin.Unit)))"></a>
+<code><span class="keyword">fun </span><span class="identifier">WebView</span><span class="symbol">.</span><span class="identifier">broadcastMessage</span><span class="symbol">(</span><span class="identifier" id="com.salesforce.nimbus.bridge.webview$broadcastMessage(android.webkit.WebView, kotlin.String, com.salesforce.nimbus.JSEncodable((kotlin.String)), kotlin.Function1((kotlin.Int, kotlin.Unit)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.webview$broadcastMessage(android.webkit.WebView, kotlin.String, com.salesforce.nimbus.JSEncodable((kotlin.String)), kotlin.Function1((kotlin.Int, kotlin.Unit)))/arg">arg</span><span class="symbol">:</span>&nbsp;<a href="../../com.salesforce.nimbus/-j-s-encodable/index.html"><span class="identifier">JSEncodable</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.salesforce.nimbus.bridge.webview$broadcastMessage(android.webkit.WebView, kotlin.String, com.salesforce.nimbus.JSEncodable((kotlin.String)), kotlin.Function1((kotlin.Int, kotlin.Unit)))/completionHandler">completionHandler</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><span class="identifier">result</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code>
+<p>Asynchronously broadcast a message to subscribers listening on Javascript side.  Message can be
+delivered with an argument so that subscriber can use that pass useful data. This method must be called on UI thread.</p>
+<h3>Parameters</h3>
+<p><a name="name"></a>
+<code>name</code> - Message name.  Listeners are keying on unique message names on Javascript side.
+    There can be multiple listeners listening on same message.</p>
+<p><a name="arg"></a>
+<code>arg</code> - An optional primitive type or object to pass to message listeners.</p>
+<p><a name="completionHandler"></a>
+<code>completionHandler</code> - A block to invoke when script evaluation completes or fails. You do not
+    have to pass a closure if you are not interested in getting the callback.</p>
+</BODY>
+</HTML>

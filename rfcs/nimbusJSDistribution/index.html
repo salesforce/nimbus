@@ -1,0 +1,54 @@
+<h1>Distributing nimbus.js to native consumers</h1>
+<p>In order for nimbus to work, the <code>nimbus.js</code> file that is the build output of the TypeScript project has to be present as a resource in any webpage that wants to use hybrid features.</p>
+<p>The current, officially supported way that we do this is to add nimbus as an npm dependency on the web app and load <code>nimbus.js</code> in the page itself. This is not a perfect solution, as it could lead to native containers getting out of sync with the version of nimbus loaded in the webview. Most use cases would be better suited to loading <code>nimbus.js</code> from the hybrid container itself.</p>
+<p>We don't currently have any officially supported way for native consumers to import this compiled artifact. Current consumers are building the source themselves and manually copying it into their projects.</p>
+<p>This RFC discusses a number of options to enable this on both iOS and Android.</p>
+<p><strong>The decision is to move forward with Option 2 for iOS and the single proposed option on Android</strong></p>
+<h1>iOS</h1>
+<p><strong>1 - Podspec with a <code>prepare_command</code> step</strong></p>
+<pre class="language-ruby"><code class="language-ruby"><span class="highlight-line">spec<span class="token punctuation">.</span>prepare_command <span class="token operator">=</span> <span class="token operator">&lt;</span><span class="token operator">&lt;</span><span class="token operator">-</span><span class="token constant">CMD</span></span><br><span class="highlight-line">                        <span class="token comment"># curl and unzip here</span></span><br><span class="highlight-line">                   <span class="token constant">CMD</span></span></code></pre>
+<p><code>prepare_command</code> is fairly stable and well supported, documentation <a href="https://guides.cocoapods.org/syntax/podspec.html#prepare_command">here</a>. The command step would pull the nimbus.js artifact from the GitHub releases page. We don't currently publish the compiled nimbus.js to the releases page, this option would require us to. The resulting file would then be included in the pod as a resource that could then be included in consumer app targets.</p>
+<p>Pros:</p>
+<ul>
+<li>Flexible and wouldn't need to have any complicated logic to make sure the script isn't running too often, since it only gets executed once during <code>pod install</code></li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>This is not technically the intended use of <code>prepare_command</code></li>
+<li>Requires a non-trivial amount of effort to publish artifacts or automate releases (which we should probably do anyway)</li>
+</ul>
+<p><strong>2 - Podspec with a source specification - Chosen Option</strong></p>
+<pre class="language-ruby"><code class="language-ruby"><span class="highlight-line">spec<span class="token punctuation">.</span>source <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token symbol">:http</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'https://github.com/salesforce/nimbus/archive/0.0.7.zip'</span> <span class="token punctuation">}</span></span></code></pre>
+<p>The <code>source</code> <a href="https://guides.cocoapods.org/syntax/podspec.html#source">specification</a> in a podspec can point to a zip file, which is automatically unzipped and the resulting files compose the pod source. This would be the simplest pod, in that we're using <code>source</code> for exactly what it's intended. It would require us to amend our workflow when publishing releases.</p>
+<p>This new pod, which contains just the <code>nimbus.js</code> source, would be added as a dependency in the main nimbus podspec. We would then create convenvience utilities to inject the nimbus source into a <code>WKWebView</code> instance as a <code>WKUserScript</code>. This would simplify nimbus adoption for most consumers.</p>
+<p>Pros:</p>
+<ul>
+<li>Easy, and uses podspec source tag for exactly what it's intended for.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Requires a non-trivial amount of effort to publish artifacts or automate releases (which we should probably do anyway)</li>
+</ul>
+<p><strong>3 - Podspec with a script phase</strong></p>
+<pre class="language-ruby"><code class="language-ruby"><span class="highlight-line">spec<span class="token punctuation">.</span>script_phase <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token symbol">:name</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'Hello World'</span><span class="token punctuation">,</span> <span class="token symbol">:script</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'echo "Hello World"'</span> <span class="token punctuation">}</span></span></code></pre>
+<p>the <code>script_phase</code> <a href="https://guides.cocoapods.org/syntax/podspec.html#script_phases">specification</a> allows a pod author to include a script phase to add to the workspace build settings. We could use this to download the artifact zip and add the nimbus code as a source file. I mostly include this option for completeness as it has considerable downsides and no discernible upsides.</p>
+<p>Pros:</p>
+<ul>
+<li>Flexible</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Causes a warning in the <code>pod install</code> process. Invasive to consumers.</li>
+<li>Need to rely on Xcode features to not run this build phase more often than needed.</li>
+</ul>
+<h1>Android</h1>
+<p><strong>1 - New Nimbus Module - Chosen Option</strong></p>
+<p>We could add a new module to the Nimbus Android project. This module would contain a single Loader class that would vend the <code>nimbus.js</code> source. At build time, the module would build the nimbus js source locally and include it as a resource in the resulting AAR. This module would also contain utilities to automatically inject the nimbus script into the <code>&lt;head&gt;</code> tag of a loading page. Ideally, this behavior would be the default, but also optional for consumers who wish to inject the nimbus js differently.</p>
+<p>Pros:</p>
+<ul>
+<li>Fairly simple, seems to be idiomatic for the platform</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Adds complication to the project and is another module for consumers to import.</li>
+</ul>
