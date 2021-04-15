@@ -14,7 +14,6 @@ import com.salesforce.k2v8.scope
 import io.kotest.property.forAll
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -85,6 +84,7 @@ class PrimitiveV8EncodableTests {
             forAll<Long> { a ->
                 val array = a.toV8Encodable(v8).encode() as V8Array
                 val value = array.getDouble(0)
+
                 // v8 doesn't support long so must convert to double for comparison
                 a.toDouble() == value
             }
