@@ -18,6 +18,8 @@ dependencies {
     implementation(nimbusModule("annotations"))
     api(Libs.kotlinpoet)
     api(Libs.kotlinxMetadataJvm)
+
+    testImplementation(Libs.junit)
 }
 
 configure<JavaPluginExtension> {

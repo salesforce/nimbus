@@ -20,7 +20,7 @@ object Versions {
 
     const val mockk: String = "1.10.2"
 
-    const val androidToolsBuildGradle: String = "4.1.0"
+    const val androidToolsBuildGradle: String = "4.1.3"
 
     const val androidxTestRules: String = "1.1.1" // available: "1.2.0"
 
@@ -36,7 +36,7 @@ object Versions {
 
     const val espressoCore: String = "3.2.0"
 
-    const val kotlinpoet: String = "1.5.0"
+    const val kotlinpoet: String = "1.8.0"
 
     const val appcompat: String = "1.1.0"
 
