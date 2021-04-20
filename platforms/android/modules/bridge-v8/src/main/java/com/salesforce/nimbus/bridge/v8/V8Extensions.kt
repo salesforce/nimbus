@@ -7,11 +7,7 @@
 
 package com.salesforce.nimbus.bridge.v8
 
-import com.eclipsesource.v8.JavaCallback
-import com.eclipsesource.v8.V8
-import com.eclipsesource.v8.V8Array
-import com.eclipsesource.v8.V8Object
-import com.eclipsesource.v8.V8Value
+import com.eclipsesource.v8.*
 import com.eclipsesource.v8.utils.MemoryManager
 import com.salesforce.k2v8.toV8Array
 import java.util.concurrent.ExecutorService
@@ -39,7 +35,7 @@ fun V8.promiseGlobal(): V8Object = getObject("Promise")
 fun V8.resolvePromise(result: Any): V8Object {
     return promiseGlobal().executeObjectFunction(
         "resolve",
-        convertAnyToV8Array(this, result)
+        this.convertAnyToV8Array(result)
     )
 }
 
@@ -49,15 +45,19 @@ fun V8.resolvePromise(result: Any): V8Object {
 fun V8.rejectPromise(error: Any): V8Object {
     return promiseGlobal().executeObjectFunction(
         "reject",
-        convertAnyToV8Array(this, error)
+        this.convertAnyToV8Array(error)
     )
 }
 
-private fun convertAnyToV8Array(v8: V8, data: Any): V8Array {
+/**
+ * Convert any data to a V8Array for v8 function call
+ * Will be empty array if data is Unit
+ */
+fun V8.convertAnyToV8Array(data: Any): V8Array {
     return if (data is List<*>) {
-        data.toV8Array(v8)
+        data.toV8Array(this)
     } else {
-        V8Array(v8).apply {
+        V8Array(this).apply {
             if (data != Unit) {
                 push(data)
             }
@@ -74,7 +74,10 @@ fun V8.createObject() = V8Object(this)
  * Creates a [V8Bridge.Builder] and passes it to the [builder] function, allowing any binders to be added
  * and then attaches to the [V8Bridge] instance.
  */
-fun V8.bridge(executorService: ExecutorService, builder: V8Bridge.Builder.() -> Unit = {}): V8Bridge {
+fun V8.bridge(
+    executorService: ExecutorService,
+    builder: V8Bridge.Builder.() -> Unit = {}
+): V8Bridge {
     return V8Bridge.Builder()
         .apply(builder)
         .attach(this, executorService)
