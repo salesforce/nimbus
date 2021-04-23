@@ -25,21 +25,16 @@ import java.util.concurrent.ExecutorService
 
 const val INTERNAL_NIMBUS_BRIDGE = "_nimbus"
 
-class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Object>, Runtime<V8, V8Object> {
+class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Object>,
+    Runtime<V8, V8Object> {
 
     private var bridgeV8: V8? = null
     internal val binders = mutableListOf<Binder<V8, V8Object>>()
-    private var nimbusBridge: V8Object? = null
-    private var nimbusPlugins: V8Object? = null
-    private var internalNimbusBridge: V8Object? = null
     private val promises: ConcurrentHashMap<String, (String?, Any?) -> Unit> = ConcurrentHashMap()
 
     override fun detach() {
         executorService.submit {
             cleanup(binders)
-            nimbusBridge?.close()
-            nimbusPlugins?.close()
-            internalNimbusBridge?.close()
             bridgeV8?.close()
             bridgeV8 = null
         }.get()
@@ -114,20 +109,20 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
     private fun attachInternal(javascriptEngine: V8) {
         bridgeV8 = javascriptEngine
 
-        // create the __nimbus bridge
-        nimbusBridge = javascriptEngine.createObject()
+        val nimbusPlugins = javascriptEngine.createObject()
 
-            // add _nimbus.plugins
-            .add(
-                NIMBUS_PLUGINS,
-                javascriptEngine.createObject().also { nimbusPlugins = it }
-            )
+        // create the __nimbus bridge and add _nimbus.plugins
+        val nimbusBridge = nimbusPlugins.use {
+            javascriptEngine.createObject().add(NIMBUS_PLUGINS,it)
+        }
 
         // add to the bridge v8 engine
-        javascriptEngine.add(NIMBUS_BRIDGE, nimbusBridge)
+        nimbusBridge.use {
+            javascriptEngine.add(NIMBUS_BRIDGE, it)
+        }
 
         // create an internal nimbus to resolve promises
-        internalNimbusBridge = javascriptEngine.createObject()
+        val internalNimbusBridge = javascriptEngine.createObject()
             .registerVoidCallback("resolvePromise") { parameters ->
                 val result = parameters.get(1)
                 promises.remove(parameters.getString(0))?.invoke(null, result)
@@ -138,7 +133,9 @@ class V8Bridge(private val executorService: ExecutorService) : Bridge<V8, V8Obje
             }
 
         // add the internal bridge to the v8 engine
-        javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, internalNimbusBridge)
+        internalNimbusBridge.use {
+            javascriptEngine.add(INTERNAL_NIMBUS_BRIDGE, it)
+        }
 
         // initialize plugins
         initialize(binders)

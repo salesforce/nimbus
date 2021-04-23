@@ -33,8 +33,7 @@ class V8ExtensionsTest {
     }
 
     @Test
-    @Ignore("Scope logic removed")
-    fun resolvePromiseReferenceMaintainedTest() {
+    fun resolvePromiseReferenceMaintainedTest() = v8.scope {
         Assert.assertEquals(0, v8.objectReferenceCount)
         val promise = v8.resolvePromise("string")
         Assert.assertEquals(1, v8.objectReferenceCount)
@@ -55,7 +54,6 @@ class V8ExtensionsTest {
     }
 
     @Test
-    @Ignore("Scope logic removed")
     fun rejectPromiseReferenceMaintainedTest() {
         Assert.assertEquals(0, v8.objectReferenceCount)
         val promise = v8.rejectPromise("message")
