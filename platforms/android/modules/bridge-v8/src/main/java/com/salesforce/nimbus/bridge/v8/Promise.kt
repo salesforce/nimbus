@@ -20,6 +20,8 @@ class Promise private constructor(
 
     private val v8: V8 = _jsPromise.runtime
 
+    fun getJsPromise() = _jsPromise
+
     /**
      * resolve the promise with result
      *

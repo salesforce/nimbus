@@ -9,10 +9,10 @@ package com.salesforce.nimbus.bridge.v8.compiler
 
 import com.salesforce.nimbus.BoundMethod
 import com.salesforce.nimbus.PluginOptions
-import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.addClassProperties
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_K2V8
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_K2V8_CONFIGURATION
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_K2V8_TO_V8_ARRAY
+import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_KOTLIN_PROMISE
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_NIMBUS_BRIDGE
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_NIMBUS_PLUGINS
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_REGISTER_JAVA_CALLBACK
@@ -21,20 +21,9 @@ import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NA
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Function
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Object
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Releasable
-import com.salesforce.nimbus.compiler.BinderGenerator
-import com.salesforce.nimbus.compiler.annotation
-import com.salesforce.nimbus.compiler.asKotlinTypeName
-import com.salesforce.nimbus.compiler.asRawTypeName
-import com.salesforce.nimbus.compiler.asTypeName
-import com.salesforce.nimbus.compiler.getName
-import com.salesforce.nimbus.compiler.isNullable
-import com.salesforce.nimbus.compiler.typeArguments
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.TypeSpec
+import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.addClassProperties
+import com.salesforce.nimbus.compiler.*
+import com.squareup.kotlinpoet.*
 import kotlinx.metadata.KmFunction
 import kotlinx.metadata.KmValueParameter
 import javax.annotation.processing.ProcessingEnvironment
@@ -61,6 +50,10 @@ class V8BinderGenerator : BinderGenerator() {
     override fun processClassProperties(builder: TypeSpec.Builder) {
         // add k2v8 property so we can serialize to/from v8
         addClassProperties(builder)
+    }
+
+    override fun processUnbindFunction(builder: FunSpec.Builder) {
+        builder.addStatement("offV8ExecutorService.shutdownNow()")
     }
 
     override fun processBindFunction(
@@ -268,14 +261,19 @@ class V8BinderGenerator : BinderGenerator() {
 
         // invoke plugin function and get result
         funBody
+            .addStatement("val promise = %T.newPromise(v8)", CLASS_NAME_KOTLIN_PROMISE)
+            .beginControlFlow("offV8ExecutorService.submit")
             .addStatement(
                 "val result = target.%N($argsString)",
                 functionElement.getName()
             )
-
+            .beginControlFlow("runtime!!.getExecutorService().submit {")
             // process the result (may need to serialize)
             .add(processResult(functionElement))
             .addStatement("")
+            .endControlFlow()
+            .endControlFlow()
+            .addStatement("promise.getJsPromise()")
 
         // close out the try {} catch and reject the promise if we encounter an exception
         funBody.nextControlFlow("catch (throwable: Throwable)")
@@ -575,32 +573,28 @@ class V8BinderGenerator : BinderGenerator() {
                 when {
                     returnType.isStringType() -> CodeBlock.of("v8.%T(result)", CLASS_NAME_RESOLVE_PROMISE)
                     returnType.isKotlinSerializableType() -> CodeBlock.of(
-                        "k2v8!!.toV8(%T.%T(), result).use { v8.%T(it) }",
+                        "k2v8!!.toV8(%T.%T(), result).use { promise.resolve(it) }",
                         returnType,
-                        serializerFunctionName,
-                        CLASS_NAME_RESOLVE_PROMISE
-                    )
+                        serializerFunctionName)
                     returnType.isListType() -> {
                         val parameterType = returnType.typeArguments.first().asKotlinTypeName()
                         CodeBlock.of(
-                            "k2v8!!.toV8(%T(%T.%T()), result).use { v8.%T(it) }",
+                            "k2v8!!.toV8(%T(%T.%T()), result).use { promise.resolve(it) }",
                             listSerializerClassName,
                             parameterType,
-                            serializerFunctionName,
-                            CLASS_NAME_RESOLVE_PROMISE
+                            serializerFunctionName
                         )
                     }
                     returnType.isMapType() -> {
                         val keyParameterType = returnType.typeArguments[0].asKotlinTypeName()
                         val valueParameterType = returnType.typeArguments[1].asKotlinTypeName()
                         CodeBlock.of(
-                            "k2v8!!.toV8(%T(%T.%T(), %T.%T()), result).use { v8.%T(it) }",
+                            "k2v8!!.toV8(%T(%T.%T(), %T.%T()), result).use { promise.resolve(it) }",
                             mapSerializerClassName,
                             keyParameterType,
                             serializerFunctionName,
                             valueParameterType,
-                            serializerFunctionName,
-                            CLASS_NAME_RESOLVE_PROMISE
+                            serializerFunctionName
                         )
                     }
                     else -> {
@@ -615,15 +609,14 @@ class V8BinderGenerator : BinderGenerator() {
             is ArrayType -> {
                 val arrayType = returnType.typeArguments().first()
                 CodeBlock.of(
-                    "k2v8!!.toV8(%T(%T.%T()), result).use { v8.%T(it) }",
+                    "k2v8!!.toV8(%T(%T.%T()), result).use { promise.resolve(it) }",
                     arraySerializerClassName,
                     arrayType,
-                    serializerFunctionName,
-                    CLASS_NAME_RESOLVE_PROMISE
+                    serializerFunctionName
                 )
             }
             // if a primitive type just return the result
-            else -> CodeBlock.of("v8.%T(result)", CLASS_NAME_RESOLVE_PROMISE)
+            else -> CodeBlock.of("promise.resolve(result)")
         }
     }
 }
