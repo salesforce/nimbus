@@ -14,13 +14,10 @@ import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NA
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Function
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Object
 import com.salesforce.nimbus.bridge.v8.compiler.V8BinderGeneratorHelper.CLASS_NAME_V8Releasable
-import com.squareup.kotlinpoet.MemberName.Companion.member
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeVariableName
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.reflect.full.memberProperties
 
 class V8BinderGeneratorHelperTest {
 
@@ -58,14 +55,5 @@ class V8BinderGeneratorHelperTest {
         val outPut = typeSpec.build().toString()
 
         assertTrue(outPut.contains("""private var k2v8: com.salesforce.k2v8.K2V8? = null"""))
-    }
-
-    @Test
-    fun processPrimitiveParameterTest() {
-        val kmClass = DemoClass::class.memberProperties
-    }
-
-    data class DemoClass(val property1:Int) {
-
     }
 }
