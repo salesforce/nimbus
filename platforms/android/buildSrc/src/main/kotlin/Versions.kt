@@ -20,7 +20,7 @@ object Versions {
 
     const val mockk: String = "1.10.2"
 
-    const val androidToolsBuildGradle: String = "4.1.0"
+    const val androidToolsBuildGradle: String = "4.1.3"
 
     const val androidxTestRules: String = "1.1.1" // available: "1.2.0"
 
