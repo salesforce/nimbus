@@ -406,26 +406,6 @@ jobs:
       - store_artifacts:
           path: ~/reports
 
-  upload-coverage:
-    docker:
-      - image: circleci/android:api-29-node
-
-    steps:
-      - checkout
-
-      - attach_workspace:
-          at: workspace
-
-      - run:
-          name: Upload iOS coverage
-          command: |
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/apple/cobertura.xml -X coveragepy -X gcov -X xcode -F iOS
-
-      - run:
-          name: Upload Android coverage
-          command: |
-            bash <(curl -s https://codecov.io/bash) -f ./workspace/platforms/android/modules/bridge-webview/build/reports/jacoco/debug/jacoco.xml -f ./workspace/platforms/android/modules/bridge-v8/build/reports/jacoco/debug/jacoco.xml -f ./workspace/platforms/android/modules/core/build/reports/jacoco/debug/jacoco.xml -F Android
-
   upload-android-release:
     docker:
       - image: circleci/android:api-29-node
